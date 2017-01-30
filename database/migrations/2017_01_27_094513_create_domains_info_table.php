@@ -21,7 +21,7 @@ class CreateDomainsInfoTable extends Migration
             $table->string('create_date');
             $table->string('update_date');
             $table->string('expiry_date');
-            $table->integer('domain_registrar_id')->unsigned()->index();
+            $table->string('domain_registrar_id');
             $table->string('domain_registrar_name');
             $table->string('domain_registrar_whois');
             $table->string('domain_registrar_url');

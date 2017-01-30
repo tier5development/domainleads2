@@ -12,6 +12,30 @@ class ImportExport extends Controller
     return view('importExport');
   }
 
+  	public function make_qquery($low , $high , $record , $hash)
+     {
+     	$str = '';
+     	for($i = $low ; $i<= $high ; $i++)
+     	{
+
+     		if($i == $low)
+	  			{
+	  				 $str .= "NULL , '" . $record[$i] ."' ,";
+	  			}
+	  			else if($key != $high)
+	  			{
+	  				 $str  .= "'".$record[$i]."' ," ;
+	  			}
+	  			else
+	  			{
+	  				 $str  .= "'".$record[$i]. "' , '".$hash."'";
+	  			}
+
+
+     	}
+     				
+     }
+
   public function importExcel(Request $request)
   {
   		
@@ -19,6 +43,8 @@ class ImportExport extends Controller
 
   		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+
+    	$u_hash = array();
 
       	$start = microtime(true);
       	$upload = $request->file('import_file');
@@ -99,7 +125,7 @@ class ImportExport extends Controller
       $DOMIANS_NAMESERVER = '';
       $DOMAINS_STATUS = '';
 
-      $BATCH  = 3000; // to insert 10000 data at 1 go 
+      $BATCH  = 30000; // to insert 10000 data at 1 go 
 
       //str_replace($search, $replace,$h)
       $counter = 0;
@@ -108,22 +134,26 @@ class ImportExport extends Controller
           $row = fgetcsv($file);
 
 
-          if($DOMAINS_STATUS != '') $DOMAINS_STATUS .=',';
-          if($DOMIANS_NAMESERVER != '') $DOMIANS_NAMESERVER .=',';
-          if($DOMIANS_BILLING != '') $DOMIANS_BILLING .=',';
-          if($DOMIANS_TECHNICAL != '') $DOMIANS_TECHNICAL .=',';
-          if($DOMAINS_ADMINISTRATIVE != '') $DOMAINS_ADMINISTRATIVE .=',';
-          if($LEADS != '') $LEADS .=',';
-          if($DOMAINS_INFO != '') $DOMAINS_INFO .=',';
-          if($EACH_DOMAINS != '') $EACH_DOMAINS .=',';
+          
 
           //echo($EACH_DOMAINS);
 
+          $counter++ ;
+          $hash = date("Y:M:D").":".microtime(true)."::".$counter;
 
           if($row)
           {
-          		$counter++ ;
-          		$hash = encrypt(microtime(true));
+          		
+
+          		if($DOMAINS_STATUS != '') $DOMAINS_STATUS .=',';
+		        if($DOMIANS_NAMESERVER != '') $DOMIANS_NAMESERVER .=',';
+		        if($DOMIANS_BILLING != '') $DOMIANS_BILLING .=',';
+		        if($DOMIANS_TECHNICAL != '') $DOMIANS_TECHNICAL .=',';
+		        if($DOMAINS_ADMINISTRATIVE != '') $DOMAINS_ADMINISTRATIVE .=',';
+		        if($LEADS != '') $LEADS .=',';
+		        if($DOMAINS_INFO != '') $DOMAINS_INFO .=',';
+		        if($EACH_DOMAINS != '') $EACH_DOMAINS .=',';
+
           		$each_domains = '';
 			    $domains_info = '';
 			    $leads = '';
@@ -143,14 +173,8 @@ class ImportExport extends Controller
           	  		{
           	  			$d_ext = explode("." , $val);
           	  			$ext = $d_ext[sizeof($d_ext)-1];
-          	  			//dd($ext);
-
           	  			$each_domains .= "NULL,'".$hash."','".$val."','".$ext."','0', NULL , NULL";
-
-          	  			//dd($each_domains);
-
           	  			continue;
-
           	  		}
           	  		else if($key >=2 && $key <= 9)
           	  		{
@@ -272,53 +296,86 @@ class ImportExport extends Controller
           	  		}
           	  	}
 
-          	  		$EACH_DOMAINS .= '('.$each_domains.')';
-          	  		//echo($EACH_DOMAINS . '<br>');
-			      	$DOMAINS_INFO .= '(' . $domains_info . ')';
-			      	$LEADS .= 		'('.$leads.')';
-			      	$DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')'; 
-			      	$DOMIANS_TECHNICAL .= '('.$domains_technical.')';
-			      	$DOMIANS_BILLING .= '('.$domains_billing.')';
-			      	$DOMIANS_NAMESERVER .= '('.$domains_nameserver.')';
-			      	$DOMAINS_STATUS .= '('.$domains_status .')';
+      	  		$EACH_DOMAINS .= '('.$each_domains.')';
+		      	$DOMAINS_INFO .= '(' . $domains_info . ')';
+		      	$LEADS .= 		'('.$leads.')';
+		      	$DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')'; 
+		      	$DOMIANS_TECHNICAL .= '('.$domains_technical.')';
+		      	$DOMIANS_BILLING .= '('.$domains_billing.')';
+		      	$DOMIANS_NAMESERVER .= '('.$domains_nameserver.')';
+		      	$DOMAINS_STATUS .= '('.$domains_status .')';
 
 			      	
-			      	if($counter % $BATCH == 0)
-			      	{
+		      	if($counter%$BATCH == 0)
+		      	{
+		      		
+		      		$q_each_domains = "INSERT INTO `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
+		      		$q_domains_info = "INSERT INTO `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
+		      		$q_leads		= "INSERT INTO `leads` ". $leads_head. " VALUES ".$LEADS;
+		      		$q_domains_administrative = "INSERT INTO `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
+		      		$q_domains_technical = "INSERT INTO `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
+		      		$q_domains_billing = "INSERT INTO `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
+		      		$q_domains_nameserver = "INSERT INTO `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
+		      		$q_domains_status = "INSERT INTO `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
-			      		$q_each_domains = "INSERT INTO `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
-			      		$q_domains_info = "INSERT INTO `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
-			      		$q_leads		= "INSERT INTO `leads` ". $leads_head. " VALUES ".$LEADS;
-			      		$q_domains_administrative = "INSERT INTO `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
-			      		$q_domains_technical = "INSERT INTO `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
-			      		$q_domains_billing = "INSERT INTO `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
-			      		$q_domains_nameserver = "INSERT INTO `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
-			      		$q_domains_status = "INSERT INTO `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
+
+		      		DB::statement($q_each_domains);
+		      		DB::statement($q_domains_info);
+		      		DB::statement($q_leads);
+		      		DB::statement($q_domains_administrative);
+		      		DB::statement($q_domains_technical);
+		      		DB::statement($q_domains_billing);
+		      		DB::statement($q_domains_nameserver);
+		      		DB::statement($q_domains_status);
 
 
-			      		//dd($q_domains_administrative);
+		      		$EACH_DOMAINS 			= '';
+			      	$DOMAINS_INFO 			= '';
+			      	$LEADS 					= '';
+			      	$DOMAINS_ADMINISTRATIVE = ''; 
+			      	$DOMIANS_TECHNICAL 		= '';
+			      	$DOMIANS_BILLING 		= '';
+			      	$DOMIANS_NAMESERVER 	= '';
+			      	$DOMAINS_STATUS 		= '';
+		      	}
+			      	
 
-			      		DB::statement($q_each_domains);
-			      		DB::statement($q_domains_info);
-			      		
-			      		DB::statement($q_leads);
-			      		DB::statement($q_domains_administrative);
-			      		DB::statement($q_domains_technical);
-			      		DB::statement($q_domains_billing);
-			      		DB::statement($q_domains_nameserver);
-			      		// DB::statement($q_domains_status);
+          	}
+          	else
+          	{
+          		if($counter % $BATCH != 0)
+          		{
 
-			      		dd('first batch over');
-			      	}
-			      	else //collect residue
-			      	{
-			      		
-			      	}
+          			
+          			$q_each_domains = "INSERT INTO `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
+					$q_domains_info = "INSERT INTO `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
+		      		$q_leads		= "INSERT INTO `leads` ". $leads_head. " VALUES ".$LEADS;
+		      		$q_domains_administrative = "INSERT INTO `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
+		      		$q_domains_technical = "INSERT INTO `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
+		      		$q_domains_billing = "INSERT INTO `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
+		      		$q_domains_nameserver = "INSERT INTO `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
+		      		$q_domains_status = "INSERT INTO `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
+
+
+		      		//dd($q_domains_administrative);
+
+		      		DB::statement($q_each_domains);
+		      		DB::statement($q_domains_info);
+		      		DB::statement($q_leads);
+		      		DB::statement($q_domains_administrative);
+		      		DB::statement($q_domains_technical);
+		      		DB::statement($q_domains_billing);
+		      		DB::statement($q_domains_nameserver);
+		      		DB::statement($q_domains_status);
+          		}
+          		break;
 
           	}
              
 
       	}
+
+      	
 
       $end = microtime(true) - $start;
       echo('TOTAL TIME: ' . $end . " seconds");
@@ -328,12 +385,14 @@ class ImportExport extends Controller
       //echo('configuring database ...... <br><br>');
 
       //Domain::where('unique_hash', $remember_hash)->first();
+          	
 
 
 
-
+        
      
   
   }
+
 
 }
