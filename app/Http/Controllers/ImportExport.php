@@ -12,41 +12,58 @@ class ImportExport extends Controller
     return view('importExport');
   }
 
-  	public function make_qquery($low , $high , $record , $hash)
-     {
-     	$str = '';
-     	for($i = $low ; $i<= $high ; $i++)
-     	{
-
-     		if($i == $low)
-	  			{
-	  				 $str .= "NULL , '" . $record[$i] ."' ,";
-	  			}
-	  			else if($key != $high)
-	  			{
-	  				 $str  .= "'".$record[$i]."' ," ;
-	  			}
-	  			else
-	  			{
-	  				 $str  .= "'".$record[$i]. "' , '".$hash."'";
-	  			}
+  	public function make_query($low , $high , $record , $domain_name)
+	 {
+	 	$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
+    	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+	 	$str = '';
 
 
-     	}
-     				
-     }
+	 	if($high - $low == 0)
+	 	{
+	 		$rec = str_replace($search, $replace, $record[$low]);
+	 		$d_ext = explode("." , $rec);
+          	$ext = $d_ext[sizeof($d_ext)-1];
+          	$str .= "NULL,'".$rec."','".$ext."','0',NULL,NULL";
+	 	}
+	 	else
+	 	{
+	 		for($i = $low ; $i<= $high ; $i++)
+		 	{
+		 		$rec = str_replace($search, $replace, $record[$i]);
+		 		if($i == $low)
+		  			$str .= "NULL , '".$rec."' ,";
+		  			
+		  		else if($i != $high)
+		  		{
+		  			if($i == 18 ) //condition to validate num
+		  			{
+		  				$ph = explode('.',$rec);
+		  				if($ph[0] == 1)
+		  				{
+		  					$x = validateUSPhoneNumber($ph[1]);
+		  					dd($x);
+		  				}
+		  			}
+		  			else
+		  			{
+		  				$x = '';
+		  			}
+		  			$str  .= "'".$rec."' ,'".$x."'," ;
+		  		}
+		  			
+		  		else
+		  			$str  .= "'".$rec. "' , '".$domain_name."'";
+		 	}
+	 	}
+	 	return $str;			
+	 }
 
-  public function importExcel(Request $request)
-  {
-  		
-    
-
+  	public function importExcel(Request $request)
+  	{
   		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
-
-    	$u_hash = array();
-
-      	$start = microtime(true);
+  	    $start = microtime(true);
       	$upload = $request->file('import_file');
       	$filepath = $upload->getRealPath();
 
@@ -58,7 +75,7 @@ class ImportExport extends Controller
       	ini_set('max_execution_time', '0');
       	ini_set('max_input_time', '0');
       	set_time_limit(0);
-      	ignore_user_abort(true);  
+      	ignore_user_abort(true);
 
 
       	$string;
@@ -69,63 +86,57 @@ class ImportExport extends Controller
       
 
       //record 1 goes to each_domains table
-      $each_domains_head = "(`id` ,`unique_hash`, `domain_name` , `domain_ext` , `unlocked_num` , `created_at` , `updated_at`)";
+      $each_domains_head = "(`id`,`domain_name` , `domain_ext` , `unlocked_num` , `created_at` , `updated_at`)";
 
 
       //from record 2 to 9 goes to domains_info table
 
-      $domains_info_head = "(`id`,`query_time`,`create_date`,`update_date`,`expiry_date`,`domain_registrar_id`,`domain_registrar_name`,`domain_registrar_whois`,`domain_registrar_url`,`unique_hash`)" ;
+      $domains_info_head = "(`id`,`query_time`,`create_date`,`update_date`,`expiry_date`,`domain_registrar_id`,`domain_registrar_name`,`domain_registrar_whois`,`domain_registrar_url`,`domain_name`)" ;
 
 
       //10 - 19 goes to leads table
       //heads for leads table for mysql entry
-      $leads_head = "(`id`,`registrant_name`,`registrant_company`,`registrant_address`,`registrant_city`,`registrant_state`,`registrant_zip`,`registrant_country`,`registrant_email`,`registrant_phone`,`registrant_fax`,`unique_hash`)" ;
+      $leads_head = "(`id`,`registrant_name`,`registrant_company`,`registrant_address`,`registrant_city`,`registrant_state`,`registrant_zip`,`registrant_country`,`registrant_email`,`registrant_phone`,`phone_type`,`registrant_fax`,`domain_name`)" ;
 
 
       //20-29 goes to domains administrative
       $domains_administrative_head = "(`id` , `administrative_name`,`administrative_company`,`administrative_address`,`administrative_city`,
-		`administrative_state`,`administrative_zip` , `administrative_country`, `administrative_email` , `administrative_phone`, `administrative_fax` , `unique_hash`)";
+		`administrative_state`,`administrative_zip` , `administrative_country`, `administrative_email` , `administrative_phone`, `administrative_fax` , `domain_name`)";
 
 
 		//30-39 goes to domains_technical table
-	  $domains_technical_head = "(`id` , `technical_name`,`technical_company`,`technical_address`,`technical_city`,`technical_state`,`technical_zip`,`technical_country`,`technical_email`,`technical_phone`,`technical_fax` , `unique_hash`)";
+	  $domains_technical_head = "(`id` , `technical_name`,`technical_company`,`technical_address`,`technical_city`,`technical_state`,`technical_zip`,`technical_country`,`technical_email`,`technical_phone`,`technical_fax` , `domain_name`)";
 
   
   		//40-49 goes to domains_billing
-	  $domains_billing_head = "(`id`,`billing_name`,`billing_company`,`billing_address`,`billing_city` , `billing_state`,`billing_zip`,`billing_country`,`billing_email`,`billing_phone`,`billing_fax` , `unique_hash`)";
+	  $domains_billing_head = "(`id`,`billing_name`,`billing_company`,`billing_address`,`billing_city` , `billing_state`,`billing_zip`,`billing_country`,`billing_email`,`billing_phone`,`billing_fax` , `domain_name`)";
 
-	  $domains_nameserver_head = "(`id`,`name_server_1`,`name_server_2`,`name_server_3`,`name_server_4`,`unique_hash`)";
+	  // 50-53 goes to nameserver
+	  $domains_nameserver_head = "(`id`,`name_server_1`,`name_server_2`,`name_server_3`,`name_server_4`,`domain_name`)";
 
-	  $domains_status_head = "(`id`,`domain_status_1`,`domain_status_2`,`domain_status_3`,`domain_status_4`,`unique_hash`)";
+	  // 54-57 goes to domainstatus
+	  $domains_status_head = "(`id`,`domain_status_1`,`domain_status_2`,`domain_status_3`,`domain_status_4`,`domain_name`)";
 
-      
 
+      $each_domains 			= '';
+      $domains_info 			= '';
+      $leads 					= '';
+      $domains_administrative 	= '';
+      $domains_technical 		= '';
+      $domains_billing 			= ''; 
+      $domains_nameserver 		= '';
+      $domains_status 			= '';
 
-      
+      $EACH_DOMAINS 			= '';
+      $DOMAINS_INFO 			= '';
+      $LEADS 					= '';
+      $DOMAINS_ADMINISTRATIVE 	= '';
+      $DOMIANS_TECHNICAL 		= '';
+      $DOMIANS_BILLING 			= '';
+      $DOMIANS_NAMESERVER 		= '';
+      $DOMAINS_STATUS 			= '';
 
-      
-
-      //user_id is leads id which cannot be dynamic with bulk data
-
-      $each_domains = '';
-      $domains_info = '';
-      $leads = '';
-      $domains_administrative = '';
-      $domains_technical = '';
-      $domains_billing = '' ; 
-      $domains_nameserver = '';
-      $domains_status = '';
-
-      $EACH_DOMAINS = '';
-      $DOMAINS_INFO = '';
-      $LEADS = '';
-      $DOMAINS_ADMINISTRATIVE = '';
-      $DOMIANS_TECHNICAL = '';
-      $DOMIANS_BILLING = '';
-      $DOMIANS_NAMESERVER = '';
-      $DOMAINS_STATUS = '';
-
-      $BATCH  = 30000; // to insert 10000 data at 1 go 
+      $BATCH  = 30000; // to insert 30000 data at 1 go 
 
       //str_replace($search, $replace,$h)
       $counter = 0;
@@ -133,17 +144,14 @@ class ImportExport extends Controller
       {
           $row = fgetcsv($file);
 
-
-          
-
-          //echo($EACH_DOMAINS);
-
           $counter++ ;
-          $hash = date("Y:M:D").":".microtime(true)."::".$counter;
+          //$domain_namei = date("d/m/y")."::".date('h:m:s').'::'.microtime(true)."::".$counter;
+
+
 
           if($row)
           {
-          		
+          		$domain_name = str_replace($search, $replace, $row[1]);
 
           		if($DOMAINS_STATUS != '') $DOMAINS_STATUS .=',';
 		        if($DOMIANS_NAMESERVER != '') $DOMIANS_NAMESERVER .=',';
@@ -162,139 +170,18 @@ class ImportExport extends Controller
 			    $domains_billing = '' ; 
 			    $domains_nameserver = '';
 			    $domains_status = '';
-          	  	foreach($row as $key=>$record)
-          	  	{
-          	  		$val = str_replace($search, $replace, $record);
-          	  		if($key == 0)
-          	  		{
-          	  			continue;
-          	  		}
-          	  		if($key == 1)
-          	  		{
-          	  			$d_ext = explode("." , $val);
-          	  			$ext = $d_ext[sizeof($d_ext)-1];
-          	  			$each_domains .= "NULL,'".$hash."','".$val."','".$ext."','0', NULL , NULL";
-          	  			continue;
-          	  		}
-          	  		else if($key >=2 && $key <= 9)
-          	  		{
-          	  			
 
-          	  			if($key == 2)
-          	  			{
-          	  				$domains_info .= "NULL , '".$val."',";
-          	  			}
-          	  			else if($key != 9) 
-          	  			{
-          	  				$domains_info .="'".$val ."'," ;
-          	  				//echo('in key '.$key."  ");
-          	  			}
-          	  			else
-          	  			{
-          	  				$domains_info .= "'".$val . "','".$hash."'" ;
-          	  			}
 
-          	  			//echo($domains_info . '<br>');
-          	  		}
-          	  		else if($key >=10 && $key <= 19)
-          	  		{
-          	  			//dd(1);
-          	  			//dd($domains_info);
-          	  			
+			    $each_domains 			= $this->make_query(1 , 1 , $row , $domain_name);
+			    $domains_info 			= $this->make_query(2 , 9 , $row , $domain_name);
+			    $leads 		  			= $this->make_query(10 , 19 , $row , $domain_name);
+			    $domains_administrative = $this->make_query(20 , 29 , $row , $domain_name);
+			    $domains_technical  	= $this->make_query(30 , 39 , $row , $domain_name);
+			    $domains_billing 		= $this->make_query(40 , 49 , $row , $domain_name);
+			    $domains_nameserver 	= $this->make_query(50 , 53 , $row , $domain_name);
+			    $domains_status 		= $this->make_query(54 , 57 , $row , $domain_name);
+          	  	
 
-          	  			if($key == 10) 
-          	  			{
-          	  				$leads .= "NULL , '" . $val ."',";
-          	  			}
-          	  			else if($key != 19)
-          	  			{
-          	  				$leads .= "'".$val."' ," ;
-          	  			}
-          	  			else
-          	  			{
-          	  				$leads .="'".$val . "','".$hash."'";
-          	  			}
-          	  			//echo($leads . '<br>');
-          	  		}
-          	  		else if($key >=20 && $key <= 29)
-          	  		{
-          	  			if($key == 20) 
-          	  			{
-          	  				$domains_administrative .= "NULL , '".$val."' ,";
-          	  			}
-          	  			else if($key != 29)
-          	  			{
-          	  				$domains_administrative .= "'". $val."' ," ;
-          	  			}
-          	  			else
-          	  			{
-          	  				$domains_administrative .= "'".$val . "' , '".$hash."'";
-          	  			}
-          	  		}
-          	  		else if($key >=30 && $key <= 39)
-          	  		{
-
-          	  			if($key == 30) 
-          	  			{
-          	  				 $domains_technical .= "NULL , '" . $val ."' ,";
-          	  			}
-          	  			else if($key != 39)
-          	  			{
-          	  				 $domains_technical .= "'".$val."' ," ;
-          	  			}
-          	  			else
-          	  			{
-          	  				 $domains_technical .=  "'".$val . "' , '".$hash."'";
-          	  			}
-
-          	  		}
-          	  		else if($key >=40 && $key <= 49)
-          	  		{
-          	  			if($key == 40) 
-          	  			{
-          	  				 $domains_billing .= "NULL , '" . $val ."' ,";
-          	  			}
-          	  			else if($key != 49)
-          	  			{
-          	  				 $domains_billing .= "'".$val."' ," ;
-          	  			}
-          	  			else
-          	  			{
-          	  				 $domains_billing .= "'".$val . "' , '".$hash."'";
-          	  			}
-          	  		}
-          	  		else if($key >=50 && $key <= 53)
-          	  		{
-          	  			if($key == 50) 
-          	  			{
-          	  				 $domains_nameserver .= "NULL , '" . $val ."' ,";
-          	  			}
-          	  			else if($key != 53)
-          	  			{
-          	  				 $domains_nameserver .= "'".$val."' ," ;
-          	  			}
-          	  			else
-          	  			{
-          	  				 $domains_nameserver .= "'".$val . "' , '".$hash."'";
-          	  			}
-
-          	  		}
-          	  		else //condition for 54 to 57
-          	  		{
-          	  			if($key == 54) 
-          	  			{
-          	  				 $domains_status .= "NULL , '" . $val ."' ,";
-          	  			}
-          	  			else if($key != 57)
-          	  			{
-          	  				 $domains_status  .= "'".$val."' ," ;
-          	  			}
-          	  			else
-          	  			{
-          	  				$domains_status  .= "'".$val . "' , '".$hash."'";
-          	  			}
-          	  		}
-          	  	}
 
       	  		$EACH_DOMAINS .= '('.$each_domains.')';
 		      	$DOMAINS_INFO .= '(' . $domains_info . ')';
@@ -309,14 +196,14 @@ class ImportExport extends Controller
 		      	if($counter%$BATCH == 0)
 		      	{
 		      		
-		      		$q_each_domains = "INSERT INTO `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
-		      		$q_domains_info = "INSERT INTO `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
-		      		$q_leads		= "INSERT INTO `leads` ". $leads_head. " VALUES ".$LEADS;
-		      		$q_domains_administrative = "INSERT INTO `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
-		      		$q_domains_technical = "INSERT INTO `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
-		      		$q_domains_billing = "INSERT INTO `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
-		      		$q_domains_nameserver = "INSERT INTO `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
-		      		$q_domains_status = "INSERT INTO `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
+		      		$q_each_domains = "REPLACE INTO `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
+		      		$q_domains_info = "REPLACE INTO `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
+		      		$q_leads		= "REPLACE INTO `leads` ". $leads_head. " VALUES ".$LEADS;
+		      		$q_domains_administrative = "REPLACE INTO `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
+		      		$q_domains_technical = "REPLACE INTO `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
+		      		$q_domains_billing = "REPLACE INTO `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
+		      		$q_domains_nameserver = "REPLACE INTO `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
+		      		$q_domains_status = "REPLACE INTO `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
 
 		      		DB::statement($q_each_domains);
@@ -347,14 +234,14 @@ class ImportExport extends Controller
           		{
 
           			
-          			$q_each_domains = "INSERT INTO `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
-					$q_domains_info = "INSERT INTO `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
-		      		$q_leads		= "INSERT INTO `leads` ". $leads_head. " VALUES ".$LEADS;
-		      		$q_domains_administrative = "INSERT INTO `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
-		      		$q_domains_technical = "INSERT INTO `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
-		      		$q_domains_billing = "INSERT INTO `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
-		      		$q_domains_nameserver = "INSERT INTO `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
-		      		$q_domains_status = "INSERT INTO `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
+          			$q_each_domains = "REPLACE `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
+					$q_domains_info = "REPLACE `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
+		      		$q_leads		= "REPLACE `leads` ". $leads_head. " VALUES ".$LEADS;
+		      		$q_domains_administrative = "REPLACE `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
+		      		$q_domains_technical = "REPLACE `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
+		      		$q_domains_billing = "REPLACE `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
+		      		$q_domains_nameserver = "REPLACE `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
+		      		$q_domains_status = "REPLACE `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
 
 		      		//dd($q_domains_administrative);
@@ -372,7 +259,6 @@ class ImportExport extends Controller
 
           	}
              
-
       	}
 
       	
@@ -384,7 +270,7 @@ class ImportExport extends Controller
 
       //echo('configuring database ...... <br><br>');
 
-      //Domain::where('unique_hash', $remember_hash)->first();
+      //Domain::where('domain_name', $remember_domain_name)->first();
           	
 
 
@@ -393,6 +279,89 @@ class ImportExport extends Controller
      
   
   }
+
+
+  private function validateUSPhoneNumber ($ph)
+    {
+        $unmaskedPhoneNumber = preg_replace('/[\s()+-]+/', null, $ph);
+        $phoneNumberLength = strlen($unmaskedPhoneNumber);
+        if ($phoneNumberLength === 10) 
+        {
+            $validationPayload = $this->validateAreaCode($unmaskedPhoneNumber, false);
+            return response()->json($validationPayload);
+        } 
+        elseif ($phoneNumberLength === 11) 
+        {
+            if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1) 
+            {
+                $validationPayload = $this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true);
+                return response()->json($validationPayload);
+            } 
+            else 
+            {
+                return response()->json([
+                    "http_code" => 404,
+                    "validation_status" => "invalid",
+                    "validation_message" => "This phone number does not belongs to US."
+                ]);
+            }
+        } 
+        else 
+        {
+            return response()->json([
+                "http_code" => 404,
+                "validation_status" => "invalid",
+                "validation_message" => "This phone number is not in valid format."
+            ]);
+        }
+    }
+    private function validateAreaCode($phoneNumber, $isdPrefix)
+    {
+        $areaPrefix = substr($phoneNumber, 0, 3);
+        $areaIdentifier = substr($phoneNumber, 0, 6);
+        $validateByAereaPrefix = Area::where('prefix', $areaPrefix)->first();
+        
+        if ($validateByAereaPrefix) 
+        {
+            $validateByAreaIdentifier = AreaCode::where('prefix', $areaIdentifier)->first();
+            
+            if ($validateByAreaIdentifier) 
+            {
+                $actualPhoneNumber = (($isdPrefix === true) ? "+1" : null ). $phoneNumber;
+                return [
+                    	"http_code" => 200,
+                    	"validation_status" => "valid",
+                    	"validation_message" => $actualPhoneNumber . " is a valid US phone number.",
+                    	"phone_number_details" => [
+                        "phone_number" => $actualPhoneNumber,
+                        "state" => ($validateByAreaIdentifier->area == null) ? null : ucwords(trim($validateByAreaIdentifier->area->state)),
+                        "major_city" => ($validateByAreaIdentifier->area == null) ? null : ucwords(trim($validateByAreaIdentifier->area->major_city)),
+                        "primary_city" => ucwords(trim($validateByAreaIdentifier->primary_city)),
+                        "county" => ucwords(trim($validateByAreaIdentifier->county)),
+                        "carrier_name" => ucwords(trim($validateByAreaIdentifier->company)),
+                        "number_type" => ucwords(trim($validateByAreaIdentifier->usage))
+                    ]
+                ];
+            } 
+            else 
+            {
+                return [
+                    "http_code" => 404,
+                    "validation_status" => "invalid",
+                    "validation_message" => $areaIdentifier . " is an invalid US area identifier."
+                ];
+            }
+        } 
+        else 
+        {
+            return [
+                "http_code" => 404,
+                "validation_status" => "invalid",
+                "validation_message" => $areaPrefix . " is an invalid US area prefix."
+            ];
+        }
+    }
+
 
 
 }

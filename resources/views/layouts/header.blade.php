@@ -7,7 +7,8 @@
     <ul class="nav navbar-nav">
       <li @if (Request::path() == '/') class="active" @endif><a href="{{ URL::to('/') }}">Home</a></li>
       <li @if (Request::path() == 'importExport') class="active" @endif><a href="{{ URL::to('importExport') }}"> Import CSV</a></li>
-      <li @if (Request::path() == 'postSearchData') class="active" @endif><a href="{{ URL::to('postSearchData') }}"> Search Domain</a></li>
+      <li @if (Request::path() == 'search') class="active" @endif>
+      <a href="{{ URL::to('search') }}"> Search Domain</a></li>
       <li> <a href="{{ URL::to('logout') }}">Logout</a></li>
       
 

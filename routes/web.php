@@ -95,7 +95,9 @@ Route::post('/importExcel', 'ImportExport@importExcel'); // new version of impor
 
 //     Route::post('filteremailID','MaatwebsiteDemoController@filteremailID' );
 //     Route::get('getDomainData/{id}','MaatwebsiteDemoController@getDomainData' );
-//     Route::get('postSearchData', 'MaatwebsiteDemoController@searchDomain');
+Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
+Route::post('/postSearch' , ['uses'=>'SearchController@postSearch','as'=>'postSearch']);
+
 //     Route::post('postSearchData', 'MaatwebsiteDemoController@postSearchData');
 //     Route::get('downloadExcel', 'MaatwebsiteDemoController@downloadExcel');
 

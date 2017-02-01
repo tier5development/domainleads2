@@ -11,7 +11,7 @@ class LeadUser extends Model
 
     public function each_domain()
     {
-    	return $this->belongsTo('each_domains' , 'unique_hash' , 'unique_hash');
+    	return $this->belongsTo('each_domains' , 'domain_name' , 'domain_name');
     }
 
     public function user()
