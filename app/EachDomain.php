@@ -21,7 +21,7 @@ class EachDomain extends Model
 
     public function leads()
     {
-    	return $this->hasOne('App\Lead' , 'domain_name' , 'domain_name');
+    	return $this->belongsTo('App\Lead' , 'domain_name' , 'domain_name');
     }
 
     public function domains_technical()

@@ -26,6 +26,12 @@
 
 Route::get('/' , ['uses'=>'AccountController@home' , 'as'=>'home']);
 
+Route::get('/checknum/{num}' , ['uses' => 'ImportExport@checknum']);
+
+Route::get('/tst' , function(){
+	echo($_ENV['DB_DATABASE']);
+});
+
 
 // Route::get('/test' , function(){
 //     $x = \App\Lead::where('registrant_country' , 'United States')->get();

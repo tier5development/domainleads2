@@ -20,7 +20,7 @@ class Lead extends Model
 
     public function each_domain()
     {
-    	return $this->belongsTo('App\EachDomain' , 'domain_name' , 'domain_name');
+    	return $this->hasMany('App\EachDomain' , 'domain_name' , 'domain_name');
     }
 
     public function domains_technical()
