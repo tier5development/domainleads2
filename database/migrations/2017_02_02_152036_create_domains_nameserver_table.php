@@ -23,14 +23,14 @@ class CreateDomainsNameserverTable extends Migration
             $table->string('domain_name')->index()->unique();
             $table->timestamps();
 
-            $table->foreign('domain_name')->references('domain_name')->on('each_domain')->onDelete('cascade');
+            //$table->foreign('domain_name')->references('domain_name')->on('each_domain')->onDelete('cascade');
         });
     }
     public function down()
     {
-        Schema::table('domains_nameserver' , function(Blueprint $table){
-            $table->dropForeign(['domain_name']);
-        });
+        // Schema::table('domains_nameserver' , function(Blueprint $table){
+        //     $table->dropForeign(['domain_name']);
+        // });
         Schema::dropIfExists('domains_nameserver');
     }
 }

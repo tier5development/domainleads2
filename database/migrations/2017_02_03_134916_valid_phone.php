@@ -15,7 +15,7 @@ class ValidPhone extends Migration
     {
         Schema::create('valid_phone' , function(Blueprint $table){
             $table->bigIncrements('id');
-            $table->string("phone_number");
+            $table->string("phone_number")->index()->unique();
             $table->string("validation_status");
             $table->string("state");
             $table->string("major_city");
@@ -26,7 +26,7 @@ class ValidPhone extends Migration
             $table->string('registrant_email')->index();
             $table->timestamps();
 
-            $table->foreign('registrant_email')->references('registrant_email')->on('leads')->onDelete('cascade');
+            //$table->foreign('registrant_email')->references('registrant_email')->on('leads')->onDelete('cascade');
         });
     }
 
@@ -37,9 +37,10 @@ class ValidPhone extends Migration
      */
     public function down()
     {
-        Schema::table('valid_phone', function (Blueprint $table){
-            $table->dropForeign(['registrant_email']);
-        });
+        // Schema::table('valid_phone', function (Blueprint $table){
+        //     $table->dropForeign(['registrant_email']);
+        // });
+        
         Schema::dropIfExists('valid_phone');
     }
 }

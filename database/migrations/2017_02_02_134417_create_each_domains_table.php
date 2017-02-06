@@ -22,16 +22,16 @@ class CreateEachDomainsTable extends Migration
         $table->string('registrant_email')->index();
         $table->timestamps();
 
-        $table->foreign('registrant_email')->references('registrant_email')->on('leads')->onDelete('cascade');
+        // $table->foreign('registrant_email')->references('registrant_email')->on('leads')->onDelete('cascade');
        });
     }
 
     
     public function down()
     {
-        Schema::table('each_domain', function (Blueprint $table){
-            $table->dropForeign(['registrant_email']);
-        });
+        // Schema::table('each_domain', function (Blueprint $table){
+        //     $table->dropForeign(['registrant_email']);
+        // });
         Schema::dropIfExists('each_domain');
     }
 }

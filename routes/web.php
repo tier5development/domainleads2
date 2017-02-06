@@ -28,6 +28,8 @@ Route::get('/' , ['uses'=>'AccountController@home' , 'as'=>'home']);
 
 Route::get('/checknum/{num}' , ['uses' => 'ImportExport@checknum']);
 
+Route::get('/abc' , ['uses'=>'ImportExport@validate_ph_no']);
+
 Route::get('/tst' , function(){
 	echo($_ENV['DB_DATABASE']);
 });

@@ -24,7 +24,7 @@ class CreateLeads extends Migration
             $table->string('registrant_zip');
             $table->string('registrant_country');
             $table->string('registrant_phone');
-            $table->string('phone_type')->nullable();
+            $table->string('phone_validated')->nullable()->default('no');
             $table->string('registrant_fax');
 
             $table->timestamps();

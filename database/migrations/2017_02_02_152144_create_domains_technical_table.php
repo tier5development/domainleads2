@@ -28,7 +28,7 @@ class CreateDomainsTechnicalTable extends Migration
             $table->string('domain_name')->index()->unique();
             $table->timestamps();
 
-            $table->foreign('domain_name')->references('domain_name')->on('each_domain')->onDelete('cascade');
+            // $table->foreign('domain_name')->references('domain_name')->on('each_domain')->onDelete('cascade');
         });
     }
 
@@ -39,9 +39,9 @@ class CreateDomainsTechnicalTable extends Migration
      */
     public function down()
     {
-        Schema::table('domains_technical' , function(Blueprint $table){
-            $table->dropForeign(['domain_name']);
-        });
+        // Schema::table('domains_technical' , function(Blueprint $table){
+        //     $table->dropForeign(['domain_name']);
+        // });
         Schema::dropIfExists('domains_technical');
     }
 }

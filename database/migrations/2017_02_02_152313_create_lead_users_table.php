@@ -15,6 +15,7 @@ class CreateLeadUsersTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+
             $table->foreign('registrant_email')->references('registrant_email')->on('leads')->onDelete('restrict');
         });
     }
