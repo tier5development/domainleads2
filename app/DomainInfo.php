@@ -8,10 +8,12 @@ class DomainInfo extends Model
 {
     protected $table='domains_info';
 
- //    public function each_domain()
- //    {
- //    	return $this->hasOne('each_domains' , 'domain_name' , 'domain_name');
- //    }
+    public function each_domain()
+    {
+    	return $this->hasOne('each_domains' , 'domain_name' , 'domain_name');
+    }
+
+    
 
  //    public function domains_technical()
  //    {
@@ -36,5 +38,5 @@ class DomainInfo extends Model
 	// public function domains_administrative()
  //    {
  //    	return $this->hasOne('domains_administrative' , 'domain_name' , 'domain_name');
- //    }
+ //    },mmnj b         hzaAAAAAAAAAA   qqq
 }

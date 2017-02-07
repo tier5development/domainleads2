@@ -27,169 +27,115 @@ class SearchController extends Controller
     }
     public function postSearch(Request $request)
     {
-        // "domain_name" => "kadhf"
-      // // "registrant_country" => "adfo;uoiigh"
-      // // "registrant_state" => "adfh"
-      // // "registered_date" => "01/02/2017"
-      // // "_com" => ".com"
-      // // "_net" => ".net"
-      // // "_org" => ".org"
-      // // "_io" => ".io"
-      // // "cell_number" => "cell number"
-      // // "landline_number" => "landline number"
-      // // "_token" => "iqOlMI1d6WBjCbZJmCpNYK20VnWJhy0acmOCbUba"
-      // // "Submit" => "Submit"
-
-
-        $eachDomain;
+       
+        
+        
+        $eachDomain = EachDomain::with('leads','domains_info');
+        //= EachDomain::pluck('domain_name','registrant_email')->toArray();
+        //$domainInfoarr      = array();
+        $leads_reg_country  ;//= Lead::pluck('registrant_email')->toArray();
+        $leads_reg_state    ;//= Lead::pluck('registrant_email')->toArray();
         $domainInfo;
-        $leads;
+        $leads       = null;
 
         foreach($request->all() as $key => $req)
         {           
             if(!is_null($request->$key))
             {
                 if($key == 'domain_name')
-                 {
-                     $eachDomain = EachDomain::where($key, 'like', '%'.$req.'%');
-                     //->pluck('domain_name','registrant_email')->get();
+                {
+                     $eachDomain = $eachDomain->where($key, 'like', '%'.$req.'%');
+                }
 
-                     //dd(count($eachDomain->get()));
+                 
+                else if($key == 'registrant_country')
+                {
+                    //$leads_reg_country = $eachDomain->leads()->where($key,$req);
 
+                    $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
+                       $query->where('registrant_country', $req);
+                      });
+                }
+                else if($key == 'registrant_state')
+                {
+                    //$leads_reg_country = $eachDomain->leads()->where($key,$req);
 
-                 }
-                 else if ($key == 'registered_date') 
-                 {
-                     if(!isset($domainInfo))
-                     {
-                         $domainInfo = DomainInfo::where('domains_create_date' , $req);
-                     }
-                     else
-                     {
-                         $domainInfo = $domainInfo->where('domains_create_date',$req);
-                     }
-                 }
-                 else if($key == 'registrant_country')
-                 {
-                     // $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
-                     //  $query->where('registrant_country', $req);
-                     // });
-
-                     if(!isset($leads))
-                     {
-                         $leads = Lead::where($key,$req);
-                     }
-                     else
-                     {
-                         $leads = $leads->where($key,$req);
-                     }
-                 }
-                 else if($key == 'registrant_state')
-                 {
-                     // $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
-                     //  $query->where('registrant_state', $req);
-                     // });
-
-
-                     if(!isset($leads))
-                     {
-                         $leads = Lead::where($key,$req);
-                     }
-                     else
-                     {
-                         $leads = $leads->where($key,$req);
-                     }
-                 }
-                 else if ($key == '.com')
-                 {
-                     if(!isset($eachDomain))
-                     {
-                         $eachDomain = EachDomain::where('domain_ext','com');
-                     }
-                     else
-                     {
-                         $eachDomain = $eachDomain->where('domain_ext','com');
-                     }
-                 }
-                 else if($key == '.org')
-                 {
-
-                     if (!isset($eachDomain)) 
-                     {
-                         $eachDomain = EachDomain::where('domain_ext','org');
-                     }
-                     else
-                     {
-                         $eachDomain = $eachDomain->where('domain_ext','org');
-                     }
-                 }
-                 else if($key == '.net')
-                 {
-                     if (!isset($eachDomain)) 
-                     {
-                         $eachDomain = EachDomain::where('domain_ext','net');
-                     }
-                     else
-                     {
-                         $eachDomain = $eachDomain->where('domain_ext','net');
-                     }
-                 }
-                 else if($key == '.io')
-                 {
-                     if (!isset($eachDomain)) 
-                     {
-                         $eachDomain = EachDomain::where('domain_ext','io');
-                     }
-                     else
-                     {
-                         $eachDomain = $eachDomain->where('domain_ext','io');
-                     }
-                 }
-
-            }
-
-             // $requiredData = DB::table('leads')
-             //                    ->join('domains', 'leads.id', '=', 'domains.user_id')
-             //                    ->join('validatephone', 'validatephone.user_id', '=', 'leads.id')
-             //  ->select('leads.*','leads.id as leads_id','domains.id as domain_id','validatephone.*',
-             //          'domains.domain_name','domains.create_date','domains.expiry_date','domains.domain_registrar_id','domains.domain_registrar_name','domains.domain_registrar_whois','domains.domain_registrar_url')
-
-
-
-              //$users = EachDomain::join('leads','leads.domain_name','=','each_domain.domain_name')
-
-
-             // $requiredData = Lead::join('each_domain','lead.registrant_email','=','each_domain.registrant_email')
-                                //->join('domains_info','each_domain.registrant_email','=',);
-
-             // $requiredData =  DB::table('leads')
-             //                    ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-             //                    //->join('domains_info', 'leads.registrant_email', '=', 'domains_info.domain_name')
-             //                    ->select('leads.*', 'each_domain.domain_name'
-             //                                    ,'each_domain.domain_ext'
-             //                                    //,'domains_info.domains_create_date'
-             //                                    )
-             //                    ->get();
-
-            // $requiredData =  DB::table('each_domain')
-            //                     ->join('leads', 'each_domain.registrant_email', '=', 'leads.registrant_email')->get();
-            //                     //->select()
-
-            // $leads = Lead::where()
-            // dd(count($requiredData));
-
-            //dd(count($eachDomain->get()));
-            dd(count($leads->get()));
-
-            // $leads_reg_country = $leads->pluck('registrant_country','registrant_state','registrant_email')->toArray();
-            // dd($leads_reg_country);
-
-            
-
-
-
+                    $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
+                       $query->where('registrant_state', $req);
+                      });
+                }
+            }  
         }
+
+
+        $reg_email_arr = $eachDomain->pluck('registrant_email')->toArray();
+
+        $leaduser = LeadUser::where('user_id',\Auth::user()->id)->whereIn('registrant_email',$reg_email_arr);
+
+        dd(count($leaduser->get()));
+
+
+
+        
+        
+
     }
+
+
+
+
+    //dd($eachDomainarr);
+        //dd($domainInfoarr);
+        //dd($leads_reg_country);
+        //dd($leads_reg_state);
+
+        //$eachDomainarr      = array_flip($eachDomainarr);
+        // $leads_reg_country  = array_flip($leads_reg_country);
+        // //dd($leads_reg_country);
+        // //$leads_reg_state    = array_flip($leads_reg_state);
+        // $collection         = array_intersect_key($eachDomainarr,$leads_reg_country);
+        // //dd($collection);
+        // $collection_ = array();
+
+        // foreach($collection as $key=>$each)
+        // {
+        //     array_push($collection_, $key);
+        // }
+        // //dd($collection_);
+        // $ll = Lead::whereIn('registrant_email',$collection_);
+        //dd($ll->first());
+
+        // $x = EachDomain::join('leads','each_domain.registrant_email','=','leads.registrant_email')
+        //                 ->join('domains_info','each_domain.domain_name','=','domains_info.domain_name')
+        // ;
+
+        // //select('leads.* , each_domain.* ');
+
+        // $y = $x->distinct()->get(['each_domain.registrant_email'
+        //                 ,'leads.registrant_country','leads.registrant_state','leads.registrant_company'  
+        //                 ,'leads.registrant_email'
+        //                 ,'each_domain.domain_name','each_domain.domain_ext','each_domain.unlocked_num'
+        //                 ,'domains_info.domains_create_date','domains_info.domains_update_date']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
    //  public function postSearch(Request $request)
    //  {

@@ -39,10 +39,10 @@ class EachDomain extends Model
  //    	return $this->hasOne('domains_nameserver' , 'domain_name' , 'domain_name');
  //    }
 
- //     public function domains_info()
- //    {
- //    	return $this->hasOne('domains_info' , 'domain_name' , 'domain_name');
- //    } 
+    public function domains_info()
+    {
+    	return $this->hasOne('App\DomainInfo' , 'domain_name' , 'domain_name');
+    } 
 
 	// public function domains_billing()
  //    {

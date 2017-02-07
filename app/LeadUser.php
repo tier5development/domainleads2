@@ -9,14 +9,14 @@ class LeadUser extends Model
     protected $table='leadusers';
 
 
-    public function each_domain()
+    public function leads()
     {
-    	return $this->belongsTo('each_domains' , 'domain_name' , 'domain_name');
+    	return $this->hasMany('App\Lead','registrant_email','registrant_email');
     }
 
     public function user()
     {
-    	return $this->belongsTo('users' , 'user_id' , 'id');
+    	return $this->hasMany('App\User' , 'user_id' , 'id');
     }
 
 }

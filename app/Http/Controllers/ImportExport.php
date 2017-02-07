@@ -7,6 +7,7 @@ use \App\Area;
 use \App\AreaCode;
 USE \App\Lead;
 use DB;
+use Carbon\Carbon;
 
 
 class ImportExport extends Controller
@@ -51,13 +52,14 @@ class ImportExport extends Controller
     return view('importExport');
   }
 
-  public function validate_phone_query_builder($num , $registrant_email,$i)
+  public function validate_phone_query_builder($num , $registrant_email,$i , $created_at , $updated_at)
   {
   		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
       $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
 
   		$str = '';
-  		try{
+  		try
+      {
   			if($num != '')
 	  		{
 	  			$no = explode('.',$num);
@@ -76,8 +78,10 @@ class ImportExport extends Controller
 		  					."','".str_replace($search, $replace, $arr['primary_city'])
 		  					."','".str_replace($search, $replace, $arr['county'])
 		  					."','".str_replace($search, $replace, $arr['carrier_name'])
-		  					."','".str_replace($search, $replace, $arr['number_type'])."',NULL,NULL,'"
-		  					.str_replace($search, $replace, $registrant_email)."'";
+		  					."','".str_replace($search, $replace, $arr['number_type'])
+                ."','".$created_at
+                ."','".$updated_at
+		  					."','".str_replace($search, $replace, $registrant_email)."'";
 		  		}
 	  		}
   		}
@@ -86,15 +90,14 @@ class ImportExport extends Controller
   			dd($i , $num ,$no);
   		}
   		
-		
-  		
+	     
   		return $str;
   		
   		
   }
 
 
-  	public function make_query($low , $high , $record)
+  public function make_query($low , $high , $record, $created_at, $updated_at)
 	{
 	 	$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
@@ -123,14 +126,6 @@ class ImportExport extends Controller
 
 		  			if($i == 18)
 		  			{
-
-              // $no = explode('.',$rec);
-
-              // if(isset($no[1]))
-              //   $rec = $no[1];
-              // else
-              //   $rec = $no[0];
-
 		  				$str  .= "'".$rec."' , 'yes' ," ;
 		  			}
 		  			else
@@ -142,9 +137,9 @@ class ImportExport extends Controller
 		  			
 		  		else
 		  		{
-		  			$str  .= "'".$rec. "' , NULL , NULL ";
+		  			$str  .= "'".$rec."','".$created_at."' , '".$updated_at."'";
 
-		  			if($low ==10 )
+		  			if($low == 10)
 			  		{
 			  			//do nothing
 			  		}
@@ -306,21 +301,22 @@ class ImportExport extends Controller
     			    $domains_status = '';
 
 
-              $created_at = \Carbon::now();
-              $updated_at = \Carbon::now();
-			    $leads 		  			= $this->make_query(10 , 19 , $row );
 
-			   $valid_phone = $this->validate_phone_query_builder($row[18] , $row[17],$counter);
+              $created_at = str_replace($search, $replace, Carbon::now());
+              $updated_at = str_replace($search, $replace, Carbon::now());
+
+			       $leads 		  			= $this->make_query(10 , 19 , $row ,$created_at,$updated_at);
+
+			       $valid_phone = $this->validate_phone_query_builder($row[18] , $row[17],$counter,$created_at,$updated_at);
 
 
-			    $each_domains 			= $this->make_query(1 , 1 ,   $row );
-			    $domains_info 			= $this->make_query(2 , 9 ,   $row );
-			    
-			    $domains_administrative = $this->make_query(20 , 29 , $row );
-			    $domains_technical  	= $this->make_query(30 , 39 , $row );
-			    $domains_billing 		= $this->make_query(40 , 49 , $row );
-			    $domains_nameserver 	= $this->make_query(50 , 53 , $row );
-			    $domains_status 		= $this->make_query(54 , 57 , $row );
+			       $each_domains 			= $this->make_query(1 , 1 ,   $row,$created_at,$updated_at);
+			       $domains_info 			= $this->make_query(2 , 9 ,   $row,$created_at,$updated_at);
+			       $domains_administrative = $this->make_query(20 , 29 , $row,$created_at,$updated_at);
+			       $domains_technical  	= $this->make_query(30 , 39 , $row,$created_at,$updated_at);
+			       $domains_billing 		= $this->make_query(40 , 49 , $row,$created_at,$updated_at);
+			       $domains_nameserver 	= $this->make_query(50 , 53 , $row,$created_at,$updated_at);
+			       $domains_status 		= $this->make_query(54 , 57 , $row,$created_at,$updated_at);
           	  	
 
 
@@ -495,6 +491,8 @@ class ImportExport extends Controller
 
       $end = microtime(true) - $start;
       echo('TOTAL TIME: ' . $end . " seconds");
+
+      \Log::info('TOTAL TIME: ' . $end . " seconds");
 
 
 

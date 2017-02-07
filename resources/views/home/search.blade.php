@@ -57,7 +57,7 @@
 								<input type="text" name="registrant_state" id="registrant_state">
 							</td>
 							<td>
-								<label>Registered Date</label>
+								<label>Domains Create Date</label>
 								<input type="date" name="registered_date" id="registered_date">
 							</td>
 						</tr>
