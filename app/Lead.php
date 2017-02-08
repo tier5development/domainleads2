@@ -23,6 +23,14 @@ class Lead extends Model
     	return $this->hasMany('App\EachDomain' , 'registrant_email' , 'registrant_email');
     }
 
+    public function domains_info()
+    {
+        return $this->hasManyThrough(
+            'App\DomainInfo', 'App\EachDomain',
+            'domain_name', 'domain_name', 'registrant_email'
+        );
+    }
+
  //    public function domains_technical()
  //    {
  //    	return $this->hasOne('domains_technical' , 'domain_name' , 'domain_name');

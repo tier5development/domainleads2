@@ -1,6 +1,86 @@
 <html lang="en">
 @include('layouts.header')
 
+<style type="text/css">
+
+.dropdown {
+  position: absolute;
+  top:50%;
+  transform: translateY(-50%);
+}
+
+.dropdown dd,
+.dropdown dt {
+  margin: 0px;
+  padding: 0px;
+}
+
+.dropdown ul {
+  margin: -1px 0 0 0;
+}
+
+.dropdown dd {
+  position: relative;
+}
+
+.dropdown a,
+.dropdown a:visited {
+  color: #fff;
+  text-decoration: none;
+  outline: none;
+  font-size: 12px;
+}
+
+.dropdown dt a {
+  background-color: #4F6877;
+  display: block;
+  padding: 8px 20px 5px 10px;
+  min-height: 25px;
+  line-height: 24px;
+  overflow: hidden;
+  border: 0;
+  width: 272px;
+}
+
+.dropdown dt a span,
+.multiSel span {
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 3px 2px 0;
+}
+
+.dropdown dd ul {
+  background-color: #4F6877;
+  border: 0;
+  color: #fff;
+  display: none;
+  left: 0px;
+  padding: 2px 15px 2px 5px;
+  position: absolute;
+  top: 2px;
+  width: 280px;
+  list-style: none;
+  height: 100px;
+  overflow: auto;
+}
+
+.dropdown span.value {
+  display: none;
+}
+
+.dropdown dd ul li a {
+  padding: 5px;
+  display: block;
+}
+
+.dropdown dd ul li a:hover {
+  background-color: #fff;
+}
+
+
+
+</style>
+
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
@@ -58,22 +138,52 @@
 							</td>
 							<td>
 								<label>Domains Create Date</label>
-								<input type="date" name="registered_date" id="registered_date">
+								<input type="date" name="domains_create_date" id="registered_date">
 							</td>
 						</tr>
 						<tr>
 							<td class="col-md-8">
 								
-								<label>.com</label>
-								<input type="checkbox" name=".com" value=".com">
-								<label>.net</label>
-								<input type="checkbox" name=".net" value=".net">
-								<label>.org</label>
-								<input type="checkbox" name=".org" value=".org">
-								<label>.io</label>
-								<input type="checkbox" name=".io" value=".io">
+								<dl class="dropdown"> 
+  
+			    <dt>
+			    <a href="#">
+			      <span class="hida">Select</span>    
+			      <p class="multiSel"></p>  
+			    </a>
+			    </dt>
+			  
+			    <dd>
+			        <div class="mutliSelect">
+			            <ul>
+			                <li>
+			                    <input type="checkbox" value="Apple" />com</li>
+			                <li>
+			                    <input type="checkbox" value="Blackberry" />io</li>
+			                <li>
+			                    <input type="checkbox" value="HTC" />net</li>
+			                <li>
+			                    <input type="checkbox" value="Sony Ericson" />org</li>
+			                <li>
+			                    <input type="checkbox" value="Motorola" />gov</li>
+			                <li>
+			                    <input type="checkbox" value="Nokia" />edu</li>
+			                <li>
+			                    <input type="checkbox" value="Nokia" />in</li>
+
+			            </ul>
+			        </div>
+			    </dd>
+			  <button>Filter</button>
+			</dl>
 								
 							</td>
+
+
+
+							
+
+
 
 							<td class="col-md-4">
 								<label>cell number</label>
@@ -94,6 +204,9 @@
 
 
 			<br><br>
+
+
+			
  	 		
 			<div>
 			<span class="pull-left">Total Records : {{count($record)}}</span>
@@ -138,18 +251,91 @@
 </body>
 	<script>
 	  	$( function() {
-	    	$( "#registered_date" ).datepicker();
+	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
 	  	});
   	</script>
 
+
+
 	<script type="text/javascript">
+
+
+
+
+		var options = [];
+
+		$( '.dropdown-menu a' ).on( 'click', function( event ) {
+
+			alert(1);
+		   var $target = $( event.currentTarget ),
+		       val = $target.attr( 'data-value' ),
+		       $inp = $target.find( 'input' ),
+		       idx;
+
+		   if ( ( idx = options.indexOf( val ) ) > -1 ) {
+		      options.splice( idx, 1 );
+		      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+		   } else {
+		      options.push( val );
+		      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+		   }
+
+		   $( event.target ).blur();
+		      
+		   console.log( options );
+		   return false;
+		});
+
+
+
 	$(document).ready(function(){
-		
+
 		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
 			getProducts(page);
 		});
 
 	});
+	</script>
+
+	<script type="text/javascript">
+
+		$(".dropdown dt a").on('click', function() {
+		  $(".dropdown dd ul").slideToggle('fast');
+		});
+
+		$(".dropdown dd ul li a").on('click', function() {
+		  $(".dropdown dd ul").hide();
+		});
+
+		function getSelectedValue(id) {
+		  return $("#" + id).find("dt a span.value").html();
+		}
+
+		$(document).bind('click', function(e) {
+		  var $clicked = $(e.target);
+		  if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
+		});
+
+		$('.mutliSelect input[type="checkbox"]').on('click', function(){
+
+		  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val(),
+		    title = $(this).val() + ",";
+
+		  if ($(this).is(':checked')) 
+		  {
+		    var html = '<span title="' + title + '">' + title + '</span>';
+		    $('.multiSel').append(html);
+		    $(".hida").hide();
+		  } 
+		  else 
+		  {
+		    $('span[title="' + title + '"]').remove();
+		    var ret = $(".hida");
+		    $('.dropdown dt a').append(ret);
+
+		  }
+
+		});
 	</script>
 </html>

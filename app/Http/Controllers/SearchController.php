@@ -29,8 +29,13 @@ class SearchController extends Controller
     {
        
         
-        
-        $eachDomain = EachDomain::with('leads','domains_info');
+       //dd($request->all()); 
+        //$eachDomain = EachDomain::with('leads','domains_info');
+
+        $allrecords = Lead::with('each_domain');
+
+        //dd($l->first()->each_domain->first()->domains_info->first()->domain_name);
+        //dd($eachDomain->first()->leads->registrant_email);
         //= EachDomain::pluck('domain_name','registrant_email')->toArray();
         //$domainInfoarr      = array();
         $leads_reg_country  ;//= Lead::pluck('registrant_email')->toArray();
@@ -42,37 +47,72 @@ class SearchController extends Controller
         {           
             if(!is_null($request->$key))
             {
-                if($key == 'domain_name')
-                {
-                     $eachDomain = $eachDomain->where($key, 'like', '%'.$req.'%');
-                }
 
-                 
-                else if($key == 'registrant_country')
-                {
-                    //$leads_reg_country = $eachDomain->leads()->where($key,$req);
 
-                    $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
-                       $query->where('registrant_country', $req);
-                      });
+                if($key == 'registrant_country')
+                {
+                    $allrecords = $allrecords->where('registrant_country', $req);
+
                 }
                 else if($key == 'registrant_state')
                 {
-                    //$leads_reg_country = $eachDomain->leads()->where($key,$req);
-
-                    $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
-                       $query->where('registrant_state', $req);
-                      });
+                    $allrecords = $allrecords->where('registrant_state', $req);
                 }
+                else if($key == 'domain_name')
+                {
+                    $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
+                        $query->where($key, 'like', '%'.$req.'%');
+                    });
+                }
+                else if($key == 'domains_create_date')
+                {
+                    $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
+                        $query->whereHas('domains_info',function($q) use($key,$req){
+                            //dd($req);
+                            $q->where($key,$req);
+                        });
+                    });
+                }
+
+
+
+                // if($key == 'domain_name')
+                // {
+                //      $eachDomain = $eachDomain->where($key, 'like', '%'.$req.'%');
+                // }
+
+                 
+                // else if($key == 'registrant_country')
+                // {
+                //     //$leads_reg_country = $eachDomain->leads()->where($key,$req);
+
+                //     $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
+                //        $query->where('registrant_country', $req);
+                //       });
+                // }
+                // else if($key == 'registrant_state')
+                // {
+                //     //$leads_reg_country = $eachDomain->leads()->where($key,$req);
+
+                //     $eachDomain = $eachDomain->whereHas('leads',function($query) use($key , $req){
+                //        $query->where('registrant_state', $req);
+                //       });
+                // }
             }  
         }
 
+        //$allrecords = $allrecords->paginate(50);
 
-        $reg_email_arr = $eachDomain->pluck('registrant_email')->toArray();
+        dd($allrecords->first()->each_domain->first()->domains_info->first());
 
-        $leaduser = LeadUser::where('user_id',\Auth::user()->id)->whereIn('registrant_email',$reg_email_arr);
+        
 
-        dd(count($leaduser->get()));
+
+        // $reg_email_arr = $eachDomain->pluck('registrant_email')->toArray();
+
+        // $leaduser = LeadUser::where('user_id',\Auth::user()->id)->whereIn('registrant_email',$reg_email_arr);
+
+        // dd(count($leaduser->get()));
 
 
 

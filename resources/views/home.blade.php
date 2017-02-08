@@ -64,7 +64,7 @@
                             <li><a href="{{url('/')}}/plans">Plans</a></li>
                             <li><a href="#price">Pricing</a></li>
                              @if (Auth::check())
-                             <li> <a href="{{ URL::to('postSearchData') }}">Search Domain</a></li>
+                             <li> <a href="{{ URL::to('search') }}">Search Domain</a></li>
                              <li> <a href="{{ URL::to('logout') }}">Logout</a></li>
                               @else 
 
