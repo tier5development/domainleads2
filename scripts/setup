@@ -1,12 +1,12 @@
 #!/bin/bash
 echo "Doing final set up"
-#sudo apt-get -y install mysql-server
-#sudo apt-get install -y php7.0-mysql
-#mysql_secure_installation
-#mysql -u root -ptoor -e "CREATE DATABASE domainleads";
-#cd /var/www/html
-#php artisan migrate
-#php artisan db:seed
+sudo apt-get -y install mysql-server
+sudo apt-get install -y php7.0-mysql
+mysql_secure_installation
+mysql -u root -ptoor -e "CREATE DATABASE domainleads";
+cd /var/www/html
+php artisan migrate
+php artisan db:seed
 
 sudo rm /etc/apache2/sites-available/000-default.conf
 sudo rm /etc/apache2/sites-enabled/000-default.conf
