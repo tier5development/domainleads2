@@ -31,6 +31,16 @@ class Lead extends Model
         );
     }
 
+    public function valid_phone()
+    {
+        return $this->hasOne('App\ValidatedPhone','registrant_email','registrant_email');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User','leadusers','registrant_email','registrant_email');
+    }
+
  //    public function domains_technical()
  //    {
  //    	return $this->hasOne('domains_technical' , 'domain_name' , 'domain_name');

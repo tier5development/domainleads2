@@ -30,5 +30,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function leads()
+    {
+        return $this->belongsToMany('App\Lead','leadusers','user_id','id');
+    }
+
     
 }

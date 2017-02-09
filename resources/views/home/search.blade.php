@@ -1,14 +1,26 @@
 <html lang="en">
 @include('layouts.header')
+<head>
+
+	<title>Search</title>
+	 
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	<link rel="stylesheet" href="/resources/demos/style.css">
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="{{url('/')}}/resources/assets/css/bootstrap.css">
+	
+	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
+	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script>
+
 
 <style type="text/css">
-
-.dropdown {
-  position: absolute;
-  top:50%;
-  transform: translateY(-50%);
-}
-
 .dropdown dd,
 .dropdown dt {
   margin: 0px;
@@ -32,14 +44,20 @@
 }
 
 .dropdown dt a {
-  background-color: #4F6877;
+  /*background-color: #4F6877;*/
   display: block;
   padding: 8px 20px 5px 10px;
   min-height: 25px;
-  line-height: 24px;
+  /*line-height: 24px;
   overflow: hidden;
   border: 0;
-  width: 272px;
+  width: 272px;*/
+  border: 1px solid #ccc;
+    height: 40px;
+    border-radius: 5px;
+    width: 100%;
+    color: #666 !important;
+    font-size: 14px !important;
 }
 
 .dropdown dt a span,
@@ -50,18 +68,24 @@
 }
 
 .dropdown dd ul {
-  background-color: #4F6877;
-  border: 0;
-  color: #fff;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  color: #666;
   display: none;
   left: 0px;
   padding: 2px 15px 2px 5px;
   position: absolute;
   top: 2px;
-  width: 280px;
+  width: 100%;
   list-style: none;
-  height: 100px;
+  height: 160px;
   overflow: auto;
+  font-size: 14px !important;
+}
+
+.dropdown dd ul li{
+	padding: 10px;
+	font-size: 16px;
 }
 
 .dropdown span.value {
@@ -77,30 +101,19 @@
   background-color: #fff;
 }
 
+.dropdown dd ul li input{
+	margin-right: 5px;
+    vertical-align: middle;
+}
+
+form{
+	border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+}
 
 
 </style>
-
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-
-<head>
-
-	<title>Import -CSV</title>
-	 
-
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
-
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  	<link rel="stylesheet" href="/resources/demos/style.css">
-  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="{{url('/')}}/resources/assets/css/bootstrap.css">
-	
-	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
-	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script>
         
 
 </head>
@@ -109,7 +122,7 @@
 	
 
 
-		<div class="container-fluid">
+		<div class="container">
 
 			<div class="navbar-header">
                 @if(Session::has('msg'))
@@ -118,85 +131,76 @@
 			</div>
 
 			<!-- form elements -->
-			<div class="">
-
-			<form method="POST" action="{{url('/')}}/postSearch">
-				<table class="table table-hover table-bordered domainDAta">
-					
-						<tr>
-							<td>
-								<label>Domain Name : </label>
-								<input type="text" name="domain_name" id="domain_name">
-							</td>
-							<td>
-								<label>Registrant Country : </label>
-								<input type="text" name="registrant_country" id="registrant_country">
-							</td>
-							<td>
-								<label>Registrant State : </label>
-								<input type="text" name="registrant_state" id="registrant_state">
-							</td>
-							<td>
-								<label>Domains Create Date</label>
-								<input type="date" name="domains_create_date" id="registered_date">
-							</td>
-						</tr>
-						<tr>
-							<td class="col-md-8">
-								
-								<dl class="dropdown"> 
-  
-			    <dt>
-			    <a href="#">
-			      <span class="hida">Select</span>    
-			      <p class="multiSel"></p>  
-			    </a>
-			    </dt>
-			  
-			    <dd>
-			        <div class="mutliSelect">
-			            <ul>
-			                <li>
-			                    <input type="checkbox" value="Apple" />com</li>
-			                <li>
-			                    <input type="checkbox" value="Blackberry" />io</li>
-			                <li>
-			                    <input type="checkbox" value="HTC" />net</li>
-			                <li>
-			                    <input type="checkbox" value="Sony Ericson" />org</li>
-			                <li>
-			                    <input type="checkbox" value="Motorola" />gov</li>
-			                <li>
-			                    <input type="checkbox" value="Nokia" />edu</li>
-			                <li>
-			                    <input type="checkbox" value="Nokia" />in</li>
-
-			            </ul>
-			        </div>
-			    </dd>
-			  <button>Filter</button>
-			</dl>
-								
-							</td>
 
 
+			<div>
+				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
+			</div>
 
-							
 
+			<div class="col-md-12">
 
-
-							<td class="col-md-4">
-								<label>cell number</label>
-								<input type="checkbox" name="cell_number" value="cell number">
-								<label>landline number</label>
-								<input type="checkbox" name="landline_number" value="landline number">
-							</td>
-						</tr>
-
-					
-				</table>
+				<form method="POST" action="{{Route('search')}}" class="col-md-6">
+						<div class="form-group">
+							<label>Domain Name : </label>
+							<input type="text" name="domain_name" id="domain_name" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Registrant Country : </label>
+							<input type="text" name="registrant_country" id="registrant_country" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Registrant State : </label>
+							<input type="text" name="registrant_state" id="registrant_state" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Domains Create Date</label>
+							<input type="date" name="domains_create_date" id="registered_date" class="form-control">
+						</div>
+						<div class="from-group">
+							<label>Select Domains Extensions</label>
+							<dl class="dropdown"> 
+							    <dt>
+								    <a href="#">
+								      <span class="hida">Select</span>    
+								      <p class="multiSel"></p>  
+								    </a>
+							    </dt>
+							  
+							    <dd>
+							        <div class="mutliSelect">
+							            <ul>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[0]" value="com" />com</li>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[1]" value="io" />io</li>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[2]" value="net" />net</li>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[3]" value="org" />org</li>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[4]" value="gov" />gov</li>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[5]" value="edu" />edu</li>
+							                <li>
+							                    <input type="checkbox" name="domain_ext[6]" value="in" />in</li>
+							            </ul>
+							        </div>
+							    </dd>
+							  <!-- <button>Filter</button> -->
+							</dl>
+						</div>
+						<div class="form-group">
+							<label>cell number</label>
+							<input type="checkbox" name="cell_number" value="cell number">
+						</div>
+						<div class="form-group">
+							<label>landline number</label>
+							<input type="checkbox" name="landline_number" value="landline number">
+						</div>
+				
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
-			<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
+				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
 
 			</form>
 				
@@ -209,7 +213,11 @@
 			
  	 		
 			<div>
-			<span class="pull-left">Total Records : {{count($record)}}</span>
+			@if($record !== null)
+			<span class="pull-left"> Total Leads   : {{ $record->total()}}</span>
+			
+			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
+
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
 						<th>Check box</th>
@@ -217,40 +225,105 @@
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
 						<th>Registrant Phone</th>
-						<th>Registered Date</th>
+						<th>Domains Create Date</th>
 						<th>Registrant Company</th>
 					</tr>
 
+					
 					@foreach($record as $key=>$each)
 					<tr>
-						<th><input type="checkbox" id="ch_{{$key}}" name="ch_{{$key}}"></th>
-						<th>
 
-							{{$each->domain_name}}
-							<br>
-							<small>Unlocked Num : {{$each->unlocked_num}}</small>
-							<br>
-							<small>Total Domains: {{$arr[$each->unique_hash]}} </small>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
+							@else
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
+							@endif
 						</th>
-						<th>{{$each->leads->registrant_name}}</th>
-						<th>{{$each->leads->registrant_email}}</th>
-						<th>{{$each->leads->registrant_phone}}</th>
-						<th>{{$each->created_at}}</th>
-						<th>{{$each->leads->registrant_company}}</th>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))
+								<small id="domain_name_{{$key}}"><b>{{$each->each_domain->first()->domain_name}}</b></small>
+							@else
+								<small id="domain_name_{{$key}}">***</small>
+							@endif
+							<br>
+							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
+							<br>
+							<small > Total Domain Count : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$leadArr[$each->registrant_email]}}</a></small> 
+						</th>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))
+								<small id="registrant_name_{{$key}}">{{$each->registrant_name}}</small>
+							@else
+								<small id="registrant_name_{{$key}}">***</small>
+							@endif
+
+						</th>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))
+								<small id="registrant_email_{{$key}}">{{$each->registrant_email}}</small>
+							@else
+								<small id="registrant_email_{{$key}}">***</small>
+							@endif
+						</th>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))	
+								<small id="registrant_phone_{{$key}}">{{$each->registrant_phone}}</small>
+							@else
+								<small id="registrant_phone_{{$key}}">***</small>
+							@endif
+						</th>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))
+								<small id="domains_create_date_{{$key}}">{{$each->first()->each_domain->first()->domains_info->domains_create_date}}</small>
+							@else
+								<small id="domains_create_date_{{$key}}">***</small>
+							@endif
+						</th>
+						<th>
+							@if(isset($users_array[$each->registrant_email]))
+								<small id="registrant_company_{{$key}}">{{$each->registrant_company}}</small>
+							@else
+								<small id="registrant_company_{{$key}}">***</small>
+							@endif
+						</th>
 					</tr>
 					@endforeach
+					
 				</table>
-				
+			@endif
 			</div>
-			
-			 
-
+			@if($record)
+			 {{$record->appends(\Request::except('page'))->links()}}
+			 @endif
 
 
 		</div>
 </body>
 	<script>
-	  	$( function() {
+		function unlock(reg_em , key)
+		{
+			var id = '{{\Auth::user()->id}}';
+			$.ajax({
+				type : 'POST',
+				url  : '/unlockleed',
+				data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
+				success :function(response)
+				{
+					console.log(response);
+					$('#domain_name_'+key).text(response.domain_name);
+					$('#registrant_email_'+key).text(response.registrant_email);
+					$('#registrant_name_'+key).text(response.registrant_name);
+					$('#registrant_phone_'+key).text(response.registrant_phone);
+					$('#registrant_company_'+key).text(response.registrant_company);
+					$('#domains_create_date_'+key).text(response.domains_create_date);
+					$('#ch_'+key).prop('checked'	, true);
+					$('#ch_'+key).prop('disabled'	, true);
+					$('#unlocked_num_'+key).text(response.unlocked_num);
+				}
+			});
+		}
+	  	$(function(){
 	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
 	  	});
   	</script>
@@ -264,7 +337,7 @@
 
 		var options = [];
 
-		$( '.dropdown-menu a' ).on( 'click', function( event ) {
+		$('.dropdown-menu a' ).on( 'click', function( event ) {
 
 			alert(1);
 		   var $target = $( event.currentTarget ),
@@ -284,6 +357,8 @@
 		      
 		   console.log( options );
 		   return false;
+
+		   event.preventDefault();
 		});
 
 
@@ -300,12 +375,14 @@
 
 	<script type="text/javascript">
 
-		$(".dropdown dt a").on('click', function() {
+		$(".dropdown dt a").on('click', function(e) {
 		  $(".dropdown dd ul").slideToggle('fast');
+		  e.preventDefault();
 		});
 
-		$(".dropdown dd ul li a").on('click', function() {
+		$(".dropdown dd ul li a").on('click', function(e) {
 		  $(".dropdown dd ul").hide();
+		  e.preventDefault();
 		});
 
 		function getSelectedValue(id) {
@@ -319,7 +396,7 @@
 
 		$('.mutliSelect input[type="checkbox"]').on('click', function(){
 
-		  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val(),
+		  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val();
 		    title = $(this).val() + ",";
 
 		  if ($(this).is(':checked')) 
