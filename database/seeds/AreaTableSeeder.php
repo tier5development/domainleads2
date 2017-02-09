@@ -14,8 +14,8 @@ class AreaTableSeeder extends Seeder
        
     	$path = getcwd()."/areas.sql";
         //DB::unprepared(file_get_contents($path));
-        $passw = 'root';//env('DB_PASSWORD');
-        $db =    'domainleads2'; //env('DB_DATABASE');
+        $passw = 'toor';//env('DB_PASSWORD');
+        $db =    'domainleads'; //env('DB_DATABASE');
         exec('mysql -u root -p'.$passw.' '.$db.' < '.$path);
     
     }
