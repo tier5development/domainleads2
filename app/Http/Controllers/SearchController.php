@@ -200,7 +200,7 @@ class SearchController extends Controller
             //dd($users_array);
 
             return view('home.search' , 
-                  ['record' => $allrecords->paginate(10), 
+                  ['record' => $allrecords->paginate(50), 
                   'leadArr'=>$leadArr , 
                   'totalDomains'=>$totalDomains,
                   'users_array'=>$users_array]);
