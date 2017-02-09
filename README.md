@@ -6,7 +6,7 @@ Local Set Up Steps
 	3. vagrant up
 	4. vagrant ssh
 	5. cd /var/www/html/scripts
-	6. ./setup
+	6. sudo ./setup
 	
 	
 Local Env can bee seen at http://127.0.0.1:4568/
