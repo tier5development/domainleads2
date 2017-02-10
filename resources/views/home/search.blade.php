@@ -18,7 +18,7 @@
 	
 	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
 	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script>
-
+      <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
 
 <style type="text/css">
 .dropdown dd,
@@ -239,6 +239,8 @@ form{
 							@else
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
 							@endif
+							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Check website</button>
+							
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
@@ -299,6 +301,24 @@ form{
 
 
 		</div>
+		  <button style="display: none;" class="" id="popupid_for_domainexists" data-toggle="modal" data-target="#myModal_for_reg">popup</button>
+			<div class="modal fade" id="myModal_for_reg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						×</button>
+						<h4 class="modal-title" id="myLargeModalLabel">
+						</h4>
+						
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		
 </body>
 	<script>
 		function unlock(reg_em , key)
@@ -374,6 +394,27 @@ form{
 	</script>
 
 	<script type="text/javascript">
+	
+
+	    function chkDomainForWebsite(domain_name,key){
+           var _token='{{csrf_token()}}';
+           $.ajax({
+               type:'POST',
+               url:'chkWebsiteForDomain',
+               beforeSend: function()
+					{
+						$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+					},
+               data:'domain_name='+domain_name+'&_token='+_token,
+               success:function(data){
+               	  $("#myLargeModalLabel").text(data);
+                  $("#popupid_for_domainexists").trigger('click');
+                  $('#chkDomainForWebsiteID_'+key).html('Check website');
+                 
+               }
+            });
+
+	    }
 
 		$(".dropdown dt a").on('click', function(e) {
 		  $(".dropdown dd ul").slideToggle('fast');

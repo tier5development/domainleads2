@@ -17,10 +17,22 @@ use \App\User;
 use DB;
 use Hash;
 use Auth;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class SearchController extends Controller
 {
+    
+    public function chkWebsiteForDomain(Request $request){
+   
+     $domain_name= $request->domain_name;
+     $client = new Client(); //GuzzleHttp\Client
+      $client->setDefaultOption('verify', false);
+                $result = $client->get('http://api.tier5.website/api/make_free_wp_website/'.$domain_name);
+                $domain_data = json_decode($result->getBody()->getContents(), true);
+                echo $domain_data['message'];
 
+    }
     public function lead_domains($email)
     {
       $email = decrypt($email);

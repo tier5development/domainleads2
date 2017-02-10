@@ -24,7 +24,8 @@ Route::get('/tst' , function()
 });
 
 
-Route::post('/signme','AccountController@signme' );
+   Route::post('/signme','AccountController@signme' );
+
 
 	Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains']);
 
@@ -37,7 +38,7 @@ Route::post('/signme','AccountController@signme' );
 
 	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
-
+    Route::post('chkWebsiteForDomain' , ['uses'=>'SearchController@chkWebsiteForDomain','as'=>'chkWebsiteForDomain']);
 	Route::get('/myLeads/{id}',['uses'=>'SearchController@myLeads','as'=>'myLeads']);
 	Route::post('/unlockleed' , ['uses'=>'SearchController@unlockleed','as'=>'unlockleed']);
 
