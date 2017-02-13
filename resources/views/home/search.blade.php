@@ -143,19 +143,19 @@ form{
 				<form method="POST" action="{{Route('search')}}" class="col-md-6">
 						<div class="form-group">
 							<label>Domain Name : </label>
-							<input type="text" name="domain_name" id="domain_name" class="form-control">
+							<input type="text" value="{{ old('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Registrant Country : </label>
-							<input type="text" name="registrant_country" id="registrant_country" class="form-control">
+							<input type="text" value="{{old('registrant_country')}}" name="registrant_country" id="registrant_country" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Registrant State : </label>
-							<input type="text" name="registrant_state" id="registrant_state" class="form-control">
+							<input type="text" value="{{old('registrant_state')}}" name="registrant_state" id="registrant_state" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Domains Create Date</label>
-							<input type="date" name="domains_create_date" id="registered_date" class="form-control">
+							<input type="date" value="{{old('domains_create_date')}}" name="domains_create_date" id="registered_date" class="form-control">
 						</div>
 						<div class="from-group">
 							<label>Select Domains Extensions</label>
@@ -193,11 +193,38 @@ form{
 						<div class="form-group">
 							<label>cell number</label>
 							<input type="checkbox" name="cell_number" value="cell number">
-						</div>
-						<div class="form-group">
+						
 							<label>landline number</label>
 							<input type="checkbox" name="landline_number" value="landline number">
+
+							
+								<label>Data Per-Page</label>
+								<select id="pagination" name="pagination">
+									<option value="20">20</option>
+									<option value="20">50</option>
+									<option value="20">100</option>
+									<option value="20">500</option>
+									<option value="20">1000</option>
+								</select>
+							
+
 						</div>
+
+						<div>
+							<label>Sort filter</label>
+							<select id="sort" name="sort">
+								<option value="unlocked_asnd">unlocked_asnd</option>
+								<option value="unlocked_dcnd">unlocked_dcnd</option>
+								<option value="domain_count_asnd">domain_count_asnd</option>
+								<option value="domain_count_dcnd">domain_count_dcnd</option>
+							</select>
+						</div>
+
+						
+
+
+
+						
 				
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
@@ -256,7 +283,7 @@ form{
 							<br>
 							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
 							<br>
-							<small > Total Domain Count : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$leadArr[$each->registrant_email]}}</a></small> 
+							<small > Total Domain Count : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$leadArr[$each->registrant_email]}}</a></small> = {{$each->domains_count}}
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
