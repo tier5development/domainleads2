@@ -179,16 +179,19 @@ class SearchController extends Controller
 
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
             $leadArr = array_flip($leadArr_);
-
+            
+           
 
             foreach($leadArr as $key=>$each)
               $leadArr[$key] = 0;
-
+            
+              
             
             
             $eachdomainArr = EachDomain::pluck('registrant_email','domain_name')->toArray();
             $totalDomains = 0;
-            
+            //print_r($eachdomainArr);dd();
+
             foreach($eachdomainArr as $key=>$each)
             {
                 if(isset($leadArr[$each]))

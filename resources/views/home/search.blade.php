@@ -393,7 +393,7 @@ form{
 	});
 	</script>
 
-	<script type="text/javascript">
+	<script type="text/javascript"> 
 	
 
 	    function chkDomainForWebsite(domain_name,key){
