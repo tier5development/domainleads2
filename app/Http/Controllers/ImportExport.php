@@ -24,8 +24,14 @@ class ImportExport extends Controller
   public $__leads = array();
   public $__domains = array();
 
+  public $__clipboard = array(); // stores leads which needs to be altered in the table--on basis of domains count
+
   private function create()
   {
+
+
+
+
       $this->Area_state               = Area::pluck('state','prefix')->toArray();
       $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
       $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();
@@ -199,8 +205,9 @@ class ImportExport extends Controller
     
   }
 
-    public function get_domains_count($domain_name , $registrant_email)
+    public function set($domain_name,$registrant_email)
     {
+ 
         if(isset($this->__domains[$domain_name]))
         {
             if($this->__domains[$domain_name] == $registrant_email)
@@ -210,8 +217,17 @@ class ImportExport extends Controller
             else
             {
                 $this->__leads[$this->__domains[$domain_name]] --;
-                $this->__leads[$registrant_email] =1;
+
+                $this->__clipboard[$this->__domains[$domain_name]] = $this->__leads[$this->__domains[$domain_name]];
+
+
+                if(isset($this->__leads[$registrant_email]))
+                  $this->__leads[$registrant_email]++;
+                else
+                  $this->__leads[$registrant_email]=1;
+
                 $this->__domains[$domain_name] = $registrant_email;
+
             }
         }
         else
@@ -233,8 +249,25 @@ class ImportExport extends Controller
 
   	public function importExcel(Request $request)
   	{
+    	  $this->create();
+      
+      	$upload = $request->file('import_file');
+      	$filepath = $upload->getRealPath();
+      	$file  = fopen($filepath , 'r');
+        $this->insertion_Execl($file);
+        //$x = new ImportCsvFile($file);
+    }
 
-  		  $this->create();
+    public function importExeclfromCron()
+    {
+        \Log::info('kjfy klyuf kuyf liug');
+
+        dd('/kuyftg loiut7g ');
+    }
+
+
+    public function insertion_Execl($file)
+    {
 
         ini_set("memory_limit","7G");
         ini_set('max_execution_time', '0');
@@ -242,18 +275,15 @@ class ImportExport extends Controller
         set_time_limit(0);
         ignore_user_abort(true);
 
-  	    $start = microtime(true);
-      	$upload = $request->file('import_file');
-      	$filepath = $upload->getRealPath();
+        $start = microtime(true);
 
-      	$file  = fopen($filepath , 'r');
-      	$cnt = 0;
-      	$header = fgetcsv($file); // get the head row of csv file
-      	$length = count($header); // get the count of columns in it
+        $cnt = 0;
+        $header = fgetcsv($file); // get the head row of csv file
+        $length = count($header); // get the count of columns in it
 
-	      $valid_phone_head = "(`id` , `phone_number` , `validation_status` , `state` , `major_city` , `primary_city` ,`county` , `carrier_name` , `number_type` , `created_at`,`updated_at`,`registrant_email`)"  ; //dynamically created
+        $valid_phone_head = "(`id` , `phone_number` , `validation_status` , `state` , `major_city` , `primary_city` ,`county` , `carrier_name` , `number_type` , `created_at`,`updated_at`,`registrant_email`)"  ; //dynamically created
 
-      	//10 - 19 goes to leads table
+        //10 - 19 goes to leads table
         //heads for leads table for mysql entry
         $leads_head = "(`id`,`registrant_name`,`registrant_company`,`registrant_address`,`registrant_city`,`registrant_state`,`registrant_zip`,`registrant_country`,`registrant_email`,`registrant_phone`,`phone_validated`,`registrant_fax`,`created_at`,`updated_at`,`unlocked_num`,`domains_count`)" ;
 
@@ -265,42 +295,42 @@ class ImportExport extends Controller
 
         //20-29 goes to domains administrative
         $domains_administrative_head = "(`id` , `administrative_name`,`administrative_company`,`administrative_address`,`administrative_city`,
-  		`administrative_state`,`administrative_zip` , `administrative_country`, `administrative_email` , `administrative_phone`, `administrative_fax` , `created_at`,`updated_at`,`domain_name`)";
+      `administrative_state`,`administrative_zip` , `administrative_country`, `administrative_email` , `administrative_phone`, `administrative_fax` , `created_at`,`updated_at`,`domain_name`)";
 
 
-    		//30-39 goes to domains_technical table
-    	  $domains_technical_head = "(`id` , `technical_name`,`technical_company`,`technical_address`,`technical_city`,`technical_state`,`technical_zip`,`technical_country`,`technical_email`,`technical_phone`,`technical_fax`,`created_at`,`updated_at`,`domain_name`)";
+        //30-39 goes to domains_technical table
+        $domains_technical_head = "(`id` , `technical_name`,`technical_company`,`technical_address`,`technical_city`,`technical_state`,`technical_zip`,`technical_country`,`technical_email`,`technical_phone`,`technical_fax`,`created_at`,`updated_at`,`domain_name`)";
 
     
-      		//40-49 goes to domains_billing
-    	  $domains_billing_head = "(`id`,`billing_name`,`billing_company`,`billing_address`,`billing_city` , `billing_state`,`billing_zip`,`billing_country`,`billing_email`,`billing_phone`,`billing_fax` , `created_at`,`updated_at`,`domain_name`)";
+          //40-49 goes to domains_billing
+        $domains_billing_head = "(`id`,`billing_name`,`billing_company`,`billing_address`,`billing_city` , `billing_state`,`billing_zip`,`billing_country`,`billing_email`,`billing_phone`,`billing_fax` , `created_at`,`updated_at`,`domain_name`)";
 
-    	  // 50-53 goes to nameserver
-    	  $domains_nameserver_head = "(`id`,`name_server_1`,`name_server_2`,`name_server_3`,`name_server_4`,`created_at`,`updated_at`,`domain_name`)";
+        // 50-53 goes to nameserver
+        $domains_nameserver_head = "(`id`,`name_server_1`,`name_server_2`,`name_server_3`,`name_server_4`,`created_at`,`updated_at`,`domain_name`)";
 
-    	  // 54-57 goes to domainstatus
-    	  $domains_status_head = "(`id`,`domain_status_1`,`domain_status_2`,`domain_status_3`,`domain_status_4`,`created_at`,`updated_at`, `domain_name`)";
+        // 54-57 goes to domainstatus
+        $domains_status_head = "(`id`,`domain_status_1`,`domain_status_2`,`domain_status_3`,`domain_status_4`,`created_at`,`updated_at`, `domain_name`)";
 
 
-        $each_domains 			= '';
-        $domains_info 			= '';
-        $leads 					= '';
-        $valid_phone 				= '';
-        $domains_administrative 	= '';
-        $domains_technical 		= '';
-        $domains_billing 			= ''; 
-        $domains_nameserver 		= '';
-        $domains_status 			= '';
+        $each_domains       = '';
+        $domains_info       = '';
+        $leads          = '';
+        $valid_phone        = '';
+        $domains_administrative   = '';
+        $domains_technical    = '';
+        $domains_billing      = ''; 
+        $domains_nameserver     = '';
+        $domains_status       = '';
 
-        $EACH_DOMAINS 			= '';
-        $DOMAINS_INFO 			= '';
-        $LEADS 					= '';
-        $VALID_PHONE 				= '';
-        $DOMAINS_ADMINISTRATIVE 	= '';
-        $DOMIANS_TECHNICAL 		= '';
-        $DOMIANS_BILLING 			= '';
-        $DOMIANS_NAMESERVER 		  = '';
-        $DOMAINS_STATUS 			   = '';
+        $EACH_DOMAINS       = '';
+        $DOMAINS_INFO       = '';
+        $LEADS          = '';
+        $VALID_PHONE        = '';
+        $DOMAINS_ADMINISTRATIVE   = '';
+        $DOMIANS_TECHNICAL    = '';
+        $DOMIANS_BILLING      = '';
+        $DOMIANS_NAMESERVER       = '';
+        $DOMAINS_STATUS          = '';
 
         $BATCH  = 30000; // to insert 30000 data at 1 go 
 
@@ -313,8 +343,8 @@ class ImportExport extends Controller
             
             if($row)
             {
-            		$domain_name = str_replace($this->search, $this->replace, $row[1]);
-            		if($LEADS != '') $LEADS .=',';
+                $domain_name = str_replace($this->search, $this->replace, $row[1]);
+                if($LEADS != '') $LEADS .=',';
                 if($DOMAINS_STATUS != '') $DOMAINS_STATUS .=',';
                 if($DOMIANS_NAMESERVER != '') $DOMIANS_NAMESERVER .=',';
                 if($DOMIANS_BILLING != '') $DOMIANS_BILLING .=',';
@@ -322,61 +352,63 @@ class ImportExport extends Controller
                 if($DOMAINS_ADMINISTRATIVE != '') $DOMAINS_ADMINISTRATIVE .=',';
                 if($DOMAINS_INFO != '') $DOMAINS_INFO .=',';
                 if($EACH_DOMAINS != '') $EACH_DOMAINS .=',';
-            		if($VALID_PHONE !='' && $VALID_PHONE[strlen($VALID_PHONE)-1] != ',' ) 
+                if($VALID_PHONE !='' && $VALID_PHONE[strlen($VALID_PHONE)-1] != ',' ) 
                     $VALID_PHONE = $VALID_PHONE .','; 
 
-      		      $leads = '';
-      			    $valid_phone = '';
+                $leads = '';
+                $valid_phone = '';
                 $each_domains = '';
-      			    $domains_info = '';
-      			    $domains_administrative = '';
-      			    $domains_technical = '';
-      			    $domains_billing = '' ; 
-      			    $domains_nameserver = '';
-      			    $domains_status = '';
+                $domains_info = '';
+                $domains_administrative = '';
+                $domains_technical = '';
+                $domains_billing = '' ; 
+                $domains_nameserver = '';
+                $domains_status = '';
 
 
 
                 $created_at = str_replace($this->search, $this->replace, Carbon::now());
                 $updated_at = str_replace($this->search, $this->replace, Carbon::now());
 
-                $domains_count = $this->get_domains_count($row[1],$row[17]);
-  			       
-                $leads 		  			= $this->make_query(10 , 19 , $row ,$created_at,$updated_at,$domains_count);
+                $domains_count = $this->set($row[1],$row[17]); //-------------
+
+                //$domains_count = $this->__leads[$row[17]];
+               
+                $leads            = $this->make_query(10 , 19 , $row ,$created_at,$updated_at,$domains_count);
 
                 $rg_em =  str_replace($this->search, $this->replace, $row[17]);
-    			      $valid_phone = $this->validate_phone_query_builder($row[18],$rg_em,$counter,$created_at,$updated_at);
-    			      $each_domains 			= $this->make_query(1 , 1 ,   $row,$created_at,$updated_at,null);
-    			      $domains_info 			= $this->make_query(2 , 9 ,   $row,$created_at,$updated_at,null);
-    			      $domains_administrative = $this->make_query(20 , 29 , $row,$created_at,$updated_at,null);
-    			      $domains_technical  	= $this->make_query(30 , 39 , $row,$created_at,$updated_at,null);
-    			      $domains_billing 		= $this->make_query(40 , 49 , $row,$created_at,$updated_at,null);
-    			      $domains_nameserver 	= $this->make_query(50 , 53 , $row,$created_at,$updated_at,null);
-    			      $domains_status 		= $this->make_query(54 , 57 , $row,$created_at,$updated_at,null);
-            	  	
+                $valid_phone = $this->validate_phone_query_builder($row[18],$rg_em,$counter,$created_at,$updated_at);
+                $each_domains       = $this->make_query(1 , 1 ,   $row,$created_at,$updated_at,null);
+                $domains_info       = $this->make_query(2 , 9 ,   $row,$created_at,$updated_at,null);
+                $domains_administrative = $this->make_query(20 , 29 , $row,$created_at,$updated_at,null);
+                $domains_technical    = $this->make_query(30 , 39 , $row,$created_at,$updated_at,null);
+                $domains_billing    = $this->make_query(40 , 49 , $row,$created_at,$updated_at,null);
+                $domains_nameserver   = $this->make_query(50 , 53 , $row,$created_at,$updated_at,null);
+                $domains_status     = $this->make_query(54 , 57 , $row,$created_at,$updated_at,null);
+                  
 
 
-  			        $LEADS .= 		'('.$leads.')';
-  			        if($valid_phone != '')  $VALID_PHONE .= "(".$valid_phone.")";
+                $LEADS .=     '('.$leads.')';
+                if($valid_phone != '')  $VALID_PHONE .= "(".$valid_phone.")";
 
-          	  	$EACH_DOMAINS .= '('.$each_domains.')';
-    		      	$DOMAINS_INFO .= '(' . $domains_info . ')';
-    		      	$DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')'; 
-    		      	$DOMIANS_TECHNICAL .= '('.$domains_technical.')';
-    		      	$DOMIANS_BILLING .= '('.$domains_billing.')';
-    		      	$DOMIANS_NAMESERVER .= '('.$domains_nameserver.')';
-    		      	$DOMAINS_STATUS .= '('.$domains_status .')';
+                $EACH_DOMAINS .= '('.$each_domains.')';
+                $DOMAINS_INFO .= '(' . $domains_info . ')';
+                $DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')'; 
+                $DOMIANS_TECHNICAL .= '('.$domains_technical.')';
+                $DOMIANS_BILLING .= '('.$domains_billing.')';
+                $DOMIANS_NAMESERVER .= '('.$domains_nameserver.')';
+                $DOMAINS_STATUS .= '('.$domains_status .')';
 
-  			      // 	if($counter == 4)
-  			    		// dd($VALID_PHONE);
+              //  if($counter == 4)
+                // dd($VALID_PHONE);
 
 
-      		      	if($counter%$BATCH == 0)
-      		      	{
-      		      		
+                  if($counter%$BATCH == 0)
+                  {
+                    
 
                     $st = microtime(true);
-      		      		$this->execute_batch_query($leads_head    ,$LEADS
+                    $this->execute_batch_query($leads_head    ,$LEADS
                             ,$valid_phone_head            ,$VALID_PHONE
                             ,$each_domains_head           ,$EACH_DOMAINS
                             ,$domains_info_head           ,$DOMAINS_INFO
@@ -389,23 +421,23 @@ class ImportExport extends Controller
 
                     echo('time = '.$ed.'<br>');
 
-      		      		$LEADS 					= '';
-      		      		$EACH_DOMAINS 			= '';
-      			      	$DOMAINS_INFO 			= '';
-      			      	$DOMAINS_ADMINISTRATIVE = ''; 
-      			      	$DOMIANS_TECHNICAL 		= '';
-      			      	$DOMIANS_BILLING 		= '';
-      			      	$DOMIANS_NAMESERVER 	= '';
-      			      	$DOMAINS_STATUS 		= '';
+                    $LEADS          = '';
+                    $EACH_DOMAINS       = '';
+                    $DOMAINS_INFO       = '';
+                    $DOMAINS_ADMINISTRATIVE = ''; 
+                    $DOMIANS_TECHNICAL    = '';
+                    $DOMIANS_BILLING    = '';
+                    $DOMIANS_NAMESERVER   = '';
+                    $DOMAINS_STATUS     = '';
 
-      			      	//dd('first_batch_complete');
+                    //dd('first_batch_complete');
                     
-      		      	}
-            	}
-            	else
-            	{
-            		if($counter % $BATCH != 0)
-            		{
+                  }
+              }
+              else
+              {
+                if($counter % $BATCH != 0)
+                {
                   $st = microtime(true);
                   $this->execute_batch_query($leads_head    ,$LEADS
                         ,$valid_phone_head            ,$VALID_PHONE
@@ -420,22 +452,73 @@ class ImportExport extends Controller
 
                   echo('time = '.$ed . '<br>');
 
-            		}
-            		break;
-          	}
+                }
+                break;
+            }
              
-      	}
+        }
 
-      	//$this->validate_ph_no(); // validate all ph numbers from leads table
+        
+      $this->rectify_leads();
+
 
       $end = microtime(true) - $start;
       echo('TOTAL TIME: ' . $end . " seconds");
 
       \Log::info('TOTAL TIME: ' . $end . " seconds");
 
-        
+
      
-  
+    }
+
+  public function rectify_leads()
+  {
+    //rectifies those leads whose domain names are changed but domain counts are not
+    //in the process of insertion
+
+      // UPDATE `leads`
+      //   SET domains_count = CASE registrant_email
+      //       WHEN 'info1@gctld.com' THEN 10
+      //       WHEN '616822783@qq.com' THEN 20
+      //   END
+      // WHERE registrant_email IN ('info1@gctld.com','616822783@qq.com')
+
+    //delete
+//     delete from `leads`
+// where registrant_email in ('ramyzaidan@qatar.net.qa', '2717410431@qq.com');
+
+
+
+      if(isset($this->__clipboard) && sizeof($this->__clipboard)!= 0)
+      {
+        
+          $leads_head = "UPDATE `leads` SET domains_count = CASE registrant_email ";
+          $query  = "";
+          $reg_em = "";
+          foreach($this->__clipboard as $key=>$val)
+          {
+            $query .= " WHEN '".$key."' THEN ".$val;
+
+            if($reg_em != '') $reg_em .=",";
+
+            $reg_em .= "'". $key ."'";
+          }
+          $reg_em = "(".$reg_em.")";
+          $leads_head .= $query;
+          $leads_head .= " END WHERE registrant_email IN ".$reg_em;
+
+          try{
+            DB::statement($leads_head);
+          }
+          catch(\Exception $e)
+          {
+            echo('In ..');
+            dd($e);
+          }
+          Lead::where('domains_count',0)->delete();
+      }
+
+      return;
   }
 
 
@@ -444,7 +527,11 @@ class ImportExport extends Controller
   public function checknum($num)
   {
     //dummy check
-  	dd ($this->validateUSPhoneNumber($num));	
+  	//dd ($this->validateUSPhoneNumber($num));	
+
+    $x = Lead::pluck('registrant_country','registrant_state','registrant_email')->toArray();
+
+    dd($x);
   }
 
   private function validateUSPhoneNumber($ph)

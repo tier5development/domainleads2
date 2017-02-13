@@ -205,6 +205,7 @@ class SearchController extends Controller
 
             }
 
+
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
             $leadArr = array_flip($leadArr_);
 
@@ -235,17 +236,18 @@ class SearchController extends Controller
             $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
             
 
-            $users_array = array_flip($users_array);
+            // $users_array = array_flip($users_array);
 
             
-            // $tst = $allrecords->pluck('domains_count','registrant_email')->toArray();
-            // foreach($tst as $key=>$val)
-            // {
-            //     if($leadArr[$key] != $tst[$key])
-            //     dd("key=".$key."   val=".$val."   real count=".$leadArr[$key]."   domains_count=".$tst[$key]."<br>");
-            // }
+            $tst = $allrecords->pluck('domains_count','registrant_email')->toArray();
+            //dd($tst);
+            foreach($tst as $key=>$val)
+            {
+                if($leadArr[$key] != $tst[$key])
+                dd("key=".$key."   val=".$val."   real count=".$leadArr[$key]."   domains_count=".$tst[$key]."<br>");
+            }
 
-            // dd('over');
+            dd('over');
             
                 //->paginate(100);
             //$en = microtime(true);
