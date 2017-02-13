@@ -272,7 +272,19 @@ class SearchController extends Controller
             //dd($en-$st);
             //dd($allrecords);
 
-            
+            if(\Auth::user()->user_type == 2)
+            {
+                return view('home.admin.admin_search',[
+
+                    'record' => $allrecords->paginate($request->pagination), 
+                    'leadArr'=>$leadArr , 
+                    'totalDomains'=>$totalDomains,
+                    'users_array'=>$users_array
+
+                  ]);
+
+                  
+            }
 
             return view('home.search' , 
                   ['record' => $allrecords->paginate($request->pagination), 

@@ -29,9 +29,6 @@ class ImportExport extends Controller
   private function create()
   {
 
-
-
-
       $this->Area_state               = Area::pluck('state','prefix')->toArray();
       $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
       $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();

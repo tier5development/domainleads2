@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
         
         $this->call(AreaTableSeeder::class);
         $this->call(AreaCodesTableSeeder::class);
+        $this->call(DummyUser::class);
     }
 }
