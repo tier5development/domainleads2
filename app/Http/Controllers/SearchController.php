@@ -89,28 +89,28 @@ class SearchController extends Controller
         $leads  = Lead::whereIn('registrant_email',$leads_);
         //dd($leads);
 
-        // $leadArr_ = EachDomain::pluck('registrant_email')->toArray();
-        // $leadArr = array_flip($leadArr_);
+        $leadArr_ = EachDomain::pluck('registrant_email')->toArray();
+        $leadArr = array_flip($leadArr_);
 
 
-        //     foreach($leadArr as $key=>$each)
-        //       $leadArr[$key] = 0;
+            foreach($leadArr as $key=>$each)
+              $leadArr[$key] = 0;
 
             
             
-        //     $eachdomainArr = EachDomain::pluck('registrant_email','domain_name')->toArray();
-        //     $totalDomains = 0;
+            $eachdomainArr = EachDomain::pluck('registrant_email','domain_name')->toArray();
+            $totalDomains = 0;
             
-        //     foreach($eachdomainArr as $key=>$each)
-        //     {
-        //         if(isset($leadArr[$each]))
-        //         {
-        //           $leadArr[$each]++;
-        //           $totalDomains++;
-        //         }
-        //     }
+            foreach($eachdomainArr as $key=>$each)
+            {
+                if(isset($leadArr[$each]))
+                {
+                  $leadArr[$each]++;
+                  $totalDomains++;
+                }
+            }
 
-        return view('home.myleads' , ['myleads'=>$leads]);
+        return view('home.myleads' , ['myleads'=>$leads,'leadArr'=>$leadArr]);
       }
       else
       {
@@ -126,8 +126,10 @@ class SearchController extends Controller
 
         if($request->all())
         {
+
           $allrecords = Lead::with('each_domain','valid_phone');
       
+            $st = microtime(true);
             foreach($request->all() as $key => $req)
             {         
 
@@ -173,6 +175,32 @@ class SearchController extends Controller
                         });
                       
                     }
+                    //applying sort filter
+                    else if ($key == 'sort') 
+                    {
+                        if($req == 'unlocked_asnd')
+                        {
+                            $allrecords = $allrecords->orderBy('unlocked_num','asc');
+                        }
+                        else if($req == 'unlocked_dcnd')
+                        {
+                            $allrecords = $allrecords->orderBy('unlocked_num','desc');
+                        }
+                        else if($req == 'domain_count_asnd')
+                        {
+                            $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
+                            ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
+                            ->groupBy('leads.registrant_email')
+                            ->orderBy('aggregate', 'asc');
+                        }
+                        else if($req == 'domain_count_dcnd') 
+                        {
+                            $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
+                            ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
+                            ->groupBy('leads.registrant_email')
+                            ->orderBy('aggregate', 'desc');
+                        }
+                    }
                 }
 
             }
@@ -209,10 +237,25 @@ class SearchController extends Controller
 
             $users_array = array_flip($users_array);
 
-            //dd($users_array);
+            
+            // $tst = $allrecords->pluck('domains_count','registrant_email')->toArray();
+            // foreach($tst as $key=>$val)
+            // {
+            //     if($leadArr[$key] != $tst[$key])
+            //     dd("key=".$key."   val=".$val."   real count=".$leadArr[$key]."   domains_count=".$tst[$key]."<br>");
+            // }
+
+            // dd('over');
+            
+                //->paginate(100);
+            //$en = microtime(true);
+            //dd($en-$st);
+            //dd($allrecords);
+
+            
 
             return view('home.search' , 
-                  ['record' => $allrecords->paginate(50), 
+                  ['record' => $allrecords->paginate($request->pagination), 
                   'leadArr'=>$leadArr , 
                   'totalDomains'=>$totalDomains,
                   'users_array'=>$users_array]);
