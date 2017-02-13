@@ -20,6 +20,7 @@ use Hash;
 use Auth;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use Session;
 
 class SearchController extends Controller
 {

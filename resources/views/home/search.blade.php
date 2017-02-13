@@ -125,9 +125,13 @@ form{
 		<div class="container">
 
 			<div class="navbar-header">
-                @if(Session::has('msg'))
-                {{ Session::get('msg')}}
+			<?php //Session::put('ee', 'kkk');
+			 ?>
+                @if(Session::has('ee'))
+                {{ Session::get('ee')}}
+               {{ Session::forget('ee')}}
                 @endif
+                 <input type="text" name="domains_for_export" id="domains_for_export_id" value="">
 			</div>
 
 			<!-- form elements -->
@@ -267,6 +271,7 @@ form{
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
 							@else
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
+								<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}">
 							@endif
 							@if(isset($chkWebsite_array[$each->registrant_email]))
 								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Checked website</button>
@@ -355,6 +360,26 @@ form{
 		
 </body>
 	<script>
+	 var domains = [];
+	    $('.eachrow_download').click(function(event){
+        
+		  // $("#domains_for_export_id_allChecked").val(0);
+		  // $(".downloadcsv_all").prop( "checked", false);
+		   var id=$(this).attr('id');
+		   var emailID=$(this).attr('emailID');
+			    if($("#"+id).is(':checked')) {
+			    domains.push(emailID);
+			    } else {
+			   
+			    var x = domains.indexOf(emailID
+			    	);
+		         domains.splice(x,1);
+			    }
+		        alert(domains);
+			    
+			     $("#domains_for_export_id").val(domains);
+	   
+ 	    });
 		function unlock(reg_em , key)
 		{
 			var id = '{{\Auth::user()->id}}';
