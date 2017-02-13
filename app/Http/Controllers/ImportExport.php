@@ -260,9 +260,35 @@ class ImportExport extends Controller
 
     public function importExeclfromCron()
     {
-        \Log::info('kjfy klyuf kuyf liug');
+        //\Log::info('kjfy klyuf kuyf liug');
 
-        dd('/kuyftg loiut7g ');
+        //dd('/kuyftg loiut7g ');
+
+        // exec("sudo wget http://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@download.whoxy.com/newly-registered-whois/whois-proxies-removed/2017-01-18_whois-proxies-removed.zip -P /var/www/html/domainleads2/",$e);
+
+        //$data = file_get_contents("http://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@download.whoxy.com/newly-registered-whois/whois-proxies-removed/2017-01-18_whois-proxies-removed.zip -P /var/www/html/domainleads2/");
+
+        exec('sudo -S tier 5 wget http://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@download.whoxy.com/newly-registered-whois/whois-proxies-removed/2017-01-18_whois-proxies-removed.zip -P /var/www/html/domainleads2/ ');
+
+        //dd($array);
+
+        // $zip = new \ZipArchive;
+        // $res = $zip->open($data);
+        // if ($res === TRUE) 
+        // {
+        //   $zip->extractTo('/myzips/extract_path/');
+        //   $zip->close();
+        //   echo 'woot!';
+        // } 
+        // else 
+        // {
+        //   echo 'doh!';
+        // }
+       // $x = readgzfile($data);
+        dd('over');
+        
+
+        
     }
 
 

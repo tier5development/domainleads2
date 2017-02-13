@@ -43,7 +43,7 @@ Route::get('/tst' , function()
 	$x = \App\Lead::pluck('registrant_country','registrant_state')->toArray();
 
     dd($x);
-
+    
 	//dd($x);
 });
 

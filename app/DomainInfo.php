@@ -13,6 +13,11 @@ class DomainInfo extends Model
     	return $this->hasOne('each_domains' , 'domain_name' , 'domain_name');
     }
 
+    public function leads()
+    {
+    	return $this->belongsTo('App\EachDomain' , 'domain_name' , 'domain_name');
+    }
+
     
 
  //    public function domains_technical()

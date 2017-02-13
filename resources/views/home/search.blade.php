@@ -278,7 +278,8 @@ form{
 							<br>
 							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
 							<br>
-							<small > Total Domain Count : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$leadArr[$each->registrant_email]}}</a></small> = {{$each->domains_count}}
+							<small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$each->domains_count}}</a></small> 
+							<!-- leadArr[$each->registrant_email] -->
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
