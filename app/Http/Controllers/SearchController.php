@@ -14,6 +14,7 @@ use \App\EachDomain;
 use \App\Lead;
 use \App\LeadUser;
 use \App\User;
+use \App\ChkWebsite;
 use DB;
 use Hash;
 use Auth;
@@ -26,12 +27,24 @@ class SearchController extends Controller
     public function chkWebsiteForDomain(Request $request){
    
      $domain_name= $request->domain_name;
+     $registrant_email= $request->registrant_email;
+     $user_id= $request->user_id;
      $client = new Client(); //GuzzleHttp\Client
-      $client->setDefaultOption('verify', false);
+     $client->setDefaultOption('verify', false);
                 $result = $client->get('http://api.tier5.website/api/make_free_wp_website/'.$domain_name);
-                $domain_data = json_decode($result->getBody()->getContents(), true);
-                echo $domain_data['message'];
-
+               $domain_data = json_decode($result->getBody()->getContents(), true);
+             //  echo $domain_data['message'];
+        
+        $chkWebsite = new ChkWebsite();
+        $chkWebsite->domain_name= $domain_name;  
+        $chkWebsite->registrant_email= $registrant_email; 
+        $chkWebsite->user_id= $user_id;  
+        $chkWebsite->status= 1;  
+        $chkWebsite->save();
+        $array = array();  
+        $array['message']    = $domain_data['message'];
+        return \Response::json($array);     
+      
     }
     public function lead_domains($email)
     {
@@ -177,13 +190,19 @@ class SearchController extends Controller
 
             }
 
+           
+           
+             
+            
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
+            
+
             $leadArr = array_flip($leadArr_);
             
            
 
             foreach($leadArr as $key=>$each)
-              $leadArr[$key] = 0;
+              $leadArr[$key] = 0; 
             
               
             
@@ -201,7 +220,7 @@ class SearchController extends Controller
                 }
             }
 
-            //dd($allrecords->first());
+          // print_r($leadArr);dd();
 
             $user_id = \Auth::user()->id;
 
@@ -212,13 +231,19 @@ class SearchController extends Controller
 
             $users_array = array_flip($users_array);
 
+            $chkWebsite_array = ChkWebsite::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+            
+
+            $chkWebsite_array = array_flip($chkWebsite_array);
+           // print_r($chkWebsite_array);dd();
             //dd($users_array);
 
             return view('home.search' , 
                   ['record' => $allrecords->paginate(50), 
                   'leadArr'=>$leadArr , 
                   'totalDomains'=>$totalDomains,
-                  'users_array'=>$users_array]);
+                  'users_array'=>$users_array,
+                  'chkWebsite_array'=>$chkWebsite_array]);
         }
         else
         {

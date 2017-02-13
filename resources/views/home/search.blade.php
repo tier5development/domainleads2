@@ -239,7 +239,12 @@ form{
 							@else
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
 							@endif
-							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Check website</button>
+							@if(isset($chkWebsite_array[$each->registrant_email]))
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Checked website</button>
+							@else
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')">Check website</button>
+							@endif
+							 
 							
 						</th>
 						<th>
@@ -396,8 +401,9 @@ form{
 	<script type="text/javascript"> 
 	
 
-	    function chkDomainForWebsite(domain_name,key){
+	    function chkDomainForWebsite(domain_name,key,registrant_email){
            var _token='{{csrf_token()}}';
+           var user_id = '{{\Auth::user()->id}}';
            $.ajax({
                type:'POST',
                url:'chkWebsiteForDomain',
@@ -405,11 +411,12 @@ form{
 					{
 						$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
 					},
-               data:'domain_name='+domain_name+'&_token='+_token,
-               success:function(data){
-               	  $("#myLargeModalLabel").text(data);
+               data:'domain_name='+domain_name+'&_token='+_token+'&registrant_email='+registrant_email+'&user_id='+user_id,
+               success:function(response){
+               	  $("#myLargeModalLabel").text(response.message);
                   $("#popupid_for_domainexists").trigger('click');
-                  $('#chkDomainForWebsiteID_'+key).html('Check website');
+                  $('#chkDomainForWebsiteID_'+key).html('Checked website');
+                   $('#chkDomainForWebsiteID_'+key).prop("disabled",true);
                  
                }
             });
