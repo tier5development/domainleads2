@@ -6,5 +6,8 @@
 Homestead.json
 Homestead.yaml
 
+/zip
+/unzip
+
 /.vagrant
 

@@ -184,7 +184,7 @@ class ImportExport extends Controller
         $q_domains_status = "REPLACE `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
 
-          
+          dd($q_leads);
           DB::statement($q_leads);
           if(isset($q_valid_phone)) DB::statement($q_valid_phone);
           DB::statement($q_each_domains);
@@ -253,6 +253,7 @@ class ImportExport extends Controller
       	$filepath = $upload->getRealPath();
       	$file  = fopen($filepath , 'r');
         $this->insertion_Execl($file);
+        fclose($file);
         //$x = new ImportCsvFile($file);
     }
 
@@ -274,9 +275,10 @@ class ImportExport extends Controller
             file_put_contents(getcwd().'/zip/'.$date.'_whois-proxies-removed.zip',$data);
         
             Zipper::make('/var/www/html/domainleads2/zip/'.$date.'_whois-proxies-removed.zip')->extractTo('/var/www/html/domainleads2/unzip/');
-
+            //dd('here');
 
             $filepath = '/var/www/html/domainleads2/unzip/'.$date.'_whois-proxies-removed.csv';
+            
             $file  = fopen($filepath , 'r');
             $this->insertion_Execl($file);
 
@@ -317,6 +319,8 @@ class ImportExport extends Controller
         $cnt = 0;
         $header = fgetcsv($file); // get the head row of csv file
         $length = count($header); // get the count of columns in it
+
+        //dd($header);
 
         $valid_phone_head = "(`id` , `phone_number` , `validation_status` , `state` , `major_city` , `primary_city` ,`county` , `carrier_name` , `number_type` , `created_at`,`updated_at`,`registrant_email`)"  ; //dynamically created
 
@@ -369,7 +373,7 @@ class ImportExport extends Controller
         $DOMIANS_NAMESERVER       = '';
         $DOMAINS_STATUS          = '';
 
-        $BATCH  = 30000; // to insert 30000 data at 1 go 
+        $BATCH  = 3; // to insert 30000 data at 1 go 
 
       
         $counter = 0;
@@ -380,6 +384,7 @@ class ImportExport extends Controller
             
             if($row)
             {
+
                 $domain_name = str_replace($this->search, $this->replace, $row[1]);
                 if($LEADS != '') $LEADS .=',';
                 if($DOMAINS_STATUS != '') $DOMAINS_STATUS .=',';

@@ -177,15 +177,18 @@ class SearchController extends Controller
                     }
                     else if($key == 'cell_number')
                     {
-                        $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req){
-                            $query->where($key,$req);
+                        $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req)
+                        {
+                          // dd('here');
+                            $query->where('number_type','Cell Number');
+                            //dd($query);
                         });
                     }
                     else if($key == 'landline_number')
                     {
 
                         $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req){
-                            $query->where($key,$req);
+                            $query->where('number_type','Landline');
                         });
                       
                     }

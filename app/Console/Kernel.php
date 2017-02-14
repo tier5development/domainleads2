@@ -29,13 +29,17 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             try{
                 //return redirect()->route(url('/').'importExeclfromCron', ['date' => date('Y-m-d',time())]);
+                
+                //+++++++ date format :: '2017-01-18';
 
+                date_default_timezone_set('Asia/Kolkata');
+                $date = date('Y-m-d',time());
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/2017-01-18');
+                curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/'.$date);
                 curl_setopt($ch, CURLOPT_HEADER, FALSE);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
                 $head = curl_exec($ch); 
-                \Log::info('from schedule');
+                \Log::info('from schedule ++++++>> ');
                 \Log::info($head);
             }
             catch(\Exception $e)
@@ -43,7 +47,7 @@ class Kernel extends ConsoleKernel
                 Log::info('from catch block'.$e);
             }
            
-        })dailyAt('1:00');
+        })->dailyAt('23:30');
          \Log::info(date('Y-m-d',time()));
        
     }
