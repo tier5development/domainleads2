@@ -125,14 +125,27 @@ form{
 		<div class="container">
 
 			<div class="navbar-header">
-                @if(Session::has('msg'))
-                {{ Session::get('msg')}}
-                @endif
+			
+                <?php if(Session::has('emailID_list')){
+                   $emailID_list=Session::get('emailID_list');
+                   
+                }else {
+                 $emailID_list=array();
+
+                }
+                
+               ?>
+                 
 			</div>
 
 			<!-- form elements -->
 
+            <form style="margin-left: 1000px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
+		 <button class="btn btn-primary" id="exportID">Export</button>
 
+		</form>
 			<div>
 				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
 			</div>
@@ -158,7 +171,7 @@ form{
 							<input type="date" value="{{old('domains_create_date')}}" name="domains_create_date" id="registered_date" class="form-control">
 						</div>
 						<div class="from-group">
-							<label>Select Domains Extensions</label>
+							<label>Select Domains Extensions</label> 
 							<dl class="dropdown"> 
 							    <dt>
 								    <a href="#">
@@ -250,6 +263,7 @@ form{
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
 						<th>Check box</th>
+						<th>Download CSV & Create Website</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -267,14 +281,28 @@ form{
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
 							@else
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
+								
 							@endif
-							@if(isset($chkWebsite_array[$each->registrant_email]))
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Checked website</button>
-							@else
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')">Check website</button>
-							@endif
+							
 							 
 							
+						</th>
+						<th>
+                            @if(isset($chkWebsite_array[$each->registrant_email]))
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Created website</button>
+							@else
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" >Create website</button>
+							@endif
+							<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}"  @if(in_array($each->registrant_email, $emailID_list)) {{'checked'}}  @endif >
+							@if(isset($users_array[$each->registrant_email]))
+								
+							@else
+								
+								<!--<small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+								</small>
+								<small id="hideCSV_{{$key}}">***</small>-->
+
+							@endif
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
@@ -356,6 +384,38 @@ form{
 		
 </body>
 	<script>
+   
+
+	    $('.eachrow_download').click(function(event){
+        var _token='{{csrf_token()}}';
+		  // $("#domains_for_export_id_allChecked").val(0);
+		  // $(".downloadcsv_all").prop( "checked", false);
+		   var id=$(this).attr('id');
+		   var emailID=$(this).attr('emailID');
+			    if($("#"+id).is(':checked')) {
+			    var  isChecked=1;
+			    } else {
+			    var  isChecked=0;
+			     
+			    }
+		        
+		        
+			     
+			     $.ajax({
+	               type:'POST',
+	               url:'storechkboxvariable',
+	               beforeSend: function()
+						{
+							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						},
+	               data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
+	               success:function(response){
+	               	 
+	                 
+	               }
+                });
+	   
+ 	    });
 		function unlock(reg_em , key)
 		{
 			var id = '{{\Auth::user()->id}}';
@@ -375,6 +435,8 @@ form{
 					$('#ch_'+key).prop('checked'	, true);
 					$('#ch_'+key).prop('disabled'	, true);
 					$('#unlocked_num_'+key).text(response.unlocked_num);
+					$('#showCSV_'+key).show();
+					$('#hideCSV_'+key).hide();
 				}
 			});
 		}

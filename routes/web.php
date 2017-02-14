@@ -60,9 +60,14 @@ Route::get('/tst' , function()
 
 	Route::post('/importExcel', 'ImportExport@importExcel'); // new version of import exel
 
+     Route::get('downloadExcel', 'SearchController@downloadExcel');
+    //Route::get('downloadExcel' , ['uses'=>'SearchController@downloadExcel','as'=>'downloadExcel']);
 
 	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
+
+    Route::post('chkWebsiteForDomain' , ['uses'=>'SearchController@chkWebsiteForDomain','as'=>'chkWebsiteForDomain']);
+    Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
 
 	Route::get('/myLeads/{id}',['uses'=>'SearchController@myLeads','as'=>'myLeads']);
 	Route::post('/unlockleed' , ['uses'=>'SearchController@unlockleed','as'=>'unlockleed']);
