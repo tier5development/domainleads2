@@ -131,7 +131,12 @@ form{
 			</div>
 
 			<!-- form elements -->
+             <form style="margin-left: 1000px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+		         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+		         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
+				 <button class="btn btn-primary" id="exportID">Export</button>
 
+		    </form>
 
 			<div>
 				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
@@ -247,7 +252,7 @@ form{
 
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
-						<th>Check box</th>
+						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> & Create Website</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -261,11 +266,9 @@ form{
 					<tr>
 
 						<th>
-							
-								
-							
-							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Check website</button>
-							
+						
+							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Create website</button>
+							<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
 						</th>
 						<th>
 							
