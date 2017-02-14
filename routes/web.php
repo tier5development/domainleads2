@@ -43,11 +43,12 @@ Route::get('/tst' , function()
 	$x = \App\Lead::pluck('registrant_country','registrant_state')->toArray();
 
     dd($x);
-    
+
 	//dd($x);
 });
 
-	Route::get('/importExeclfromCron',['uses'=>'ImportExport@importExeclfromCron']);
+	Route::get('/importExeclfromCron/{date}',['uses'=>'ImportExport@importExeclfromCron',
+		'as'=>'importExeclfromCron']);
 
 
 	Route::post('/signme','AccountController@signme' );

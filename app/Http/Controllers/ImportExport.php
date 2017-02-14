@@ -9,6 +9,7 @@ use \App\Lead;
 use \App\EachDomain;
 use DB;
 use Carbon\Carbon;
+use Zipper;
 
 
 class ImportExport extends Controller
@@ -255,38 +256,51 @@ class ImportExport extends Controller
         //$x = new ImportCsvFile($file);
     }
 
-    public function importExeclfromCron()
-    {
-        //\Log::info('kjfy klyuf kuyf liug');
+    public function importExeclfromCron($date)
+    {   
+     
+      $user = 't5ilmpnba';
+      $pass = '4on9sq6ae8lMRVHCZxp2';  //+++++++ date format :: '2017-01-18';
 
-        //dd('/kuyftg loiut7g ');
+      
 
-        // exec("sudo wget http://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@download.whoxy.com/newly-registered-whois/whois-proxies-removed/2017-01-18_whois-proxies-removed.zip -P /var/www/html/domainleads2/",$e);
+      $start = microtime(true);
+      try{
 
-        //$data = file_get_contents("http://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@download.whoxy.com/newly-registered-whois/whois-proxies-removed/2017-01-18_whois-proxies-removed.zip -P /var/www/html/domainleads2/");
 
-        exec('sudo -S tier 5 wget http://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@download.whoxy.com/newly-registered-whois/whois-proxies-removed/2017-01-18_whois-proxies-removed.zip -P /var/www/html/domainleads2/ ');
-
-        //dd($array);
-
-        // $zip = new \ZipArchive;
-        // $res = $zip->open($data);
-        // if ($res === TRUE) 
-        // {
-        //   $zip->extractTo('/myzips/extract_path/');
-        //   $zip->close();
-        //   echo 'woot!';
-        // } 
-        // else 
-        // {
-        //   echo 'doh!';
-        // }
-       // $x = readgzfile($data);
-        dd('over');
-        
+            $data = file_get_contents("http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip -P /var/www/html/domainleads2/ -O /var/www/html/domainleads2/");
 
         
+            file_put_contents(getcwd().'/zip/'.$date.'_whois-proxies-removed.zip',$data);
+        
+            Zipper::make('/var/www/html/domainleads2/zip/'.$date.'_whois-proxies-removed.zip')->extractTo('/var/www/html/domainleads2/unzip/');
+
+
+            $filepath = '/var/www/html/domainleads2/unzip/'.$date.'_whois-proxies-removed.csv';
+            $file  = fopen($filepath , 'r');
+            $this->insertion_Execl($file);
+
+            $end = microtime(true);
+      
+            $result = \Response::json(array(
+            'insertion_time ' => $end-$start,
+            'status'          => 'success'));
+
+
+            \Log::info('from importExeclfromCron.. '.$result);
+            dd($result);
+
+
+
+      }
+      catch(\Exception $e)
+      {
+        dd($e->getMessage());
+      }
+
     }
+
+    
 
 
     public function insertion_Execl($file)
@@ -422,40 +436,36 @@ class ImportExport extends Controller
                 $DOMIANS_NAMESERVER .= '('.$domains_nameserver.')';
                 $DOMAINS_STATUS .= '('.$domains_status .')';
 
-              //  if($counter == 4)
-                // dd($VALID_PHONE);
+                if($counter%$BATCH == 0)
+                {
+                  
 
+                  $st = microtime(true);
+                  $this->execute_batch_query($leads_head    ,$LEADS
+                          ,$valid_phone_head            ,$VALID_PHONE
+                          ,$each_domains_head           ,$EACH_DOMAINS
+                          ,$domains_info_head           ,$DOMAINS_INFO
+                          ,$domains_administrative_head , $DOMAINS_ADMINISTRATIVE
+                          ,$domains_technical_head      , $DOMIANS_TECHNICAL
+                          ,$domains_billing_head        , $DOMIANS_BILLING
+                          ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
+                          ,$domains_status_head         , $DOMAINS_STATUS);
+                  $ed = microtime(true)-$st;
 
-                  if($counter%$BATCH == 0)
-                  {
-                    
+                  //echo('time = '.$ed.'<br>');
 
-                    $st = microtime(true);
-                    $this->execute_batch_query($leads_head    ,$LEADS
-                            ,$valid_phone_head            ,$VALID_PHONE
-                            ,$each_domains_head           ,$EACH_DOMAINS
-                            ,$domains_info_head           ,$DOMAINS_INFO
-                            ,$domains_administrative_head , $DOMAINS_ADMINISTRATIVE
-                            ,$domains_technical_head      , $DOMIANS_TECHNICAL
-                            ,$domains_billing_head        , $DOMIANS_BILLING
-                            ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
-                            ,$domains_status_head         , $DOMAINS_STATUS);
-                    $ed = microtime(true)-$st;
+                  $LEADS          = '';
+                  $EACH_DOMAINS       = '';
+                  $DOMAINS_INFO       = '';
+                  $DOMAINS_ADMINISTRATIVE = ''; 
+                  $DOMIANS_TECHNICAL    = '';
+                  $DOMIANS_BILLING    = '';
+                  $DOMIANS_NAMESERVER   = '';
+                  $DOMAINS_STATUS     = '';
 
-                    echo('time = '.$ed.'<br>');
-
-                    $LEADS          = '';
-                    $EACH_DOMAINS       = '';
-                    $DOMAINS_INFO       = '';
-                    $DOMAINS_ADMINISTRATIVE = ''; 
-                    $DOMIANS_TECHNICAL    = '';
-                    $DOMIANS_BILLING    = '';
-                    $DOMIANS_NAMESERVER   = '';
-                    $DOMAINS_STATUS     = '';
-
-                    //dd('first_batch_complete');
-                    
-                  }
+                  //dd('first_batch_complete');
+                  
+                }
               }
               else
               {
@@ -472,9 +482,6 @@ class ImportExport extends Controller
                         ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                         ,$domains_status_head         , $DOMAINS_STATUS);
                   $ed = microtime(true)-$st;
-
-                  echo('time = '.$ed . '<br>');
-
                 }
                 break;
             }
@@ -486,11 +493,11 @@ class ImportExport extends Controller
 
 
       $end = microtime(true) - $start;
-      echo('TOTAL TIME: ' . $end . " seconds");
+      //echo('TOTAL TIME: ' . $end . " seconds");
 
       \Log::info('TOTAL TIME: ' . $end . " seconds");
 
-
+      return;
      
     }
 
@@ -507,8 +514,8 @@ class ImportExport extends Controller
       // WHERE registrant_email IN ('info1@gctld.com','616822783@qq.com')
 
     //delete
-//     delete from `leads`
-// where registrant_email in ('ramyzaidan@qatar.net.qa', '2717410431@qq.com');
+    //     delete from `leads`
+    // where registrant_email in ('ramyzaidan@qatar.net.qa', '2717410431@qq.com');
 
 
 

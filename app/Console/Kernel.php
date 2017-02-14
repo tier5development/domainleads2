@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Console;
-
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use \Route;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,8 +25,27 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        
+        $schedule->call(function () {
+            try{
+                //return redirect()->route(url('/').'importExeclfromCron', ['date' => date('Y-m-d',time())]);
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/2017-01-18');
+                curl_setopt($ch, CURLOPT_HEADER, FALSE);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                $head = curl_exec($ch); 
+                \Log::info('from schedule');
+                \Log::info($head);
+            }
+            catch(\Exception $e)
+            {
+                Log::info('from catch block'.$e);
+            }
+           
+        })dailyAt('1:00');
+         \Log::info(date('Y-m-d',time()));
+       
     }
 
     /**

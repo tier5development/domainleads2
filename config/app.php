@@ -179,6 +179,7 @@ return [
 
 
         App\Providers\HelperServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
 
     ],
 
@@ -229,6 +230,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         //'MyHelper' => \App\Helpers\ph_no_validate::class,
+        'Zipper' => 'Chumper\Zipper\Zipper',
 
     ],
 
