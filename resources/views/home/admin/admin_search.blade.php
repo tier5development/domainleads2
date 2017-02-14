@@ -208,7 +208,6 @@ form{
 								</select>
 							
 
-
 						</div>
 
 						<div>
@@ -220,7 +219,6 @@ form{
 								<option value="domain_count_dcnd">domain_count_dcnd</option>
 							</select>
 						</div>
-
 
 						
 
@@ -263,25 +261,16 @@ form{
 					<tr>
 
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
-							@else
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
-							@endif
-							@if(isset($chkWebsite_array[$each->registrant_email]))
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Checked website</button>
-							@else
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')">Check website</button>
-							@endif
-							 
+							
+								
+							
+							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Check website</button>
 							
 						</th>
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
+							
 								<small id="domain_name_{{$key}}"><b>{{$each->each_domain->first()->domain_name}}</b></small>
-							@else
-								<small id="domain_name_{{$key}}">***</small>
-							@endif
+							
 							<br>
 							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
 							<br>
@@ -289,40 +278,30 @@ form{
 							<!-- leadArr[$each->registrant_email] -->
 						</th>
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
+							
 								<small id="registrant_name_{{$key}}">{{$each->registrant_name}}</small>
-							@else
-								<small id="registrant_name_{{$key}}">***</small>
-							@endif
+							
 
 						</th>
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
+							
 								<small id="registrant_email_{{$key}}">{{$each->registrant_email}}</small>
-							@else
-								<small id="registrant_email_{{$key}}">***</small>
-							@endif
+							
 						</th>
 						<th>
-							@if(isset($users_array[$each->registrant_email]))	
+							
 								<small id="registrant_phone_{{$key}}">{{$each->registrant_phone}}</small>
-							@else
-								<small id="registrant_phone_{{$key}}">***</small>
-							@endif
+							
 						</th>
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
+							
 								<small id="domains_create_date_{{$key}}">{{$each->first()->each_domain->first()->domains_info->domains_create_date}}</small>
-							@else
-								<small id="domains_create_date_{{$key}}">***</small>
-							@endif
+							
 						</th>
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
+							
 								<small id="registrant_company_{{$key}}">{{$each->registrant_company}}</small>
-							@else
-								<small id="registrant_company_{{$key}}">***</small>
-							@endif
+							
 						</th>
 					</tr>
 					@endforeach
@@ -356,28 +335,7 @@ form{
 		
 </body>
 	<script>
-		function unlock(reg_em , key)
-		{
-			var id = '{{\Auth::user()->id}}';
-			$.ajax({
-				type : 'POST',
-				url  : '/unlockleed',
-				data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
-				success :function(response)
-				{
-					console.log(response);
-					$('#domain_name_'+key).text(response.domain_name);
-					$('#registrant_email_'+key).text(response.registrant_email);
-					$('#registrant_name_'+key).text(response.registrant_name);
-					$('#registrant_phone_'+key).text(response.registrant_phone);
-					$('#registrant_company_'+key).text(response.registrant_company);
-					$('#domains_create_date_'+key).text(response.domains_create_date);
-					$('#ch_'+key).prop('checked'	, true);
-					$('#ch_'+key).prop('disabled'	, true);
-					$('#unlocked_num_'+key).text(response.unlocked_num);
-				}
-			});
-		}
+		
 	  	$(function(){
 	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
 	  	});
@@ -428,12 +386,11 @@ form{
 	});
 	</script>
 
-	<script type="text/javascript"> 
+	<script type="text/javascript">
 	
 
-	    function chkDomainForWebsite(domain_name,key,registrant_email){
+	    function chkDomainForWebsite(domain_name,key){
            var _token='{{csrf_token()}}';
-           var user_id = '{{\Auth::user()->id}}';
            $.ajax({
                type:'POST',
                url:'chkWebsiteForDomain',
@@ -441,12 +398,11 @@ form{
 					{
 						$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
 					},
-               data:'domain_name='+domain_name+'&_token='+_token+'&registrant_email='+registrant_email+'&user_id='+user_id,
-               success:function(response){
-               	  $("#myLargeModalLabel").text(response.message);
+               data:'domain_name='+domain_name+'&_token='+_token,
+               success:function(data){
+               	  $("#myLargeModalLabel").text(data);
                   $("#popupid_for_domainexists").trigger('click');
-                  $('#chkDomainForWebsiteID_'+key).html('Checked website');
-                   $('#chkDomainForWebsiteID_'+key).prop("disabled",true);
+                  $('#chkDomainForWebsiteID_'+key).html('Check website');
                  
                }
             });

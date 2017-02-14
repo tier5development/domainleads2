@@ -139,7 +139,9 @@ class SearchController extends Controller
 
         if($request->all())
         {
-
+          if(isset($request->domain_ext) && sizeof($request->domain_ext)>0 )
+            $domain_ext = $request->domain_ext;
+          //dd($request->domain_ext);
           $allrecords = Lead::with('each_domain','valid_phone');
       
             $st = microtime(true);
@@ -164,6 +166,18 @@ class SearchController extends Controller
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
                             $query->where($key, 'like', '%'.$req.'%');
                         });
+                    }
+                    else if($key == 'domain_ext')
+                    {
+                        //dd($domain_ext);
+                        //$allrecords->whereIn('domain_ext',$domain_ext);
+
+                        $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req,$domain_ext){
+                            $query->whereIn($key,$domain_ext);
+                            //dd($query);
+                        });
+
+                        
                     }
                     else if($key == 'domains_create_date')
                     {
@@ -201,27 +215,28 @@ class SearchController extends Controller
                         }
                         else if($req == 'domain_count_asnd')
                         {
-                            $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
-                            ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-                            ->groupBy('leads.registrant_email')
-                            ->orderBy('aggregate', 'asc');
+
+                            $allrecords = $allrecords->orderBy('domains_count','asc');
+
+                            // $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
+                            // ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
+                            // ->groupBy('leads.registrant_email')
+                            // ->orderBy('aggregate', 'asc');
                         }
                         else if($req == 'domain_count_dcnd') 
                         {
-                            $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
-                            ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-                            ->groupBy('leads.registrant_email')
-                            ->orderBy('aggregate', 'desc');
+                            $allrecords = $allrecords->orderBy('domains_count','desc');
+                            // $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
+                            // ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
+                            // ->groupBy('leads.registrant_email')
+                            // ->orderBy('aggregate', 'desc');
                         }
                     }
                 }
 
             }
 
-           
-           
-             
-            
+
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
             
 
@@ -269,6 +284,7 @@ class SearchController extends Controller
 
             
             // $tst = $allrecords->pluck('domains_count','registrant_email')->toArray();
+            // //dd($tst);
             // foreach($tst as $key=>$val)
             // {
             //     if($leadArr[$key] != $tst[$key])
@@ -282,7 +298,19 @@ class SearchController extends Controller
             //dd($en-$st);
             //dd($allrecords);
 
-            
+            if(\Auth::user()->user_type == 2)
+            {
+                return view('home.admin.admin_search',[
+
+                    'record' => $allrecords->paginate($request->pagination), 
+                    'leadArr'=>$leadArr , 
+                    'totalDomains'=>$totalDomains,
+                    'users_array'=>$users_array
+
+                  ]);
+
+                  
+            }
 
 
             return view('home.search' , 
