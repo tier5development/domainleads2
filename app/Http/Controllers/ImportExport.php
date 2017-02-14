@@ -61,7 +61,7 @@ class ImportExport extends Controller
   }
 
   public function validate_phone_query_builder($num , $registrant_email,$i , $created_at , $updated_at)
-  {
+  { 
   		
 
   		$str = '';

@@ -254,7 +254,7 @@ class SearchController extends Controller
             $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
             
 
-            // $users_array = array_flip($users_array);
+            $users_array = array_flip($users_array);
 
             
             // $tst = $allrecords->pluck('domains_count','registrant_email')->toArray();
