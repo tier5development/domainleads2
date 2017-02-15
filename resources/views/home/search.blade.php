@@ -3,7 +3,6 @@
 <head>
 
 	<title>Search</title>
-	 
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
 
@@ -135,6 +134,10 @@ form{
 
 			<div>
 				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
+			</div>
+
+			<div>
+				<i class="fa fa-mobile" aria-hidden="true"></i>
 			</div>
 
 
@@ -299,9 +302,50 @@ form{
 						<th>
 							@if(isset($users_array[$each->registrant_email]))	
 								<small id="registrant_phone_{{$key}}">{{$each->registrant_phone}}</small>
+
+								@if(isset($each->valid_phone)) 
+
+									@if($each->valid_phone->number_type == "Cell Number")
+									<img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
+
+								
+
+									@elseif($each->valid_phone->number_type == "Landline")
+									<img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
+
+									@endif
+
+								@endif
+
+							
+
 							@else
 								<small id="registrant_phone_{{$key}}">***</small>
+
+								@if(isset($each->valid_phone)) 
+
+									@if($each->valid_phone->number_type == "Cell Number")
+									<img  id="phone_{{$key}}" style="width:20px; height:40px; display:none" src="{{url('/')}}/images/phone.png">
+
+								
+
+									@elseif($each->valid_phone->number_type == "Landline")
+									<img id="phone_{{$key}}" style="width:30px; height:40px; display:none" src="{{url('/')}}/images/landline.png">
+
+									@endif
+
+								@endif
+
+
 							@endif
+
+							<br>
+
+
+
+							
+
+							
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
@@ -365,6 +409,7 @@ form{
 					$('#registrant_phone_'+key).text(response.registrant_phone);
 					$('#registrant_company_'+key).text(response.registrant_company);
 					$('#domains_create_date_'+key).text(response.domains_create_date);
+					$('#phone_'+key).show();
 					$('#ch_'+key).prop('checked'	, true);
 					$('#ch_'+key).prop('disabled'	, true);
 					$('#unlocked_num_'+key).text(response.unlocked_num);

@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
                 $result = json_decode($head,true);
 
                 \Log::info('from schedule ++++++>> STATUS : '.$result['status']);
-                \Log::info($head);
+                \Log::info($result);
             }
             catch(\Exception $e)
             {

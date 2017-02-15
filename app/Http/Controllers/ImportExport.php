@@ -276,7 +276,6 @@ class ImportExport extends Controller
             $data = file_get_contents($str);
             file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
             Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
-            
 
             $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
             $file  = fopen($filepath , 'r');
@@ -374,7 +373,7 @@ class ImportExport extends Controller
         $DOMIANS_NAMESERVER       = '';
         $DOMAINS_STATUS          = '';
 
-        $BATCH  = 20000; // to insert 20000 data at 1 go 
+        $BATCH  = 30000; // to insert 30000 data at 1 go 
 
       
         $counter = 0;
@@ -542,7 +541,8 @@ class ImportExport extends Controller
           $leads_head .= $query;
           $leads_head .= " END WHERE registrant_email IN ".$reg_em;
 
-          try{
+          try
+          {
             DB::statement($leads_head);
           }
           catch(\Exception $e)
@@ -563,8 +563,14 @@ class ImportExport extends Controller
   {
     //dummy check
   	//dd ($this->validateUSPhoneNumber($num));	
+    //$this->create();
+    //print_r($this->validateUSPhoneNumber($num)); 
 
-    $x = Lead::pluck('registrant_country','registrant_state','registrant_email')->toArray();
+    $x = \App\ValidatedPhone::where('phone_number','like', '%'.$num.'%')->first();
+
+    dd($x);
+     
+    //$x = Lead::pluck('registrant_country','registrant_state','registrant_email')->toArray();
 
     dd($x);
   }

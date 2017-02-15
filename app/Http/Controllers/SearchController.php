@@ -151,10 +151,8 @@ class SearchController extends Controller
             $st = microtime(true);
             foreach($request->all() as $key => $req)
             {         
-
                 if(!is_null($request->$key))
                 {
-
                     //var_dump($key.'<br>');
                     if($key == 'registrant_country')
                     {
@@ -177,18 +175,16 @@ class SearchController extends Controller
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req,$domain_ext){
                             $query->whereIn($key,$domain_ext);
                         });
-
-                        
                     }
                     else if($key == 'domains_create_date')
                     {
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
                             $query->whereHas('domains_info',function($q) use($key,$req){
+                              
                                 $q->where($key,$req);
                             });
                         });
                     }
-                    
                     //applying sort filter
                     else if ($key == 'sort') 
                     {
@@ -212,18 +208,73 @@ class SearchController extends Controller
                 }
 
             }
-            
 
+          
           if(isset($phone_type_array) && sizeof($phone_type_array)>0)
           {
             $allrecords = $allrecords->whereHas('valid_phone' , function($query) use($phone_type_array){
               
                   $query->whereIn('number_type',$phone_type_array);
+                  
               
             });
           }
 
+
+
+
+
+
+          // $l_mr = array();
+          // foreach($allrecords->get() as $each)
+          // {
+          //   $l_mr[$each->registrant_email] = $each->valid_phone->number_type;
+          // }
           
+
+
+          // $allrecords1 = $allrecords;
+          // $allrecords2 = $allrecords;
+          // // $landline = null;
+          // // $l_ar = array();
+          // // $m_ar = array();
+          
+          //   $landline = $allrecords1->whereHas('valid_phone' , function($query) use($phone_type_array){
+              
+          //         $query->where('number_type','Landline');
+                  
+          //   });
+          
+          // foreach ($landline->get() as $each) 
+          // {
+          //   $l_ar[$each->registrant_email] = $each->valid_phone->number_type;
+          // }
+          // dd($l_ar);
+
+          
+
+          // $mobile = null;
+          
+          //   $mobile = $allrecords2->whereHas('valid_phone' , function($query) use($phone_type_array){
+              
+          //         $query->where('number_type','Cell NUmber');
+                  
+          //   });
+          
+          // foreach ($mobile->get() as $each) 
+          // {
+          //   $m_ar[$each->registrant_email] = $each->valid_phone->number_type;
+          // }
+          
+
+          // //$Arr = array_merge($l_ar,$m_ar);
+          // //dd($l_ar);
+          // dd($m_ar);
+          // foreach ($l_mr as $key => $value) 
+          // {
+          //     if()
+          // }
+
 
 
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();

@@ -291,6 +291,20 @@ form{
 						<th>
 							
 								<small id="registrant_phone_{{$key}}">{{$each->registrant_phone}}</small>
+
+								@if(isset($each->valid_phone)) 
+
+									@if($each->valid_phone->number_type == "Cell Number")
+									<img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
+
+								
+
+									@elseif($each->valid_phone->number_type == "Landline")
+									<img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
+
+									@endif
+
+								@endif
 							
 						</th>
 						<th>
