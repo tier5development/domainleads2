@@ -184,7 +184,7 @@ class ImportExport extends Controller
         $q_domains_status = "REPLACE `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
 
-          dd($q_leads);
+          //dd($q_leads);
           DB::statement($q_leads);
           if(isset($q_valid_phone)) DB::statement($q_valid_phone);
           DB::statement($q_each_domains);
@@ -247,13 +247,16 @@ class ImportExport extends Controller
 
   	public function importExcel(Request $request)
   	{
+      //dd('here');
+        $start = microtime(true);
     	  $this->create();
-      
       	$upload = $request->file('import_file');
       	$filepath = $upload->getRealPath();
       	$file  = fopen($filepath , 'r');
         $this->insertion_Execl($file);
         fclose($file);
+        $end = microtime(true) - $start;
+        echo('TOTAL TIME TAKEN :: '.$end);
         //$x = new ImportCsvFile($file);
     }
 
@@ -373,7 +376,7 @@ class ImportExport extends Controller
         $DOMIANS_NAMESERVER       = '';
         $DOMAINS_STATUS          = '';
 
-        $BATCH  = 3; // to insert 30000 data at 1 go 
+        $BATCH  = 20000; // to insert 20000 data at 1 go 
 
       
         $counter = 0;
