@@ -263,7 +263,7 @@ form{
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
 						<th>Check box</th>
-						<th>Download CSV & Create Website</th>
+						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> & Create Website</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -293,14 +293,14 @@ form{
 							@else
 								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" >Create website</button>
 							@endif
-							<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}"  @if(in_array($each->registrant_email, $emailID_list)) {{'checked'}}  @endif >
+							
 							@if(isset($users_array[$each->registrant_email]))
-								
+								<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}"  @if(in_array($each->registrant_email, $emailID_list)) {{'checked'}}  @endif >
 							@else
 								
-								<!--<small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+								<small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
 								</small>
-								<small id="hideCSV_{{$key}}">***</small>-->
+								<small id="hideCSV_{{$key}}">***</small>
 
 							@endif
 						</th>
@@ -385,9 +385,9 @@ form{
 </body>
 	<script>
    
-
+          var _token='{{csrf_token()}}';
 	    $('.eachrow_download').click(function(event){
-        var _token='{{csrf_token()}}';
+       
 		  // $("#domains_for_export_id_allChecked").val(0);
 		  // $(".downloadcsv_all").prop( "checked", false);
 		   var id=$(this).attr('id');
@@ -491,7 +491,32 @@ form{
 	</script>
 
 	<script type="text/javascript"> 
-	
+	    $('.downloadcsv_all').click(function(event){
+   
+	        $("#domains_for_export_id").val('');
+	        
+		    if($(this).is(':checked')) {
+		      $(".eachrow_download").prop( "checked", true);
+		      $("#domains_for_export_id_allChecked").val(1);
+		    } else {
+		       $(".eachrow_download").prop( "checked", false);
+		       $("#domains_for_export_id_allChecked").val(0);
+		    }
+             $.ajax({
+	               type:'POST',
+	               url:'removeChkedEmailfromSession',
+	               beforeSend: function()
+						{
+							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						},
+	               data:'_token='+_token,
+	               success:function(response){
+	               	 
+	                 
+	               }
+                }); 
+	   
+        });
 
 	    function chkDomainForWebsite(domain_name,key,registrant_email){
            var _token='{{csrf_token()}}';
@@ -507,7 +532,7 @@ form{
                success:function(response){
                	  $("#myLargeModalLabel").text(response.message);
                   $("#popupid_for_domainexists").trigger('click');
-                  $('#chkDomainForWebsiteID_'+key).html('Checked website');
+                  $('#chkDomainForWebsiteID_'+key).html('Created website');
                    $('#chkDomainForWebsiteID_'+key).prop("disabled",true);
                  
                }

@@ -125,37 +125,104 @@ form{
 		<div class="container">
 
 			<div class="navbar-header">
-                @if(Session::has('msg'))
-                {{ Session::get('msg')}}
-                @endif
-			</div>
+                  <?php if(Session::has('emailID_list')){
+                   $emailID_list=Session::get('emailID_list');
+                   
+                   }else {
+                    $emailID_list=array();
 
+                   }
+
+                     $domainExtarray=Input::all();
+                     if (array_key_exists("domain_ext",$domainExtarray)){
+                     	 if (!array_key_exists("0",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][0]='';	
+                     	 }	
+                     	 if (!array_key_exists("1",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][1]='';	
+                     	 }
+                     	 if (!array_key_exists("2",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][2]='';	
+                     	 }
+                     	 if (!array_key_exists("3",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][3]='';	
+                     	 }
+                     	 if (!array_key_exists("4",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][4]='';	
+                     	 }
+                     	 if (!array_key_exists("5",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][5]='';	
+                     	 }
+                     	 if (!array_key_exists("6",$domainExtarray['domain_ext'])){
+                              $domainExtarray['domain_ext'][6]='';	
+                     	 }
+                        
+                     }else{
+                       $domainExtarray['domain_ext'][0]='';	
+                       $domainExtarray['domain_ext'][1]='';	
+                       $domainExtarray['domain_ext'][2]='';	
+                       $domainExtarray['domain_ext'][3]='';	
+                       $domainExtarray['domain_ext'][4]='';	
+                       $domainExtarray['domain_ext'][5]='';	
+                       $domainExtarray['domain_ext'][6]='';	
+                     }
+                     
+			
+               ?>
+			</div>
+        
 			<!-- form elements -->
-             
+             <form style="margin-left: 1000px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+	         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+	         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
+             <input type="hidden" name="domain_name_downloadExcel"  value="{{ Input::get('domain_name') }}" />
+             <input type="hidden" name="registrant_country_downloadExcel" id="registrant_country" value="{{ Input::get('registrant_country') }}" />
+             <input type="hidden" name="registrant_state_downloadExcel"  class="" value="{{ Input::get('registrant_state') }}" />
+
+             <input type="hidden" name="domains_create_date_downloadExcel"  class="" value="{{ Input::get('domains_create_date') }}" />
+
+            
+	        <input type="hidden" name="tdl_com_downloadExcel" value="{{ $domainExtarray['domain_ext'][0] }}" >
+	        <input type="hidden" name="tdl_io_downloadExcel" value="{{ $domainExtarray['domain_ext'][1] }}">
+	        <input type="hidden" name="tdl_net_downloadExcel" value="{{ $domainExtarray['domain_ext'][2] }}" >
+	        <input type="hidden" name="tdl_org_downloadExcel" value="{{ $domainExtarray['domain_ext'][3] }}">
+	        
+            <input type="hidden" name="tdl_gov_downloadExcel" value="{{ $domainExtarray['domain_ext'][4] }}">
+            <input type="hidden" name="tdl_edu_downloadExcel" value="{{$domainExtarray['domain_ext'][5]}}" >
+            <input type="hidden" name="tdl_in_downloadExcel" value="{{$domainExtarray['domain_ext'][6]}}" >
+
+	         <input type="hidden" name="cell_number_downloadExcel" value="{{ Input::get('cell_number') }}" >
+	         <input type="hidden" name="landline_downloadExcel" value="{{ Input::get('landline_number') }}">
+             <input type="hidden" name="filterOption_downloadExcel" value="{{ Input::get('sort') }}">
+	         <input type="hidden" name="_token" value="{{csrf_token()}}">
+			 <button class="btn btn-primary" id="exportID">Export</button>
+
+			</form>
 
 			<div>
+			
 				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
 			</div>
 
 
 			<div class="col-md-12">
 
-				<form method="POST" action="{{Route('search')}}" class="col-md-6">
+				<form method="POST" action="{{Route('search')}}" class="col-md-6" id="postSearchDataForm">
 						<div class="form-group">
 							<label>Domain Name : </label>
-							<input type="text" value="{{ old('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
+							<input type="text" value="{{ Input::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Registrant Country : </label>
-							<input type="text" value="{{old('registrant_country')}}" name="registrant_country" id="registrant_country" class="form-control">
+							<input type="text" value="{{ Input::get('registrant_country') }}" name="registrant_country" id="registrant_country" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Registrant State : </label>
-							<input type="text" value="{{old('registrant_state')}}" name="registrant_state" id="registrant_state" class="form-control">
+							<input type="text" value="{{ Input::get('registrant_state') }}" name="registrant_state" id="registrant_state" class="form-control">
 						</div>
 						<div class="form-group">
 							<label>Domains Create Date</label>
-							<input type="date" value="{{old('domains_create_date')}}" name="domains_create_date" id="registered_date" class="form-control">
+							<input type="date" value="{{ Input::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control">
 						</div>
 						<div class="from-group">
 							<label>Select Domains Extensions</label>
@@ -171,19 +238,19 @@ form{
 							        <div class="mutliSelect">
 							            <ul>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[0]" value="com" />com</li>
+							                    <input type="checkbox" name="domain_ext[0]" value="com" @if($domainExtarray['domain_ext'][0]=='com') checked @endif/>com</li>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[1]" value="io" />io</li>
+							                    <input type="checkbox" name="domain_ext[1]" value="io" @if($domainExtarray['domain_ext'][1]=='io') checked @endif />io</li>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[2]" value="net" />net</li>
+							                    <input type="checkbox" name="domain_ext[2]" value="net" @if($domainExtarray['domain_ext'][2]=='net') checked @endif />net</li>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[3]" value="org" />org</li>
+							                    <input type="checkbox" name="domain_ext[3]" value="org" @if($domainExtarray['domain_ext'][3]=='org') checked @endif />org</li>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[4]" value="gov" />gov</li>
+							                    <input type="checkbox" name="domain_ext[4]" value="gov" @if($domainExtarray['domain_ext'][4]=='gov') checked @endif/>gov</li>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[5]" value="edu" />edu</li>
+							                    <input type="checkbox" name="domain_ext[5]" value="edu" @if($domainExtarray['domain_ext'][5]=='edu') checked @endif />edu</li>
 							                <li>
-							                    <input type="checkbox" name="domain_ext[6]" value="in" />in</li>
+							                    <input type="checkbox" name="domain_ext[6]" value="in" @if($domainExtarray['domain_ext'][6]=='in') checked @endif/>in</li>
 							            </ul>
 							        </div>
 							    </dd>
@@ -192,19 +259,19 @@ form{
 						</div>
 						<div class="form-group">
 							<label>cell number</label>
-							<input type="checkbox" name="cell_number" value="cell number">
+							<input type="checkbox" name="cell_number" value="cell number" @if(Input::get('cell_number')) checked @endif >
 						
 							<label>landline number</label>
-							<input type="checkbox" name="landline_number" value="landline number">
+							<input type="checkbox" name="landline_number" value="landline number" @if(Input::get('landline_number')) checked @endif>
 
 							
 								<label>Data Per-Page</label>
 								<select id="pagination" name="pagination">
-									<option value="20">20</option>
-									<option value="20">50</option>
-									<option value="20">100</option>
-									<option value="20">500</option>
-									<option value="20">1000</option>
+									<option value="20" @if(Input::get('pagination')=='20') selected @endif>20</option>
+									<option value="50" @if(Input::get('pagination')=='50') selected @endif>50</option>
+									<option value="100" @if(Input::get('pagination')=='100') selected @endif>100</option>
+									<option value="500" @if(Input::get('pagination')=='500') selected @endif>500</option>
+									<option value="1000" @if(Input::get('pagination')=='1000') selected @endif>1000</option>
 								</select>
 							
 
@@ -213,21 +280,34 @@ form{
 						<div>
 							<label>Sort filter</label>
 							<select id="sort" name="sort">
-								<option value="unlocked_asnd">unlocked_asnd</option>
-								<option value="unlocked_dcnd">unlocked_dcnd</option>
-								<option value="domain_count_asnd">domain_count_asnd</option>
-								<option value="domain_count_dcnd">domain_count_dcnd</option>
+								<option value="unlocked_asnd" @if(Input::get('sort')=='unlocked_asnd') selected @endif>unlocked_asnd</option>
+								<option value="unlocked_dcnd" @if(Input::get('sort')=='unlocked_dcnd') selected @endif>unlocked_dcnd</option>
+								<option value="domain_count_asnd" @if(Input::get('sort')=='domain_count_asnd') selected @endif>domain_count_asnd</option>
+								<option value="domain_count_dcnd" @if(Input::get('sort')=='domain_count_dcnd') selected @endif>domain_count_dcnd</option>
 							</select>
 						</div>
-
-						
-
-
-
-						
+			
 				
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
+				
+				
+                    <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
+            DomainCount <select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
+            <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
+            <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
+            <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option></select>
+            <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}"> 
+            LeadsUnlocked <select name="gt_ls_leadsunlocked_no" id="gt_ls_leadsunlocked_no" >
+            <option value="0" <?php if(Input::get('gt_ls_leadsunlocked_no')==0) { echo "selected";} ?>>Select</option>
+            <option value="1" <?php if(Input::get('gt_ls_leadsunlocked_no')==1) { echo "selected";} ?>>Greater than</option>
+            <option value="2" <?php if(Input::get('gt_ls_leadsunlocked_no')==2) { echo "selected";} ?>>Lesser Than</option></select>
+            <input type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
+          
+           <div class="btn btn-primary" id="refine_searchID">Refine Search</div>
+          </div>
+
+				
 
 			</form>
 				
@@ -247,7 +327,7 @@ form{
 
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
-						<th>Check box</th>
+						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> & Create Website</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -261,10 +341,13 @@ form{
 					<tr>
 
 						<th>
-							
-								
-							
-							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Check website</button>
+						@if(isset($chkWebsite_array[$each->registrant_email]))
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Created website</button>
+							@else
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" >Create website</button>
+							@endif
+							<small id="showCSV_{{$key}}" ><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+							</small>
 							
 						</th>
 						<th>
@@ -339,6 +422,11 @@ form{
 	  	$(function(){
 	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
 	  	});
+	  	$("#refine_searchID").click(function(){
+
+     	    $("#postSearchDataForm").submit();
+
+        });
   	</script>
 
 
@@ -387,10 +475,66 @@ form{
 	</script>
 
 	<script type="text/javascript">
+	var _token='{{csrf_token()}}';
+	    $('.eachrow_download').click(function(event){
+        
+		  // $("#domains_for_export_id_allChecked").val(0);
+		  // $(".downloadcsv_all").prop( "checked", false);
+		   var id=$(this).attr('id');
+		   var emailID=$(this).attr('emailID');
+			    if($("#"+id).is(':checked')) {
+			    var  isChecked=1;
+			    } else {
+			    var  isChecked=0;
+			     
+			    }
+			     
+			     $.ajax({
+	               type:'POST',
+	               url:'storechkboxvariable',
+	               beforeSend: function()
+						{
+							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						},
+	               data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
+	               success:function(response){
+	               	 
+	                 
+	               }
+                });
+	   
+ 	    });
+	    $('.downloadcsv_all').click(function(event){
+   
+	        $("#domains_for_export_id").val('');
+	        
+		    if($(this).is(':checked')) {
+		      $(".eachrow_download").prop( "checked", true);
+		      $("#domains_for_export_id_allChecked").val(1);
+		    } else {
+		       $(".eachrow_download").prop( "checked", false);
+		       $("#domains_for_export_id_allChecked").val(0);
+		    }
+		    $.ajax({
+	               type:'POST',
+	               url:'removeChkedEmailfromSession',
+	               beforeSend: function()
+						{
+							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						},
+	               data:'_token='+_token,
+	               success:function(response){
+	               	 
+	                 
+	               }
+                }); 
+  
+	   
+        });
 	
-
-	    function chkDomainForWebsite(domain_name,key){
+        function chkDomainForWebsite(domain_name,key,registrant_email){
            var _token='{{csrf_token()}}';
+           var user_id = '{{\Auth::user()->id}}';
            $.ajax({
                type:'POST',
                url:'chkWebsiteForDomain',
@@ -398,11 +542,12 @@ form{
 					{
 						$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
 					},
-               data:'domain_name='+domain_name+'&_token='+_token,
-               success:function(data){
-               	  $("#myLargeModalLabel").text(data);
+               data:'domain_name='+domain_name+'&_token='+_token+'&registrant_email='+registrant_email+'&user_id='+user_id,
+               success:function(response){
+               	  $("#myLargeModalLabel").text(response.message);
                   $("#popupid_for_domainexists").trigger('click');
-                  $('#chkDomainForWebsiteID_'+key).html('Check website');
+                  $('#chkDomainForWebsiteID_'+key).html('Created website');
+                   $('#chkDomainForWebsiteID_'+key).prop("disabled",true);
                  
                }
             });

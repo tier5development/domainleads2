@@ -22,6 +22,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
 use Excel;
+use Input;
 
 
 class SearchController extends Controller
@@ -39,93 +40,110 @@ class SearchController extends Controller
         if($domains_for_export_allChecked==1){
           if($user_type==1){
             $exel_data=DB::table('leadusers')
-                          ->join('leads', 'leads.id', '=', 'leadusers.leads_id')
-                          ->join('domains', 'domains.id', '=', 'leadusers.domain_id')
-                          ->join('validatephone', 'validatephone.user_id', '=', 'leads.id')
-                          ->select('leads.registrant_name as name','domains.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
-                          ->where('leadusers.user_id',$user_id)->get();  
+                          ->join('leads', 'leads.registrant_email', '=', 'leadusers.registrant_email')
+                          ->join('each_domain', 'each_domain.registrant_email', '=', 'leadusers.registrant_email')
+                         
+                          ->select('leads.registrant_name as name','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
+                          ->where('leadusers.user_id',$user_id)
+                          ->groupBy('leads.registrant_email')
+                          ->get();  
 
           }else{
-          $gt_ls_domaincount_no_downloadExcel=$request->gt_ls_domaincount_no_downloadExcel;
-          $domaincount_no_downloadExcel=$request->domaincount_no_downloadExcel;
-          $gt_ls_leadsunlocked_no_downloadExcel=$request->gt_ls_leadsunlocked_no_downloadExcel;
-          $leadsunlocked_no_downloadExcel=$request->leadsunlocked_no_downloadExcel;  
+
+            
+          //$gt_ls_domaincount_no_downloadExcel=$request->gt_ls_domaincount_no_downloadExcel;
+          //$domaincount_no_downloadExcel=$request->domaincount_no_downloadExcel;
+          //$gt_ls_leadsunlocked_no_downloadExcel=$request->gt_ls_leadsunlocked_no_downloadExcel;
+          //$leadsunlocked_no_downloadExcel=$request->leadsunlocked_no_downloadExcel;  
 
           $filterOption_downloadExcel=$request->filterOption_downloadExcel;
-          $create_date=$request->create_date_downloadExcel;
+          $create_date=$request->domains_create_date_downloadExcel;
           $registrant_state=$request->registrant_state_downloadExcel;
           $tdl_com=$request->tdl_com_downloadExcel;
           $tdl_net=$request->tdl_net_downloadExcel;
           $tdl_org=$request->tdl_org_downloadExcel;
           $tdl_io=$request->tdl_io_downloadExcel;
+          $tdl_gov=$request->tdl_gov_downloadExcel;
+          $tdl_edu=$request->tdl_edu_downloadExcel;
+          $tdl_in=$request->tdl_in_downloadExcel;
 
-          $cell_number=$request->cell_number_downloadExcel;
-          $landline=$request->landline_downloadExcel;
+           $cell_number=$request->cell_number_downloadExcel;
+           $landline=$request->landline_downloadExcel;
 
           $phone_number=array();
-          if($cell_number=='1'){
+          if($cell_number=='cell number'){
             $phone_number[]='Cell Number';
           }
-          if($landline=='1'){
+          if($landline=='landline number'){
             $phone_number[]='Landline';
           }
+          //print_r($phone_number);dd();
           $tdl=array();
-          if($tdl_com==1){
+          if($tdl_com=='com'){
            $tdl[]='com'; 
           }
-          if($tdl_net==1){
+          if($tdl_net=='net'){
            $tdl[]='net'; 
           }
-          if($tdl_org==1){
+          if($tdl_org=='org'){
            $tdl[]='org'; 
           }
-          if($tdl_io==1){
+          if($tdl_io=='io'){
            $tdl[]='io'; 
+          }
+          if($tdl_gov=='gov'){
+           $tdl[]='gov'; 
+          }
+          if($tdl_edu=='edu'){
+           $tdl[]='edu'; 
+          }
+          if($tdl_in=='in'){
+           $tdl[]='in'; 
           }
           
 
-          if($gt_ls_domaincount_no_downloadExcel==0){
-           $gt_ls_domaincount_no='>';
-          }else if($gt_ls_domaincount_no_downloadExcel==1){
-           $gt_ls_domaincount_no='>';
-          }else{
-           $gt_ls_domaincount_no='<';
-          }
+         // if($gt_ls_domaincount_no_downloadExcel==0){
+          // $gt_ls_domaincount_no='>';
+         // }else if($gt_ls_domaincount_no_downloadExcel==1){
+          // $gt_ls_domaincount_no='>';
+         // }else{
+         //  $gt_ls_domaincount_no='<';
+          //}
       
 
-          if($gt_ls_leadsunlocked_no_downloadExcel==0){
-           $gt_ls_leadsunlocked_no='>';
-          }else if($gt_ls_leadsunlocked_no_downloadExcel==1){
-           $gt_ls_leadsunlocked_no='>';
-          }else{
-           $gt_ls_leadsunlocked_no='<';
-          }
+         // if($gt_ls_leadsunlocked_no_downloadExcel==0){
+          // $gt_ls_leadsunlocked_no='>';
+         // }else if($gt_ls_leadsunlocked_no_downloadExcel==1){
+          // $gt_ls_leadsunlocked_no='>';
+        //  }else{
+          // $gt_ls_leadsunlocked_no='<';
+          //}
 
-         if($request->domaincount_no_downloadExcel){
-          $domaincount_no=$request->domaincount_no_downloadExcel;
-        }else {  $domaincount_no=0;    }
-         $leadsunlocked_no=$request->leadsunlocked_no_downloadExcel;
+         //if($request->domaincount_no_downloadExcel){
+          //$domaincount_no=$request->domaincount_no_downloadExcel;
+        //}else {  $domaincount_no=0;    }
+        // $leadsunlocked_no=$request->leadsunlocked_no_downloadExcel;
 
         switch ($filterOption_downloadExcel) {
        
-        case 1:
-            $key='domainCount';
+        case 'unlocked_asnd':
+            $key='leads.unlocked_num';
             $value='asc';
             break;
-        case 2:
-            $key='domainCount';
+        case 'unlocked_dcnd':
+            $key='leads.unlocked_num';
             $value='desc';
             break;
-        case 3:
-            $key='leads.unlocked_num';
+        case 'domain_count_asnd':
+            $key='leads.domains_count';
             $value='asc';
             break;
-        case 4:
-            $key='leads.unlocked_num';
+        case 'domain_count_dcnd':
+            $key='leads.domains_count';
             $value='desc';
             break;
           default: 
-          $key='domains.create_date';
+          $key='domains_info.domains_create_date';
           $value='desc';  
         }
           
@@ -139,48 +157,65 @@ class SearchController extends Controller
           $user_id=Auth::user()->id;
 
 
-                 
+                 //dd($phone_number);
             $exel_data = DB::table('leads')
-                    ->join('domains', 'leads.id', '=', 'domains.user_id')
-                    ->join('validatephone', 'validatephone.user_id', '=', 'leads.id')
-                    ->select('leads.registrant_name as name','domains.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id',DB::raw('count(domains.user_id) as domainCount'))
-                    
-                    ->where(function($query) use ($create_date,$domain_name,$registrant_country,$phone_number,$tdl,$registrant_state,$leadsunlocked_no,$gt_ls_leadsunlocked_no)
+                    ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
+                    //->join('valid_phone', 'valid_phone.registrant_email', '=', 'leads.registrant_email')
+                      
+                    ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
+                    ->select('leads.registrant_name as name','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
+                      
+
+                    ->where(function($query) use ($create_date,$domain_name,$registrant_country,$phone_number,$tdl,$registrant_state)
                       {
+                        if (!empty($phone_number)) {
+                          
+
+                            $query->whereExists(function ($query) use($phone_number) {
+                            $query->select(DB::raw(1))
+                            ->from('valid_phone')
+                            ->whereRaw('valid_phone.registrant_email = leads.registrant_email')
+                            ->whereIn('valid_phone.number_type', $phone_number); 
+                            });
+                            
+                             
+                          }
                           if (!empty($registrant_country)) {
                               $query->where('leads.registrant_country', $registrant_country);
                           } 
                           if (!empty($create_date)) {
-                              $query->where('domains.create_date', $create_date);
+                              $query->where('domains_info.domains_create_date', $create_date);
                           } 
-                           if (!empty($leadsunlocked_no)) {
-                              $query->where('leads.unlocked_num',$gt_ls_leadsunlocked_no, $leadsunlocked_no);
-                          }
+                         //  if (!empty($leadsunlocked_no)) {
+                             // $query->where('leads.unlocked_num',$gt_ls_leadsunlocked_no, $leadsunlocked_no);
+                          //}
                           if (!empty($domain_name)) {
-                             $query->where('domains.domain_name','like', '%'.$domain_name.'%');
+                             $query->where('each_domain.domain_name','like', '%'.$domain_name.'%');
                              
                           }
                           if(!empty($registrant_state))
                           {
                               $query->where('leads.registrant_state', $registrant_state);
                           }
-                          if (!empty($phone_number)) {
-                              $query->whereIn('validatephone.number_type', $phone_number);
-                             
-                          }
+                          
+                          //dd($query);
                            if (!empty($tdl)) {
-                              $query->whereIn('domains.domain_ext', $tdl);
+                              $query->whereIn('each_domain.domain_ext', $tdl);
                              
                           }
                         
                       })
                  //->skip(0)
                  //->take(50)
-                 ->groupBy('leads.registrant_email')
-                  ->havingRaw('count(domains.user_id) '.$gt_ls_domaincount_no.''. $domaincount_no)
-                 ->orderBy($key,$value)
+
+                 ->groupBy('each_domain.registrant_email')
+                 // ->havingRaw('count(domains.user_id) '.$gt_ls_domaincount_no.''. $domaincount_no)
+                 //->orderBy($key,$value)
                  
                  ->get();
+
+
+             // dd($exel_data);      
 
           } 
         }else{
@@ -278,6 +313,11 @@ class SearchController extends Controller
        Session::put('emailID_list', $emailID_list);
      
     }
+    
+     public function removeChkedEmailfromSession(Request $request){
+   
+      Session::forget('emailID_list');
+     }
     public function lead_domains($email)
     {
       $email = decrypt($email);
@@ -372,12 +412,15 @@ class SearchController extends Controller
 
         if($request->all())
         {
+         // print_r($request->domain_ext);dd();
           if(isset($request->domain_ext) && sizeof($request->domain_ext)>0 )
             $domain_ext = $request->domain_ext;
+
           //dd($request->domain_ext);
           $allrecords = Lead::with('each_domain','valid_phone');
       
             $st = microtime(true);
+            //print_r($request->all());dd();
             foreach($request->all() as $key => $req)
             {         
 
@@ -422,19 +465,19 @@ class SearchController extends Controller
                         });
                     }
                     else if($key == 'cell_number')
-                    {
+                     {
                         $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req){
-                            $query->where($key,$req);
+                            $query->where('number_type',$req);
                         });
-                    }
-                    else if($key == 'landline_number')
-                    {
+                     }
+                     else if($key == 'landline_number')
+                     {
 
                         $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req){
-                            $query->where($key,$req);
-                        });
+                            $query->where('number_type',$req);
+                       });
                       
-                    }
+                     }
                     //applying sort filter
                     else if ($key == 'sort') 
                     {
@@ -465,6 +508,50 @@ class SearchController extends Controller
                             // ->orderBy('aggregate', 'desc');
                         }
                     }
+                    else if($key=='gt_ls_leadsunlocked_no'){
+                            if($req==0){
+                              $gt_ls_leadsunlocked_no='>';
+
+                            }else if($req==1){
+                              $gt_ls_leadsunlocked_no='>';
+                            }
+                            else{
+                              $gt_ls_leadsunlocked_no='<';
+                            }
+
+                     }
+                    else if($key == 'leadsunlocked_no')
+                     {
+
+                        if($req==''){
+                          $req='0';
+                        } 
+                        $allrecords = $allrecords->where('unlocked_num',$gt_ls_leadsunlocked_no, $req);
+                        
+                      
+                     }
+                     else if($key=='gt_ls_domaincount_no'){
+                            if($req==0){
+                              $gt_ls_domaincount_no='>';
+
+                            }else if($req==1){
+                              $gt_ls_domaincount_no='>';
+                            }
+                            else{
+                              $gt_ls_domaincount_no='<';
+                            }
+
+                     }
+                    else if($key == 'domaincount_no')
+                     {
+
+                        if($req==''){
+                          $req='0';
+                        } 
+                        $allrecords = $allrecords->where('domains_count',$gt_ls_domaincount_no, $req);
+                         
+                      
+                     }
                 }
 
             }

@@ -232,6 +232,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //'MyHelper' => \App\Helpers\ph_no_validate::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Input'     => Illuminate\Support\Facades\Input::class,
 
     ],
 
