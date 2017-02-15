@@ -126,10 +126,27 @@ class SearchController extends Controller
 
         if($request->all())
         {
-          if(isset($request->domain_ext) && sizeof($request->domain_ext)>0 )
+          //dd($request->all());
+
+
+          //initiating MY VARIABLES
+          $phone_type_array = array();
+
+          if($request->landline_number)
+            array_push($phone_type_array,'Landline');
+
+          if($request->cell_number)
+            array_push($phone_type_array,'Cell Number');
+
+          if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
             $domain_ext = $request->domain_ext;
-          //dd($request->domain_ext);
+
+
           $allrecords = Lead::with('each_domain','valid_phone');
+          //initiating ends
+
+          
+          
       
             $st = microtime(true);
             foreach($request->all() as $key => $req)
@@ -156,12 +173,9 @@ class SearchController extends Controller
                     }
                     else if($key == 'domain_ext')
                     {
-                        //dd($domain_ext);
-                        //$allrecords->whereIn('domain_ext',$domain_ext);
-
+                        
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req,$domain_ext){
                             $query->whereIn($key,$domain_ext);
-                            //dd($query);
                         });
 
                         
@@ -170,28 +184,11 @@ class SearchController extends Controller
                     {
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
                             $query->whereHas('domains_info',function($q) use($key,$req){
-                                //dd($req);
                                 $q->where($key,$req);
                             });
                         });
                     }
-                    else if($key == 'cell_number')
-                    {
-                        $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req)
-                        {
-                          // dd('here');
-                            $query->where('number_type','Cell Number');
-                            //dd($query);
-                        });
-                    }
-                    else if($key == 'landline_number')
-                    {
-
-                        $allrecords = $allrecords->whereHas('valid_phone',function($query) use($key,$req){
-                            $query->where('number_type','Landline');
-                        });
-                      
-                    }
+                    
                     //applying sort filter
                     else if ($key == 'sort') 
                     {
@@ -205,26 +202,28 @@ class SearchController extends Controller
                         }
                         else if($req == 'domain_count_asnd')
                         {
-
                             $allrecords = $allrecords->orderBy('domains_count','asc');
-
-                            // $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
-                            // ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-                            // ->groupBy('leads.registrant_email')
-                            // ->orderBy('aggregate', 'asc');
                         }
                         else if($req == 'domain_count_dcnd') 
                         {
                             $allrecords = $allrecords->orderBy('domains_count','desc');
-                            // $allrecords = $allrecords->select(DB::raw('leads.*, count(*) as `aggregate`'))
-                            // ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-                            // ->groupBy('leads.registrant_email')
-                            // ->orderBy('aggregate', 'desc');
                         }
                     }
                 }
 
             }
+            
+
+          if(isset($phone_type_array) && sizeof($phone_type_array)>0)
+          {
+            $allrecords = $allrecords->whereHas('valid_phone' , function($query) use($phone_type_array){
+              
+                  $query->whereIn('number_type',$phone_type_array);
+              
+            });
+          }
+
+          
 
 
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();

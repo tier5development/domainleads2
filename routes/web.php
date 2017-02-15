@@ -20,31 +20,19 @@ Route::get('/abc' , ['uses'=>'ImportExport@validate_ph_no']);
 
 Route::get('/tst' , function()
 {
-	//$x = \App\Lead::where('registrant_email' , 'drlipman@gmail.com')->get();
+	$date = '2017-02-06';
 
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/'.$date);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    $head = curl_exec($ch); 
 
-	// $domains = \App\EachDomain::take(100)->pluck('registrant_email','domain_name')->toArray();
- //      $l_count = array();
- //      $e_ids = "";
- //      foreach($domains as $key=>$value)
- //      {
- //          $e_ids .= $value.","; 
- //          if(isset($l_count[$value]))
- //            $l_count[$value]++;
- //          else
- //            $l_count[$value]=1;
- //      }
+    \Log::info($head);
+    //echo('here');
+    $x = json_decode($head,true);
+   	dd($x['status']);
 
- //      $e_ids = rtrim($e_ids,',');
-
- //      dd($e_ids);
-
- //      DB::statement("select * from `leads` where ");
-	$x = \App\Lead::pluck('registrant_country','registrant_state')->toArray();
-
-    dd($x);
-
-	//dd($x);
 });
 
 	Route::get('/importExeclfromCron/{date}',['uses'=>'ImportExport@importExeclfromCron',

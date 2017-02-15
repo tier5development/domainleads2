@@ -95,7 +95,9 @@ class ImportExport extends Controller
   		}
   		catch(\Exception $e)
   		{
-  			dd($i , $num ,$no);
+  			
+        \Log::info('from :: validate_phone_query_builder :: '.$e->getMessage());
+        dd($e);
   		}
   		return $str;
   }
@@ -197,8 +199,8 @@ class ImportExport extends Controller
     }
     catch(\Exception $e)
     {
-      \Log::info($e);
-      dd($e);
+      \Log::info('From import export :: while querry executing :: '.$e->getMessage());
+      //dd($e->getMessage());
     }
     
   }
@@ -247,7 +249,7 @@ class ImportExport extends Controller
 
   	public function importExcel(Request $request)
   	{
-      //dd('here');
+        //dd('here');
         $start = microtime(true);
     	  $this->create();
       	$upload = $request->file('import_file');
@@ -266,43 +268,39 @@ class ImportExport extends Controller
       $user = 't5ilmpnba';
       $pass = '4on9sq6ae8lMRVHCZxp2';  //+++++++ date format :: '2017-01-18';
 
-      
-
       $start = microtime(true);
       try{
 
-
-            $data = file_get_contents("http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip -P /var/www/html/domainleads2/ -O /var/www/html/domainleads2/");
-
-        
-            file_put_contents(getcwd().'/zip/'.$date.'_whois-proxies-removed.zip',$data);
-        
-            Zipper::make('/var/www/html/domainleads2/zip/'.$date.'_whois-proxies-removed.zip')->extractTo('/var/www/html/domainleads2/unzip/');
-            //dd('here');
-
-            $filepath = '/var/www/html/domainleads2/unzip/'.$date.'_whois-proxies-removed.csv';
+            $dir = getcwd();
+            $str = "http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip";
+            $data = file_get_contents($str);
+            file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
+            Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
             
+
+            $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
             $file  = fopen($filepath , 'r');
             $this->insertion_Execl($file);
-
             $end = microtime(true);
-      
-            $result = \Response::json(array(
+            fclose($file);
+            
+            unlink($filepath);
+            unlink($dir.'/zip/'.$date.'_whois-proxies-removed.zip');
+
+
+            return \Response::json(array(
             'insertion_time ' => $end-$start,
             'status'          => 'success'));
-
-
-            \Log::info('from importExeclfromCron.. '.$result);
-            dd($result);
-
-
 
       }
       catch(\Exception $e)
       {
-        dd($e->getMessage());
+        $end = microtime(true);
+        return \Response::json(array(
+            'insertion_time ' => $end-$start,
+            'status'          => 'failure',
+            'message'         => $e->getMessage()));
       }
-
     }
 
     
@@ -417,7 +415,6 @@ class ImportExport extends Controller
 
                 $domains_count = $this->set($row[1],$row[17]); //-------------
 
-                //$domains_count = $this->__leads[$row[17]];
                
                 $leads            = $this->make_query(10 , 19 , $row ,$created_at,$updated_at,$domains_count);
 

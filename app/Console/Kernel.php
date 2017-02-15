@@ -28,27 +28,32 @@ class Kernel extends ConsoleKernel
         
         $schedule->call(function () {
             try{
-                //return redirect()->route(url('/').'importExeclfromCron', ['date' => date('Y-m-d',time())]);
-                
-                //+++++++ date format :: '2017-01-18';
+                //2017-02-06 ===>> small date
 
+                \Log::info('calling scheduler');
                 date_default_timezone_set('Asia/Kolkata');
                 $date = date('Y-m-d',time());
+
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/'.$date);
                 curl_setopt($ch, CURLOPT_HEADER, FALSE);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
                 $head = curl_exec($ch); 
-                \Log::info('from schedule ++++++>> ');
+
+                $result = json_decode($head,true);
+
+                \Log::info('from schedule ++++++>> STATUS : '.$result['status']);
                 \Log::info($head);
             }
             catch(\Exception $e)
             {
                 Log::info('from catch block'.$e);
             }
+
+            \Log::info('::time::');
            
         })->dailyAt('23:30');
-         \Log::info(date('Y-m-d',time()));
+        \Log::info(date('Y-m-d',time()));
        
     }
 
