@@ -7,6 +7,8 @@ use \App\Area;
 use \App\AreaCode;
 use \App\Lead;
 use \App\EachDomain;
+use \App\LeadUser;
+use \App\ValidatedPhone;
 use DB;
 use Carbon\Carbon;
 use Zipper;
@@ -117,7 +119,8 @@ class ImportExport extends Controller
 	 	{
 	 		for($i = $low ; $i<= $high ; $i++)
 		 	{
-		 		$rec = str_replace($this->search, $this->replace, $record[$i]);
+        $x = !isset($record[$i]) ? " " : $record[$i];
+		 		$rec = str_replace($this->search, $this->replace, $x);
 		 		if($i == $low)
 		  			$str .= "NULL , '".$rec."' ,";
 		  			
@@ -373,7 +376,7 @@ class ImportExport extends Controller
         $DOMIANS_NAMESERVER       = '';
         $DOMAINS_STATUS          = '';
 
-        $BATCH  = 30000; // to insert 30000 data at 1 go 
+        $BATCH  = 10000; // to insert 10000 data at 1 go 
 
       
         $counter = 0;
@@ -550,6 +553,11 @@ class ImportExport extends Controller
             echo('In ..');
             dd($e);
           }
+          
+
+          // $faulty_leads = Lead::where('domains_count',0)->pluck('registrant_email')->toArray();
+          // ValidatedPhone::whereIn('registrant_email',$faulty_leads)->delete();
+          // LeadUser::whereIn('registrant_email',$faulty_leads)->delete();
           Lead::where('domains_count',0)->delete();
       }
 
@@ -561,17 +569,7 @@ class ImportExport extends Controller
 
   public function checknum($num)
   {
-    //dummy check
-  	//dd ($this->validateUSPhoneNumber($num));	
-    //$this->create();
-    //print_r($this->validateUSPhoneNumber($num)); 
-
-    $x = \App\ValidatedPhone::where('phone_number','like', '%'.$num.'%')->first();
-
-    dd($x);
-     
-    //$x = Lead::pluck('registrant_country','registrant_state','registrant_email')->toArray();
-
+    $x = ValidatedPhone::where('phone_number','like', '%'.$num.'%')->first();
     dd($x);
   }
 

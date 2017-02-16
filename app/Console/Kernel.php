@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
 
                 \Log::info('calling scheduler');
                 date_default_timezone_set('Asia/Kolkata');
-                $date = date('Y-m-d',time());
+                $date = date('Y-m-d',time()-3600*24);
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/'.$date);
@@ -52,7 +52,7 @@ class Kernel extends ConsoleKernel
 
             \Log::info('::time::');
            
-        })->dailyAt('23:30');
+        })->dailyAt('23:43');
         \Log::info(date('Y-m-d',time()));
        
     }
