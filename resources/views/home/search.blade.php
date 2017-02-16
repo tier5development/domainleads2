@@ -124,14 +124,27 @@ form{
 		<div class="container">
 
 			<div class="navbar-header">
-                @if(Session::has('msg'))
-                {{ Session::get('msg')}}
-                @endif
+			
+                <?php if(Session::has('emailID_list')){
+                   $emailID_list=Session::get('emailID_list');
+                   
+                }else {
+                 $emailID_list=array();
+
+                }
+                
+               ?>
+                 
 			</div>
 
 			<!-- form elements -->
 
+            <form style="margin-left: 1000px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
+		 <button class="btn btn-primary" id="exportID">Export</button>
 
+		</form>
 			<div>
 				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
 			</div>
@@ -161,7 +174,7 @@ form{
 							<input type="date" value="{{old('domains_create_date')}}" name="domains_create_date" id="registered_date" class="form-control">
 						</div>
 						<div class="from-group">
-							<label>Select Domains Extensions</label>
+							<label>Select Domains Extensions</label> 
 							<dl class="dropdown"> 
 							    <dt>
 								    <a href="#">
@@ -211,6 +224,7 @@ form{
 								</select>
 							
 
+
 						</div>
 
 						<div>
@@ -222,6 +236,7 @@ form{
 								<option value="domain_count_dcnd">domain_count_dcnd</option>
 							</select>
 						</div>
+
 
 						
 
@@ -251,6 +266,7 @@ form{
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
 						<th>Check box</th>
+						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> & Create Website</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -268,9 +284,28 @@ form{
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
 							@else
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
+								
 							@endif
-							 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}')">Check website</button>
 							
+							 
+							
+						</th>
+						<th>
+                            @if(isset($chkWebsite_array[$each->registrant_email]))
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Created website</button>
+							@else
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" >Create website</button>
+							@endif
+							
+							@if(isset($users_array[$each->registrant_email]))
+								<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}"  @if(in_array($each->registrant_email, $emailID_list)) {{'checked'}}  @endif >
+							@else
+								
+								<small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+								</small>
+								<small id="hideCSV_{{$key}}">***</small>
+
+							@endif
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
@@ -393,6 +428,38 @@ form{
 		
 </body>
 	<script>
+   
+          var _token='{{csrf_token()}}';
+	    $('.eachrow_download').click(function(event){
+       
+		  // $("#domains_for_export_id_allChecked").val(0);
+		  // $(".downloadcsv_all").prop( "checked", false);
+		   var id=$(this).attr('id');
+		   var emailID=$(this).attr('emailID');
+			    if($("#"+id).is(':checked')) {
+			    var  isChecked=1;
+			    } else {
+			    var  isChecked=0;
+			     
+			    }
+		        
+		        
+			     
+			     $.ajax({
+	               type:'POST',
+	               url:'storechkboxvariable',
+	               beforeSend: function()
+						{
+							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						},
+	               data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
+	               success:function(response){
+	               	 
+	                 
+	               }
+                });
+	   
+ 	    });
 		function unlock(reg_em , key)
 		{
 			var id = '{{\Auth::user()->id}}';
@@ -413,6 +480,8 @@ form{
 					$('#ch_'+key).prop('checked'	, true);
 					$('#ch_'+key).prop('disabled'	, true);
 					$('#unlocked_num_'+key).text(response.unlocked_num);
+					$('#showCSV_'+key).show();
+					$('#hideCSV_'+key).hide();
 				}
 			});
 		}
@@ -466,11 +535,37 @@ form{
 	});
 	</script>
 
-	<script type="text/javascript">
-	
+	<script type="text/javascript"> 
+	    $('.downloadcsv_all').click(function(event){
+   
+	        $("#domains_for_export_id").val('');
+	        
+		    if($(this).is(':checked')) {
+		      $(".eachrow_download").prop( "checked", true);
+		      $("#domains_for_export_id_allChecked").val(1);
+		    } else {
+		       $(".eachrow_download").prop( "checked", false);
+		       $("#domains_for_export_id_allChecked").val(0);
+		    }
+             $.ajax({
+	               type:'POST',
+	               url:'removeChkedEmailfromSession',
+	               beforeSend: function()
+						{
+							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						},
+	               data:'_token='+_token,
+	               success:function(response){
+	               	 
+	                 
+	               }
+                }); 
+	   
+        });
 
-	    function chkDomainForWebsite(domain_name,key){
+	    function chkDomainForWebsite(domain_name,key,registrant_email){
            var _token='{{csrf_token()}}';
+           var user_id = '{{\Auth::user()->id}}';
            $.ajax({
                type:'POST',
                url:'chkWebsiteForDomain',
@@ -478,11 +573,12 @@ form{
 					{
 						$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
 					},
-               data:'domain_name='+domain_name+'&_token='+_token,
-               success:function(data){
-               	  $("#myLargeModalLabel").text(data);
+               data:'domain_name='+domain_name+'&_token='+_token+'&registrant_email='+registrant_email+'&user_id='+user_id,
+               success:function(response){
+               	  $("#myLargeModalLabel").text(response.message);
                   $("#popupid_for_domainexists").trigger('click');
-                  $('#chkDomainForWebsiteID_'+key).html('Check website');
+                  $('#chkDomainForWebsiteID_'+key).html('Created website');
+                   $('#chkDomainForWebsiteID_'+key).prop("disabled",true);
                  
                }
             });

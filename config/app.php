@@ -162,6 +162,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+       
 
         /*
          * Package Service Providers...
@@ -179,7 +180,11 @@ return [
 
 
         App\Providers\HelperServiceProvider::class,
+
         Chumper\Zipper\ZipperServiceProvider::class,
+
+         Maatwebsite\Excel\ExcelServiceProvider::class,
+
 
     ],
 
@@ -230,7 +235,12 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         //'MyHelper' => \App\Helpers\ph_no_validate::class,
+
         'Zipper' => 'Chumper\Zipper\Zipper',
+
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Input'     => Illuminate\Support\Facades\Input::class,
+
 
     ],
 
