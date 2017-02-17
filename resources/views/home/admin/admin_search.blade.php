@@ -1,4 +1,5 @@
 <html lang="en">
+
 @include('layouts.header')
 <head>
 
@@ -171,33 +172,7 @@ form{
                ?>
 			</div>
         
-			<!-- form elements -->
-             <form style="margin-left: 1000px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
-	         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
-	         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
-             <input type="hidden" name="domain_name_downloadExcel"  value="{{ Input::get('domain_name') }}" />
-             <input type="hidden" name="registrant_country_downloadExcel" id="registrant_country" value="{{ Input::get('registrant_country') }}" />
-             <input type="hidden" name="registrant_state_downloadExcel"  class="" value="{{ Input::get('registrant_state') }}" />
-
-             <input type="hidden" name="domains_create_date_downloadExcel"  class="" value="{{ Input::get('domains_create_date') }}" />
-
-            
-	        <input type="hidden" name="tdl_com_downloadExcel" value="{{ $domainExtarray['domain_ext'][0] }}" >
-	        <input type="hidden" name="tdl_io_downloadExcel" value="{{ $domainExtarray['domain_ext'][1] }}">
-	        <input type="hidden" name="tdl_net_downloadExcel" value="{{ $domainExtarray['domain_ext'][2] }}" >
-	        <input type="hidden" name="tdl_org_downloadExcel" value="{{ $domainExtarray['domain_ext'][3] }}">
-	        
-            <input type="hidden" name="tdl_gov_downloadExcel" value="{{ $domainExtarray['domain_ext'][4] }}">
-            <input type="hidden" name="tdl_edu_downloadExcel" value="{{$domainExtarray['domain_ext'][5]}}" >
-            <input type="hidden" name="tdl_in_downloadExcel" value="{{$domainExtarray['domain_ext'][6]}}" >
-
-	         <input type="hidden" name="cell_number_downloadExcel" value="{{ Input::get('cell_number') }}" >
-	         <input type="hidden" name="landline_downloadExcel" value="{{ Input::get('landline_number') }}">
-             <input type="hidden" name="filterOption_downloadExcel" value="{{ Input::get('sort') }}">
-	         <input type="hidden" name="_token" value="{{csrf_token()}}">
-			 <button class="btn btn-primary" id="exportID">Export</button>
-
-			</form>
+			
 
 			<div>
 			
@@ -321,13 +296,48 @@ form{
  	 		
 			<div>
 			@if($record !== null)
+
+
 			<span class="pull-left"> Total Leads   : {{ $record->total()}}</span>
 			
 			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
 
+
+			<div>
+				
+				<!-- form elements -->
+             <form style="margin-left: 100px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+	         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+	         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
+             <input type="hidden" name="domain_name_downloadExcel"  value="{{ Input::get('domain_name') }}" />
+             <input type="hidden" name="registrant_country_downloadExcel" id="registrant_country" value="{{ Input::get('registrant_country') }}" />
+             <input type="hidden" name="registrant_state_downloadExcel"  class="" value="{{ Input::get('registrant_state') }}" />
+
+             <input type="hidden" name="domains_create_date_downloadExcel"  class="" value="{{ Input::get('domains_create_date') }}" />
+
+            
+	        <input type="hidden" name="tdl_com_downloadExcel" value="{{ $domainExtarray['domain_ext'][0] }}" >
+	        <input type="hidden" name="tdl_io_downloadExcel" value="{{ $domainExtarray['domain_ext'][1] }}">
+	        <input type="hidden" name="tdl_net_downloadExcel" value="{{ $domainExtarray['domain_ext'][2] }}" >
+	        <input type="hidden" name="tdl_org_downloadExcel" value="{{ $domainExtarray['domain_ext'][3] }}">
+	        
+            <input type="hidden" name="tdl_gov_downloadExcel" value="{{ $domainExtarray['domain_ext'][4] }}">
+            <input type="hidden" name="tdl_edu_downloadExcel" value="{{$domainExtarray['domain_ext'][5]}}" >
+            <input type="hidden" name="tdl_in_downloadExcel" value="{{$domainExtarray['domain_ext'][6]}}" >
+
+	         <input type="hidden" name="cell_number_downloadExcel" value="{{ Input::get('cell_number') }}" >
+	         <input type="hidden" name="landline_downloadExcel" value="{{ Input::get('landline_number') }}">
+             <input type="hidden" name="filterOption_downloadExcel" value="{{ Input::get('sort') }}">
+	         <input type="hidden" name="_token" value="{{csrf_token()}}">
+			 <button class="btn btn-primary" id="exportID">Export</button>
+
+			</form>
+
+			</div>
+
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
-						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> & Create Website</th>
+						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> Select Leads</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -341,15 +351,14 @@ form{
 					<tr>
 
 						<th>
-						@if(isset($chkWebsite_array[$each->registrant_email]))
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Created website</button>
-							@else
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" >Create website</button>
-							@endif
-							<small id="showCSV_{{$key}}" ><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
-							</small>
+						
+						<small id="showCSV_{{$key}}" ><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+						</small>
 							
 						</th>
+
+
+
 						<th>
 							
 								<small id="domain_name_{{$key}}"><b>{{$each->each_domain->first()->domain_name}}</b></small>

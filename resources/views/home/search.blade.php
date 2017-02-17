@@ -125,7 +125,8 @@ form{
 
 			<div class="navbar-header">
 			
-                <?php if(Session::has('emailID_list')){
+                <?php if(Session::has('emailID_list'))
+                {
                    $emailID_list=Session::get('emailID_list');
                    
                 }else {
@@ -139,12 +140,7 @@ form{
 
 			<!-- form elements -->
 
-            <form style="margin-left: 1000px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
-         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
-         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
-		 <button class="btn btn-primary" id="exportID">Export</button>
-
-		</form>
+		    
 			<div>
 				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
 			</div>
@@ -236,14 +232,7 @@ form{
 								<option value="domain_count_dcnd">domain_count_dcnd</option>
 							</select>
 						</div>
-
-
-						
-
-
-
-						
-				
+		
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
 
@@ -253,20 +242,26 @@ form{
 
 
 			<br><br>
-
-
-			
- 	 		
+		
 			<div>
 			@if($record !== null)
+
 			<span class="pull-left"> Total Leads   : {{ $record->total()}}</span>
 			
 			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
 
+			<form class="col-md-12" style="margin-left: 10px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+
+		         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+		         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
+				 <button class="btn btn-primary" id="exportID">Export</button>
+
+			</form>
+
 				<table class="table table-hover table-bordered domainDAta">
 					<tr>
 						<th>Check box</th>
-						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> & Create Website</th>
+						<th>Create Website</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -286,9 +281,7 @@ form{
 								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
 								
 							@endif
-							
-							 
-							
+
 						</th>
 						<th>
                             @if(isset($chkWebsite_array[$each->registrant_email]))
@@ -375,12 +368,6 @@ form{
 							@endif
 
 							<br>
-
-
-
-							
-
-							
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
@@ -402,9 +389,12 @@ form{
 				</table>
 			@endif
 			</div>
+
 			@if($record)
+			 
 			 {{$record->appends(\Request::except('page'))->links()}}
-			 @endif
+			 
+			@endif
 
 
 		</div>

@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ChkWebsite extends Model
+class Wordpress_env extends Model
 {
-    protected $table='chkWebsite';
+    protected $table='wordpress';
 
     public function domain_name()
     {
-    	return $this->hasOne('App\EachDomain' , 'domain_name' , 'domain_name');
+    	return $this->hasOne('App\Wordpress_env' , 'domain_name' , 'domain_name');
     }
 
     

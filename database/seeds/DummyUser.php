@@ -11,15 +11,7 @@ class DummyUser extends Seeder
      */
     public function run()
     {
-        // $table->bigIncrements('id');
-        //     $table->string('name');
-        //     $table->string('email')->index();
-        //     $table->string('password');
-        //     $table->integer('user_type')->index();
-        //     $table->string('remember_token')->nullable();
-        //     $table->integer('membership_status')->unsigned()->index()->nullable()->default(0);
-        //     $table->timestamps();
-        
+            
         DB::table('users')->insert([
             'name' => 'tr5',
             'email' => 'a@a.com',

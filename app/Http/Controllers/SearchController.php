@@ -14,7 +14,8 @@ use \App\EachDomain;
 use \App\Lead;
 use \App\LeadUser;
 use \App\User;
-use \App\ChkWebsite;
+use \App\obj;
+use \App\Wordpress_env;
 use DB;
 use Hash;
 use Auth;
@@ -29,9 +30,15 @@ class SearchController extends Controller
 {   
 
 
+public function downloadExcel2(Request $request)
+{
+  dd($request->all());
+}
+
     public function downloadExcel(Request $request)
 
   {
+    //dd($request->all());
     $type='csv'; 
       
       $user_type=Auth::user()->user_type;
@@ -270,8 +277,10 @@ class SearchController extends Controller
 
   }
     
-    public function chkWebsiteForDomain(Request $request){
+    public function createWordpressForDomain(Request $request)
+    {
    
+    //dd($request->domain_name);
      $domain_name= $request->domain_name;
      $registrant_email= $request->registrant_email;
      $user_id= $request->user_id;
@@ -281,17 +290,18 @@ class SearchController extends Controller
                $domain_data = json_decode($result->getBody()->getContents(), true);
              //  echo $domain_data['message'];
         
-        $chkWebsite = new ChkWebsite();
-        $chkWebsite->domain_name= $domain_name;  
-        $chkWebsite->registrant_email= $registrant_email; 
-        $chkWebsite->user_id= $user_id;  
-        $chkWebsite->status= 1;  
-        $chkWebsite->save();
+        $obj = new Wordpress_env();
+        $obj->domain_name= $domain_name;  
+        $obj->registrant_email= $registrant_email; 
+        $obj->user_id= $user_id;  
+        $obj->status= 1;  
+        $obj->save();
         $array = array();  
         $array['message']    = $domain_data['message'];
         return \Response::json($array);     
       
     }
+
      public function storechkboxvariable(Request $request){
    
      $isChecked= $request->isChecked;
@@ -321,7 +331,7 @@ class SearchController extends Controller
     public function lead_domains($email)
     {
       $email = decrypt($email);
-      $alldomains = EachDomain::where('registrant_email',$email);
+      $alldomains = EachDomain::with('wordpress_env')->where('registrant_email',$email);
       return view('home.lead_domains',['alldomain'=>$alldomains , 'email'=>$email]);
     }
 
@@ -413,9 +423,7 @@ class SearchController extends Controller
         if($request->all())
         {
 
-          //dd($request->all());
-
-
+          
           //initiating MY VARIABLES
           $phone_type_array = array();
 
@@ -554,70 +562,8 @@ class SearchController extends Controller
             });
           }
 
-
-
-
-
-
-          // $l_mr = array();
-          // foreach($allrecords->get() as $each)
-          // {
-          //   $l_mr[$each->registrant_email] = $each->valid_phone->number_type;
-          // }
-          
-
-
-          // $allrecords1 = $allrecords;
-          // $allrecords2 = $allrecords;
-          // // $landline = null;
-          // // $l_ar = array();
-          // // $m_ar = array();
-          
-          //   $landline = $allrecords1->whereHas('valid_phone' , function($query) use($phone_type_array){
-              
-          //         $query->where('number_type','Landline');
-                  
-          //   });
-          
-          // foreach ($landline->get() as $each) 
-          // {
-          //   $l_ar[$each->registrant_email] = $each->valid_phone->number_type;
-          // }
-          // dd($l_ar);
-
-          
-
-          // $mobile = null;
-          
-          //   $mobile = $allrecords2->whereHas('valid_phone' , function($query) use($phone_type_array){
-              
-          //         $query->where('number_type','Cell NUmber');
-                  
-          //   });
-          
-          // foreach ($mobile->get() as $each) 
-          // {
-          //   $m_ar[$each->registrant_email] = $each->valid_phone->number_type;
-          // }
-          
-
-          // //$Arr = array_merge($l_ar,$m_ar);
-          // //dd($l_ar);
-          // dd($m_ar);
-          // foreach ($l_mr as $key => $value) 
-          // {
-          //     if()
-          // }
-
-
-
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
-            
-
             $leadArr = array_flip($leadArr_);
-            
-           
-
             foreach($leadArr as $key=>$each)
               $leadArr[$key] = 0; 
             
@@ -637,40 +583,65 @@ class SearchController extends Controller
                 }
             }
 
-          // print_r($leadArr);dd();
+
+          
 
             $user_id = \Auth::user()->id;
 
-            //dd($leadArr_);
+
+            // dd($allrecords);
+
+            // $A = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
+            //     $query->whereHas('valid_phone',function($q){
+                    
+            //         $q->where('number_type','Landline');
+            //     });
+            // });
+
+            // dd($A);
+
+            // $B = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
+            //     $query->whereHas('valid_phone',function($q){
+                    
+            //         $q->where('number_type','Cell Number');
+            //     });
+            // });
+
+            // $a = $A->pluck('registrant_email')->toArray();
+
+            // $b = $B->pluck('registrant_email')->toArray();
+
+            // dd($a);
+            // dd($b);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           
+            
 
             $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
             
 
             $users_array = array_flip($users_array);
 
+            $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
 
-            $chkWebsite_array = ChkWebsite::where('user_id',$user_id)->pluck('registrant_email')->toArray();
-            
-
-            $chkWebsite_array = array_flip($chkWebsite_array);
-           // print_r($chkWebsite_array);dd();
-            //dd($users_array);
+            $obj_array = array_flip($obj_array);
 
             
-            // $tst = $allrecords->pluck('domains_count','registrant_email')->toArray();
-            // //dd($tst);
-            // foreach($tst as $key=>$val)
-            // {
-            //     if($leadArr[$key] != $tst[$key])
-            //     dd("key=".$key."   val=".$val."   real count=".$leadArr[$key]."   domains_count=".$tst[$key]."<br>");
-            // }
-
-            // dd('over');
-            
-                //->paginate(100);
-            //$en = microtime(true);
-            //dd($en-$st);
-            //dd($allrecords);
 
             if(\Auth::user()->user_type == 2)
             {
@@ -680,10 +651,7 @@ class SearchController extends Controller
                     'leadArr'=>$leadArr , 
                     'totalDomains'=>$totalDomains,
                     'users_array'=>$users_array
-
-                  ]);
-
-                  
+                  ]);      
             }
 
 
@@ -692,7 +660,7 @@ class SearchController extends Controller
                   'leadArr'=>$leadArr , 
                   'totalDomains'=>$totalDomains,
                   'users_array'=>$users_array,
-                  'chkWebsite_array'=>$chkWebsite_array]);
+                  'obj_array'=>$obj_array]);
         }
         else
         {

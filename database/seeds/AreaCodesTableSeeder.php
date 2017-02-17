@@ -13,9 +13,8 @@ class AreaCodesTableSeeder extends Seeder
     {
         $path = getcwd()."/area_codes.sql";
         //DB::unprepared(file_get_contents($path));
-        $passw = 'tier5' ; //env('DB_PASSWORD');
-        $db =    'domainleads2' ;//env('DB_DATABASE');
-
+        $passw = env('DB_PASSWORD');
+        $db =    env('DB_DATABASE');
         exec('mysql -u root -p'.$passw.' '.$db.' < '.$path);
     }
 }

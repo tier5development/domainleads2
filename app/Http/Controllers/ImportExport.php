@@ -56,12 +56,82 @@ class ImportExport extends Controller
           dd($e);
         }
       }
-  } 
-
-   public function importExport()
-  {
-    return view('importExport');
   }
+
+
+
+    public function importExport()
+    {
+
+      try
+      {
+        if(\Auth::check())
+          return view('importExport');
+        else
+          return redirect('/home');
+      }
+      catch(\Exception $e)
+      {
+        dd($e->getMessage());
+      }
+    }
+
+    public function importExcel(Request $request)
+    {
+        //dd('here');
+        $start = microtime(true);
+        
+        $upload = $request->file('import_file');
+        $filepath = $upload->getRealPath();
+        $file  = fopen($filepath , 'r');
+        $this->insertion_Execl($file);
+        fclose($file);
+        $end = microtime(true) - $start;
+        echo('TOTAL TIME TAKEN :: '.$end);
+        //$x = new ImportCsvFile($file);
+    }
+
+    public function importExeclfromCron($date)
+    {   
+     
+      $user = 't5ilmpnba';
+      $pass = '4on9sq6ae8lMRVHCZxp2';  //+++++++ date format :: '2017-01-18';
+
+      $start = microtime(true);
+      //dd('kjyfgkg');
+      try{
+
+            $dir = getcwd();
+            $str = "http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip";
+            $data = file_get_contents($str);
+            file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
+            Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
+
+            $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
+            $file  = fopen($filepath , 'r');
+
+            $this->insertion_Execl($file);
+            $end = microtime(true);
+            fclose($file);
+            
+            unlink($filepath);
+            unlink($dir.'/zip/'.$date.'_whois-proxies-removed.zip');
+
+
+            return \Response::json(array(
+            'insertion_time ' => $end-$start,
+            'status'          => 'success'));
+
+      }
+      catch(\Exception $e)
+      {
+        $end = microtime(true);
+        return \Response::json(array(
+            'insertion_time ' => $end-$start,
+            'status'          => 'failure',
+            'message'         => $e->getMessage()));
+      }
+    }
 
   public function validate_phone_query_builder($num , $registrant_email,$i , $created_at , $updated_at)
   { 
@@ -98,7 +168,7 @@ class ImportExport extends Controller
   		catch(\Exception $e)
   		{
   			
-        \Log::info('from :: validate_phone_query_builder :: '.$e->getMessage());
+        //\Log::info('from :: validate_phone_query_builder :: '.$e->getMessage());
         dd($e);
   		}
   		return $str;
@@ -202,7 +272,7 @@ class ImportExport extends Controller
     }
     catch(\Exception $e)
     {
-      \Log::info('From import export :: while querry executing :: '.$e->getMessage());
+      //\Log::info('From import export :: while querry executing :: '.$e->getMessage());
       //dd($e->getMessage());
     }
     
@@ -250,72 +320,16 @@ class ImportExport extends Controller
         return $this->__leads[$registrant_email];
     }
 
-  	public function importExcel(Request $request)
-  	{
-        //dd('here');
-        $start = microtime(true);
-    	  $this->create();
-      	$upload = $request->file('import_file');
-      	$filepath = $upload->getRealPath();
-      	$file  = fopen($filepath , 'r');
-        $this->insertion_Execl($file);
-        fclose($file);
-        $end = microtime(true) - $start;
-        echo('TOTAL TIME TAKEN :: '.$end);
-        //$x = new ImportCsvFile($file);
-    }
-
-    public function importExeclfromCron($date)
-    {   
-     
-      $user = 't5ilmpnba';
-      $pass = '4on9sq6ae8lMRVHCZxp2';  //+++++++ date format :: '2017-01-18';
-
-      $start = microtime(true);
-      try{
-
-            $dir = getcwd();
-            $str = "http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip";
-            $data = file_get_contents($str);
-            file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
-            Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
-
-            $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
-            $file  = fopen($filepath , 'r');
-            $this->insertion_Execl($file);
-            $end = microtime(true);
-            fclose($file);
-            
-            unlink($filepath);
-            unlink($dir.'/zip/'.$date.'_whois-proxies-removed.zip');
-
-
-            return \Response::json(array(
-            'insertion_time ' => $end-$start,
-            'status'          => 'success'));
-
-      }
-      catch(\Exception $e)
-      {
-        $end = microtime(true);
-        return \Response::json(array(
-            'insertion_time ' => $end-$start,
-            'status'          => 'failure',
-            'message'         => $e->getMessage()));
-      }
-    }
-
-    
-
-
     public function insertion_Execl($file)
     {
+
 
         ini_set("memory_limit","7G");
         ini_set('max_execution_time', '0');
         ini_set('max_input_time', '0');
         set_time_limit(0);
         ignore_user_abort(true);
+        $this->create();
 
         $start = microtime(true);
 
@@ -502,7 +516,7 @@ class ImportExport extends Controller
       $end = microtime(true) - $start;
       //echo('TOTAL TIME: ' . $end . " seconds");
 
-      \Log::info('TOTAL TIME: ' . $end . " seconds");
+      //\Log::info('TOTAL TIME: ' . $end . " seconds");
 
       return;
      
@@ -555,9 +569,9 @@ class ImportExport extends Controller
           }
           
 
-          // $faulty_leads = Lead::where('domains_count',0)->pluck('registrant_email')->toArray();
-          // ValidatedPhone::whereIn('registrant_email',$faulty_leads)->delete();
-          // LeadUser::whereIn('registrant_email',$faulty_leads)->delete();
+          $faulty_leads = Lead::where('domains_count',0)->pluck('registrant_email')->toArray();
+          ValidatedPhone::whereIn('registrant_email',$faulty_leads)->delete();
+          LeadUser::whereIn('registrant_email',$faulty_leads)->delete();
           Lead::where('domains_count',0)->delete();
       }
 
@@ -573,7 +587,7 @@ class ImportExport extends Controller
     dd($x);
   }
 
-  private function validateUSPhoneNumber($ph)
+  public function validateUSPhoneNumber($ph)
     {
         $unmaskedPhoneNumber = preg_replace('/[\s()+-]+/', null, $ph);
         $phoneNumberLength = strlen($unmaskedPhoneNumber);
@@ -606,7 +620,7 @@ class ImportExport extends Controller
             ];
         }
     }
-    private function validateAreaCode($phoneNumber, $isdPrefix)
+    public function validateAreaCode($phoneNumber, $isdPrefix)
     {
         $areaPrefix = substr($phoneNumber, 0, 3);
         $areaIdentifier = substr($phoneNumber, 0, 6);

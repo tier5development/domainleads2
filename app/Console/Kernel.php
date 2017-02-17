@@ -32,10 +32,15 @@ class Kernel extends ConsoleKernel
 
                 \Log::info('calling scheduler');
                 date_default_timezone_set('Asia/Kolkata');
-                $date = date('Y-m-d',time()-3600*24);
+                $date = date('Y-m-d',time()-3600*24*1);
 
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'http://domainleads2.dev/importExeclfromCron/'.$date);
+                $url = env('APP_URL');
+
+                \Log::info($url.'/importExeclfromCron/'.$date);
+
+                \Log::info(env('DB_PASSWORD')." process:: ".getmypid());
+                curl_setopt($ch, CURLOPT_URL, $url.'/importExeclfromCron/'.$date);
                 curl_setopt($ch, CURLOPT_HEADER, FALSE);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
                 $head = curl_exec($ch); 
@@ -47,12 +52,12 @@ class Kernel extends ConsoleKernel
             }
             catch(\Exception $e)
             {
-                Log::info('from catch block'.$e);
+                \Log::info('from catch block'.$e);
             }
 
             \Log::info('::time::');
            
-        })->dailyAt('23:43');
+        })->dailyAt('18:25');
         \Log::info(date('Y-m-d',time()));
        
     }

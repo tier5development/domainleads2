@@ -42,7 +42,14 @@ class EachDomain extends Model
     public function domains_info()
     {
     	return $this->hasOne('App\DomainInfo' , 'domain_name' , 'domain_name');
-    } 
+    }
+
+    public function wordpress_env()
+    {
+        return $this->hasOne('App\Wordpress_env' , 'domain_name' , 'domain_name');
+    }
+
+
 
 	// public function domains_billing()
  //    {

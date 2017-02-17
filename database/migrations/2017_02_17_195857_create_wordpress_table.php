@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateChkWebsiteTable extends Migration
+class CreateWordpressTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,17 +14,14 @@ class CreateChkWebsiteTable extends Migration
     public function up()
     {
 
-         Schema::create('chkWebsite', function (Blueprint $table) {
+         Schema::create('wordpress', function (Blueprint $table) {
            $table->bigIncrements('id');
-            $table->string('domain_name');
+            $table->string('domain_name')->unique()->nullable();
+            $table->string('registrant_email');
             $table->string('status');
-         
-
+            $table->integer('user_id')->unsigned()->index();
             $table->timestamps();
-
-            
         });
-         
     }
 
     /**
@@ -34,6 +31,6 @@ class CreateChkWebsiteTable extends Migration
      */
     public function down()
     {
-         Schema::dropIfExists('chkWebsite');
+         Schema::dropIfExists('wordpress');
     }
 }

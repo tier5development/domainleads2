@@ -35,6 +35,14 @@ Route::get('/tst' , function()
 
 });
 
+Route::get('/wb',function(){
+    $x = \App\Wordpress_env::all();
+});
+
+Route::get('/aa',function(){
+    echo(url("/"));
+});
+
 	Route::get('/importExeclfromCron/{date}',['uses'=>'ImportExport@importExeclfromCron',
 		'as'=>'importExeclfromCron']);
 
@@ -50,12 +58,14 @@ Route::get('/tst' , function()
 	Route::post('/importExcel', 'ImportExport@importExcel'); // new version of import exel
 
      Route::get('downloadExcel', 'SearchController@downloadExcel');
+
+     Route::get('downloadExcel2', 'SearchController@downloadExcel2');
     //Route::get('downloadExcel' , ['uses'=>'SearchController@downloadExcel','as'=>'downloadExcel']);
 
 	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
 
-    Route::post('chkWebsiteForDomain' , ['uses'=>'SearchController@chkWebsiteForDomain','as'=>'chkWebsiteForDomain']);
+    Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
     Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
     Route::post('removeChkedEmailfromSession' , ['uses'=>'SearchController@removeChkedEmailfromSession','as'=>'removeChkedEmailfromSession']);
 
@@ -69,3 +79,5 @@ Route::get('/tst' , function()
 
 Route::post('login', 'AccountController@login');
 Route::get('logout', 'AccountController@logout');
+
+
