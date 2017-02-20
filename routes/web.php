@@ -40,13 +40,30 @@ Route::get('/wb',function(){
 });
 
 Route::get('/aa',function(){
-    echo(url("/"));
+    $host = 'domainleads.io'; 
+    $port = 80; 
+    $waitTimeoutInSeconds = 1; 
+    if($fp = fsockopen($host,$port,$errCode,$errStr,$waitTimeoutInSeconds)){   
+        $ip = gethostbyname('www.example.com');
+
+       echo( $ip.'<br>');
+       echo(env('TR5IP')); 
+
+
+
+    } else {
+       echo("It didn't work"); 
+    } 
+    fclose($fp);
 });
+
+//Route::get('/checkWordpressStatus','Maintainance@checkWordpressStatus');
+
+
 
 	Route::get('/importExeclfromCron/{date}',['uses'=>'ImportExport@importExeclfromCron',
 		'as'=>'importExeclfromCron']);
-
-
+    
 	Route::post('/signme','AccountController@signme' );
 
 	Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains']);

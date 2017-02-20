@@ -78,17 +78,26 @@ class ImportExport extends Controller
 
     public function importExcel(Request $request)
     {
+      
+     
         //dd('here');
         $start = microtime(true);
         
         $upload = $request->file('import_file');
         $filepath = $upload->getRealPath();
+        
+        $original_file_name = $request->import_file->getClientOriginalName();
+        
+
+
+
+
         $file  = fopen($filepath , 'r');
         $this->insertion_Execl($file);
         fclose($file);
         $end = microtime(true) - $start;
         echo('TOTAL TIME TAKEN :: '.$end);
-        //$x = new ImportCsvFile($file);
+       
     }
 
     public function importExeclfromCron($date)

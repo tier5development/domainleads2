@@ -158,9 +158,9 @@ html, body {
 	<u>Total count : {{count($alldomain->get())}}</u>
 
 	<div style="display: none" id="spinner" class="spinner"></div>
-	<div style="display: none" class="title m-b-md" id="processing">
-                Please Wait while we create your Wordpress setup..
-    </div>
+	
+    <h1 style="display: none" id="processing">Please Wait while we create your Wordpress setup.. (Don't abort or refresh this page if this operation takes a bit of time)</h1>    
+    
 
 
 	<div id="content_div">
@@ -194,7 +194,9 @@ html, body {
 
 
 						@if(isset($domain->wordpress_env))
-								Wordpress Environment Set
+							
+							Wordpress Environment Set
+							
 						@else
 							<button class="btn btn-primary" id="createWordpressEnvID_{{$domain->id}}" onclick="createWordpressEnv('{{$domain->domain_name}}','{{$domain->id}}','{{$email}}')" >Create website</button>
 						@endif
@@ -253,8 +255,7 @@ html, body {
            var _token='{{csrf_token()}}';
            var user_id = '{{\Auth::user()->id}}';
 
-           $('#createWordpressEnvID_'+id).html('Website Created');
-           $('#createWordpressEnvID_'+id).prop("disabled",true);	
+          
 
            $.ajax({
                type:'POST',
@@ -271,17 +272,18 @@ html, body {
                data:'domain_name='+domain_name+'&_token='+_token+'&registrant_email='+registrant_email+'&user_id='+user_id,
                success:function(response)
                {
-
-               		
-                	  	$('#spinner').hide();
+               		if(response.error == 'null')
+               		{
+               			$('#spinner').hide();
 	      				$('#content_div').removeClass('hiddenDiv');
 	      				$('#processing').hide();
+						$('#createWordpressEnvID_'+id).text('Environment Created');
+	                  	$('#createWordpressEnvID_'+id).prop("disabled",true);
+               		}
+               		else
+               			alert(response.error);
+               },
 
-					
-                  	$('#createWordpressEnvID_'+id).text('Website Created');
-                  	$('#createWordpressEnvID_'+id).prop("disabled",true);
-                 
-               }
             });
 
 	    }

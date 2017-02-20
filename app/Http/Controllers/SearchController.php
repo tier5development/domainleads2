@@ -280,7 +280,8 @@ public function downloadExcel2(Request $request)
     public function createWordpressForDomain(Request $request)
     {
    
-    //dd($request->domain_name);
+    //dd($request->all());
+
      $domain_name= $request->domain_name;
      $registrant_email= $request->registrant_email;
      $user_id= $request->user_id;
@@ -294,11 +295,25 @@ public function downloadExcel2(Request $request)
         $obj->domain_name= $domain_name;  
         $obj->registrant_email= $registrant_email; 
         $obj->user_id= $user_id;  
-        $obj->status= 1;  
-        $obj->save();
         $array = array();  
         $array['message']    = $domain_data['message'];
-        return \Response::json($array);     
+
+
+        // $IP = env('TR5IP');
+        // $ip = gethostbyname($request->domain_name);
+        // $array['created'] = $ip != $IP ? 'false' : 'true';
+        // $array['created'] == 'false' ? $obj->status = 1 : $obj->status = 2;
+        $array['error'] = 'null';
+        if($obj->save())
+        {
+          return \Response::json($array); 
+        }
+        else
+        {
+          $array['error'] = 'cannot insert into db';
+          return \Response::json($array); 
+        }
+            
       
     }
 
@@ -475,12 +490,20 @@ public function downloadExcel2(Request $request)
                     }
                     else if($key == 'domains_create_date')
                     {
+
+                        
+
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
-                            $query->whereHas('domains_info',function($q) use($key,$req){
-                              
-                                $q->where($key,$req);
+                            $query->whereHas('domains_info',function($query) use($key,$req){
+                                $query->where($key,$req);
                             });
                         });
+
+                      // $allrecords = $allrecords->whereHas('domains_info' , function($query) use($key,$req){
+                            
+                      //       $query->where($key,$req);
+                          
+                      //   });
                     }
 
                     //applying sort filter

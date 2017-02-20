@@ -53,7 +53,6 @@
   overflow: hidden;
   border: 0;
   width: 272px;*/
-  border: 1px solid #ccc;
     height: 40px;
     border-radius: 5px;
     width: 100%;
@@ -70,7 +69,7 @@
 
 .dropdown dd ul {
   background-color: #eee;
-  border: 1px solid #ccc;
+  
   color: #666;
   display: none;
   left: 0px;
@@ -107,7 +106,7 @@
     vertical-align: middle;
 }
 
-form{
+.search_form{
 	border: 1px solid #ccc;
     border-radius: 5px;
     padding: 20px;
@@ -182,7 +181,7 @@ form{
 
 			<div class="col-md-12">
 
-				<form method="POST" action="{{Route('search')}}" class="col-md-6" id="postSearchDataForm">
+				<form method="POST" action="{{Route('search')}}" class="col-md-6 search_form" id="postSearchDataForm">
 						<div class="form-group">
 							<label>Domain Name : </label>
 							<input type="text" value="{{ Input::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
@@ -401,7 +400,7 @@ form{
 						</th>
 						<th>
 							
-								<small id="domains_create_date_{{$key}}">{{$each->first()->each_domain->first()->domains_info->domains_create_date}}</small>
+								<small id="domains_create_date_{{$key}}">{{$each->each_domain->first()->domains_info->domains_create_date}}</small>
 							
 						</th>
 						<th>

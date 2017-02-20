@@ -57,8 +57,32 @@ class Kernel extends ConsoleKernel
 
             \Log::info('::time::');
            
-        })->dailyAt('18:25');
+        })->dailyAt('20:00');
         \Log::info(date('Y-m-d',time()));
+
+
+
+        // $schedule->call(function(){
+        //     try
+        //     {
+        //         date_default_timezone_set('Asia/Kolkata');
+        //         $ch = curl_init();
+        //         $url = env('APP_URL');
+        //         \Log::info($url.'/checkWordpressStatus');
+        //         curl_setopt($ch, CURLOPT_URL, $url.'/checkWordpressStatus');
+        //         curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        //         $head = curl_exec($ch); 
+
+        //         $result = json_decode($head,true);
+        //         \Log::info('from schedule ++++++>> STATUS : '.$result['status']);
+        //         \Log::info($result);
+        //     }
+        //     catch(\Exception $e)
+        //     {
+
+        //     }
+        // })->dailyAt('19:25');
        
     }
 
