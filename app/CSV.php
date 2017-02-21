@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CSV extends Model
 {
-    protected $table='chkWebsite';
+    protected $table='csv_record';
 
     
 }

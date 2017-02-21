@@ -9,6 +9,7 @@ use \App\Lead;
 use \App\EachDomain;
 use \App\LeadUser;
 use \App\ValidatedPhone;
+use \App\CSV;
 use DB;
 use Carbon\Carbon;
 use Zipper;
@@ -85,19 +86,46 @@ class ImportExport extends Controller
         
         $upload = $request->file('import_file');
         $filepath = $upload->getRealPath();
-        
         $original_file_name = $request->import_file->getClientOriginalName();
+
+
+        $csv_exists = CSV::where('file_name',$original_file_name);
+        if($csv_exists->first() == null)
+        {
+          $total_leads_before_insertion = Lead::count();
+          $total_domains_before_insertion = EachDomain::count();
+          $file  = fopen($filepath , 'r');
+          $this->insertion_Execl($file);
+          fclose($file);
+          $leads_inserted   = Lead::count()-$total_leads_before_insertion;
+          $domains_inserted = EachDomain::count()-$total_domains_before_insertion;
+          $end = microtime(true) - $start;
+
+          $obj = new CSV();
+          $obj->file_name          = $original_file_name;
+          $obj->leads_inserted    = $leads_inserted;
+          $obj->domains_inserted  = $domains_inserted;
+          $obj->status            = 2;
+          $obj->query_time        = $end;
+          $obj->save();
+
+          return \Response::json(array('TOTAL TIME TAKEN:'=>$end." seconds",
+                                    'leads_inserted'=>$leads_inserted,
+                                    'domains_inserted'=>$domains_inserted,
+                                    'status'=>200,
+                                    'filename'=>$original_file_name));
+
+        }
+        else
+        {
+            return \Response::json(array('insertion_time'=>'null',
+                                           'message'=>'This file is inserted already::'.$original_file_name,
+                                           'status'=>500));
+        }
+
         
+        //echo('TOTAL TIME TAKEN :: '.$end);
 
-
-
-
-        $file  = fopen($filepath , 'r');
-        $this->insertion_Execl($file);
-        fclose($file);
-        $end = microtime(true) - $start;
-        echo('TOTAL TIME TAKEN :: '.$end);
-       
     }
 
     public function importExeclfromCron($date)
@@ -110,35 +138,61 @@ class ImportExport extends Controller
       //dd('kjyfgkg');
       try{
 
-            $dir = getcwd();
-            $str = "http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip";
-            $data = file_get_contents($str);
-            file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
-            Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
+            $csv_exists = CSV::where('file_name',$date."_whois-proxies-removed.csv");
+            if($csv_exists->first() == null)
+            {
+              $dir = getcwd();
+              $str = "http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip";
+              $data = file_get_contents($str);
+              file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
+              Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
 
-            $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
-            $file  = fopen($filepath , 'r');
+              $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
+              $file  = fopen($filepath , 'r');
 
-            $this->insertion_Execl($file);
-            $end = microtime(true);
-            fclose($file);
+
+              $total_leads_before_insertion = Lead::count();
+              $total_domains_before_insertion = EachDomain::count();
+              $this->insertion_Execl($file);
+              fclose($file);
+              $leads_inserted   = Lead::count()-$total_leads_before_insertion;
+              $domains_inserted = EachDomain::count()-$total_domains_before_insertion;
+              $end = microtime(true) - $start;
+
+              $obj = new CSV();
+              $obj->file_name           = $date."_whois-proxies-removed.csv";
+              $obj->leads_inserted      = $leads_inserted;
+              $obj->domains_inserted    = $domains_inserted;
+              $obj->status              = 2;
+              $obj->query_time          = $end;
+              $obj->save();
+
+              unlink($filepath);
+              unlink($dir.'/zip/'.$date.'_whois-proxies-removed.zip');
+
+              return \Response::json(array('TOTAL TIME TAKEN:'=>$end." seconds",
+                                      'leads_inserted'=>$leads_inserted,
+                                      'domains_inserted'=>$domains_inserted,
+                                      'status'=>200,
+                                      'message'=>'success',
+                                      'filename'=>$date."_whois-proxies-removed.csv"));
+            }
+            else
+            {
+              return \Response::json(array('insertion_time'=>'null',
+                                           'message'=>'This file is inserted already::'.$date."_whois-proxies-removed.csv",
+                                           'status'=>500));
+            }
+
             
-            unlink($filepath);
-            unlink($dir.'/zip/'.$date.'_whois-proxies-removed.zip');
-
-
-            return \Response::json(array(
-            'insertion_time ' => $end-$start,
-            'status'          => 'success'));
-
       }
       catch(\Exception $e)
       {
         $end = microtime(true);
         return \Response::json(array(
-            'insertion_time ' => $end-$start,
-            'status'          => 'failure',
-            'message'         => $e->getMessage()));
+            'insertion_time ' => $end,
+            'message'         => $e->getMessage(),
+            'status'          => 'failure'));
       }
     }
 
@@ -221,7 +275,6 @@ class ImportExport extends Controller
             else
 
               $str .= ",0,".$domains_count;
-            
 		  		}
 		 	}
 	 	}
@@ -257,15 +310,15 @@ class ImportExport extends Controller
           $q_valid_phone  = "INSERT IGNORE `valid_phone` ".$valid_phone_head." VALUES ".$VALID_PHONE;
         }
 
-        $q_each_domains = "REPLACE `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
+          $q_each_domains = "REPLACE `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
 
-        $q_domains_info = "REPLACE `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
+          $q_domains_info = "REPLACE `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
           
-        $q_domains_administrative = "REPLACE `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
-        $q_domains_technical = "REPLACE `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
-        $q_domains_billing = "REPLACE `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
-        $q_domains_nameserver = "REPLACE `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
-        $q_domains_status = "REPLACE `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
+          $q_domains_administrative = "REPLACE `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
+          $q_domains_technical = "REPLACE `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
+          $q_domains_billing = "REPLACE `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
+          $q_domains_nameserver = "REPLACE `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
+          $q_domains_status = "REPLACE `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
 
           //dd($q_leads);
@@ -672,5 +725,20 @@ class ImportExport extends Controller
 
             //return null;
         }
+    }
+
+    public function fill_csv_table_default()
+    {
+        // $dates_array = array();
+        // $leads_array = Lead::pluck('registrant_email','created_at')->toArray();
+        // foreach($leads_array as $key=>$val)
+        // {
+        //     $temp = explode(" ", $key);
+        //     if(!isset($dates_array[$temp[0]]))
+        //     {
+        //         $dates_array[$temp[0]] = 'done';
+        //     }
+        // }
+        
     }
 }

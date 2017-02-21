@@ -1,0 +1,15 @@
+#!/bin/bash
+
+sudo apt-get purge mysql-server apache2 php
+sudo apt-get autoremove
+sudo apt-get update
+
+echo "+++++ php status ++++++"
+which php
+echo "+++++ mysql status ++++++"
+which mysql
+echo "+++++ apache2 status ++++++"
+which apache2
+
+cd /var/www/html/scripts
+sudo ./setup

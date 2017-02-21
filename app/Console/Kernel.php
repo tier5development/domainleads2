@@ -26,13 +26,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         
-        $schedule->call(function () {
-            try{
+        $schedule->call(function(){
+            try
+            {
                 //2017-02-06 ===>> small date
 
                 \Log::info('calling scheduler');
                 date_default_timezone_set('Asia/Kolkata');
-                $date = date('Y-m-d',time()-3600*24*1);
+                $date = date('Y-m-d',time()-3600*24);
 
                 $ch = curl_init();
                 $url = env('APP_URL');
@@ -54,10 +55,9 @@ class Kernel extends ConsoleKernel
             {
                 \Log::info('from catch block'.$e);
             }
-
             \Log::info('::time::');
            
-        })->dailyAt('20:00');
+        })->hourly();
         \Log::info(date('Y-m-d',time()));
 
 

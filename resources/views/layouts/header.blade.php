@@ -21,6 +21,9 @@
       @else
         <li class="pull-right"><a href="#">advanced membership</a></li>
       @endif
+
+        <li class="pull-right"><a href="{{URL::to('admin_notifications')}}">Notifications</a></li>
+
     </ul>
   </div>
 </nav>

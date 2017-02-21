@@ -13,6 +13,8 @@ use \App\Wordpress_env;
 use DB;
 use Carbon\Carbon;
 use Zipper;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class Maintainance extends Controller
 {
@@ -71,4 +73,27 @@ class Maintainance extends Controller
 	 //    	}
   //   	}
   //   }
+
+	public function domain_verification()
+	{
+		try{
+			$url = 'http://abidingbb1rake.men/';
+     	$client = new Client(); //GuzzleHttp\Client
+     	$client->setDefaultOption('verify', true);
+        $result = $client->get($url);
+        //$domain_data = json_decode($result->getBody()->getContents(), true);
+        //dd($domain_data->getStatusCode());
+        dd($result->getStatusCode());
+		}
+		catch(\Exception $e)
+		{
+			dd($e->getMessage());
+		}
+		
+
+
+        // Create a client with a base URI
+	}
+
+	
 }
