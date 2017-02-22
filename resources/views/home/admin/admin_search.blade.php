@@ -370,7 +370,7 @@
 						</th>
 						<th>
 							
-								<small id="registrant_name_{{$key}}">{{$each->registrant_name}}</small>
+								<small id="registrant_name_{{$key}}">{{$each->registrant_fname}} {{$each->registrant_lname}}</small>
 							
 
 						</th>

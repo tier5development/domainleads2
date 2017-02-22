@@ -59,7 +59,7 @@ table, th, td {
 				        </td>
 
 				        <td>
-				        	{{ $each->registrant_name}}
+				        	{{ $each->registrant_fname}} {{$each->registrant_lname}}
 				        </td>
 				        
 				        <td>

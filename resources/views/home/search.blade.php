@@ -314,7 +314,7 @@ form{
 						</th>
 						<th>
 							@if(isset($users_array[$each->registrant_email]))
-								<small id="registrant_name_{{$key}}">{{$each->registrant_name}}</small>
+								<small id="registrant_name_{{$key}}">{{$each->registrant_fname}} {{$each->registrant_lname}}</small>
 							@else
 								<small id="registrant_name_{{$key}}">***</small>
 							@endif

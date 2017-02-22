@@ -254,8 +254,20 @@ class ImportExport extends Controller
 		 	{
         $x = !isset($record[$i]) ? " " : $record[$i];
 		 		$rec = str_replace($this->search, $this->replace, $x);
-		 		if($i == $low)
-		  			$str .= "NULL , '".$rec."' ,";
+		 		 if($i == $low)
+         {
+            if($i == 10)
+            {
+              $name_ = explode(" ",$rec);
+              $fname = isset($name_[0]) ? $name_[0] : " ";
+              $lname = isset($name_[1]) ? $name_[1] : " ";
+              $str .= "NULL , '".$fname."' , '".$lname."' ,";
+            }
+            else
+            {
+              $str .= "NULL , '".$rec."' ,";
+            }
+         }
 		  			
 		  		else if($i != $high)
 		  		{
@@ -405,7 +417,7 @@ class ImportExport extends Controller
 
         //10 - 19 goes to leads table
         //heads for leads table for mysql entry
-        $leads_head = "(`id`,`registrant_name`,`registrant_company`,`registrant_address`,`registrant_city`,`registrant_state`,`registrant_zip`,`registrant_country`,`registrant_email`,`registrant_phone`,`phone_validated`,`registrant_fax`,`created_at`,`updated_at`,`unlocked_num`,`domains_count`)" ;
+        $leads_head = "(`id`,`registrant_fname`,`registrant_lname`,`registrant_company`,`registrant_address`,`registrant_city`,`registrant_state`,`registrant_zip`,`registrant_country`,`registrant_email`,`registrant_phone`,`phone_validated`,`registrant_fax`,`created_at`,`updated_at`,`unlocked_num`,`domains_count`)" ;
 
         //record 1 goes to each_domains table
         $each_domains_head = "(`id`,`domain_name`,`domain_ext`,`unlocked_num`,`created_at` , `updated_at`,`registrant_email`)";

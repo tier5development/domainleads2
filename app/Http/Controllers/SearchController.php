@@ -50,7 +50,7 @@ public function downloadExcel2(Request $request)
                           ->join('leads', 'leads.registrant_email', '=', 'leadusers.registrant_email')
                           ->join('each_domain', 'each_domain.registrant_email', '=', 'leadusers.registrant_email')
                          
-                          ->select('leads.registrant_name as name','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
+                          ->select('leads.registrant_fname as fname','leads.registrant_lname as lname','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
                           ->where('leadusers.user_id',$user_id)
                           ->groupBy('leads.registrant_email')
                           ->get();  
@@ -170,7 +170,7 @@ public function downloadExcel2(Request $request)
                     //->join('valid_phone', 'valid_phone.registrant_email', '=', 'leads.registrant_email')
                       
                     ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
-                    ->select('leads.registrant_name as name','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
+                    ->select('leads.registrant_fname as fname','leads.registrant_lname as lname','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
                       
 
                     ->where(function($query) use ($create_date,$domain_name,$registrant_country,$phone_number,$tdl,$registrant_state)
@@ -242,7 +242,7 @@ public function downloadExcel2(Request $request)
               $exel_data=DB::table('each_domain')                         
                           ->join('leads', 'leads.registrant_email', '=', 'each_domain.registrant_email')
                           
-                          ->select('leads.registrant_name as name','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
+                          ->select('leads.registrant_fname as fname','leads.registrant_lname as lname','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
                           ->whereIn('each_domain.registrant_email',$emailID_list)
                            ->groupBy('leads.registrant_email')
                           ->get();   
@@ -257,7 +257,14 @@ public function downloadExcel2(Request $request)
        //print_r($data);dd();
        $reqData=array();
        foreach($data as $key=>$result){
-          $reqData[$key]['name']=$result['name'];
+          //$reqData[$key]['name']=$result['name'];
+          // $name_ = explode(" ",$result['name']);
+
+          // $name_[0] = isset($name_[0]) ? $name_[0] : " ";
+          // $name_[1] = isset($name_[1]) ? $name_[1] : " ";
+
+          $reqData[$key]['first_name'] = $result['fname'];
+          $reqData[$key]['last_name']  = $result['lname'];
           $reqData[$key]['website']=$result['website'];
           $reqData[$key]['phone']=substr(strrchr($result['phone'], "."), 1);
           $reqData[$key]['email_id']=$result['email_id'];
@@ -367,7 +374,7 @@ public function downloadExcel2(Request $request)
           $array = array();
           $array['status'] = 'success';
           $array['registrant_email']    = $data->registrant_email;
-          $array['registrant_name']     = $data->registrant_name ;
+          $array['registrant_name']     = $data->registrant_fname." ".$data->registrant_lname;
           $array['registrant_phone']    = $data->registrant_phone;
           $array['registrant_company']  = $data->registrant_company;
           $array['domain_name']         = $data->each_domain->first()->domain_name;

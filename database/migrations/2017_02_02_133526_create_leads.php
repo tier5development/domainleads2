@@ -15,7 +15,8 @@ class CreateLeads extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('registrant_name');
+            $table->string('registrant_fname');
+            $table->string('registrant_lname');
             $table->string('registrant_email')->index()->unique();
             $table->string('registrant_company');
             $table->string('registrant_address');

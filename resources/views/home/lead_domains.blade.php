@@ -206,7 +206,7 @@ html, body {
 
 					<td>
 						
-						{{$domain->leads->registrant_name}}
+						{{$domain->leads->registrant_fname}} {{$domain->leads->registrant_lname}}
 					</td>
 					<td>
 						
