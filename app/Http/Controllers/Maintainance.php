@@ -10,90 +10,175 @@ use \App\EachDomain;
 use \App\LeadUser;
 use \App\ValidatedPhone;
 use \App\Wordpress_env;
+use \App\CurlError;
+use \App\DomainFeedback;
 use DB;
 use Carbon\Carbon;
 use Zipper;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Client;
 
 class Maintainance extends Controller
 {
-  //   public function checkWordpressStatus()
-  //   {
-  //   	$wp = Wordpress_env::where('status',1);
+  public function async_domain()
+  {
+    //dd(1);
+    $promise = new Promise();
+    dd('done'); 
+    // $promise = $client->requestAsync('GET', 'http://httpbin.org/get');
+    // $promise->then(function ($response) {
+    // echo 'Got a response! ' . $response->getStatusCode();
+    //});
+  }
 
 
-		// $IP = env('TR5IP');
-  //       $changed_domain = array();
-  //   	foreach($wp->get() as $each)
-  //   	{
-  //   		$ip = gethostbyname($each->domain_name);
-  //   		if($ip == $IP)
-  //   			$changed_domain[$each->domain_name] = 2;
-  //   	}
-  //   	/* FORMAT */
+  public function domain_verification()
+  {
+        $curl_errors = CurlError::pluck('err_reason','curl_error')->toArray();
+        $domains_check = DomainFeedback::pluck('curl_error','domain_name')->toArray();
 
-  //   	// UPDATE `wordpress` 
-  //   	// 	SET status = CASE domain_name
-  //   	// 		WHEN 'domain_name1' THEN value1
-  //   	// 		WHEN 'domain_name2' THEN value2
-  //   	// 	END
-  //   	// WHERE domain_name IN ('domain_name1','domain_name2')
+        $domains_feedback = array();
+        $curl_new_error   = array();
 
-  //   	$wp_header = "UPDATE `wordpress` SET status = CASE domain_name ";
-  //   	$wp_query_body = "";
-  //   	$query_domain_names = "";
-  //   	foreach($changed_domain as $key=>$val)
-  //   	{
-  //   		$wp_query_body .= "WHEN '".$key."' THEN ".$val; 
+        foreach($curl_errors as $key=>$val)
+            $domains_list[$key] = "";
+        
 
-  //   		if($query_domain_names != '') $query_domain_names .=",";
 
-  //           $query_domain_names .= "'". $key ."'";
-  //   	}
-  //   	$query_domain_names = "(" . $query_domain_names .")";
-  //   	$wp_query_tail = " END WHERE domain_name IN ".$query_domain_names;
+        $each_domain =EachDomain::skip(0)->take(10);
+        $reasons  = array();
+        $domains_to_update = array();
 
-  //   	$query = $wp_header.$wp_query_body.$wp_query_tail;
+        foreach($each_domain->get() as $each)
+        {
+            $domain_name = $each->domain_name;
+            $url = "http://".$domain_name;
+            $client = new Client(); //GuzzleHttp\Client
+            try
+            {
+                
+                $result = $client->get($url,array(
+                                    'timeout' => 8, 
+                                    'connect_timeout' => 8)); 
+            }
+            catch(\Exception $e)
+            {
+                $msg = explode(":", $e->getMessage());
+                if(!isset($domains_check[$each->domain_name]))
+                {
+                  // array_push($domains_feedback,
+                  //           array('domain_name' =>  $each->domain_name,
+                  //                 'checked'     =>  1,
+                  //                 'curl_error'  =>  $msg[0],
+                  //                 'created_at'  =>  Carbon::now(),
+                  //                 'updated_at'  =>  Carbon::now()));
+                  $d_feedback  = new DomainFeedback();
+                  $d_feedback->domain_name = $each->domain_name;
+                  $d_feedback->checked     = 1;
+                  $d_feedback->curl_error  = $msg[0];
+                  $d_feedback->save();
+                }
+                if(!isset($curl_errors[$msg[0]]))
+                {
+                  $reason = explode(" ",$msg[1],2);
+                  $curl_errors[$msg[0]] = $reason[1]; 
 
-  //   	if($wp_query_body == "")
-  //   		return \Response::json(array('status'=>'no row to change'));
-  //   	else
-  //   	{
-  //   		try{
-	 //    		DB::statement($query);
-	 //    		return \Response::json(array('status'=>'db query executed'
-	 //    								,'rows'=>sizeof($changed_domain)));
-	 //    	}
-	 //    	catch(\Excepttion $e)
-	 //    	{
-	 //    		return \Response::json(array('status'=>'db query executed'
-	 //    								,'rows'=>sizeof($changed_domain)
-	 //    								,'message'=>$e->getMessage()));
-	 //    	}
-  //   	}
-  //   }
+                  // array_push($curl_new_error,
+                  //           array('curl_error'  =>  $msg[0],
+                  //                 'err_reason'  =>  $reason[1]));
 
-	public function domain_verification()
-	{
-		try{
-			$url = 'http://abidingbb1rake.men/';
-     	$client = new Client(); //GuzzleHttp\Client
-     	$client->setDefaultOption('verify', true);
-        $result = $client->get($url);
-        //$domain_data = json_decode($result->getBody()->getContents(), true);
-        //dd($domain_data->getStatusCode());
-        dd($result->getStatusCode());
-		}
-		catch(\Exception $e)
-		{
-			dd($e->getMessage());
-		}
-		
+                  $obj = new CurlError();
+                  $obj->curl_error = $msg[0];
+                  $obj->err_reason = $reason[1];
+                  $obj->save();
+                }
+            }
+        }
+        //dd($st);
+        //dd($domains_feedback);
+        
+        // UPDATE `domains_feedback`
+        //   SET curl_error = CASE domain_name
+        //       WHEN 'domain_name1' THEN 'error1'
+        //       WHEN 'domain_name2' THEN 'error2'
+        //   END
+        // WHERE domain_name IN ('domain_name1','domain_name2')
+
+        //DomainFeedback::insert($domains_feedback);
+        //CurlError::insert($curl_new_error);
+        echo('success');
 
 
         // Create a client with a base URI
-	}
+  }
 
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public function each_domain_verification()
+  {
+            $domain_name = '01c.loan';//001hf.com
+            $url = "http://".$domain_name;
+            $client = new Client(); //GuzzleHttp\Client
+
+            try{
+               // $client->setDefaultOption('verify', true);
+                $result = $client->get($url,array(
+                                    'timeout' => 5, 
+                                    'verify' => true,
+                                    'connect_timeout' => 5)); 
+
+                dd($result);
+            }
+            catch(GuzzleHttp\Exception\TransferException $e)
+            {
+              echo("in 1st response <br>");
+              dd($e->getResponse()->getBody(true));
+            }
+            catch(GuzzleHttp\Exception\RequestException $e)
+            {
+              echo("in 2nd response <br>");
+              dd($e->getResponse()->getBody());
+            }
+            catch(GuzzleHttp\Exception\ClientException $e)
+            {
+              echo("in 3th response <br>");
+              dd($e->gettResponse()->getBody(true));
+            }
+            catch(GuzzleHttp\Exception\BadResponseException $e)
+            {
+              echo("in 4th response <br>");
+              dd($e->getResponse()->getBody(true));
+            }
+            catch(GuzzleHttp\Exception\ServerException $e)
+            {
+              echo("in 5th response <br>");
+              dd($e->getResponse()->getBody(true));
+            }
+            catch(GuzzleHttp\Exception\TooManyRedirectsException $e)
+            {
+              echo("in 6th response <br>");
+              dd($e->getResponse()->getBody(true));
+            }
+            catch(\Exception $e)
+            {
+              echo("in 7th response <br>");
+              dd($e->getMessage());
+            }
+  }
+
 }

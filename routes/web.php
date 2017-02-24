@@ -10,7 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/aaa',function(){
+    $v = custom_curl_errors();
+    dd($v);
+});
 
+Route::get('/sss','Maintainance@async_domain');
 
 Route::get('/' , ['uses'=>'AccountController@home' , 'as'=>'home']);
 
@@ -19,6 +24,8 @@ Route::get('/checknum/{num}' , ['uses' => 'ImportExport@checknum']);
 Route::get('/abc' , ['uses'=>'ImportExport@validate_ph_no']);
 
 Route::get('/tst','Maintainance@domain_verification');
+Route::get('/tstt','Maintainance@each_domain_verification');
+
 
 Route::get('/wb',function(){
     $x = \App\Wordpress_env::all();

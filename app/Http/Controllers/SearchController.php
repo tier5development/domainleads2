@@ -437,7 +437,7 @@ public function downloadExcel2(Request $request)
 
     public function search(Request $request)
     {
-
+      ini_set('max_execution_time', 346000);
     
       if(\Auth::check())
       {
@@ -460,7 +460,7 @@ public function downloadExcel2(Request $request)
 
 
 
-          $allrecords = Lead::with('each_domain','valid_phone');
+          $allrecords = Lead::with('each_domain', 'valid_phone')->select('leads.*');
           //initiating ends
 
           
@@ -475,43 +475,71 @@ public function downloadExcel2(Request $request)
                     //var_dump($key.'<br>');
                     if($key == 'registrant_country')
                     {
+                      dd('1');
                         $allrecords = $allrecords->where('registrant_country', $req);
 
                     }
                     else if($key == 'registrant_state')
-                    {
+                    {dd('2');
                         $allrecords = $allrecords->where('registrant_state', $req);
                     }
                     else if($key == 'domain_name')
                     {
+                      dd('3');
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
                             $query->where($key, 'like', '%'.$req.'%');
                         });
                     }
                     else if($key == 'domain_ext')
                     {
-                        
+                        dd('4');
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req,$domain_ext){
                             $query->whereIn($key,$domain_ext);
                         });
                     }
                     else if($key == 'domains_create_date')
                     {
-
+                        /*
+                        $sql = "SELECT di.domains_create_date FROM `leads` as l INNER JOIN each_domain as ed ON l.`registrant_email` = ed.registrant_email INNER JOIN domains_info as di ON ed.domain_name = di.domain_name WHERE di.domains_create_date = '2017-01-19'";
+                        */
+                        // 61981
+                        /*
+                        $domains = DomainInfo::where($key, $req)->pluck('domain_name')->all();
+                        //dd(count($domains));
+                        //dd($domains);
+                        $edomains = EachDomain::whereIn('domain_name', $domains)->pluck('registrant_email')->all();
+                        //dd($edomains);
                         
+                        /*
+                        $edomains = $edomains->whereHas('domains_info' , function($query) use($key,$req){
+                            $query->where('domains_create_date','2017-01-19');
+                          });
+                        
+                          
+                        $allrecords = $allrecords->whereIn('registrant_email', $edomains);
+                        */
 
+                        // $allrecords = $allrecords->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')->where('domains_info.'.$key, $req);
+
+                        //dd($allrecords->toSql());
+                        
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
+                            
                             $query->whereHas('domains_info',function($query) use($key,$req){
                                 $query->where($key,$req);
                             });
+                            //$query->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')->where('domains_info.'.$key, $req);
                         });
+                        //dd($allrecords);
 
                       // $allrecords = $allrecords->whereHas('domains_info' , function($query) use($key,$req){
                             
                       //       $query->where($key,$req);
                           
                       //   });
+
                     }
+
 
                     //applying sort filter
                     else if ($key == 'sort') 
@@ -591,6 +619,7 @@ public function downloadExcel2(Request $request)
               
             });
           }
+          //dd($allrecords->count());
 
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
             $leadArr = array_flip($leadArr_);
@@ -670,9 +699,9 @@ public function downloadExcel2(Request $request)
             $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
 
             $obj_array = array_flip($obj_array);
-
             
-
+            
+            //dd($allrecords->count());
             if(\Auth::user()->user_type == 2)
             {
                 return view('home.admin.admin_search',[
