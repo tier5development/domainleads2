@@ -15,123 +15,112 @@ use \App\DomainFeedback;
 use DB;
 use Carbon\Carbon;
 use Zipper;
+//use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Client;
 
 class Maintainance extends Controller
 {
-  public function async_domain()
+  // public function async_domain()
+  // {
+  //   $promise = new Promise();
+  //   $nextPromise = new Promise();
+
+  //   $promise
+  //       ->then(function ($value) use ($nextPromise) {
+  //           echo $value;
+  //           return $nextPromise;
+  //       })
+  //       ->then(function ($value) {
+  //           echo $value;
+  //       });
+
+  //   // Triggers the first callback and outputs "A"
+  //   $promise->resolve('AA');
+  //   // Triggers the second callback and outputs "B"
+  //   $nextPromise->resolve('B');
+  // }
+
+  public function verify_domains() //working function
   {
-    //dd(1);
-    $promise = new Promise();
-    dd('done'); 
-    // $promise = $client->requestAsync('GET', 'http://httpbin.org/get');
-    // $promise->then(function ($response) {
-    // echo 'Got a response! ' . $response->getStatusCode();
-    //});
-  }
+      $start = microtime(true);
 
+      $limit = 50; //--<selects how many domain to ping with a get request..>
 
-  public function domain_verification()
-  {
-        $curl_errors = CurlError::pluck('err_reason','curl_error')->toArray();
-        $domains_check = DomainFeedback::pluck('curl_error','domain_name')->toArray();
+      $curl_errors = CurlError::pluck('err_reason','curl_error')->toArray();
 
-        $domains_feedback = array();
-        $curl_new_error   = array();
+      $all_domains = EachDomain::pluck('domain_name')->all();
 
-        foreach($curl_errors as $key=>$val)
-            $domains_list[$key] = "";
-        
+      $domains_check = DomainFeedback::pluck('domain_name')->all();
 
+      $diff = array_diff($all_domains,$domains_check);
 
-        $each_domain =EachDomain::skip(0)->take(10);
-        $reasons  = array();
-        $domains_to_update = array();
+      $domain_set = array_slice($diff,0,$limit);
 
-        foreach($each_domain->get() as $each)
-        {
-            $domain_name = $each->domain_name;
+      foreach($domain_set as $key=>$val)
+      {
+            $domain_name = $val;
             $url = "http://".$domain_name;
             $client = new Client(); //GuzzleHttp\Client
             try
             {
-                
                 $result = $client->get($url,array(
                                     'timeout' => 8, 
                                     'connect_timeout' => 8)); 
             }
             catch(\Exception $e)
             {
-                $msg = explode(":", $e->getMessage());
-                if(!isset($domains_check[$each->domain_name]))
+                $msg = str_replace($url, "", $e->getMessage());
+
+                try{
+                  $msg = explode(":", $msg);
+                }
+                catch(\Exception $e)
                 {
-                  // array_push($domains_feedback,
-                  //           array('domain_name' =>  $each->domain_name,
-                  //                 'checked'     =>  1,
-                  //                 'curl_error'  =>  $msg[0],
-                  //                 'created_at'  =>  Carbon::now(),
-                  //                 'updated_at'  =>  Carbon::now()));
+                  $msg[0] = "<no : in curl error>";
+                  $msg[1] = "<buffer> <as no : in curl error>";
+                }
+                if(!isset($domains_check[$domain_name]))
+                {
                   $d_feedback  = new DomainFeedback();
-                  $d_feedback->domain_name = $each->domain_name;
+                  $d_feedback->domain_name = $domain_name;
                   $d_feedback->checked     = 1;
                   $d_feedback->curl_error  = $msg[0];
                   $d_feedback->save();
                 }
                 if(!isset($curl_errors[$msg[0]]))
                 {
-                  $reason = explode(" ",$msg[1],2);
+                  try
+                  {
+                    $reason = explode(" ",$msg[1],2);
+                  }
+                  catch(\Exception $e)
+                  {
+                    //dd($e->getMessage());
+                    $reason[1] = "<error type1>";
+                  }
+                  
                   $curl_errors[$msg[0]] = $reason[1]; 
-
-                  // array_push($curl_new_error,
-                  //           array('curl_error'  =>  $msg[0],
-                  //                 'err_reason'  =>  $reason[1]));
-
                   $obj = new CurlError();
                   $obj->curl_error = $msg[0];
                   $obj->err_reason = $reason[1];
                   $obj->save();
                 }
             }
-        }
-        //dd($st);
-        //dd($domains_feedback);
-        
-        // UPDATE `domains_feedback`
-        //   SET curl_error = CASE domain_name
-        //       WHEN 'domain_name1' THEN 'error1'
-        //       WHEN 'domain_name2' THEN 'error2'
-        //   END
-        // WHERE domain_name IN ('domain_name1','domain_name2')
+      }
 
-        //DomainFeedback::insert($domains_feedback);
-        //CurlError::insert($curl_new_error);
-        echo('success');
+      $time = microtime(true) - $start;
 
-
-        // Create a client with a base URI
+      return ['time taken'=>$time,
+              'limit'     =>$limit];
+      //echo("time  taken =".$time);
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
   public function each_domain_verification()
   {
-            $domain_name = '01c.loan';//001hf.com
+            $domain_name = '0-give.org';//001hf.com
             $url = "http://".$domain_name;
             $client = new Client(); //GuzzleHttp\Client
 
@@ -177,7 +166,10 @@ class Maintainance extends Controller
             catch(\Exception $e)
             {
               echo("in 7th response <br>");
-              dd($e->getMessage());
+              $msg = $e->getMessage();
+
+              $msg = str_replace($url, "", $msg);
+              dd($msg);
             }
   }
 

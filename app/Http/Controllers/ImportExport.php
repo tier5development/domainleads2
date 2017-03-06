@@ -254,6 +254,7 @@ class ImportExport extends Controller
 		 	{
         $x = !isset($record[$i]) ? " " : $record[$i];
 		 		$rec = str_replace($this->search, $this->replace, $x);
+        $rec = trim($rec);
 		 		 if($i == $low)
          {
             if($i == 10)
@@ -267,8 +268,7 @@ class ImportExport extends Controller
             {
               $str .= "NULL , '".$rec."' ,";
             }
-         }
-		  			
+         }	
 		  		else if($i != $high)
 		  		{
 		  			if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;

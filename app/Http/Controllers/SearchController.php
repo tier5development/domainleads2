@@ -438,7 +438,7 @@ public function downloadExcel2(Request $request)
     public function search(Request $request)
     {
       ini_set('max_execution_time', 346000);
-    
+      
       if(\Auth::check())
       {
 
@@ -460,7 +460,7 @@ public function downloadExcel2(Request $request)
 
 
 
-          $allrecords = Lead::with('each_domain', 'valid_phone')->select('leads.*');
+          $allrecords = Lead::with('each_domain','each_domain.domains_info','valid_phone')->select('leads.*');
           //initiating ends
 
           
@@ -475,30 +475,32 @@ public function downloadExcel2(Request $request)
                     //var_dump($key.'<br>');
                     if($key == 'registrant_country')
                     {
-                      dd('1');
+                      //dd('1');
                         $allrecords = $allrecords->where('registrant_country', $req);
 
                     }
                     else if($key == 'registrant_state')
-                    {dd('2');
+                    {
+                      //dd('2');
                         $allrecords = $allrecords->where('registrant_state', $req);
                     }
                     else if($key == 'domain_name')
                     {
-                      dd('3');
+                      //dd('3');
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
                             $query->where($key, 'like', '%'.$req.'%');
                         });
                     }
                     else if($key == 'domain_ext')
                     {
-                        dd('4');
+                        //dd('4');
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req,$domain_ext){
                             $query->whereIn($key,$domain_ext);
                         });
                     }
                     else if($key == 'domains_create_date')
                     {
+                      //dd($req);
                         /*
                         $sql = "SELECT di.domains_create_date FROM `leads` as l INNER JOIN each_domain as ed ON l.`registrant_email` = ed.registrant_email INNER JOIN domains_info as di ON ed.domain_name = di.domain_name WHERE di.domains_create_date = '2017-01-19'";
                         */
@@ -522,15 +524,25 @@ public function downloadExcel2(Request $request)
                         // $allrecords = $allrecords->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')->where('domains_info.'.$key, $req);
 
                         //dd($allrecords->toSql());
+                        //dd($key);
+
+
+                       
+
+
+
                         
+
+
                         $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
-                            
-                            $query->whereHas('domains_info',function($query) use($key,$req){
-                                $query->where($key,$req);
+                            $query->whereHas('domains_info',function($q) use($key,$req){
+                                $q->where($key,$req);
                             });
                             //$query->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')->where('domains_info.'.$key, $req);
                         });
-                        //dd($allrecords);
+
+
+                        // dd($allrecords);
 
                       // $allrecords = $allrecords->whereHas('domains_info' , function($query) use($key,$req){
                             
@@ -539,8 +551,6 @@ public function downloadExcel2(Request $request)
                       //   });
 
                     }
-
-
                     //applying sort filter
                     else if ($key == 'sort') 
                     {
@@ -619,14 +629,17 @@ public function downloadExcel2(Request $request)
               
             });
           }
-          //dd($allrecords->count());
+          //dd($allrecords->toSql());
+
 
             $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
             $leadArr = array_flip($leadArr_);
             foreach($leadArr as $key=>$each)
+            {
               $leadArr[$key] = 0; 
+            }
             
-              
+                
             
             
             $eachdomainArr = EachDomain::pluck('registrant_email','domain_name')->toArray();
@@ -647,48 +660,16 @@ public function downloadExcel2(Request $request)
 
             $user_id = \Auth::user()->id;
 
-
-            // dd($allrecords);
-
-            // $A = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
-            //     $query->whereHas('valid_phone',function($q){
-                    
-            //         $q->where('number_type','Landline');
-            //     });
-            // });
-
-            // dd($A);
-
-            // $B = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
-            //     $query->whereHas('valid_phone',function($q){
-                    
-            //         $q->where('number_type','Cell Number');
-            //     });
-            // });
-
-            // $a = $A->pluck('registrant_email')->toArray();
-
-            // $b = $B->pluck('registrant_email')->toArray();
-
-            // dd($a);
-            // dd($b);
+            
 
 
 
 
+              
 
 
 
 
-
-
-
-
-
-
-
-
-           
             
 
             $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
@@ -702,6 +683,7 @@ public function downloadExcel2(Request $request)
             
             
             //dd($allrecords->count());
+
             if(\Auth::user()->user_type == 2)
             {
                 return view('home.admin.admin_search',[

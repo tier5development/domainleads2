@@ -48,7 +48,10 @@ class EachDomain extends Model
     {
         return $this->hasOne('App\Wordpress_env' , 'domain_name' , 'domain_name');
     }
-
+    public function domains_feedback()
+    {
+        return $this->hasOne('App\DomainFeedback' , 'domain_name' , 'domain_name');
+    }
 
 
 	// public function domains_billing()

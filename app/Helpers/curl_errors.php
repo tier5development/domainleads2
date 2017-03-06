@@ -5,11 +5,20 @@ function custom_curl_errors()
 {
 	$custom_curl_errors = array();
 
+		$custom_curl_errors['Client error'] = "403 Forbidden Response - there are two possible causes. It could be due to a removal of file permission, or restriction of access based on the IP address of the user";
+
+		$custom_curl_errors['Server error'] = "503 server error - server currently unable to handle the HTTP request due to a temporary overloading or maintenance of the server.";
+
 		$custom_curl_errors['cURL error 5'] = "Couldn't resolve proxy. The given proxy host could not be resolved";
+
 		$custom_curl_errors['cURL error 6'] = "Couldn't resolve host. The given remote host was not resolved";
+
 		$custom_curl_errors['cURL error 7']= "Failed to connect() to host or proxy.";
+
 		$custom_curl_errors['cURL error 8']="The server sent data libcurl couldn't parse. This error code is used for more than just FTP and is aliased as CURLE_WEIRD_SERVER_REPLY since 7.51.0.";
+
 		$custom_curl_errors['cURL error 9']="We were denied access to the resource given in the URL. For FTP, this occurs while trying to change to the remote directories";
+		
 		$custom_curl_errors['cURL error 10']="While waiting for the server to connect back when an active FTP session is used, an error code was sent over the control connection or similar";
 
 		$custom_curl_errors['cURL error 11']="After having sent the FTP password to the server, libcurl expects a proper reply. This error code indicates that an unexpected code was returned";
@@ -20,14 +29,10 @@ function custom_curl_errors()
 
 		$custom_curl_errors['cURL error 16']="A problem was detected in the HTTP2 framing layer. This is somewhat generic and can be one out of several problems, see the error buffer for details";
 
-
 		$custom_curl_errors['cURL error 18']="A file transfer was shorter or larger than expected. This happens when the server first reports an expected transfer size, and then delivers data that doesn't match the previously given size";
 
 		$custom_curl_errors['cURL error 19']="This was either a weird reply to a 'RETR' command or a zero byte transfer complete";
 		
-
-
-
 		$custom_curl_errors['cURL error 21']="When sending custom 'QUOTE' commands to the remote server, one of the commands returned an error code that was 400 or higher (for FTP) or otherwise indicated unsuccessful completion of the command";
 
 		

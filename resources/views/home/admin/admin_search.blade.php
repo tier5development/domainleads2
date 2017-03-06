@@ -399,7 +399,6 @@
 							
 						</th>
 						<th>
-							
 								<small id="domains_create_date_{{$key}}">{{$each->each_domain->first()->domains_info->domains_create_date}}</small>
 							
 						</th>

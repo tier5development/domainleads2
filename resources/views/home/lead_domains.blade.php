@@ -187,6 +187,13 @@ html, body {
 
 			  		<td>
 						{{$domain->domain_name}}
+            <br>
+
+            @if(isset($domain->domains_feedback))
+            <small><i style="color: brown">{{str_limit($domain->domains_feedback->first()->curl_errors->err_reason,30)}}</i></small>
+            <a href="javascript:void(0)" onclick="show_info('{{$domain->domain_name}}','{{$domain->domains_feedback->first()->curl_errors->err_reason}}')">more</a>
+            @endif
+
 					</td>
 
 
@@ -224,7 +231,7 @@ html, body {
 					<td>
 
 						@if($domain->leads->registrant_company == null)
-							<img src="{{url('/')}}/public/images/userimg.png" style="width:30px; height:30px">
+							<img src="{{url('/')}}/images/userimg.png" style="width:30px; height:30px">
 						@else
 							{{$domain->leads->registrant_company}}
 						@endif
@@ -250,6 +257,11 @@ html, body {
 		//$('#spinner').hide();
 		//$('#processing').hide();
 	});
+
+  function show_info($d_name,$err_reason)
+  {
+    alert($err_reason);
+  }
 
 	function createWordpressEnv(domain_name,id,registrant_email){		
            var _token='{{csrf_token()}}';

@@ -23,7 +23,7 @@ Route::get('/checknum/{num}' , ['uses' => 'ImportExport@checknum']);
 
 Route::get('/abc' , ['uses'=>'ImportExport@validate_ph_no']);
 
-Route::get('/tst','Maintainance@domain_verification');
+Route::get('/verify_domains','Maintainance@verify_domains');
 Route::get('/tstt','Maintainance@each_domain_verification');
 
 

@@ -58,32 +58,37 @@ class Kernel extends ConsoleKernel
             \Log::info('::time::');
            
         })->hourly();
-        \Log::info(date('Y-m-d',time()));
-
-
-
-        // $schedule->call(function(){
-        //     try
-        //     {
-        //         date_default_timezone_set('Asia/Kolkata');
-        //         $ch = curl_init();
-        //         $url = env('APP_URL');
-        //         \Log::info($url.'/checkWordpressStatus');
-        //         curl_setopt($ch, CURLOPT_URL, $url.'/checkWordpressStatus');
-        //         curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        //         $head = curl_exec($ch); 
-
-        //         $result = json_decode($head,true);
-        //         \Log::info('from schedule ++++++>> STATUS : '.$result['status']);
-        //         \Log::info($result);
-        //     }
-        //     catch(\Exception $e)
-        //     {
-
-        //     }
-        // })->dailyAt('19:25');
        
+
+
+        $schedule->call(function(){
+            try
+            {
+               \Log::info('calling scheduler--for domain verification');
+                date_default_timezone_set('Asia/Kolkata');
+
+                $ch = curl_init();
+                $url = env('APP_URL');
+
+                \Log::info($url.'/verify_domains');
+                curl_setopt($ch, CURLOPT_URL, $url.'/verify_domains');
+                curl_setopt($ch, CURLOPT_HEADER, FALSE);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                $head = curl_exec($ch); 
+                $result = json_decode($head,true);
+                \Log::info('from schedule ++++++>> task details: '.json_encode($result));
+            }
+            catch(\Exception $e)
+            {
+               \Log::info($e->getMessage());
+            }
+            \Log::info('::time::');
+        })->dailyAt('18:50');
+        //\Log::info(date('Y-m-d',time()));
+
+        
+        
+        \Log::info(date('Y-m-d',time())); 
     }
 
     /**
