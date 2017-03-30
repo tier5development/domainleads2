@@ -35,10 +35,49 @@ public function downloadExcel2(Request $request)
   dd($request->all());
 }
 
+public function download_csv_single_page(Request $request)
+{
+  //dd($request->all());
+  $type = 'csv';
+  $leads = array();
+  $i = 0;
+  foreach($request->csv_leads as $key=>$val)
+      $leads[$i++] = $val;
+  
+  $ed = EachDomain::with('leads')
+        ->whereIn('registrant_email',$leads)
+        ->whereHas('leads',function($query) use($leads){
+          $query->whereIn('registrant_email',$leads);
+        })->get();
+
+
+        
+
+  $reqData = array();
+  $key=0;
+  foreach($ed as $each)
+  {
+      $reqData[$key]['first_name'] = $each->leads->registrant_fname;
+      $reqData[$key]['last_name']  = $each->leads->registrant_lname;
+      $reqData[$key]['website']    = $each->domain_name;
+      $reqData[$key]['phone']      = $each->leads->registrant_phone;
+      $reqData[$key++]['email_id']   = $each->registrant_email;
+  }
+
+  return Excel::create('domainleads', function($excel) use ($reqData) {
+
+      $excel->sheet('mySheet', function($sheet) use ($reqData){
+        $sheet->fromArray($reqData);
+      });
+    })->download($type);
+
+
+}
+
     public function downloadExcel(Request $request)
 
   {
-    //dd($request->all());
+    dd($request->all());
     $type='csv'; 
       
       $user_type=Auth::user()->user_type;
@@ -463,8 +502,8 @@ public function downloadExcel2(Request $request)
           $allrecords = Lead::with('each_domain','each_domain.domains_info','valid_phone')->select('leads.*');
           //initiating ends
 
-          
-          
+          //dd($request->domains_create_date2);
+          $date_flag = 0;
       
             $st = microtime(true);
             //print_r($request->all());dd();
@@ -498,58 +537,17 @@ public function downloadExcel2(Request $request)
                             $query->whereIn($key,$domain_ext);
                         });
                     }
-                    else if($key == 'domains_create_date')
+                    else if(($key == 'domains_create_date' || $key == 'domains_create_date') && $date_flag == 0)
                     {
-                      //dd($req);
-                        /*
-                        $sql = "SELECT di.domains_create_date FROM `leads` as l INNER JOIN each_domain as ed ON l.`registrant_email` = ed.registrant_email INNER JOIN domains_info as di ON ed.domain_name = di.domain_name WHERE di.domains_create_date = '2017-01-19'";
-                        */
-                        // 61981
-                        /*
-                        $domains = DomainInfo::where($key, $req)->pluck('domain_name')->all();
-                        //dd(count($domains));
-                        //dd($domains);
-                        $edomains = EachDomain::whereIn('domain_name', $domains)->pluck('registrant_email')->all();
-                        //dd($edomains);
+                        $date_flag = 1;
+                        $dates_array = generateDateRange($request->domains_create_date,
+                                        $request->domains_create_date2);
                         
-                        /*
-                        $edomains = $edomains->whereHas('domains_info' , function($query) use($key,$req){
-                            $query->where('domains_create_date','2017-01-19');
-                          });
-                        
-                          
-                        $allrecords = $allrecords->whereIn('registrant_email', $edomains);
-                        */
-
-                        // $allrecords = $allrecords->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')->where('domains_info.'.$key, $req);
-
-                        //dd($allrecords->toSql());
-                        //dd($key);
-
-
-                       
-
-
-
-                        
-
-
-                        $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
-                            $query->whereHas('domains_info',function($q) use($key,$req){
-                                $q->where($key,$req);
+                        $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$dates_array){
+                            $query->whereHas('domains_info',function($q) use($key,$dates_array){
+                                $q->whereIn($key,$dates_array);
                             });
-                            //$query->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')->where('domains_info.'.$key, $req);
                         });
-
-
-                        // dd($allrecords);
-
-                      // $allrecords = $allrecords->whereHas('domains_info' , function($query) use($key,$req){
-                            
-                      //       $query->where($key,$req);
-                          
-                      //   });
-
                     }
                     //applying sort filter
                     else if ($key == 'sort') 
@@ -590,8 +588,6 @@ public function downloadExcel2(Request $request)
                           $req='0';
                         } 
                         $allrecords = $allrecords->where('unlocked_num',$gt_ls_leadsunlocked_no, $req);
-                        
-                      
                      }
                      else if($key=='gt_ls_domaincount_no'){
                             if($req==0){

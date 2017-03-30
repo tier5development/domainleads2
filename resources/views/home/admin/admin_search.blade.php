@@ -196,7 +196,11 @@
 						</div>
 						<div class="form-group">
 							<label>Domains Create Date</label>
-							<input type="date" value="{{ Input::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control">
+							<input style="width: 150px" type="date" value="{{ Input::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control">
+
+							<input style="width: 150px" type="date" value="{{ Input::get('domains_create_date2') }}" name="domains_create_date2" id="registered_date2" class="form-control">
+
+
 						</div>
 						<div class="from-group">
 							<label>Select Domains Extensions</label>
@@ -267,12 +271,16 @@
 				
 				
                     <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
-            DomainCount <select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
+
+                    <label>DomainCount :</label> <br>
+            		<select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
             <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
             <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
             <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option></select>
-            <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}"> 
-            LeadsUnlocked <select name="gt_ls_leadsunlocked_no" id="gt_ls_leadsunlocked_no" >
+            <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
+
+            		<label>LeadsUnlocked :</label> <br>
+            <select name="gt_ls_leadsunlocked_no" id="gt_ls_leadsunlocked_no" >
             <option value="0" <?php if(Input::get('gt_ls_leadsunlocked_no')==0) { echo "selected";} ?>>Select</option>
             <option value="1" <?php if(Input::get('gt_ls_leadsunlocked_no')==1) { echo "selected";} ?>>Greater than</option>
             <option value="2" <?php if(Input::get('gt_ls_leadsunlocked_no')==2) { echo "selected";} ?>>Lesser Than</option></select>
@@ -297,44 +305,31 @@
 			@if($record !== null)
 
 
-			<span class="pull-left"> Total Leads   : {{ $record->total()}}</span>
 			
-			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
+			
+			<hr>
+			<br><br>
+			<label> </label>
+			<form id="csv_leads_form" method="POST" action="/download_csv_single_page">
 
-
-			<div>
-				
-				<!-- form elements -->
-             <form style="margin-left: 100px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
-	         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
-	         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
-             <input type="hidden" name="domain_name_downloadExcel"  value="{{ Input::get('domain_name') }}" />
-             <input type="hidden" name="registrant_country_downloadExcel" id="registrant_country" value="{{ Input::get('registrant_country') }}" />
-             <input type="hidden" name="registrant_state_downloadExcel"  class="" value="{{ Input::get('registrant_state') }}" />
-
-             <input type="hidden" name="domains_create_date_downloadExcel"  class="" value="{{ Input::get('domains_create_date') }}" />
-
-            
-	        <input type="hidden" name="tdl_com_downloadExcel" value="{{ $domainExtarray['domain_ext'][0] }}" >
-	        <input type="hidden" name="tdl_io_downloadExcel" value="{{ $domainExtarray['domain_ext'][1] }}">
-	        <input type="hidden" name="tdl_net_downloadExcel" value="{{ $domainExtarray['domain_ext'][2] }}" >
-	        <input type="hidden" name="tdl_org_downloadExcel" value="{{ $domainExtarray['domain_ext'][3] }}">
-	        
-            <input type="hidden" name="tdl_gov_downloadExcel" value="{{ $domainExtarray['domain_ext'][4] }}">
-            <input type="hidden" name="tdl_edu_downloadExcel" value="{{$domainExtarray['domain_ext'][5]}}" >
-            <input type="hidden" name="tdl_in_downloadExcel" value="{{$domainExtarray['domain_ext'][6]}}" >
-
-	         <input type="hidden" name="cell_number_downloadExcel" value="{{ Input::get('cell_number') }}" >
-	         <input type="hidden" name="landline_downloadExcel" value="{{ Input::get('landline_number') }}">
-             <input type="hidden" name="filterOption_downloadExcel" value="{{ Input::get('sort') }}">
-	         <input type="hidden" name="_token" value="{{csrf_token()}}">
-			 <button class="btn btn-primary" id="exportID">Export</button>
-
-			</form>
-
-			</div>
-
+				<input type="hidden" name="_token" value="{{csrf_token()}}">
+					<label>Total Leads :: </label>
+				 	<span>{{ $record->total()}}</span>
+				 	<br>
+				 	<label>Total Domains ::</label>
+				 	<span>{{$totalDomains}}</span>
+				 	<br>
+			
 				<table class="table table-hover table-bordered domainDAta">
+
+				<input type="submit" name="exportLeads" value="Export">
+
+
+					<!-- <button><id="exportLeads" class="btn btn-primary">Export</button>
+					<button id="exportAllLeads" class="btn btn-info pull-right">Export All</button> -->
+					<br>
+					
+					<br><br>
 					<tr>
 						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> Select Leads</th>
 						<th>Domain Name</th>
@@ -351,7 +346,10 @@
 
 						<th>
 						
-						<small id="showCSV_{{$key}}" ><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+						
+
+						<small>
+							<input class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each->registrant_email}}"> :: {{$each->registrant_email}}
 						</small>
 							
 						</th>
@@ -411,6 +409,8 @@
 					@endforeach
 					
 				</table>
+			</form>
+				
 			@endif
 			</div>
 			@if($record)
@@ -439,9 +439,27 @@
 		
 </body>
 	<script>
+
+		// $('#exportLeads').click(function(e){
+		// 	e.preventDefault();
+
+		// 	var data = $('#csv_leads_form').serializeArray();
+		// 	var token = '{{csrf_token()}}';
+		// 	$.ajax({
+		// 		type : 'POST',
+		// 		url  : '/download_csv_single_page',
+		// 		data : {data : data , _token : token },
+		// 		success : function(response){
+		// 			console.log(response);
+		// 		}
+		// 	});
+
+
+		// });
 		
 	  	$(function(){
-	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+	  		$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+	    	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
 	  	});
 	  	$("#refine_searchID").click(function(){
 

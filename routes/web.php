@@ -15,6 +15,10 @@ Route::get('/aaa',function(){
     dd($v);
 });
 
+Route::get('/aaa',function(){
+    dd(generateDateRange(null,null));
+});
+
 Route::get('/sss','Maintainance@async_domain');
 
 Route::get('/' , ['uses'=>'AccountController@home' , 'as'=>'home']);
@@ -47,6 +51,8 @@ Route::get('/aa',function(){
 	Route::post('/signme','AccountController@signme' );
 
 	Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains']);
+
+    Route::post('/download_csv_single_page','SearchController@download_csv_single_page');
 
    	Route::group(['middleware' => 'auth'],function(){
 

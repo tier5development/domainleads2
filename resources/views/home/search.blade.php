@@ -167,7 +167,11 @@ form{
 						</div>
 						<div class="form-group">
 							<label>Domains Create Date</label>
-							<input type="date" value="{{old('domains_create_date')}}" name="domains_create_date" id="registered_date" class="form-control">
+
+							<input style="width: 150px" type="date" value="{{old('domains_create_date')}}" name="domains_create_date" id="registered_date" class="form-control">
+
+							<input style="width: 150px" type="date" value="{{old('domains_create_date2')}}" name="domains_create_date2" id="registered_date2" class="form-control">
+
 						</div>
 						<div class="from-group">
 							<label>Select Domains Extensions</label> 
@@ -477,6 +481,7 @@ form{
 		}
 	  	$(function(){
 	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+	    	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
 	  	});
   	</script>
 
