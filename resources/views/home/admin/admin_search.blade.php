@@ -326,7 +326,7 @@
 
 				<input id="exportLeads" type="submit" name="exportLeads" value="Export">
 
-				<input type="submit" class="pull-right" name="exportAllLeads" value="exportAllLeads">
+				<input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
 
 
 

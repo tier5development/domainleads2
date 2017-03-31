@@ -46,13 +46,18 @@ public function print_csv($leads,$type)
 
       $reqData = array();
       $key=0;
+      $hash = array();
       foreach($ed as $each)
       {
+        if(!isset($hash[$each->registrant_email]))
+        {
+          $hash[$each->registrant_email] = 1;
           $reqData[$key]['first_name'] = $each->leads->registrant_fname;
           $reqData[$key]['last_name']  = $each->leads->registrant_lname;
           $reqData[$key]['website']    = $each->domain_name;
           $reqData[$key]['phone']      = $each->leads->registrant_phone;
-          $reqData[$key++]['email_id']   = $each->registrant_email;
+          $reqData[$key++]['email_id'] = $each->registrant_email;
+        }
       }
 
       return Excel::create('domainleads', function($excel) use ($reqData) {
