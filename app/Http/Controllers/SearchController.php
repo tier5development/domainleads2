@@ -35,47 +35,63 @@ public function downloadExcel2(Request $request)
   dd($request->all());
 }
 
-public function download_csv_single_page(Request $request)
+public function print_csv($leads,$type)
 {
-  //dd($request->all());
-  $type = 'csv';
-  $leads = array();
-  $i = 0;
-  foreach($request->csv_leads as $key=>$val)
-      $leads[$i++] = $val;
-  
   $ed = EachDomain::with('leads')
-        ->whereIn('registrant_email',$leads)
-        ->whereHas('leads',function($query) use($leads){
-          $query->whereIn('registrant_email',$leads);
-        })->get();
+            ->whereIn('registrant_email',$leads)
+            ->whereHas('leads',function($query) use($leads){
+              $query->whereIn('registrant_email',$leads);
+            })->get();
 
 
-        
+      $reqData = array();
+      $key=0;
+      foreach($ed as $each)
+      {
+          $reqData[$key]['first_name'] = $each->leads->registrant_fname;
+          $reqData[$key]['last_name']  = $each->leads->registrant_lname;
+          $reqData[$key]['website']    = $each->domain_name;
+          $reqData[$key]['phone']      = $each->leads->registrant_phone;
+          $reqData[$key++]['email_id']   = $each->registrant_email;
+      }
 
-  $reqData = array();
-  $key=0;
-  foreach($ed as $each)
-  {
-      $reqData[$key]['first_name'] = $each->leads->registrant_fname;
-      $reqData[$key]['last_name']  = $each->leads->registrant_lname;
-      $reqData[$key]['website']    = $each->domain_name;
-      $reqData[$key]['phone']      = $each->leads->registrant_phone;
-      $reqData[$key++]['email_id']   = $each->registrant_email;
-  }
+      return Excel::create('domainleads', function($excel) use ($reqData) {
 
-  return Excel::create('domainleads', function($excel) use ($reqData) {
-
-      $excel->sheet('mySheet', function($sheet) use ($reqData){
-        $sheet->fromArray($reqData);
-      });
-    })->download($type);
-
-
+        $excel->sheet('mySheet', function($sheet) use ($reqData){
+          $sheet->fromArray($reqData);
+        });
+      })->download($type);
 }
 
-    public function downloadExcel(Request $request)
+public function download_csv_single_page(Request $request)
+{
+  $type = 'csv';
+  if($request->exportLeads)
+  {
+      $leads = array();
+      if($request->csv_leads)
+      {
+        $i = 0;
+        foreach($request->csv_leads as $key=>$val) $leads[$i++] = $val;
+        $this->print_csv($leads,$type);  
+      }
+      else
+      {
+        \Session::put('csv_msg','Please Select Some Leads and then Export..!');
+        return \Redirect::back();
+      }
+  }
+  else
+  {
+    $this->print_csv(unserialize($request->all_leads_to_export[0]),$type);
 
+    return;
+  }
+}
+
+  
+
+  public function downloadExcel(Request $request)
   {
     dd($request->all());
     $type='csv'; 
@@ -484,6 +500,7 @@ public function download_csv_single_page(Request $request)
         if($request->all())
         {
 
+
           
           //initiating MY VARIABLES
           $phone_type_array = array();
@@ -635,12 +652,9 @@ public function download_csv_single_page(Request $request)
               $leadArr[$key] = 0; 
             }
             
-                
-            
-            
             $eachdomainArr = EachDomain::pluck('registrant_email','domain_name')->toArray();
             $totalDomains = 0;
-            //print_r($eachdomainArr);dd();
+            
 
             foreach($eachdomainArr as $key=>$each)
             {
@@ -652,21 +666,11 @@ public function download_csv_single_page(Request $request)
             }
 
 
+
+            
           
 
             $user_id = \Auth::user()->id;
-
-            
-
-
-
-
-              
-
-
-
-
-            
 
             $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
             
@@ -680,12 +684,16 @@ public function download_csv_single_page(Request $request)
             
             //dd($allrecords->count());
 
+            $string_leads = serialize($leadArr_);
+            // exit();
+
             if(\Auth::user()->user_type == 2)
             {
                 return view('home.admin.admin_search',[
 
                     'record' => $allrecords->paginate($request->pagination), 
-                    'leadArr'=>$leadArr , 
+                    'leadArr'=>$leadArr,
+                    'string_leads'=>$string_leads,
                     'totalDomains'=>$totalDomains,
                     'users_array'=>$users_array
                   ]);      
@@ -695,6 +703,7 @@ public function download_csv_single_page(Request $request)
             return view('home.search' , 
                   ['record' => $allrecords->paginate($request->pagination), 
                   'leadArr'=>$leadArr , 
+                  'string_leads'=>$string_leads,
                   'totalDomains'=>$totalDomains,
                   'users_array'=>$users_array,
                   'obj_array'=>$obj_array]);

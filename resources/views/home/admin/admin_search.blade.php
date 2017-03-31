@@ -310,7 +310,9 @@
 			<hr>
 			<br><br>
 			<label> </label>
+
 			<form id="csv_leads_form" method="POST" action="/download_csv_single_page">
+
 
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 					<label>Total Leads :: </label>
@@ -322,7 +324,13 @@
 			
 				<table class="table table-hover table-bordered domainDAta">
 
-				<input type="submit" name="exportLeads" value="Export">
+				<input id="exportLeads" type="submit" name="exportLeads" value="Export">
+
+				<input type="submit" class="pull-right" name="exportAllLeads" value="exportAllLeads">
+
+
+
+				<input type="hidden" name="all_leads_to_export[]" value="{{$string_leads}}">
 
 
 					<!-- <button><id="exportLeads" class="btn btn-primary">Export</button>
@@ -349,7 +357,7 @@
 						
 
 						<small>
-							<input class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each->registrant_email}}"> :: {{$each->registrant_email}}
+							<input class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each->registrant_email}}">
 						</small>
 							
 						</th>
@@ -528,21 +536,45 @@
 			     
 			    }
 			     
-			     $.ajax({
-	               type:'POST',
-	               url:'storechkboxvariable',
-	               beforeSend: function()
-						{
-							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
-						},
-	               data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
-	               success:function(response){
+			   //   $.ajax({
+	     //           type:'POST',
+	     //           url:'storechkboxvariable',
+	     //           beforeSend: function()
+						// {
+						// 	//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+						// },
+	     //           data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
+	     //           success:function(response){
 	               	 
 	                 
-	               }
-                });
+	     //           }
+      //           });
 	   
  	    });
+
+
+	    
+	    $('#exportLeads').click(function(e){
+	    	
+	    	var csv_flag = 0;
+	    	$('.eachrow_download').each(function(e2){
+
+	    		if(!$(this).is(':checked'))
+	    		{
+	    			csv_flag = 1;
+	    		}
+	    	});
+
+	    	if(csv_flag == 1)
+	    	{
+	    		return true;
+	    	}
+	    	else
+	    	{
+	    		alert('please select some leads');
+	    	}
+	    });
+
 	    $('.downloadcsv_all').click(function(event){
    
 	        $("#domains_for_export_id").val('');
