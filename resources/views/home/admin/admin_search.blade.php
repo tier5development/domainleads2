@@ -321,7 +321,7 @@
 				 	<label>Total Domains ::</label>
 				 	<span>{{$totalDomains}}</span>
 				 	<br>
-				 	<label>Query Time ::</label>
+				 	<label>Search Time ::</label>
 				 	<span>{{$query_time}}</span>
 				 	<br>
 				 	
@@ -356,18 +356,7 @@
 					@foreach($record as $key=>$each)
 					<tr>
 
-					<?php
-						$unlocked_num  = $each->unlocked_num;
-						$total_domains = $each->domains_count;
-						$name  		   = $each->registrant_fname.' '.$each->registrant_lname;
-						$email         = $each->registrant_email;
-						$phone         = $each->registrant_phone;
-						$number_type   = $each->number_type;
-						$create_date   = $each->domains_create_date;
-						$company       = $each->registrant_company;
-
-
-					 ?>
+					
 
 						<th>
 						

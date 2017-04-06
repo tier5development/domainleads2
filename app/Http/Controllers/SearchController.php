@@ -505,11 +505,12 @@ public function download_csv_single_page(Request $request)
         if($request->all())
         {
 
-
+          //dd($request->all());
           $start = microtime(true);
           
           //initiating MY VARIABLES
           $phone_type_array = array();
+          $domain_ext = null;
 
           if($request->landline_number)
             array_push($phone_type_array,'Landline');
@@ -522,36 +523,167 @@ public function download_csv_single_page(Request $request)
 
 
 
+          $low_limit; $high_limit;
 
+          if(!isset($request->page))
+          {
+            $low_limit  = 0;
+            $high_limit = $request->pagination; 
+          }
+          else
+          {
+            $low_limit = ($request->page - 1)*$request->pagination;
+            $high_limit = $low_limit + $request->pagination;
+          }
+          
           $date_flag = 0;
 
+          // echo $low_limit.' '.$high_limit;
+          // exit();
+
+          $sql = "SELECT DISTINCT l.registrant_email 
+          , l.registrant_fname 
+          , l.registrant_lname 
+          , l.registrant_country 
+          , l.registrant_company 
+          , l.registrant_phone 
+          , l.registrant_state 
+          , l.domains_count 
+          , l.unlocked_num 
+          , di.domains_create_date
+          FROM leads as l INNER JOIN each_domain AS ed 
+          ON ed.registrant_email = l.registrant_email
+          INNER JOIN domains_info AS di 
+          ON di.domain_name = ed.domain_name 
+          INNER JOIN valid_phone AS vp 
+          ON vp.registrant_email = l.registrant_email ";
+
+
+          $flag = 0;
+          foreach ($request->all() as $key => $req) 
+          {
+             if(!is_null($request->$key))
+            {
+                if($key == 'registrant_country')
+                {
+                    //$query->where('leads.registrant_country',$req);
+                  if($flag == 0)
+                  {
+                    $sql .= " WHERE l.registrant_country='".$req."' ";
+                    $flag = 1;
+                  }
+                  else
+                    $sql .= " and l.registrant_country='".$req."' ";
+                }
+                else if($key == 'registrant_state')
+                {
+                  if($flag == 0)
+                  {
+                    $sql .= " WHERE l.registrant_state='".$req."' ";
+                    $flag = 1;
+                  }
+                  else
+                    $sql .= " and l.registrant_state='".$req."' ";
+                    //$query->where('leads.registrant_state',$req);
+                }
+                else if($key == 'domain_name')
+                {
+                    if($flag == 0)
+                    {
+                      $sql .= " WHERE ed.domain_name='".$req."' ";
+                      $flag = 1;
+                    }
+                    else
+                    $sql .= " and ed.domain_name='".$req."' ";
+                    //$query->where('each_domain.domain_name','like', '%'.$req.'%'); 
+                }
+                else if($key == 'domain_ext')
+                {
+                  $domain_ext_str = ' ';
+                  foreach($domain_ext as $k => $v)
+                  {
+                    if($domain_ext_str == ' ')
+                    {
+                      $domain_ext_str .= "'".$v."'";
+                    } 
+                    else
+                    {
+                      $domain_ext_str .= ",'".$v."'";
+                    }
+                  }
+
+                    $domain_ext_str = '('.$domain_ext_str.')';
+
+                    if($flag == 0)
+                    {
+                      $sql .= " WHERE ed.domain_name IN ".$domain_ext_str." ";
+                      $flag = 1;
+                    }
+                    else
+                    {
+                      $sql .= " and ed.domain_name IN ".$domain_ext_str." ";
+                    }
+                    //$query->whereIn('each_domain.domain_ext',$domain_ext);
+                }
+                else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+                  && $date_flag == 0)
+                {
+                    $date_flag = 1;
+                    $dates_array = generateDateRange($request->domains_create_date,
+                                    $request->domains_create_date2);
+                    $dates_array_str = ' ';
+                    foreach($dates_array as $k => $v)
+                    {
+                      if($dates_array_str == ' ')
+                      {
+                        $dates_array_str .= "'".$v."'";
+                      } 
+                      else
+                      {
+                        $dates_array_str .= ",'".$v."'";
+                      }
+                    }
+                    $dates_array_str = '('.$dates_array_str.')';
+                    if($flag == 0)
+                    {
+                      $sql .= " WHERE di.domains_create_date IN ".$dates_array_str." ";
+                      $flag = 1;
+                    }
+                    else
+                    {
+                      $sql .= " and di.domains_create_date IN ".$dates_array_str." ";
+                    }
+
+                    //$query->whereIn('domains_info.domains_create_date',$dates_array);
+                }
+                
+                  
+            }
+          }
+          
+
+          // "WHERE
+          // di.domains_create_date = '2017-04-04' LIMIT ".$request->pagination.' OFFSET '.
+          //$low_limit;
+
+
+          $sql .= " LIMIT ".$request->pagination. ' OFFSET '.$low_limit;
+
+          
+
+          // echo ($sql);
+          // exit();
+
+          // //$sql = "select * from each_domain";
+
+          $d = DB::select(DB::raw($sql));
+          dd($d);
 
 
 
-
+          
           $data = DB::table('leads')
           ->join('each_domain', 'each_domain.registrant_email', '=', 'leads.registrant_email')
-          ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
-          ->join('valid_phone','valid_phone.registrant_email','=','leads.registrant_email')
-          ->select('leads.registrant_phone',
-                'leads.registrant_email',
-                'leads.registrant_fname',
-                'leads.registrant_lname',
-                'leads.registrant_country',
-                'leads.registrant_company',
-                'leads.registrant_state',
-                'leads.domains_count',
-                'leads.unlocked_num',
-                'each_domain.domain_name',
-                'each_domain.domain_ext',
-                'domains_info.domains_create_date',
-                'valid_phone.number_type')
-
-
-
-
-          $data = DB::table('each_domain')
-          ->join('leads', 'each_domain.registrant_email', '=', 'leads.registrant_email')
           ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
           ->join('valid_phone','valid_phone.registrant_email','=','leads.registrant_email')
           ->select('leads.registrant_phone',
@@ -667,9 +799,13 @@ public function download_csv_single_page(Request $request)
 
           ->groupBy('leads.registrant_email')
          ->paginate($request->pagination);
-         
+         //->get();
 
-         dd($data);
+        
+
+
+
+         //dd($data->count());
          // die();
 
         //dd($data->count());
@@ -709,7 +845,7 @@ public function download_csv_single_page(Request $request)
             {
                 return view('home.admin.admin_search',[
 
-                    'record' => $data->paginate($request->pagination), 
+                    'record' => $data, 
                     'leadArr'=>$leads_arr,
                     'string_leads'=>$string_leads,
                     'totalDomains'=>100,
@@ -720,7 +856,7 @@ public function download_csv_single_page(Request $request)
 
 
             return view('home.search' , 
-                  ['record' => $data->paginate($request->pagination), 
+                  ['record' => $data, 
                   'leadArr'=>$leads_arr , 
                   'string_leads'=>$string_leads,
                   'totalDomains'=>100,
@@ -735,7 +871,7 @@ public function download_csv_single_page(Request $request)
           $allrecords = null;
           $leadArr = null;
           $totalDomains = null;
-          return view('home.search' , ['record' => $allrecords , 'leadArr'=>$leadArr , 'totalDomains'=>$totalDomains]);
+          return view('home.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
         }
       }
       else
