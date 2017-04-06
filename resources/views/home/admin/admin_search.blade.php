@@ -321,6 +321,10 @@
 				 	<label>Total Domains ::</label>
 				 	<span>{{$totalDomains}}</span>
 				 	<br>
+				 	<label>Query Time ::</label>
+				 	<span>{{$query_time}}</span>
+				 	<br>
+				 	
 			
 				<table class="table table-hover table-bordered domainDAta">
 
@@ -352,6 +356,19 @@
 					@foreach($record as $key=>$each)
 					<tr>
 
+					<?php
+						$unlocked_num  = $each->unlocked_num;
+						$total_domains = $each->domains_count;
+						$name  		   = $each->registrant_fname.' '.$each->registrant_lname;
+						$email         = $each->registrant_email;
+						$phone         = $each->registrant_phone;
+						$number_type   = $each->number_type;
+						$create_date   = $each->domains_create_date;
+						$company       = $each->registrant_company;
+
+
+					 ?>
+
 						<th>
 						
 						
@@ -366,7 +383,7 @@
 
 						<th>
 							
-								<small id="domain_name_{{$key}}"><b>{{$each->each_domain->first()->domain_name}}</b></small>
+								<small id="domain_name_{{$key}}"><b>{{$each->domain_name}}</b></small>
 							
 							<br>
 							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
@@ -376,7 +393,9 @@
 						</th>
 						<th>
 							
+								
 								<small id="registrant_name_{{$key}}">{{$each->registrant_fname}} {{$each->registrant_lname}}</small>
+								
 							
 
 						</th>
@@ -391,12 +410,12 @@
 
 								@if(isset($each->valid_phone)) 
 
-									@if($each->valid_phone->number_type == "Cell Number")
+									@if($each->number_type == "Cell Number")
 									<img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
 
 								
 
-									@elseif($each->valid_phone->number_type == "Landline")
+									@elseif($each->number_type == "Landline")
 									<img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
 									@endif
@@ -405,7 +424,7 @@
 							
 						</th>
 						<th>
-								<small id="domains_create_date_{{$key}}">{{$each->each_domain->first()->domains_info->domains_create_date}}</small>
+								<small id="domains_create_date_{{$key}}">{{$each->domains_create_date}}</small>
 							
 						</th>
 						<th>

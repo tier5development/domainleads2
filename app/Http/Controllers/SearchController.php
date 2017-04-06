@@ -506,6 +506,7 @@ public function download_csv_single_page(Request $request)
         {
 
 
+          $start = microtime(true);
           
           //initiating MY VARIABLES
           $phone_type_array = array();
@@ -521,160 +522,170 @@ public function download_csv_single_page(Request $request)
 
 
 
-          $allrecords = Lead::with('each_domain','each_domain.domains_info','valid_phone')->select('leads.*');
-          //initiating ends
 
-          //dd($request->domains_create_date2);
           $date_flag = 0;
-      
-            $st = microtime(true);
-            //print_r($request->all());dd();
-            foreach($request->all() as $key => $req)
-            {         
-                if(!is_null($request->$key))
+
+
+
+
+
+          $data = DB::table('leads')
+          ->join('each_domain', 'each_domain.registrant_email', '=', 'leads.registrant_email')
+          ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
+          ->join('valid_phone','valid_phone.registrant_email','=','leads.registrant_email')
+          ->select('leads.registrant_phone',
+                'leads.registrant_email',
+                'leads.registrant_fname',
+                'leads.registrant_lname',
+                'leads.registrant_country',
+                'leads.registrant_company',
+                'leads.registrant_state',
+                'leads.domains_count',
+                'leads.unlocked_num',
+                'each_domain.domain_name',
+                'each_domain.domain_ext',
+                'domains_info.domains_create_date',
+                'valid_phone.number_type')
+
+
+
+
+          $data = DB::table('each_domain')
+          ->join('leads', 'each_domain.registrant_email', '=', 'leads.registrant_email')
+          ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
+          ->join('valid_phone','valid_phone.registrant_email','=','leads.registrant_email')
+          ->select('leads.registrant_phone',
+                'leads.registrant_email',
+                'leads.registrant_fname',
+                'leads.registrant_lname',
+                'leads.registrant_country',
+                'leads.registrant_company',
+                'leads.registrant_state',
+                'leads.domains_count',
+                'leads.unlocked_num',
+                'each_domain.domain_name',
+                'each_domain.domain_ext',
+                'domains_info.domains_create_date',
+                'valid_phone.number_type')
+          ->where(function($query) use ($request,$domain_ext,$date_flag,$phone_type_array)
+              {
+                foreach($request->all() as $key => $req)
                 {
-                    //var_dump($key.'<br>');
+                  if(!is_null($request->$key))
+                  {
                     if($key == 'registrant_country')
                     {
-                      //dd('1');
-                        $allrecords = $allrecords->where('registrant_country', $req);
-
+                        $query->where('leads.registrant_country',$req);
                     }
                     else if($key == 'registrant_state')
                     {
-                      //dd('2');
-                        $allrecords = $allrecords->where('registrant_state', $req);
+                        $query->where('leads.registrant_state',$req);
                     }
                     else if($key == 'domain_name')
                     {
-                      //dd('3');
-                        $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req){
-                            $query->where($key, 'like', '%'.$req.'%');
-                        });
+                        $query->where('each_domain.domain_name','like', '%'.$req.'%'); 
                     }
                     else if($key == 'domain_ext')
                     {
-                        //dd('4');
-                        $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$req,$domain_ext){
-                            $query->whereIn($key,$domain_ext);
-                        });
+                        $query->whereIn('each_domain.domain_ext',$domain_ext);
                     }
-                    else if(($key == 'domains_create_date' || $key == 'domains_create_date') && $date_flag == 0)
+                    else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+                      && $date_flag == 0)
                     {
                         $date_flag = 1;
                         $dates_array = generateDateRange($request->domains_create_date,
                                         $request->domains_create_date2);
-                        
-                        $allrecords = $allrecords->whereHas('each_domain' , function($query) use($key,$dates_array){
-                            $query->whereHas('domains_info',function($q) use($key,$dates_array){
-                                $q->whereIn($key,$dates_array);
-                            });
-                        });
+                        $query->whereIn('domains_info.domains_create_date',$dates_array);
                     }
-                    //applying sort filter
                     else if ($key == 'sort') 
                     {
                         if($req == 'unlocked_asnd')
                         {
-                            $allrecords = $allrecords->orderBy('unlocked_num','asc');
+                          $query->orderBy('leads.unlocked_num','asc');
                         }
                         else if($req == 'unlocked_dcnd')
                         {
-                            $allrecords = $allrecords->orderBy('unlocked_num','desc');
+                          $query->orderBy('leads.unlocked_num','desc');
                         }
                         else if($req == 'domain_count_asnd')
                         {
-                            $allrecords = $allrecords->orderBy('domains_count','asc');
+                          $query->orderBy('leads.domains_count','asc');
                         }
                         else if($req == 'domain_count_dcnd') 
                         {
-                            $allrecords = $allrecords->orderBy('domains_count','desc');
+                          $query->orderBy('leads.domains_count','desc');
                         }
                     }
-                    else if($key=='gt_ls_leadsunlocked_no'){
-                            if($req==0){
-                              $gt_ls_leadsunlocked_no='>';
-
-                            }else if($req==1){
-                              $gt_ls_leadsunlocked_no='>';
-                            }
-                            else{
-                              $gt_ls_leadsunlocked_no='<';
-                            }
-
-                     }
+                    else if($key=='gt_ls_leadsunlocked_no')
+                    {
+                        if($req==0)
+                        {
+                          $gt_ls_leadsunlocked_no='>';
+                        }
+                        else if($req==1)
+                        {
+                          $gt_ls_leadsunlocked_no='=';
+                        }
+                        else
+                        {
+                          $gt_ls_leadsunlocked_no='<';
+                        }
+                    }
                     else if($key == 'leadsunlocked_no')
                      {
-
-                        if($req==''){
+                        if($req=='')
                           $req='0';
-                        } 
-                        $allrecords = $allrecords->where('unlocked_num',$gt_ls_leadsunlocked_no, $req);
+                       
+                        $query = $query->where('unlocked_num',$gt_ls_leadsunlocked_no,$req);
                      }
-                     else if($key=='gt_ls_domaincount_no'){
-                            if($req==0){
+                    else if($key=='gt_ls_domaincount_no'){
+                            if($req==0)
                               $gt_ls_domaincount_no='>';
 
-                            }else if($req==1){
-                              $gt_ls_domaincount_no='>';
-                            }
-                            else{
+                            else if($req==1)
+                              $gt_ls_domaincount_no='=';
+                            
+                            else
                               $gt_ls_domaincount_no='<';
-                            }
-
                      }
                     else if($key == 'domaincount_no')
                      {
-
-                        if($req==''){
+                        if($req=='')
                           $req='0';
-                        } 
-                        $allrecords = $allrecords->where('domains_count',$gt_ls_domaincount_no, $req);
-                         
-                      
+                        
+                        $query = $query->where('leads.domains_count',$gt_ls_leadsunlocked_no,$req);
                      }
+                  }
                 }
 
-            }
-
-          
-          if(isset($phone_type_array) && sizeof($phone_type_array)>0)
-          {
-            $allrecords = $allrecords->whereHas('valid_phone' , function($query) use($phone_type_array){
-              
-                  $query->whereIn('number_type',$phone_type_array);
-                  
-              
-            });
-          }
-          //dd($allrecords->toSql());
-
-
-            $leadArr_ = $allrecords->pluck('registrant_email')->toArray();
-            $leadArr = array_flip($leadArr_);
-            foreach($leadArr as $key=>$each)
-            {
-              $leadArr[$key] = 0; 
-            }
-            
-            $eachdomainArr = EachDomain::pluck('registrant_email','domain_name')->toArray();
-            $totalDomains = 0;
-            
-
-            foreach($eachdomainArr as $key=>$each)
-            {
-                if(isset($leadArr[$each]))
+                if(isset($phone_type_array) && sizeof($phone_type_array)>0)
                 {
-                  $leadArr[$each]++;
-                  $totalDomains++;
+                    $query = $query->whereIn('valid_phone.number_type',$phone_type_array);
                 }
-            }
 
+              })
 
+          ->groupBy('leads.registrant_email')
+         ->paginate($request->pagination);
+         
+
+         dd($data);
+         // die();
+
+        //dd($data->count());
+
+        $leads_arr = array();
+        foreach ($data as $key => $value) 
+        {
+          if(!isset($leads_arr[$value->registrant_email]))
+          {
+            $leads_arr[$value->registrant_email] = 1;
+          }
+          else
+            $leads_arr[$value->registrant_email]++;
+        }
 
             
-          
-
             $user_id = \Auth::user()->id;
 
             $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
@@ -689,29 +700,33 @@ public function download_csv_single_page(Request $request)
             
             //dd($allrecords->count());
 
-            $string_leads = serialize($leadArr_);
+            $string_leads = serialize($leads_arr);
             // exit();
+            $end = microtime(true)-$start;
+            echo "time : ".$end."<br>";
 
             if(\Auth::user()->user_type == 2)
             {
                 return view('home.admin.admin_search',[
 
-                    'record' => $allrecords->paginate($request->pagination), 
-                    'leadArr'=>$leadArr,
+                    'record' => $data->paginate($request->pagination), 
+                    'leadArr'=>$leads_arr,
                     'string_leads'=>$string_leads,
-                    'totalDomains'=>$totalDomains,
-                    'users_array'=>$users_array
+                    'totalDomains'=>100,
+                    'users_array'=>$users_array,
+                    'query_time'=>$end
                   ]);      
             }
 
 
             return view('home.search' , 
-                  ['record' => $allrecords->paginate($request->pagination), 
-                  'leadArr'=>$leadArr , 
+                  ['record' => $data->paginate($request->pagination), 
+                  'leadArr'=>$leads_arr , 
                   'string_leads'=>$string_leads,
-                  'totalDomains'=>$totalDomains,
+                  'totalDomains'=>100,
                   'users_array'=>$users_array,
-                  'obj_array'=>$obj_array]);
+                  'obj_array'=>$obj_array,
+                  'query_time'=>$end]);
         }
         else
         {
