@@ -24,6 +24,7 @@ use GuzzleHttp\Client;
 use Session;
 use Excel;
 use Input;
+use Illuminate\Pagination\Paginator;
 
 
 class SearchController extends Controller
@@ -535,6 +536,24 @@ public function download_csv_single_page(Request $request)
             $low_limit = ($request->page - 1)*$request->pagination;
             $high_limit = $low_limit + $request->pagination;
           }
+
+          $domain_ext_str = ' ';
+          if(isset($request->domain_ext))
+          {
+            foreach($request->domain_ext as $k => $v)
+            {
+              if($domain_ext_str == ' ')
+              {
+                $domain_ext_str .= "'".$v."'";
+              } 
+              else
+              {
+                $domain_ext_str .= ",'".$v."'";
+              }
+            }
+            $domain_ext_str = '('.$domain_ext_str.')';
+          }
+          
           
           $date_flag = 0;
 
@@ -550,13 +569,14 @@ public function download_csv_single_page(Request $request)
           , l.registrant_state 
           , l.domains_count 
           , l.unlocked_num 
-          , di.domains_create_date
+
           FROM leads as l INNER JOIN each_domain AS ed 
           ON ed.registrant_email = l.registrant_email
           INNER JOIN domains_info AS di 
           ON di.domain_name = ed.domain_name 
           INNER JOIN valid_phone AS vp 
-          ON vp.registrant_email = l.registrant_email ";
+          ON vp.registrant_email = l.registrant_email 
+          WHERE l.registrant_email != '' ";
 
 
           $flag = 0;
@@ -566,64 +586,19 @@ public function download_csv_single_page(Request $request)
             {
                 if($key == 'registrant_country')
                 {
-                    //$query->where('leads.registrant_country',$req);
-                  if($flag == 0)
-                  {
-                    $sql .= " WHERE l.registrant_country='".$req."' ";
-                    $flag = 1;
-                  }
-                  else
                     $sql .= " and l.registrant_country='".$req."' ";
                 }
                 else if($key == 'registrant_state')
                 {
-                  if($flag == 0)
-                  {
-                    $sql .= " WHERE l.registrant_state='".$req."' ";
-                    $flag = 1;
-                  }
-                  else
                     $sql .= " and l.registrant_state='".$req."' ";
-                    //$query->where('leads.registrant_state',$req);
                 }
                 else if($key == 'domain_name')
                 {
-                    if($flag == 0)
-                    {
-                      $sql .= " WHERE ed.domain_name='".$req."' ";
-                      $flag = 1;
-                    }
-                    else
-                    $sql .= " and ed.domain_name='".$req."' ";
-                    //$query->where('each_domain.domain_name','like', '%'.$req.'%'); 
+                    $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
                 }
                 else if($key == 'domain_ext')
                 {
-                  $domain_ext_str = ' ';
-                  foreach($domain_ext as $k => $v)
-                  {
-                    if($domain_ext_str == ' ')
-                    {
-                      $domain_ext_str .= "'".$v."'";
-                    } 
-                    else
-                    {
-                      $domain_ext_str .= ",'".$v."'";
-                    }
-                  }
-
-                    $domain_ext_str = '('.$domain_ext_str.')';
-
-                    if($flag == 0)
-                    {
-                      $sql .= " WHERE ed.domain_name IN ".$domain_ext_str." ";
-                      $flag = 1;
-                    }
-                    else
-                    {
-                      $sql .= " and ed.domain_name IN ".$domain_ext_str." ";
-                    }
-                    //$query->whereIn('each_domain.domain_ext',$domain_ext);
+                    $sql .= " and ed.domain_name IN ".$domain_ext_str." ";  
                 }
                 else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
                   && $date_flag == 0)
@@ -631,226 +606,308 @@ public function download_csv_single_page(Request $request)
                     $date_flag = 1;
                     $dates_array = generateDateRange($request->domains_create_date,
                                     $request->domains_create_date2);
-                    $dates_array_str = ' ';
-                    foreach($dates_array as $k => $v)
+                    
+                    if(isset($dates_array))
                     {
-                      if($dates_array_str == ' ')
+                      if(sizeof($dates_array) == 1)
                       {
-                        $dates_array_str .= "'".$v."'";
-                      } 
-                      else
+                        $sql .= " and di.domains_create_date = '".$dates_array[0]."' ";
+                      }
+                      else if(sizeof($dates_array) == 2)
                       {
-                        $dates_array_str .= ",'".$v."'";
+                        
+                        $sql .= " and di.domains_create_date >= '".$dates_array[0]."' and di.domains_create_date <= '".$dates_array[1]."'";
+                        
                       }
                     }
-                    $dates_array_str = '('.$dates_array_str.')';
-                    if($flag == 0)
-                    {
-                      $sql .= " WHERE di.domains_create_date IN ".$dates_array_str." ";
-                      $flag = 1;
-                    }
-                    else
-                    {
-                      $sql .= " and di.domains_create_date IN ".$dates_array_str." ";
-                    }
-
                     //$query->whereIn('domains_info.domains_create_date',$dates_array);
                 }
                 
+                else if($key=='gt_ls_leadsunlocked_no')
+                {
+                    if($req == 0)
+                      $gt_ls_leadsunlocked_no='';
+                    
+                    else if($req == 1)
+                      $gt_ls_leadsunlocked_no='>';
+                    
+                    else if($req == 2)
+                      $gt_ls_leadsunlocked_no='<';
+                    else if($req == 3)
+                      $gt_ls_leadsunlocked_no='=';
+                }
+                else if($key == 'leadsunlocked_no')
+                 {
+                  if($gt_ls_leadsunlocked_no == '')
+                    continue;
                   
+                  if($req == '')
+                      $req=0;
+                   
+                  $sql .= " and l.unlocked_num ".$gt_ls_leadsunlocked_no." ".$req; 
+
+                    //$query = $query->where('unlocked_num',$gt_ls_leadsunlocked_no,$req);
+                 }
+                else if($key=='gt_ls_domaincount_no')
+                {
+                        if($req==0)
+                          $gt_ls_domaincount_no='';
+
+                        else if($req == 1)
+                          $gt_ls_domaincount_no='>';
+                        
+                        else if($req == 2)
+                          $gt_ls_domaincount_no='<';
+                        else if($req == 3)
+                          $gt_ls_domaincount_no='=';
+                 }
+                else if($key == 'domaincount_no')
+                 {
+                  if($gt_ls_domaincount_no == '')
+                    continue;
+
+                  if($req=='')
+                      $req = 0;
+                    
+                    $sql .= " and l.domains_count ".$gt_ls_domaincount_no." ".$req;
+                    //$query = $query->where('leads.domains_count',$gt_ls_leadsunlocked_no,$req);
+                 }
+
+
+            }
+          }
+
+
+          if(isset($request->sort)) 
+          {
+              $req = $request->sort;
+              if($req == 'unlocked_asnd')
+              {
+                $sql .= " ORDER BY l.unlocked_num ASC ";
+                //$query->orderBy('leads.unlocked_num','asc');
+              }
+              else if($req == 'unlocked_dcnd')
+              {
+                $sql .= " ORDER BY l.unlocked_num DESC ";
+                //$query->orderBy('leads.unlocked_num','desc');
+              }
+              else if($req == 'domain_count_asnd')
+              {
+                $sql .= " ORDER BY l.domains_count ASC ";
+                //$query->orderBy('leads.domains_count','asc');
+              }
+              else if($req == 'domain_count_dcnd') 
+              {
+                $sql .= " ORDER BY l.domains_count DESC";
+                //$query->orderBy('leads.domains_count','desc');
+              }
+          }
+
+          //$sql .= " LIMIT ".$request->pagination. ' OFFSET '.$low_limit;
+          //dd($sql);
+          //$data = DB::select(DB::raw($sql));
+
+          
+          $leads = DB::select(DB::raw($sql));
+          $totalLeads = sizeof($leads);
+          $take = $request->pagination;
+          $page = isset($request->page) ? $request->page : 1;
+          $paginator = new \Illuminate\Pagination\LengthAwarePaginator($leads, $totalLeads, $take, $page);
+
+          // foreach($paginator as $v)
+          // {
+          //   echo($v->registrant_email . '<br>');
+          // }
+          $take ;
+          $skip ;
+          $take = $request->pagination;
+          $skip = ($page-1)*$take;
+          $i=0;
+          $x=0;
+          $leads_string = ' ';
+          $data = array();
+          $totalDomains = 0;
+          foreach($paginator as $each)
+          {
+            $totalDomains += $each->domains_count; 
+            $i++;
+            if($i>$skip && $i<=$take)
+            {
+              $data[$x]['registrant_email'] = $each->registrant_email;
+              $data[$x]['name'] = $each->registrant_fname.' '.$each->registrant_lname;
+              $data[$x]['registrant_country'] = $each->registrant_country;
+              $data[$x]['registrant_company'] = $each->registrant_company;
+              $data[$x]['registrant_phone'] = $each->registrant_phone;
+              $data[$x]['unlocked_num'] = $each->unlocked_num;
+              $data[$x]['domains_count'] = $each->domains_count;
+              $data[$x++]['registrant_state'] = $each->registrant_state;
+              if($leads_string == ' ')
+              {
+                 $leads_string .= "'".$each->registrant_email."'";
+              }
+              else
+              {
+                 $leads_string .= ",'".$each->registrant_email."'";
+              }
             }
           }
           
 
-          // "WHERE
-          // di.domains_create_date = '2017-04-04' LIMIT ".$request->pagination.' OFFSET '.
-          //$low_limit;
+          if($leads_string == '')
+            $no_data = 1;
+          else
+            $no_data = 0;
+
+          $leads_string = "(".$leads_string.")";
+          //dd($leads_string);
+         
 
 
-          $sql .= " LIMIT ".$request->pagination. ' OFFSET '.$low_limit;
-
-          
-
-          // echo ($sql);
-          // exit();
-
-          // //$sql = "select * from each_domain";
-
-          $d = DB::select(DB::raw($sql));
-          dd($d);
-
-
+          // going to second level table
+          if($no_data == 0)
+          {
 
           
-          $data = DB::table('leads')
-          ->join('each_domain', 'each_domain.registrant_email', '=', 'leads.registrant_email')
-          ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
-          ->join('valid_phone','valid_phone.registrant_email','=','leads.registrant_email')
-          ->select('leads.registrant_phone',
-                'leads.registrant_email',
-                'leads.registrant_fname',
-                'leads.registrant_lname',
-                'leads.registrant_country',
-                'leads.registrant_company',
-                'leads.registrant_state',
-                'leads.domains_count',
-                'leads.unlocked_num',
-                'each_domain.domain_name',
-                'each_domain.domain_ext',
-                'domains_info.domains_create_date',
-                'valid_phone.number_type')
-          ->where(function($query) use ($request,$domain_ext,$date_flag,$phone_type_array)
+              $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
+              INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
+              INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
+              WHERE ed.registrant_email 
+              IN ".$leads_string;
+              //$flag = 0;
+              $date_flag = 0;
+
+              foreach ($request->all() as $key=>$req) 
               {
-                foreach($request->all() as $key => $req)
+                if(!is_null($req))
                 {
-                  if(!is_null($request->$key))
+                  if($key == 'domain_name')
                   {
-                    if($key == 'registrant_country')
-                    {
-                        $query->where('leads.registrant_country',$req);
-                    }
-                    else if($key == 'registrant_state')
-                    {
-                        $query->where('leads.registrant_state',$req);
-                    }
-                    else if($key == 'domain_name')
-                    {
-                        $query->where('each_domain.domain_name','like', '%'.$req.'%'); 
-                    }
-                    else if($key == 'domain_ext')
-                    {
-                        $query->whereIn('each_domain.domain_ext',$domain_ext);
-                    }
-                    else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
-                      && $date_flag == 0)
-                    {
-                        $date_flag = 1;
-                        $dates_array = generateDateRange($request->domains_create_date,
-                                        $request->domains_create_date2);
-                        $query->whereIn('domains_info.domains_create_date',$dates_array);
-                    }
-                    else if ($key == 'sort') 
-                    {
-                        if($req == 'unlocked_asnd')
-                        {
-                          $query->orderBy('leads.unlocked_num','asc');
-                        }
-                        else if($req == 'unlocked_dcnd')
-                        {
-                          $query->orderBy('leads.unlocked_num','desc');
-                        }
-                        else if($req == 'domain_count_asnd')
-                        {
-                          $query->orderBy('leads.domains_count','asc');
-                        }
-                        else if($req == 'domain_count_dcnd') 
-                        {
-                          $query->orderBy('leads.domains_count','desc');
-                        }
-                    }
-                    else if($key=='gt_ls_leadsunlocked_no')
-                    {
-                        if($req==0)
-                        {
-                          $gt_ls_leadsunlocked_no='>';
-                        }
-                        else if($req==1)
-                        {
-                          $gt_ls_leadsunlocked_no='=';
-                        }
-                        else
-                        {
-                          $gt_ls_leadsunlocked_no='<';
-                        }
-                    }
-                    else if($key == 'leadsunlocked_no')
-                     {
-                        if($req=='')
-                          $req='0';
-                       
-                        $query = $query->where('unlocked_num',$gt_ls_leadsunlocked_no,$req);
-                     }
-                    else if($key=='gt_ls_domaincount_no'){
-                            if($req==0)
-                              $gt_ls_domaincount_no='>';
-
-                            else if($req==1)
-                              $gt_ls_domaincount_no='=';
-                            
-                            else
-                              $gt_ls_domaincount_no='<';
-                     }
-                    else if($key == 'domaincount_no')
-                     {
-                        if($req=='')
-                          $req='0';
-                        
-                        $query = $query->where('leads.domains_count',$gt_ls_leadsunlocked_no,$req);
-                     }
+                    $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
                   }
-                }
+                  else if($key == 'domain_ext')
+                  {
+                    $sql .= " and ed.domain_ext IN ".$domain_ext_str." "; 
+                  }
+                  else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+                      && $date_flag == 0)
+                  {
+                        $date_flag = 1;
+                        $dates_array = generateDateRange(
+                                  $request->domains_create_date,
+                                  $request->domains_create_date2);
+                        
+                    if(isset($dates_array))
+                    {
+                      if(sizeof($dates_array) == 1)
+                      {
+                        $sql .= " and di.domains_create_date = '".$dates_array[0]."' "; 
+                      }
+                      else if(sizeof($dates_array) == 2)
+                      {
+                        $sql .= " and di.domains_create_date >= '".$dates_array[0]."' and di.domains_create_date <= '".$dates_array[1]."'";
+                      }
+                    }
+                  }
 
-                if(isset($phone_type_array) && sizeof($phone_type_array)>0)
+                }
+              }
+              // echo $sql;
+              // dd('---');
+
+              if(isset($phone_type_array))
+              {
+                $phone_type_array_str = ' ';
+                foreach($phone_type_array as $k=>$v)
                 {
-                    $query = $query->whereIn('valid_phone.number_type',$phone_type_array);
+                  if($v == ' ')
+                    $phone_type_array_str .= "'".$v."'";
+                  else
+                    $phone_type_array_str .= ",'".$v."'";
                 }
+                if($phone_type_array_str != ' ')
+                {
+                  $phone_type_array_str = "(".$phone_type_array_str.")";
+                  $sql .= " and vp.number_type IN ".$phone_type_array_str;
+                }
+              }
 
-              })
+              $domains = DB::select(DB::raw($sql));
 
-          ->groupBy('leads.registrant_email')
-         ->paginate($request->pagination);
-         //->get();
-
-        
+              $domain_list = array();
 
 
+              foreach($data as $k=>$v) // setting up the leads array
+              {
+                //dd($v['registrant_email']);
+                $domain_list[$v['registrant_email']]['checked'] = false;
+              }
+              foreach($domains as $k=>$v)
+              {
+                if(!($domain_list[$v->registrant_email]['checked']))
+                {
+                  $domain_list[$v->registrant_email]['checked'] = true;
+                  $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
+                  $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
+                  $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
+                  $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
+                }
+              }
 
-         //dd($data->count());
-         // die();
+          }
+          
+          //$data = new Paginator($data, $request->pagination);
+          //dd($data);
+          
+          //dd($domain_list);
 
-        //dd($data->count());
 
-        $leads_arr = array();
+        $leads_arr = array(); //consists only leads
         foreach ($data as $key => $value) 
         {
-          if(!isset($leads_arr[$value->registrant_email]))
+          if(!isset($leads_arr[$value['registrant_email']]))
           {
-            $leads_arr[$value->registrant_email] = 1;
+            $leads_arr[$value['registrant_email']] = 1;
           }
           else
-            $leads_arr[$value->registrant_email]++;
+            $leads_arr[$value['registrant_email']]++;
         }
 
             
-            $user_id = \Auth::user()->id;
+        $user_id = \Auth::user()->id;
 
-            $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
-            
+        $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+        
 
-            $users_array = array_flip($users_array);
+        $users_array = array_flip($users_array);
 
-            $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
+        $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
 
-            $obj_array = array_flip($obj_array);
-            
-            
-            //dd($allrecords->count());
+        $obj_array = array_flip($obj_array);
+        
 
-            $string_leads = serialize($leads_arr);
-            // exit();
-            $end = microtime(true)-$start;
-            echo "time : ".$end."<br>";
+        
+
+        
+        //dd($allrecords->count());
+
+        $string_leads = serialize($leads_arr);
+        // exit();
+        $end = microtime(true)-$start;
+        echo "time : ".$end."<br>";
 
             if(\Auth::user()->user_type == 2)
             {
                 return view('home.admin.admin_search',[
 
-                    'record' => $data, 
-                    'leadArr'=>$leads_arr,
+                    'record'      =>$data,
+                    'paginator'   =>$paginator,
+                    'totalLeads'  =>$totalLeads,
+                    'totalDomains'=>$totalDomains,
+                    'domain_list' =>$domain_list,
+                    'leadArr'     =>$leads_arr,
                     'string_leads'=>$string_leads,
-                    'totalDomains'=>100,
-                    'users_array'=>$users_array,
-                    'query_time'=>$end
+                    'users_array' =>$users_array,
+                    'query_time'  =>$end
                   ]);      
             }
 

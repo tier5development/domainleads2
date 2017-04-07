@@ -1,6 +1,9 @@
 <html lang="en">
 
 @include('layouts.header')
+
+
+
 <head>
 
 	<title>Search</title>
@@ -20,6 +23,11 @@
 	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
 	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script>
       <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
+
+    
+    <link type="text/css" rel="stylesheet" href="{{url('/')}}/public/css/simplePagination.css"/>
+	
+	<script type="text/javascript" src="{{url('/')}}/public/js/jquery.simplePagination.js"></script>
 
 <style type="text/css">
 .dropdown dd,
@@ -270,25 +278,33 @@
 				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
 				
 				
-                    <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
+            <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
 
-                    <label>DomainCount :</label> <br>
-            		<select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
+            <label>DomainCount :</label> <br>
+    		<select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
+
             <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
             <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
-            <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option></select>
+            <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option>
+            <option value="3" <?php if(Input::get('gt_ls_domaincount_no')==3) { echo "selected";} ?>>Equals</option></select>
+
             <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
 
             		<label>LeadsUnlocked :</label> <br>
             <select name="gt_ls_leadsunlocked_no" id="gt_ls_leadsunlocked_no" >
             <option value="0" <?php if(Input::get('gt_ls_leadsunlocked_no')==0) { echo "selected";} ?>>Select</option>
             <option value="1" <?php if(Input::get('gt_ls_leadsunlocked_no')==1) { echo "selected";} ?>>Greater than</option>
-            <option value="2" <?php if(Input::get('gt_ls_leadsunlocked_no')==2) { echo "selected";} ?>>Lesser Than</option></select>
+            <option value="2" <?php if(Input::get('gt_ls_leadsunlocked_no')==2) { echo "selected";} ?>>Lesser Than</option>
+            <option value="3" <?php if(Input::get('gt_ls_leadsunlocked_no')==3) { echo "selected";} ?>>Equals</option></select>
+
             <input type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
           
            <div class="btn btn-primary" id="refine_searchID">Refine Search</div>
           </div>
 
+
+
+			
 				
 
 			</form>
@@ -316,7 +332,7 @@
 
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 					<label>Total Leads :: </label>
-				 	<span>{{ $record->total()}}</span>
+				 	<span>{{$totalLeads}}</span>
 				 	<br>
 				 	<label>Total Domains ::</label>
 				 	<span>{{$totalDomains}}</span>
@@ -352,7 +368,6 @@
 						<th>Registrant Company</th>
 					</tr>
 
-					
 					@foreach($record as $key=>$each)
 					<tr>
 
@@ -363,7 +378,7 @@
 						
 
 						<small>
-							<input class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each->registrant_email}}">
+							<input class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
 						</small>
 							
 						</th>
@@ -372,66 +387,69 @@
 
 						<th>
 							
-								<small id="domain_name_{{$key}}"><b>{{$each->domain_name}}</b></small>
+								<small id="domain_name_{{$key}}"><b>{{ $domain_list[$each['registrant_email']]['domain_name']}}</b></small>
+							
+							
 							
 							<br>
-							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
+							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
 							<br>
-							<small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$each->domains_count}}</a></small> 
+							<small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small> 
 							<!-- leadArr[$each->registrant_email] -->
 						</th>
 						<th>
-							
+								<small id="registrant_name_{{$key}}">{{$each['name']}}</small>
 								
-								<small id="registrant_name_{{$key}}">{{$each->registrant_fname}} {{$each->registrant_lname}}</small>
-								
-							
-
 						</th>
 						<th>
-							
-								<small id="registrant_email_{{$key}}">{{$each->registrant_email}}</small>
-							
+								<small id="registrant_email_{{$key}}">{{$each['registrant_email']}}</small>
 						</th>
 						<th>
-							
-								<small id="registrant_phone_{{$key}}">{{$each->registrant_phone}}</small>
+						
+								<small id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
 
-								@if(isset($each->valid_phone)) 
+								@if(isset($domain_list[$each['registrant_email']]['number_type'])) 
 
-									@if($each->number_type == "Cell Number")
+									@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
 									<img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
 
 								
 
-									@elseif($each->number_type == "Landline")
+									@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
 									<img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
 									@endif
 
 								@endif
+						</th>
+						<th>
+								<small id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
 							
 						</th>
 						<th>
-								<small id="domains_create_date_{{$key}}">{{$each->domains_create_date}}</small>
 							
-						</th>
-						<th>
-							
-								<small id="registrant_company_{{$key}}">{{$each->registrant_company}}</small>
+								<small id="registrant_company_{{$key}}">{{$each['registrant_company']}}</small>
 							
 						</th>
 					</tr>
 					@endforeach
 					
 				</table>
+
+				<div id="paginate">
+					
+				</div>
+				
+				@if($paginator)
+					{{$paginator->links()}}
+				@endif
+
+				
 			</form>
 				
 			@endif
 			</div>
-			@if($record)
-			 {{$record->appends(\Request::except('page'))->links()}}
-			 @endif
+			
 
 
 		</div>
@@ -454,7 +472,19 @@
 
 		
 </body>
+
+
 	<script>
+
+		// 	$(function() {
+		//     $('#paginate').pagination({
+		//         items: "{{sizeof($record)}}",
+		//         itemsOnPage: $('#pagination').val(),
+		//         cssStyle: 'light-theme'
+
+		        
+		//     });
+		// });
 
 		// $('#exportLeads').click(function(e){
 		// 	e.preventDefault();

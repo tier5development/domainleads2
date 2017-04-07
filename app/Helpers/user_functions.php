@@ -10,7 +10,7 @@ function generateDateRange($start_date,$end_date)
     else if($start_date == null)
     {
     	$dates[0] = $end_date;
-    	return $dates;
+        return $dates;
     }
     else if($end_date == null)
     {
@@ -26,12 +26,16 @@ function generateDateRange($start_date,$end_date)
 			$start_date = $end_date;
 			$end_date = $temp;
 		}
-		$final_time = strtotime($end_date);
-    	for($d = strtotime($start_date); $d <= $final_time ; $d += $day) 
-    	{
-	        $dates[] = date('Y-m-d',$d);
-	    }
-    	return $dates;
+        $dates[0] = $start_date;
+        $dates[1] = $end_date;
+        return $dates;
+
+		// $final_time = strtotime($end_date);
+        // for($d = strtotime($start_date); $d <= $final_time ; $d += $day) 
+        //  {
+	 //        $dates[] = date('Y-m-d',$d);
+	 //    }
+  //   	return $dates;
     }
 }
 
