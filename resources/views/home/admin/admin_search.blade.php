@@ -20,14 +20,15 @@
   	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" type="text/css" href="{{url('/')}}/resources/assets/css/bootstrap.css">
 	
-	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
-	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script>
+	<!-- <script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
+	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script> -->
       <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
 
     
     <link type="text/css" rel="stylesheet" href="{{url('/')}}/public/css/simplePagination.css"/>
 	
 	<script type="text/javascript" src="{{url('/')}}/public/js/jquery.simplePagination.js"></script>
+
 
 <style type="text/css">
 .dropdown dd,
@@ -371,14 +372,15 @@
 					@foreach($record as $key=>$each)
 					<tr>
 
-					
-
 						<th>
 						
 						
 
 						<small>
-							<input class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
+						
+							<input id="reg_email_{{$key}}" class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
+						
+						
 						</small>
 							
 						</th>
@@ -387,14 +389,12 @@
 
 						<th>
 							
-								<small id="domain_name_{{$key}}"><b>{{ $domain_list[$each['registrant_email']]['domain_name']}}</b></small>
-							
-							
+							<small id="domain_name_{{$key}}"><b>{{ $domain_list[$each['registrant_email']]['domain_name']}}</b></small>
 							
 							<br>
 							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
 							<br>
-							<small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small> 
+							<small > Total Domains : <a id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small>
 							<!-- leadArr[$each->registrant_email] -->
 						</th>
 						<th>
@@ -436,16 +436,34 @@
 					
 				</table>
 
-				<div id="paginate">
+				<!-- <div id="paginate">
 					
-				</div>
+				</div> -->
 				
-				@if($paginator)
-					{{$paginator->links()}}
-				@endif
+				
 
 				
 			</form>
+
+			
+
+				@foreach($leadsid_per_page as $k=>$v)
+
+				<form class="page_form" style="width: 50px; float: left;" method="POST" action="{{Route('search_paginated')}}">
+
+				<input type="hidden" name="_token" value="{{csrf_token()}}">
+				<input type="hidden" name="totalDomains" value="{{$totalDomains}}">
+				<input type="hidden" name="totalLeads" value="{{$totalLeads}}">
+
+				<!-- <button id="page_{{$k}}" data-page = "{{$k+1}}" data-leads = "{{$v}}" ></button> -->
+				<input type="submit" class="page_cls" id="page_{{$k}}" name="page" value="{{$k+1}}">
+				<input type="hidden" class="leads_list_cls" id="lead_list_{{$k}}" name="lead_list" value="{{$v}}">
+
+				</form>
+
+				@endforeach
+
+			
 				
 			@endif
 			</div>
@@ -470,11 +488,134 @@
 				</div>
 			</div>
 
+			<div id="per_page">
+				
+			</div>
+
 		
 </body>
 
 
 	<script>
+	var thisPage = "{{$page}}";
+
+		$('.page-link').change(function(e){
+			alert(1);
+		});
+
+		$('.page_form').submit(function(e){
+			e.preventDefault();
+			//console.log($(this).val());
+
+			var reg_date = $('#registered_date').val();
+			var reg_date2 = $('#registered_date2').val();
+			var domain_name = $('#domain_name').val();
+			var domain_ext = $('#domain_ext').val(); 
+			var num_type = $('#number_type').val();
+			var total_domains = "{{$totalDomains}}";
+			var total_leads = "{{$totalLeads}}";
+			var lead_list  = $(this).find('.leads_list_cls').val();
+			var page = $(this).find('.page_cls').val();
+
+			//alert(page);
+
+
+			
+			$.ajax({
+				url  : '/search_paginated',
+				type : 'post',
+				dataType: 'json',
+				data : {_token : "{{csrf_token()}}" , 
+						domains_create_date  : reg_date,
+						domains_create_date2 : reg_date2, 
+						domain_name          : domain_name,
+						domain_ext           : domain_ext,
+						number_type          : num_type,
+						totalDomains         : total_domains,
+						totalLeads           : total_leads,
+						lead_list            : lead_list,
+						page                 : page
+					},
+				success : function(response)
+				{
+					//console.log(response[0]);
+					//alert(response[0]['registrant_email']);
+
+					thisPage = page;
+					setup_pages();
+					for(i=0 ; i<response.length ; i++)
+					{
+						//alert(i);
+						$('#reg_email_'+i).val(response[i]['registrant_email']);
+						$('#domain_name_'+i).text(response[i]['domain_name']);
+						$('#unlocked_num_'+i).text(response[i]['unlocked_num']);
+						$('#domains_count_'+i).text(response[i]['domains_count']);
+						$('#domains_create_date_'+i).text(response[i]['domains_create_date']);
+						$('#registrant_company_'+i).text(response[i]['registrant_company']);
+						$('#registrant_country_'+i).val(response[i]['registrant_company']);
+						$('#registrant_email_'+i).val(response[i]['registrant_email']);
+
+					}
+				}
+			});
+		});
+
+
+		$(function(){
+			setup_pages();
+		});
+
+		function setup_pages()
+		{
+			var totalPage = "{{sizeof($leadsid_per_page)}}";
+			var pages     = [];
+			var limit = 9;
+			//console.log(thisPage);
+			l  = parseInt(thisPage) -5;
+			h  = parseInt(thisPage) +5;
+			
+			$('.page_form').each(function(i,j){
+
+
+				if(thisPage == 1)
+				{
+					if(i<10)
+					$(this).show();
+
+					else
+					$(this).hide();
+				}
+				else
+				{
+					if(i>=l)
+					{
+						if(i<=h)
+						{
+							$(this).show();
+							console.log('++show-- ',i,thisPage,l,h);
+							//$(this).display('show');
+						}
+					}
+					else
+					{
+						//$(this).display('hide');
+						$(this).hide();
+						console.log('++hide-- ',i,thisPage);
+					}
+				}
+			});
+		}
+
+
+			// $(function(){
+
+			//     $('#per_page').pagination({
+			//         items: 100,
+			//         itemsOnPage: 10,
+			//         cssStyle: 'light-theme'
+			//     });
+
+			// });
 
 		// 	$(function() {
 		//     $('#paginate').pagination({

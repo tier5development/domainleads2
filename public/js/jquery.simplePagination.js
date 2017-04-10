@@ -9,7 +9,6 @@
 */
 
 (function($){
-
 	var methods = {
 		init: function(options) {
 			var o = $.extend({
@@ -219,10 +218,12 @@
 			// Generate interval links
 			if (!o.invertPageOrder) {
 				for (i = interval.start; i < interval.end; i++) {
+
 					methods._appendItem.call(this, i);
 				}
 			} else {
 				for (i = interval.end - 1; i >= interval.start; i--) {
+					console.log(i);
 					methods._appendItem.call(this, i);
 				}
 			}
@@ -307,11 +308,12 @@
 				$link = $('<span class="current">' + (options.text) + '</span>');
 			} else {
 				if (o.useAnchors) {
-					$link = $('<a href="' + o.hrefTextPrefix + (pageIndex + 1) + o.hrefTextSuffix + '" class="page-link">' + (options.text) + '</a>');
+					$link = $('<a href="' + o.hrefTextPrefix + (pageIndex + 1) + o.hrefTextSuffix + '" class="page-link" id="pg_'+pageIndex+'">' + (options.text) + '</a>');
 				} else {
 					$link = $('<span >' + (options.text) + '</span>');
 				}
 				$link.click(function(event){
+
 					return methods._selectPage.call(self, pageIndex, event);
 				});
 			}
@@ -385,6 +387,9 @@
 	$.fn.pagination = function(method) {
 
 		// Method calling logic
+
+		
+
 		if (methods[method] && method.charAt(0) != '_') {
 			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
 		} else if (typeof method === 'object' || !method) {

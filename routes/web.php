@@ -79,6 +79,8 @@ Route::get('/aa',function(){
 
  });
 
+Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'=>'search_paginated']);
+
 
 Route::post('login', 'AccountController@login');
 Route::get('logout', 'AccountController@logout');
