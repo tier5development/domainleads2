@@ -330,8 +330,8 @@
 
 			<form id="csv_leads_form" method="POST" action="/download_csv_single_page">
 
-
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
+					
 					<label>Total Leads :: </label>
 				 	<span>{{$totalLeads}}</span>
 				 	<br>
@@ -339,28 +339,19 @@
 				 	<span>{{$totalDomains}}</span>
 				 	<br>
 				 	<label>Search Time ::</label>
-				 	<span>{{$query_time}}</span>
+				 	<span id="search_time">{{$query_time}}</span>
 				 	<br>
 				 	
 			
 				<table class="table table-hover table-bordered domainDAta">
-
 				<input id="exportLeads" type="submit" name="exportLeads" value="Export">
-
 				<input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
-
-
-
 				<input type="hidden" name="all_leads_to_export[]" value="{{$string_leads}}">
-
-
 					<!-- <button><id="exportLeads" class="btn btn-primary">Export</button>
 					<button id="exportAllLeads" class="btn btn-info pull-right">Export All</button> -->
-					<br>
-					
-					<br><br>
+					<br><br><br>
 					<tr>
-						<th><input type="checkbox"  value="1" class="downloadcsv_all" id=""> Select Leads</th>
+						<th style="width: 40px"><input type="checkbox"  value="1" class="downloadcsv_all" id=""> Select Leads</th>
 						<th>Domain Name</th>
 						<th>Registrant Name</th>
 						<th>Registrant Email</th>
@@ -368,84 +359,68 @@
 						<th>Domains Create Date</th>
 						<th>Registrant Company</th>
 					</tr>
-
 					@foreach($record as $key=>$each)
-					<tr>
-
-						<th>
-						
-						
-
+					<tr id="row_{{$key}}">
+						<td>
 						<small>
-						
-							<input id="reg_email_{{$key}}" class="eachrow_download" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
-						
-						
+					
+							<input id="reg_email_{{$key}}" class="eachrow_download single_row" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
 						</small>
-							
-						</th>
+						</td>
 
-
-
-						<th>
-							
-							<small id="domain_name_{{$key}}"><b>{{ $domain_list[$each['registrant_email']]['domain_name']}}</b></small>
+						<td>
+							<small><b class="reg_email" id="domain_name_{{$key}}">{{ $domain_list[$each['registrant_email']]['domain_name']}}</b></small>
 							
 							<br>
-							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
+							<small> Unlocked Num : <span class="unlocked_num" id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
 							<br>
-							<small > Total Domains : <a id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small>
+							<small > Total Domains : <a class="domains_count" id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small>
 							<!-- leadArr[$each->registrant_email] -->
-						</th>
-						<th>
-								<small id="registrant_name_{{$key}}">{{$each['name']}}</small>
-								
-						</th>
-						<th>
-								<small id="registrant_email_{{$key}}">{{$each['registrant_email']}}</small>
-						</th>
-						<th>
-						
-								<small id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
+						</td>
 
-								@if(isset($domain_list[$each['registrant_email']]['number_type'])) 
+						<td>
+							<small class="reg_name" id="registrant_name_{{$key}}">{{$each['name']}}</small>	
+						</td>
 
-									@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
-									<img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
+						<td>
+							<small class="reg_email" id="registrant_email_{{$key}}">{{$each['registrant_email']}}</small>
+						</td>
 
-								
+						<td>
+							<small class="reg_phone" id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
 
-									@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
-									<img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
+							@if(isset($domain_list[$each['registrant_email']]['number_type'])) 
 
-									@endif
+								@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
+								<img class="mobile" id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
+
+							
+
+								@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
+								<img class="landline" id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
 								@endif
-						</th>
-						<th>
-								<small id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
+
+							@endif
+						</td>
+
+						<td>
+							<small class="create_date" id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
 							
-						</th>
-						<th>
-							
-								<small id="registrant_company_{{$key}}">{{$each['registrant_company']}}</small>
-							
-						</th>
+						</td>
+
+						<td>
+							<small class="reg_company" id="registrant_company_{{$key}}">{{$each['registrant_company']}}</small>
+						</td>
 					</tr>
 					@endforeach
 					
 				</table>
-
 				<!-- <div id="paginate">
 					
 				</div> -->
 				
-				
-
-				
 			</form>
-
-			
 
 				@foreach($leadsid_per_page as $k=>$v)
 
@@ -463,15 +438,12 @@
 
 				@endforeach
 
-			
-				
 			@endif
 			</div>
-			
-
-
 		</div>
+
 		  <button style="display: none;" class="" id="popupid_for_domainexists" data-toggle="modal" data-target="#myModal_for_reg">popup</button>
+
 			<div class="modal fade" id="myModal_for_reg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 				<div class="modal-dialog">
@@ -481,9 +453,7 @@
 						×</button>
 						<h4 class="modal-title" id="myLargeModalLabel">
 						</h4>
-						
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -498,6 +468,7 @@
 
 	<script>
 	var thisPage = "{{$page}}";
+	var URL      = "{{url('/')}}";
 
 		$('.page-link').change(function(e){
 			alert(1);
@@ -517,9 +488,7 @@
 			var lead_list  = $(this).find('.leads_list_cls').val();
 			var page = $(this).find('.page_cls').val();
 
-			//alert(page);
-
-
+			console.log(lead_list);
 			
 			$.ajax({
 				url  : '/search_paginated',
@@ -538,22 +507,51 @@
 					},
 				success : function(response)
 				{
-					//console.log(response[0]);
+
+					//console.log(response);
 					//alert(response[0]['registrant_email']);
+
+					$('.single_row').each(function(i,j){
+						$('#reg_email'+i).val('');
+						$('#domain_name_'+i).text('');
+						$('#unlocked_num_'+i).text('');
+						$('#domains_count_'+i).text('');
+						$('#domains_count_'+i).attr('href',null);
+						$('#domains_create_date_'+i).text('');
+						$('#registrant_phone_'+i).text('');
+						$('#registrant_name_'+i).text('');
+						$('#registrant_company_'+i).text('');
+						$('#registrant_country_'+i).text('');
+						$('#registrant_email_'+i).text('');
+						$('#phone_'+i).css('src','');
+						$('#row_'+i).hide();
+					});
 
 					thisPage = page;
 					setup_pages();
-					for(i=0 ; i<response.length ; i++)
+					$('#search_time').text(response.time);
+					for(i=0 ; i<response.data.length ; i++)
 					{
 						//alert(i);
-						$('#reg_email_'+i).val(response[i]['registrant_email']);
-						$('#domain_name_'+i).text(response[i]['domain_name']);
-						$('#unlocked_num_'+i).text(response[i]['unlocked_num']);
-						$('#domains_count_'+i).text(response[i]['domains_count']);
-						$('#domains_create_date_'+i).text(response[i]['domains_create_date']);
-						$('#registrant_company_'+i).text(response[i]['registrant_company']);
-						$('#registrant_country_'+i).val(response[i]['registrant_company']);
-						$('#registrant_email_'+i).val(response[i]['registrant_email']);
+						$('#row_'+i).show();
+						$('#reg_email_'+i).val(response.data[i]['registrant_email']);
+						$('#domain_name_'+i).text(response.data[i]['domain_name']);
+						$('#unlocked_num_'+i).text(response.data[i]['unlocked_num']);
+						$('#domains_count_'+i).text(response.data[i]['domains_count']);
+						$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['domains_link']);
+						$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
+						$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
+						$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
+						$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
+						$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
+						$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
+
+						if(response.data[i]['number_type'] == 'Landline')
+							$('#phone_'+i).css('src',URL+'/images/landline.png');
+						else if(response.data[i]['number_type'] == 'Cell Number')
+							$('#phone_'+i).css('src',URL+'/images/phone.png');
+						else
+							$('#phone_'+i).css('src',null);
 
 					}
 				}

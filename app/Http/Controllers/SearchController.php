@@ -499,7 +499,7 @@ public function download_csv_single_page(Request $request)
     public function search_paginated(Request $request)
     {
 
-      
+      $start = microtime(true);
       $sql = "SELECT DISTINCT l.registrant_email 
             , l.id
             , l.registrant_fname 
@@ -526,7 +526,7 @@ public function download_csv_single_page(Request $request)
         $i++; 
         
         $data[$x]['registrant_email']   = $each->registrant_email;
-        $data[$x]['name']               = $each->registrant_fname.' '.$each->registrant_lname;
+        $data[$x]['registrant_name']               = $each->registrant_fname.' '.$each->registrant_lname;
         $data[$x]['registrant_country'] = $each->registrant_country;
         $data[$x]['registrant_company'] = $each->registrant_company;
         $data[$x]['registrant_phone']   = $each->registrant_phone;
@@ -554,7 +554,7 @@ public function download_csv_single_page(Request $request)
 
 
 
-
+      $date_flag = 0;
              // domain_name , domain_ext , domains_create_date , domains_create_date2
       foreach ($request->all() as $key=>$req) 
       {
@@ -645,7 +645,8 @@ public function download_csv_single_page(Request $request)
         $data[$key]['number_type'] = $domain_list[$value['registrant_email']]['number_type'];
       }
       //dd($data);
-      return \Response::json($data);
+      $time = microtime(true) - $start;
+      return \Response::json(array('data'=>$data , 'time'=>$time));
     
     }
 
@@ -758,7 +759,7 @@ public function download_csv_single_page(Request $request)
                   }
                   else if($key == 'domain_ext')
                   {
-                      $sql .= " and ed.domain_name IN ".$domain_ext_str." ";  
+                      $sql .= " and ed.domain_ext IN ".$domain_ext_str." ";  
                   }
                   else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
                     && $date_flag == 0)
@@ -836,6 +837,23 @@ public function download_csv_single_page(Request $request)
               }
             }
 
+            if(isset($phone_type_array))
+            {
+              $phone_type_array_str = ' ';
+              foreach($phone_type_array as $k=>$v)
+              {
+                if($phone_type_array_str == ' ')
+                  $phone_type_array_str .= "'".$v."'";
+                else
+                  $phone_type_array_str .= ",'".$v."'";
+              }
+              if($phone_type_array_str != ' ')
+              {
+                $phone_type_array_str = "(".$phone_type_array_str.")";
+                $sql .= " and vp.number_type IN ".$phone_type_array_str;
+              }
+            }
+
 
             if(isset($request->sort)) 
             {
@@ -899,6 +917,7 @@ public function download_csv_single_page(Request $request)
             $leads_string = ' ';
             $data = array();
             $totalDomains = 0;
+            $lastz = 0;
 
             foreach($leads as $each)
             {
@@ -907,6 +926,7 @@ public function download_csv_single_page(Request $request)
               if($i % $request->pagination == 0)
               {
                 $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+                $lastz = $z;
                 $z++;
 
                 //dd($leadsid_per_page);
@@ -941,6 +961,11 @@ public function download_csv_single_page(Request $request)
               }
             }
             $totalPage = $z;
+
+            if($lastz != $z)
+              $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+
+            //dd($leadsid_per_page);
             
           
 
@@ -1012,7 +1037,7 @@ public function download_csv_single_page(Request $request)
                 $phone_type_array_str = ' ';
                 foreach($phone_type_array as $k=>$v)
                 {
-                  if($v == ' ')
+                  if($phone_type_array_str == ' ')
                     $phone_type_array_str .= "'".$v."'";
                   else
                     $phone_type_array_str .= ",'".$v."'";
