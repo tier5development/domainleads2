@@ -880,7 +880,7 @@ public function download_csv_single_page(Request $request)
                 }
             }
 
-            //dd($sql);
+            //echo($sql);exit();
           
             $leads = DB::select(DB::raw($sql));
             $totalLeads = sizeof($leads);
@@ -1075,7 +1075,7 @@ public function download_csv_single_page(Request $request)
         $string_leads = serialize($leads_arr);
         // exit();
         $end = microtime(true)-$start;
-        echo "time : ".$end."<br>";
+        //echo "time : ".$end."<br>";
 
             if(\Auth::user()->user_type == 2)
             {

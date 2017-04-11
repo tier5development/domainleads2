@@ -275,44 +275,35 @@
 						</div>
 			
 				
-				<input type="hidden" name="_token" value="{{csrf_token()}}">
-				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
+					<input type="hidden" name="_token" value="{{csrf_token()}}">
+					<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
 				
 				
-            <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
+		            <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
 
-            <label>DomainCount :</label> <br>
-    		<select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
+		            <label>DomainCount :</label> <br>
+		    		<select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
 
-            <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
-            <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
-            <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option>
-            <option value="3" <?php if(Input::get('gt_ls_domaincount_no')==3) { echo "selected";} ?>>Equals</option></select>
+		            <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
+		            <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
+		            <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option>
+		            <option value="3" <?php if(Input::get('gt_ls_domaincount_no')==3) { echo "selected";} ?>>Equals</option></select>
 
-            <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
+		            <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
 
-            		<label>LeadsUnlocked :</label> <br>
-            <select name="gt_ls_leadsunlocked_no" id="gt_ls_leadsunlocked_no" >
-            <option value="0" <?php if(Input::get('gt_ls_leadsunlocked_no')==0) { echo "selected";} ?>>Select</option>
-            <option value="1" <?php if(Input::get('gt_ls_leadsunlocked_no')==1) { echo "selected";} ?>>Greater than</option>
-            <option value="2" <?php if(Input::get('gt_ls_leadsunlocked_no')==2) { echo "selected";} ?>>Lesser Than</option>
-            <option value="3" <?php if(Input::get('gt_ls_leadsunlocked_no')==3) { echo "selected";} ?>>Equals</option></select>
+		            		<label>LeadsUnlocked :</label> <br>
+		            <select name="gt_ls_leadsunlocked_no" id="gt_ls_leadsunlocked_no" >
+		            <option value="0" <?php if(Input::get('gt_ls_leadsunlocked_no')==0) { echo "selected";} ?>>Select</option>
+		            <option value="1" <?php if(Input::get('gt_ls_leadsunlocked_no')==1) { echo "selected";} ?>>Greater than</option>
+		            <option value="2" <?php if(Input::get('gt_ls_leadsunlocked_no')==2) { echo "selected";} ?>>Lesser Than</option>
+		            <option value="3" <?php if(Input::get('gt_ls_leadsunlocked_no')==3) { echo "selected";} ?>>Equals</option></select>
 
-            <input type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
-          
-           <div class="btn btn-primary" id="refine_searchID">Refine Search</div>
-          </div>
-
-
-
-			
-				
-
+		            <input type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
+		          
+		           <div class="btn btn-primary" id="refine_searchID">Refine Search</div>
+		          </div>
 			</form>
-				
 			</div>
-
-
 			<br><br>
 
 
@@ -321,9 +312,6 @@
 			<div>
 			@if($record !== null)
 
-
-			
-			
 			<hr>
 			<br><br>
 			<label> </label>
@@ -332,18 +320,21 @@
 
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 					
-					<label>Total Leads :: </label>
-				 	<span>{{$totalLeads}}</span>
-				 	<br>
-				 	<label>Total Domains ::</label>
-				 	<span>{{$totalDomains}}</span>
-				 	<br>
-				 	<label>Search Time ::</label>
-				 	<span id="search_time">{{$query_time}}</span>
-				 	<br>
+				<label>Total Leads :: </label>
+			 	<span>{{$totalLeads}}</span>
+			 	<br>
+			 	<label>Total Domains ::</label>
+			 	<span>{{$totalDomains}}</span>
+			 	<br>
+			 	<label>Search Time ::</label>
+			 	<span id="search_time">{{$query_time}}</span>
+			 	<br>
 				 	
+				<div id="ajax-loader" style="display: none">
+				 	<img src="{{url('/')}}/images/ajax-loader.gif">
+				</div>
 			
-				<table class="table table-hover table-bordered domainDAta">
+				<table id="table" class="table table-hover table-bordered domainDAta">
 				<input id="exportLeads" type="submit" name="exportLeads" value="Export">
 				<input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
 				<input type="hidden" name="all_leads_to_export[]" value="{{$string_leads}}">
@@ -394,8 +385,6 @@
 								@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
 								<img class="mobile" id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
 
-							
-
 								@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
 								<img class="landline" id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
@@ -406,7 +395,6 @@
 
 						<td>
 							<small class="create_date" id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
-							
 						</td>
 
 						<td>
@@ -422,6 +410,8 @@
 				
 			</form>
 
+			<div id="page_forms">
+				<button id="previous">Previous</button>
 				@foreach($leadsid_per_page as $k=>$v)
 
 				<form class="page_form" style="width: 50px; float: left;" method="POST" action="{{Route('search_paginated')}}">
@@ -437,6 +427,8 @@
 				</form>
 
 				@endforeach
+				<button id="next">Next</button>
+			</div>
 
 			@endif
 			</div>
@@ -467,8 +459,11 @@
 
 
 	<script>
-	var thisPage = "{{$page}}";
-	var URL      = "{{url('/')}}";
+	var thisPage     = "{{$page}}";
+	var URL          = "{{url('/')}}";
+	var left_most    = 1;
+	var per_page     = parseInt($('#pagination').val());
+	var right_most   = "{{$totalLeads}}"/per_page;
 
 		$('.page-link').change(function(e){
 			alert(1);
@@ -476,6 +471,8 @@
 
 		$('.page_form').submit(function(e){
 			e.preventDefault();
+			$('#table').hide();
+			$('#ajax-loader').show();
 			//console.log($(this).val());
 
 			var reg_date = $('#registered_date').val();
@@ -487,9 +484,8 @@
 			var total_leads = "{{$totalLeads}}";
 			var lead_list  = $(this).find('.leads_list_cls').val();
 			var page = $(this).find('.page_cls').val();
-
 			console.log(lead_list);
-			
+
 			$.ajax({
 				url  : '/search_paginated',
 				type : 'post',
@@ -507,10 +503,8 @@
 					},
 				success : function(response)
 				{
-
 					//console.log(response);
 					//alert(response[0]['registrant_email']);
-
 					$('.single_row').each(function(i,j){
 						$('#reg_email'+i).val('');
 						$('#domain_name_'+i).text('');
@@ -555,6 +549,8 @@
 							$('#phone_'+i).css('src',null);
 
 					}
+					$('#table').show();
+					$('#ajax-loader').hide();
 				}
 			});
 		});
@@ -564,84 +560,65 @@
 			setup_pages();
 		});
 
+		$('#next').click(function(e){
+			thisPage += 5;
+			setup_pages();
+		});
+		$('#previous').click(function(e){
+			thisPage -= 5;
+			setup_pages();
+		});
+
 		function setup_pages()
 		{
+			$('#page_forms').hide();
 			var totalPage = "{{sizeof($leadsid_per_page)}}";
 			var pages     = [];
 			var limit = 9;
-			//console.log(thisPage);
 			l  = parseInt(thisPage) -5;
 			h  = parseInt(thisPage) +5;
+			l_most = 0;
+			r_most = 
 			
-			$('.page_form').each(function(i,j){
-
-
+			$('.page_form').each(function(i,j)
+			{
 				if(thisPage == 1)
 				{
 					if(i<10)
-					$(this).show();
+						$(this).show();
 
 					else
-					$(this).hide();
+						$(this).hide();
 				}
 				else
 				{
-					if(i>=l)
+					if(i>=l && i<=h)
 					{
-						if(i<=h)
-						{
-							$(this).show();
-							console.log('++show-- ',i,thisPage,l,h);
-							//$(this).display('show');
-						}
+						$(this).show();
+						console.log('++show-- ',i,thisPage,l,h);
 					}
 					else
 					{
-						//$(this).display('hide');
 						$(this).hide();
 						console.log('++hide-- ',i,thisPage);
 					}
 				}
 			});
+			if(thisPage <= left_most+limit)
+			{
+				$('#previous').hide();
+			}	
+			else if(thisPage >= right_most-limit)
+			{
+				$('#next').hide();
+			}
+			else
+			{
+				$('#previous').show();
+				$('#next').show();
+			}
+			$('#page_forms').show();
 		}
-
-
-			// $(function(){
-
-			//     $('#per_page').pagination({
-			//         items: 100,
-			//         itemsOnPage: 10,
-			//         cssStyle: 'light-theme'
-			//     });
-
-			// });
-
-		// 	$(function() {
-		//     $('#paginate').pagination({
-		//         items: "{{sizeof($record)}}",
-		//         itemsOnPage: $('#pagination').val(),
-		//         cssStyle: 'light-theme'
-
-		        
-		//     });
-		// });
-
-		// $('#exportLeads').click(function(e){
-		// 	e.preventDefault();
-
-		// 	var data = $('#csv_leads_form').serializeArray();
-		// 	var token = '{{csrf_token()}}';
-		// 	$.ajax({
-		// 		type : 'POST',
-		// 		url  : '/download_csv_single_page',
-		// 		data : {data : data , _token : token },
-		// 		success : function(response){
-		// 			console.log(response);
-		// 		}
-		// 	});
-
-
-		// });
 		
 	  	$(function(){
 	  		$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
@@ -665,13 +642,13 @@
 
 		$('.dropdown-menu a' ).on( 'click', function( event ) {
 
-			alert(1);
+			//alert(1);
 		   var $target = $( event.currentTarget ),
 		       val = $target.attr( 'data-value' ),
 		       $inp = $target.find( 'input' ),
 		       idx;
 
-		   if ( ( idx = options.indexOf( val ) ) > -1 ) {
+		   if (( idx = options.indexOf(val)) > -1) {
 		      options.splice( idx, 1 );
 		      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
 		   } else {
@@ -680,7 +657,6 @@
 		   }
 
 		   $( event.target ).blur();
-		      
 		   console.log( options );
 		   return false;
 
@@ -713,21 +689,6 @@
 			    var  isChecked=0;
 			     
 			    }
-			     
-			   //   $.ajax({
-	     //           type:'POST',
-	     //           url:'storechkboxvariable',
-	     //           beforeSend: function()
-						// {
-						// 	//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
-						// },
-	     //           data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
-	     //           success:function(response){
-	               	 
-	                 
-	     //           }
-      //           });
-	   
  	    });
 
 
