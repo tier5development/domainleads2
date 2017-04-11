@@ -10,6 +10,24 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/aaaa',function(){
+
+//$string = str_repeat('1234567890'.implode('',range('a','z')),48800);
+$string='';
+for($i=0;$i<10000000;$i++) $string .= $i.",";
+//dd($string);
+echo strlen($string);//1756800 bytes
+
+
+$compressed = gzdeflate($string,  9);
+$compressed = gzdeflate($compressed, 9);
+
+//dd($compressed);
+echo '<br/>'.strlen($compressed).'<br/>';//99 bytes
+
+//echo gzinflate(gzinflate($compressed));
+
+});
 Route::get('/aaa',function(){
     $v = custom_curl_errors();
     dd($v);

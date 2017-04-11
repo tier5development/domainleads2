@@ -647,79 +647,39 @@ public function download_csv_single_page(Request $request)
       //dd($data);
       $time = microtime(true) - $start;
       return \Response::json(array('data'=>$data , 'time'=>$time));
-    
     }
 
     public function search(Request $request)
     {
       ini_set('max_execution_time', 346000);
-      
       if(\Auth::check())
       {
-
         if($request->all())
         {
+            //dd($request->all());
+            $start = microtime(true);
+            
+            //initiating MY VARIABLES
+            $phone_type_array = array();
+            $domain_ext = null;
 
-          //dd($request->all());
-          $start = microtime(true);
-          
-          //initiating MY VARIABLES
-          $phone_type_array = array();
-          $domain_ext = null;
+            if($request->landline_number) array_push($phone_type_array,'Landline');
+            if($request->cell_number)     array_push($phone_type_array,'Cell Number');
+            if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
+             $domain_ext = $request->domain_ext;
 
-          if($request->landline_number)
-            array_push($phone_type_array,'Landline');
-
-          if($request->cell_number)
-            array_push($phone_type_array,'Cell Number');
-
-          if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
-            $domain_ext = $request->domain_ext;
-
-
-
-          $low_limit; $high_limit;
-
-          if(!isset($request->page))
-          {
-            $low_limit  = 0;
-            $high_limit = $request->pagination; 
-          }
-          else
-          {
-            $low_limit = ($request->page - 1)*$request->pagination;
-            $high_limit = $low_limit + $request->pagination;
-          }
-
-          $domain_ext_str = ' ';
-          if(isset($request->domain_ext))
-          {
-            foreach($request->domain_ext as $k => $v)
+            $domain_ext_str = ' ';
+            if(isset($request->domain_ext))
             {
-              if($domain_ext_str == ' ')
+              foreach($request->domain_ext as $k => $v)
               {
-                $domain_ext_str .= "'".$v."'";
-              } 
-              else
-              {
-                $domain_ext_str .= ",'".$v."'";
+                if($domain_ext_str == ' ') $domain_ext_str .= "'".$v."'";
+                else                       $domain_ext_str .= ",'".$v."'";
               }
+              $domain_ext_str = '('.$domain_ext_str.')';
             }
-            $domain_ext_str = '('.$domain_ext_str.')';
-          }
-          
-          
-          $date_flag = 0;
-
-          // echo $low_limit.' '.$high_limit;
-          // exit();
-          //dd($request->page);
-
-          if(!isset($request->page) || $request->page == null)
-          {
-
-          
-
+             
+            $date_flag = 0;
             $sql = "SELECT DISTINCT l.registrant_email 
             , l.id
             , l.registrant_fname 
@@ -770,70 +730,40 @@ public function download_csv_single_page(Request $request)
                       
                       if(isset($dates_array))
                       {
-                        if(sizeof($dates_array) == 1)
-                        {
-                          $sql .= " and di.domains_create_date = '".$dates_array[0]."' ";
-                        }
-                        else if(sizeof($dates_array) == 2)
-                        {
-                          
-                          $sql .= " and di.domains_create_date >= '".$dates_array[0]."' and di.domains_create_date <= '".$dates_array[1]."'";
-                          
-                        }
+                        if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
+                                                           .$dates_array[0]."' ";
+
+                        else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
+                                                          .$dates_array[0]."' and di.domains_create_date <= '"
+                                                          .$dates_array[1]."'";
                       }
-                      //$query->whereIn('domains_info.domains_create_date',$dates_array);
                   }
                   else if($key=='gt_ls_leadsunlocked_no')
                   {
-                      if($req == 0)
-                        $gt_ls_leadsunlocked_no='';
-                      
-                      else if($req == 1)
-                        $gt_ls_leadsunlocked_no='>';
-                      
-                      else if($req == 2)
-                        $gt_ls_leadsunlocked_no='<';
-                      else if($req == 3)
-                        $gt_ls_leadsunlocked_no='=';
+                      if($req == 0)      $gt_ls_leadsunlocked_no='';
+                      else if($req == 1) $gt_ls_leadsunlocked_no='>';
+                      else if($req == 2) $gt_ls_leadsunlocked_no='<';
+                      else if($req == 3) $gt_ls_leadsunlocked_no='=';
                   }
                   else if($key == 'leadsunlocked_no')
-                   {
-                    if($gt_ls_leadsunlocked_no == '')
-                      continue;
-                    
-                    if($req == '')
-                        $req=0;
-                     
-                    $sql .= " and l.unlocked_num ".$gt_ls_leadsunlocked_no." ".$req; 
-
-                      //$query = $query->where('unlocked_num',$gt_ls_leadsunlocked_no,$req);
-                   }
+                  {
+                      if($gt_ls_leadsunlocked_no == '') continue;
+                      if($req == '')  $req=0;
+                      $sql .= " and l.unlocked_num ".$gt_ls_leadsunlocked_no." ".$req; 
+                  }
                   else if($key=='gt_ls_domaincount_no')
                   {
-                          if($req==0)
-                            $gt_ls_domaincount_no='';
-
-                          else if($req == 1)
-                            $gt_ls_domaincount_no='>';
-                          
-                          else if($req == 2)
-                            $gt_ls_domaincount_no='<';
-                          else if($req == 3)
-                            $gt_ls_domaincount_no='=';
-                   }
+                      if($req==0)        $gt_ls_domaincount_no='';
+                      else if($req == 1) $gt_ls_domaincount_no='>';
+                      else if($req == 2) $gt_ls_domaincount_no='<';
+                      else if($req == 3) $gt_ls_domaincount_no='=';
+                  }
                   else if($key == 'domaincount_no')
-                   {
-                    if($gt_ls_domaincount_no == '')
-                      continue;
-
-                    if($req=='')
-                        $req = 0;
-                      
+                  {
+                      if($gt_ls_domaincount_no == '') continue;
+                      if($req=='') $req = 0;
                       $sql .= " and l.domains_count ".$gt_ls_domaincount_no." ".$req;
-                      //$query = $query->where('leads.domains_count',$gt_ls_leadsunlocked_no,$req);
-                   }
-
-
+                  }
               }
             }
 
@@ -842,10 +772,8 @@ public function download_csv_single_page(Request $request)
               $phone_type_array_str = ' ';
               foreach($phone_type_array as $k=>$v)
               {
-                if($phone_type_array_str == ' ')
-                  $phone_type_array_str .= "'".$v."'";
-                else
-                  $phone_type_array_str .= ",'".$v."'";
+                if($phone_type_array_str == ' ') $phone_type_array_str .= "'".$v."'";
+                else                             $phone_type_array_str .= ",'".$v."'";
               }
               if($phone_type_array_str != ' ')
               {
@@ -854,60 +782,31 @@ public function download_csv_single_page(Request $request)
               }
             }
 
-
             if(isset($request->sort)) 
             {
                 $req = $request->sort;
-                if($req == 'unlocked_asnd')
-                {
-                  $sql .= " ORDER BY l.unlocked_num ASC ";
-                  //$query->orderBy('leads.unlocked_num','asc');
-                }
-                else if($req == 'unlocked_dcnd')
-                {
-                  $sql .= " ORDER BY l.unlocked_num DESC ";
-                  //$query->orderBy('leads.unlocked_num','desc');
-                }
-                else if($req == 'domain_count_asnd')
-                {
-                  $sql .= " ORDER BY l.domains_count ASC ";
-                  //$query->orderBy('leads.domains_count','asc');
-                }
-                else if($req == 'domain_count_dcnd') 
-                {
-                  $sql .= " ORDER BY l.domains_count DESC";
-                  //$query->orderBy('leads.domains_count','desc');
-                }
+                if($req == 'unlocked_asnd')  $sql .= " ORDER BY l.unlocked_num ASC ";   
+                else if($req == 'unlocked_dcnd') $sql .= " ORDER BY l.unlocked_num DESC ";
+                else if($req == 'domain_count_asnd')  $sql .= " ORDER BY l.domains_count ASC ";
+                else if($req == 'domain_count_dcnd')  $sql .= " ORDER BY l.domains_count DESC";
             }
-
             //echo($sql);exit();
           
             $leads = DB::select(DB::raw($sql));
             $totalLeads = sizeof($leads);
-            //dd($totalLeads);
-            $page = isset($request->page) ? $request->page : 1;
-          
-            $take ;
-            $skip ;
-            $take = $request->pagination;
-            $skip = ($page-1)*$take;
+            
             $leadsid_per_page   = array(); 
-            $i=0;
-            $x=0;
-            $z=0;
+            $i=$x=$z=$totalDomains=$lastz=0;
             $leads_string = ' ';
             $data = array();
-            $totalDomains = 0;
-            $lastz = 0;
             foreach($leads as $each)
             {
               $i++;
-              if(!isset($leadsid_per_page[$z]))
+              if(!isset($leadsid_per_page[$z])) 
                 $leadsid_per_page[$z] = $each->id;
-              else
+              else                              
                 $leadsid_per_page[$z] .= ",".$each->id;
-
-
+              
               if($i % $request->pagination == 0)
               {
                 $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
@@ -919,32 +818,25 @@ public function download_csv_single_page(Request $request)
               if($i>=0 && $i<= $request->pagination)
               {
                 $data[$x]['id'] = $each->id;
-                $data[$x]['registrant_email'] = $each->registrant_email;
-                $data[$x]['name'] = $each->registrant_fname.' '.$each->registrant_lname;
+                $data[$x]['registrant_email']   = $each->registrant_email;
+                $data[$x]['name']               = $each->registrant_fname.' '.$each->registrant_lname;
                 $data[$x]['registrant_country'] = $each->registrant_country;
                 $data[$x]['registrant_company'] = $each->registrant_company;
-                $data[$x]['registrant_phone'] = $each->registrant_phone;
-                $data[$x]['unlocked_num'] = $each->unlocked_num;
-                $data[$x]['domains_count'] = $each->domains_count;
+                $data[$x]['registrant_phone']   = $each->registrant_phone;
+                $data[$x]['unlocked_num']       = $each->unlocked_num;
+                $data[$x]['domains_count']      = $each->domains_count;
                 $data[$x++]['registrant_state'] = $each->registrant_state;
-                if($leads_string == ' ')
-                {
-                   $leads_string .= "'".$each->registrant_email."'";
-                }
-                else
-                {
-                   $leads_string .= ",'".$each->registrant_email."'";
-                }
+
+                if($leads_string == ' ') $leads_string .= "'".$each->registrant_email."'";
+                else                     $leads_string .= ",'".$each->registrant_email."'";
               }
             }
             
             $totalPage = $z;
-
-            if($lastz != $z)
-              $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+            if($lastz != $z) $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
 
             $leads_string = "(".$leads_string.")";
-          }
+          
 
           //dd($leads_string);
           // going to second level table
@@ -980,17 +872,15 @@ public function download_csv_single_page(Request $request)
                         
                     if(isset($dates_array))
                     {
-                      if(sizeof($dates_array) == 1)
-                      {
-                        $sql .= " and di.domains_create_date = '".$dates_array[0]."' "; 
-                      }
-                      else if(sizeof($dates_array) == 2)
-                      {
-                        $sql .= " and di.domains_create_date >= '".$dates_array[0]."' and di.domains_create_date <= '".$dates_array[1]."'";
-                      }
+                      if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
+                                                         .$dates_array[0]."' "; 
+                      
+                      else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
+                                                              .$dates_array[0]
+                                                              ."' and di.domains_create_date <= '"
+                                                              .$dates_array[1]."'";
                     }
                   }
-
                 }
               }
               // echo $sql;
@@ -1001,10 +891,8 @@ public function download_csv_single_page(Request $request)
                 $phone_type_array_str = ' ';
                 foreach($phone_type_array as $k=>$v)
                 {
-                  if($phone_type_array_str == ' ')
-                    $phone_type_array_str .= "'".$v."'";
-                  else
-                    $phone_type_array_str .= ",'".$v."'";
+                  if($phone_type_array_str == ' ') $phone_type_array_str .= "'".$v."'";
+                  else                             $phone_type_array_str .= ",'".$v."'";
                 }
                 if($phone_type_array_str != ' ')
                 {
@@ -1012,17 +900,12 @@ public function download_csv_single_page(Request $request)
                   $sql .= " and vp.number_type IN ".$phone_type_array_str;
                 }
               }
-
               $domains = DB::select(DB::raw($sql));
 
               $domain_list = array();
-
-
               foreach($data as $k=>$v) // setting up the leads array
-              {
-                //dd($v['registrant_email']);
                 $domain_list[$v['registrant_email']]['checked'] = false;
-              }
+              
               foreach($domains as $k=>$v)
               {
                 if(!($domain_list[$v->registrant_email]['checked']))
@@ -1034,7 +917,6 @@ public function download_csv_single_page(Request $request)
                   $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
                 }
               }
-
           }
           
           //$data = new Paginator($data, $request->pagination);
@@ -1043,54 +925,45 @@ public function download_csv_single_page(Request $request)
           //dd($domain_list);
 
 
-        $leads_arr = array(); //consists only leads
-        foreach ($data as $key => $value) 
-        {
-          if(!isset($leads_arr[$value['registrant_email']]))
+          $leads_arr = array(); //consists only leads
+          foreach ($data as $key => $value) 
           {
-            $leads_arr[$value['registrant_email']] = 1;
+            if(!isset($leads_arr[$value['registrant_email']]))
+            {
+              $leads_arr[$value['registrant_email']] = 1;
+            }
+            else
+              $leads_arr[$value['registrant_email']]++;
           }
-          else
-            $leads_arr[$value['registrant_email']]++;
-        }
 
-            
-        $user_id = \Auth::user()->id;
-
-        $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+              
+          $user_id = \Auth::user()->id;
+          $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+          $users_array = array_flip($users_array);
+          $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
+          $obj_array = array_flip($obj_array);
         
+          //dd($leadsid_per_page);
+          //dd($allrecords->count());
 
-        $users_array = array_flip($users_array);
-
-        $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
-
-        $obj_array = array_flip($obj_array);
-        
-
-        
-        //dd($leadsid_per_page);
-        
-        //dd($allrecords->count());
-
-        $string_leads = serialize($leads_arr);
-        // exit();
-        $end = microtime(true)-$start;
-        //echo "time : ".$end."<br>";
+          $string_leads = serialize($leads_arr);
+          // exit();
+          $end = microtime(true)-$start;
+          //echo "time : ".$end."<br>";
 
             if(\Auth::user()->user_type == 2)
             {
-                return view('home.admin.admin_search',[
-
-                    'record'      =>$data,
-                    'page'        => 1,
-                    'leadsid_per_page' => $leadsid_per_page,
-                    'totalLeads'  =>$totalLeads,
-                    'totalDomains'=>$totalDomains,
-                    'domain_list' =>isset($domain_list) ? $domain_list : null,
-                    'leadArr'     =>$leads_arr,
-                    'string_leads'=>$string_leads,
-                    'users_array' =>$users_array,
-                    'query_time'  =>$end
+                return view('home.admin.admin_search',
+                  [ 'record'            =>$data,
+                    'page'              => 1,
+                    'leadsid_per_page'  => $leadsid_per_page,
+                    'totalLeads'        =>$totalLeads,
+                    'totalDomains'      =>$totalDomains,
+                    'domain_list'       =>isset($domain_list) ? $domain_list : null,
+                    'leadArr'           =>$leads_arr,
+                    'string_leads'      =>$string_leads,
+                    'users_array'       =>$users_array,
+                    'query_time'        =>$end
                   ]);      
             }
 
@@ -1107,7 +980,6 @@ public function download_csv_single_page(Request $request)
         }
         else
         {
-
           Session::forget('emailID_list');
           $allrecords = null;
           $leadArr = null;
@@ -1117,12 +989,7 @@ public function download_csv_single_page(Request $request)
       }
       else
       {
-
         dd('Please log in');  
-
       }
     }
-
-
-
 }

@@ -500,36 +500,33 @@ class ImportExport extends Controller
 
 
 
-                $created_at = str_replace($this->search, $this->replace, Carbon::now());
-                $updated_at = str_replace($this->search, $this->replace, Carbon::now());
-
-                $domains_count = $this->set($row[1],$row[17]); //-------------
-
-               
-                $leads            = $this->make_query(10 , 19 , $row ,$created_at,$updated_at,$domains_count);
-
-                $rg_em =  str_replace($this->search, $this->replace, $row[17]);
-                $valid_phone = $this->validate_phone_query_builder($row[18],$rg_em,$counter,$created_at,$updated_at);
-                $each_domains       = $this->make_query(1 , 1 ,   $row,$created_at,$updated_at,null);
-                $domains_info       = $this->make_query(2 , 9 ,   $row,$created_at,$updated_at,null);
+                $created_at             = str_replace($this->search, $this->replace, Carbon::now());
+                $updated_at             = str_replace($this->search, $this->replace, Carbon::now());
+                $domains_count          = $this->set($row[1],$row[17]); //-------------
+                $leads                  = $this->make_query(10 , 19 , $row ,$created_at,$updated_at
+                                                            ,$domains_count);
+                $rg_em                  = str_replace($this->search, $this->replace, $row[17]);
+                $valid_phone            = $this->validate_phone_query_builder($row[18]
+                                                            ,$rg_em,$counter,$created_at,$updated_at);
+                $each_domains           = $this->make_query(1 , 1 ,   $row,$created_at,$updated_at,null);
+                $domains_info           = $this->make_query(2 , 9 ,   $row,$created_at,$updated_at,null);
                 $domains_administrative = $this->make_query(20 , 29 , $row,$created_at,$updated_at,null);
-                $domains_technical    = $this->make_query(30 , 39 , $row,$created_at,$updated_at,null);
-                $domains_billing    = $this->make_query(40 , 49 , $row,$created_at,$updated_at,null);
-                $domains_nameserver   = $this->make_query(50 , 53 , $row,$created_at,$updated_at,null);
-                $domains_status     = $this->make_query(54 , 57 , $row,$created_at,$updated_at,null);
+                $domains_technical      = $this->make_query(30 , 39 , $row,$created_at,$updated_at,null);
+                $domains_billing        = $this->make_query(40 , 49 , $row,$created_at,$updated_at,null);
+                $domains_nameserver     = $this->make_query(50 , 53 , $row,$created_at,$updated_at,null);
+                $domains_status         = $this->make_query(54 , 57 , $row,$created_at,$updated_at,null);
                   
 
 
                 $LEADS .=     '('.$leads.')';
                 if($valid_phone != '')  $VALID_PHONE .= "(".$valid_phone.")";
-
-                $EACH_DOMAINS .= '('.$each_domains.')';
-                $DOMAINS_INFO .= '(' . $domains_info . ')';
+                $EACH_DOMAINS           .= '('.$each_domains.')';
+                $DOMAINS_INFO           .= '(' . $domains_info . ')';
                 $DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')'; 
-                $DOMIANS_TECHNICAL .= '('.$domains_technical.')';
-                $DOMIANS_BILLING .= '('.$domains_billing.')';
-                $DOMIANS_NAMESERVER .= '('.$domains_nameserver.')';
-                $DOMAINS_STATUS .= '('.$domains_status .')';
+                $DOMIANS_TECHNICAL      .= '('.$domains_technical.')';
+                $DOMIANS_BILLING        .= '('.$domains_billing.')';
+                $DOMIANS_NAMESERVER     .= '('.$domains_nameserver.')';
+                $DOMAINS_STATUS         .= '('.$domains_status .')';
 
                 if($counter%$BATCH == 0)
                 {
@@ -579,21 +576,13 @@ class ImportExport extends Controller
                   $ed = microtime(true)-$st;
                 }
                 break;
-            }
-             
+            }    
         }
-
-        
       $this->rectify_leads();
-
-
       $end = microtime(true) - $start;
       //echo('TOTAL TIME: ' . $end . " seconds");
-
       //\Log::info('TOTAL TIME: ' . $end . " seconds");
-
       return;
-     
     }
 
   public function rectify_leads()
@@ -623,21 +612,17 @@ class ImportExport extends Controller
           foreach($this->__clipboard as $key=>$val)
           {
             $query .= " WHEN '".$key."' THEN ".$val;
-
             if($reg_em != '') $reg_em .=",";
-
             $reg_em .= "'". $key ."'";
           }
           $reg_em = "(".$reg_em.")";
           $leads_head .= $query;
           $leads_head .= " END WHERE registrant_email IN ".$reg_em;
 
-          try
-          {
+          try{
             DB::statement($leads_head);
           }
-          catch(\Exception $e)
-          {
+          catch(\Exception $e){
             echo('In ..');
             dd($e);
           }
