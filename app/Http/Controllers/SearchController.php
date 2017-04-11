@@ -891,57 +891,34 @@ public function download_csv_single_page(Request $request)
             $skip ;
             $take = $request->pagination;
             $skip = ($page-1)*$take;
-
-
-
-            //calculation for pagination
-
-            
-            
             $leadsid_per_page   = array(); 
-
-            
-
-            //dd($leads);
-            
-            //pagination
-
-
-// dd('here');
-
-
             $i=0;
             $x=0;
             $z=0;
-            
             $leads_string = ' ';
             $data = array();
             $totalDomains = 0;
             $lastz = 0;
-
             foreach($leads as $each)
             {
               $i++;
-
-              if($i % $request->pagination == 0)
-              {
-                $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
-                $lastz = $z;
-                $z++;
-
-                //dd($leadsid_per_page);
-              }
-
               if(!isset($leadsid_per_page[$z]))
                 $leadsid_per_page[$z] = $each->id;
               else
                 $leadsid_per_page[$z] .= ",".$each->id;
 
 
-              $totalDomains += $each->domains_count; 
-              
-              if($i>$skip && $i<=$take)
+              if($i % $request->pagination == 0)
               {
+                $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+                $lastz = $z;
+                $z++;
+              }
+
+              $totalDomains += $each->domains_count;
+              if($i>=0 && $i<= $request->pagination)
+              {
+                $data[$x]['id'] = $each->id;
                 $data[$x]['registrant_email'] = $each->registrant_email;
                 $data[$x]['name'] = $each->registrant_fname.' '.$each->registrant_lname;
                 $data[$x]['registrant_country'] = $each->registrant_country;
@@ -960,32 +937,19 @@ public function download_csv_single_page(Request $request)
                 }
               }
             }
+            
             $totalPage = $z;
 
             if($lastz != $z)
               $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
 
-            //dd($leadsid_per_page);
-            
-          
-
-            if($leads_string == ' ')
-              $no_data = 1;
-            else
-              $no_data = 0;
-
             $leads_string = "(".$leads_string.")";
-            //dd($leads_string);
-         
-
           }
 
           //dd($leads_string);
           // going to second level table
-          if($no_data == 0)
+          if($leads_string != "( )")
           {
-
-          
               $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
               INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
               INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
@@ -1104,7 +1068,7 @@ public function download_csv_single_page(Request $request)
         
 
         
-
+        //dd($leadsid_per_page);
         
         //dd($allrecords->count());
 

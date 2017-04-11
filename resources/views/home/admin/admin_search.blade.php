@@ -545,6 +545,7 @@
 						$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
 						$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
 						$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
+						$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
 
 						if(response.data[i]['number_type'] == 'Landline')
 							$('#phone_'+i).css('src',URL+'/images/landline.png');
