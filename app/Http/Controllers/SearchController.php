@@ -16,6 +16,8 @@ use \App\LeadUser;
 use \App\User;
 use \App\obj;
 use \App\Wordpress_env;
+use \App\CSV;
+use \App\SearchMetadata;
 use DB;
 use Hash;
 use Auth;
@@ -32,6 +34,7 @@ class SearchController extends Controller
 
 
 public $phone_type_array = array();
+public $domain_ext_arr   = array();
 public $domain_ext_str   = ' ';
  
 public function downloadExcel2(Request $request)
@@ -500,27 +503,30 @@ public function download_csv_single_page(Request $request)
       }
     }
 
+    private function raw_leads($leads_str)
+    {
+      $sql = "SELECT DISTINCT l.registrant_email 
+      , l.id
+      , l.registrant_fname 
+      , l.registrant_lname 
+      , l.registrant_country 
+      , l.registrant_company 
+      , l.registrant_phone 
+      , l.registrant_state 
+      , l.domains_count 
+      , l.unlocked_num 
+      FROM leads as l
+      WHERE l.id IN ".$leads_str;
+      $leads = DB::select(DB::raw($sql));
+      return $leads;
+    }
+
     public function search_paginated(Request $request)
     {
 
       $start = microtime(true);
-      $sql = "SELECT DISTINCT l.registrant_email 
-            , l.id
-            , l.registrant_fname 
-            , l.registrant_lname 
-            , l.registrant_country 
-            , l.registrant_company 
-            , l.registrant_phone 
-            , l.registrant_state 
-            , l.domains_count 
-            , l.unlocked_num 
-            FROM leads as l
-            WHERE l.id IN ".$request->lead_list;
+      $leads = $this->raw_leads($request->lead_list);
 
-            // echo $sql;
-            // dd('--');
-
-      $leads = DB::select(DB::raw($sql));
       $i=0;
       $x=0;
       $data = array();
@@ -653,33 +659,7 @@ public function download_csv_single_page(Request $request)
       return \Response::json(array('data'=>$data , 'time'=>$time));
     }
 
-    private function setVariables(Request $request)
-    {
-      //variables
-      $this->phone_type_array = array();
-      $this->domain_ext_str = ' ';
-      
-      if($request->landline_number) 
-        array_push($this->phone_type_array,'Landline');
-      if($request->cell_number)     
-        array_push($this->phone_type_array,'Cell Number');
-      if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
-        $this->domain_ext = $request->domain_ext;
-      
-      if(isset($request->domain_ext))
-      {
-        foreach($request->domain_ext as $k => $v)
-        {
-          if($this->domain_ext_str == ' ') 
-            $this->domain_ext_str .= "'".$v."'";
-          else
-            $this->domain_ext_str .= ",'".$v."'";
-        }
-        $this->domain_ext_str = '('.$this->domain_ext_str.')';
-      }
-       
-      //$date_flag = 0;
-    }
+    
 
     private function leads_Search(Request $request)
     {
@@ -711,65 +691,65 @@ public function download_csv_single_page(Request $request)
             {
                if(!is_null($request->$key))
               {
-                  if($key == 'registrant_country')
-                  {
-                      $sql .= " and l.registrant_country='".$req."' ";
-                  }
-                  else if($key == 'registrant_state')
-                  {
-                      $sql .= " and l.registrant_state='".$req."' ";
-                  }
-                  else if($key == 'domain_name')
-                  {
-                      $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
-                  }
-                  else if($key == 'domain_ext')
-                  {
-                      $sql .= " and ed.domain_ext IN ".$domain_ext_str." ";  
-                  }
-                  else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
-                    && $date_flag == 0)
-                  {
-                      $date_flag = 1;
-                      $dates_array = generateDateRange($request->domains_create_date,
-                                      $request->domains_create_date2);
-                      
-                      if(isset($dates_array))
-                      {
-                        if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
-                                                           .$dates_array[0]."' ";
+                if($key == 'registrant_country')
+                {
+                    $sql .= " and l.registrant_country='".$req."' ";
+                }
+                else if($key == 'registrant_state')
+                {
+                    $sql .= " and l.registrant_state='".$req."' ";
+                }
+                else if($key == 'domain_name')
+                {
+                    $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
+                }
+                else if($key == 'domain_ext')
+                {
+                    $sql .= " and ed.domain_ext IN ".$domain_ext_str." ";  
+                }
+                else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+                  && $date_flag == 0)
+                {
+                    $date_flag = 1;
+                    $dates_array = generateDateRange($request->domains_create_date,
+                                    $request->domains_create_date2);
+                    
+                    if(isset($dates_array))
+                    {
+                      if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
+                                                         .$dates_array[0]."' ";
 
-                        else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
-                                                          .$dates_array[0]."' and di.domains_create_date <= '"
-                                                          .$dates_array[1]."'";
-                      }
-                  }
-                  else if($key=='gt_ls_leadsunlocked_no')
-                  {
-                      if($req == 0)      $gt_ls_leadsunlocked_no='';
-                      else if($req == 1) $gt_ls_leadsunlocked_no='>';
-                      else if($req == 2) $gt_ls_leadsunlocked_no='<';
-                      else if($req == 3) $gt_ls_leadsunlocked_no='=';
-                  }
-                  else if($key == 'leadsunlocked_no')
-                  {
-                      if($gt_ls_leadsunlocked_no == '') continue;
-                      if($req == '')  $req=0;
-                      $sql .= " and l.unlocked_num ".$gt_ls_leadsunlocked_no." ".$req; 
-                  }
-                  else if($key=='gt_ls_domaincount_no')
-                  {
-                      if($req==0)        $gt_ls_domaincount_no='';
-                      else if($req == 1) $gt_ls_domaincount_no='>';
-                      else if($req == 2) $gt_ls_domaincount_no='<';
-                      else if($req == 3) $gt_ls_domaincount_no='=';
-                  }
-                  else if($key == 'domaincount_no')
-                  {
-                      if($gt_ls_domaincount_no == '') continue;
-                      if($req=='') $req = 0;
-                      $sql .= " and l.domains_count ".$gt_ls_domaincount_no." ".$req;
-                  }
+                      else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
+                                                        .$dates_array[0]."' and di.domains_create_date <= '"
+                                                        .$dates_array[1]."'";
+                    }
+                }
+                else if($key=='gt_ls_leadsunlocked_no')
+                {
+                    if($req == 0)      $gt_ls_leadsunlocked_no='';
+                    else if($req == 1) $gt_ls_leadsunlocked_no='>';
+                    else if($req == 2) $gt_ls_leadsunlocked_no='<';
+                    else if($req == 3) $gt_ls_leadsunlocked_no='=';
+                }
+                else if($key == 'leadsunlocked_no')
+                {
+                    if($gt_ls_leadsunlocked_no == '') continue;
+                    if($req == '')  $req=0;
+                    $sql .= " and l.unlocked_num ".$gt_ls_leadsunlocked_no." ".$req; 
+                }
+                else if($key=='gt_ls_domaincount_no')
+                {
+                    if($req==0)        $gt_ls_domaincount_no='';
+                    else if($req == 1) $gt_ls_domaincount_no='>';
+                    else if($req == 2) $gt_ls_domaincount_no='<';
+                    else if($req == 3) $gt_ls_domaincount_no='=';
+                }
+                else if($key == 'domaincount_no')
+                {
+                    if($gt_ls_domaincount_no == '') continue;
+                    if($req=='') $req = 0;
+                    $sql .= " and l.domains_count ".$gt_ls_domaincount_no." ".$req;
+                }
               }
             }
             if(isset($phone_type_array))
@@ -855,6 +835,7 @@ public function download_csv_single_page(Request $request)
     private function domainsFirstPage_Search(Request $request,$leads_string)
     {
       $phone_type_array = $this->phone_type_array;
+      $domain_ext_str   = $this->domain_ext_str;
       $date_flag = 0;
 
       $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
@@ -919,6 +900,292 @@ public function download_csv_single_page(Request $request)
         return $domains;
     }
 
+    private function checkMetadata_Search(Request $request)
+    {
+      $date_flag = 0;
+      $phone_type_meta  = '('.implode(',',$this->phone_type_array).')';
+      $domain_ext_meta  = '('.implode(',',$this->domain_ext_arr).')';
+      $dates_array = array();
+      $domains_count_operator = '';
+      $leads_unlocked_operator= '';
+
+      switch($request->gt_ls_leadsunlocked_no)
+      {
+          case 0 : $gt_ls_leadsunlocked_no='';
+          case 1 : $gt_ls_leadsunlocked_no='>';
+          case 2 : $gt_ls_leadsunlocked_no='<';
+          case 3 : $gt_ls_leadsunlocked_no='=';
+          default: break;
+      }
+
+      switch ($request->gt_ls_domaincount_no) 
+      {
+          case 0 : $gt_ls_domaincount_no='';
+          case 1 : $gt_ls_domaincount_no='>';
+          case 2 : $gt_ls_domaincount_no='<';
+          case 3 : $gt_ls_domaincount_no='=';
+          default: break;
+      }
+
+
+      $sql = "SELECT id,leads from search_metadata WHERE leads != '' ";
+      foreach ($request->all() as $key => $req) 
+      {
+        if(!is_null($request->$key))
+        {
+          if($key == 'registrant_country')
+          {
+              $sql .= " and registrant_country='".$req."' ";
+          }
+          else if($key == 'registrant_state')
+          {
+              $sql .= " and registrant_state='".$req."' ";
+          }
+          else if($key == 'domain_name')
+          {
+              $sql .= " and domain_name = '".$req."'"; 
+          }
+          else if($key == 'domain_ext')
+          {   
+            if($domain_ext_meta != '()')
+            {
+              $sql .= " and domain_ext = '".$domain_ext_meta."'";  
+            }
+          }
+          else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+            && $date_flag == 0)
+          {
+              $date_flag = 1;
+              $dates_array = generateDateRange($request->domains_create_date,
+                              $request->domains_create_date2);
+              
+              if(isset($dates_array))
+              {
+                if(sizeof($dates_array) == 1) $sql .= " and domains_create_date1 = '"
+                                                   .$dates_array[0]."' ";
+
+                else if(sizeof($dates_array) == 2) $sql .= " and domains_create_date1 = '"
+                                                  .$dates_array[0]."' and domains_create_date2 = '"
+                                                  .$dates_array[1]."'";
+              }
+          }
+          else if($key=='gt_ls_leadsunlocked_no')
+          {
+              $sql .= " and leads_unlocked_operator = '".$gt_ls_leadsunlocked_no."'"; 
+          }
+          else if($key == 'leadsunlocked_no')
+          {
+              if($gt_ls_leadsunlocked_no == '') continue;
+              if($req == '')  $req=0;
+              $sql .= " and unlocked_num = ".$req; 
+          }
+          else if($key=='gt_ls_domaincount_no')
+          {
+              $sql .= " and domains_count_operator = '".$gt_ls_leadsunlocked_no."'"; 
+          }
+          else if($key == 'domaincount_no')
+          {
+              if($gt_ls_domaincount_no == '') continue;
+              if($req=='') $req = 0;
+              $sql .= " and domains_count = ".$req;
+          }
+        }
+      }
+
+      if($phone_type_meta != '()')
+      {
+        $sql .= " and number_type = '".$phone_type_meta."'"; 
+      }
+
+      if(isset($request->sort) && !is_null($request->sort))
+      {
+        $req = $request->sort;
+        $sql .= " and sortby = '".$req."'";
+
+        // if($req == 'unlocked_asnd')  $sql .= " ORDER BY unlocked_num ASC ";   
+        // else if($req == 'unlocked_dcnd') $sql .= " ORDER BY unlocked_num DESC ";
+        // else if($req == 'domain_count_asnd')  $sql .= " ORDER BY domains_count ASC ";
+        // else if($req == 'domain_count_dcnd')  $sql .= " ORDER BY domains_count DESC";
+      }
+
+      return $sql;
+      $meta_data_leads = DB::select(DB::raw($sql));
+
+      if($meta_data_leads == null)
+      {
+        $leads = $this->leads_Search($request);
+        $leads_id = '';
+        $totalLeads   = 0;
+        $totalDomains = 0;
+        foreach($leads as $key=>$val)
+        {
+          $totalLeads ++;
+          $totalDomains += $val->domains_count;
+          if($leads_id == '')
+            $leads_id .= $val->id;
+          else
+            $leads_id .= ','.$val->id;
+        }
+
+        $this->insert_metadata($this->compress($leads_id)
+                              ,$request
+                              ,$phone_type_meta
+                              ,$domain_ext_meta
+                              ,$dates_array
+                              ,$domains_count_operator
+                              ,$leads_unlocked_operator
+                              ,$totalLeads
+                              ,$totalDomains);
+
+        //update metadata
+        //$this->update_metadata($request);
+        //return leads id for 1st page
+      }
+      else
+      {
+        $last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record`'));
+        $last_query_update_time = strtotime($meta_data_leads[0]->updated_at); 
+        $last_csv_insert_time   = strtotime($meta_data_leads[0]->created);
+        if($last_query_update_time > $last_csv_insert_time)
+        {
+          $this->update_metadata_partial($meta_data_leads[0]->id);
+        }
+        else
+        {
+          $leads = $this->leads_Search($request);
+          $leads_id = '';
+          $totalLeads   = 0;
+          $totalDomains = 0;
+          foreach($leads as $key=>$val)
+          {
+            $totalLeads ++;
+            $totalDomains += $val->domains_count;
+            if($leads_id == '')
+              $leads_id .= $val->id;
+            else
+              $leads_id .= ','.$val->id;
+          }
+
+          $this->update_metadata_full($meta_data_leads[0]->id
+                              ,$totalLeads
+                              ,$totalDomains
+                              ,$this->compress($leads_id));
+        }
+
+        return $meta_data_leads[0];
+      }
+      return $meta_data_leads;
+
+    }
+
+    private function update_metadata_partial($id)
+    {
+      $meta = SearchMetadata::where('id',$id)->first();
+      $meta->search_priority++;
+
+      if($meta->save())
+        return true;
+      dd('error in update_metadata_partial');
+    }
+
+    private function update_metadata_full($id,$totalLeads,$totalDomains,$compresed_leads)
+    {
+      $meta = SearchMetadata::where('id',$id)->first();
+      $meta->search_priority++;
+      $meta->totalLeads         = $totalLeads;
+      $meta->totalLeads         = $totalDomains;
+      $meta->leads              = $compressed_leads['compressed'];
+      $meta->compression_level  = $compressed_leads['compression_level'];
+      if($meta->save())
+        return true;
+      dd('error in update_metadata_full');
+    }
+
+    private function insert_metadata($compress, Request $request,$phone_type_meta
+                                      ,$domain_ext_meta,$dates_array
+                                      ,$domains_count_operator,$leads_unlocked_operator
+                                      ,$totalLeads,$totalDomains)
+    {
+      $meta = new SearchMetadata();
+      $meta->domain_name             = $request->domain_name==null?null:$request->domain_name;
+      $meta->domain_ext              = $request->domain_ext ==null?null:$request->domain_ext;
+      $meta->registrant_country      = $request->registrant_country ==null ? null
+                                                :$request->registrant_country;
+      $meta->registrant_state        = $request->registrant_state ==null ? null
+                                                :$request->registrant_state;
+      $meta->domains_create_date1    = isset($dates_array[0])?$dates_array[0]:null;
+      $meta->domains_create_date2    = isset($dates_array[1])?$dates_array[1]:null;
+      $meta->domains_count           = $leads->domaincount_no;
+      $meta->number_type             = $phone_type_meta == '()' ? null : $phone_type_meta;
+      $meta->sortby                  = (isset($request->sort) && !is_null($request->sort)) ? 
+                                        $request->sort : null;
+      $meta->domains_count_operator  = $domains_count_operator;
+      $meta->leads_unlocked_operator = $leads_unlocked_operator;
+      $meta->unlocked_num            = $leads->leadsunlocked_no;
+      $meta->search_priority         = 1;
+      $meta->totalLeads              = $totalLeads;
+      $meta->totalDomains            = $totalDomains;
+      $meta->last_searched           = \Carbon\carbon::now();
+      $meta->compression_level       = $compress['compression_level'];
+      $meta->leads                   = $compress['compressed'];
+      if($meta->save())
+      {
+        return $meta->id;
+      }
+      dd('problem in insert metadata function');
+    }
+
+    private function compress($string)
+    {
+      $last_size = strlen($string);
+      $compressed = $string;
+      $ratio = 0;
+      while(true)
+      {
+          if($ratio > 255) break;
+          $min_size   = strlen(gzdeflate($compressed, 9));
+          if($min_size >= $last_size)  break;
+
+          $compressed = gzdeflate($compressed, 9);
+          $last_size = $min_size;
+          $ratio++;    
+      }
+
+      return array('compressed'=>$compressed
+                    ,'compression_level'=>$ratio);
+    }
+
+    private function setVariables(Request $request)
+    {
+      //variables
+      $this->phone_type_array = array();
+      $this->domain_ext_arr   = array();
+      $this->domain_ext_str   = ' ';
+      
+      if($request->landline_number) 
+        array_push($this->phone_type_array,'Landline');
+      if($request->cell_number)     
+        array_push($this->phone_type_array,'Cell Number');
+      if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
+        $this->domain_ext = $request->domain_ext;
+      
+      if(isset($request->domain_ext))
+      {
+        foreach($request->domain_ext as $k => $v)
+        {
+          array_push($this->domain_ext_arr,$v);
+
+          if($this->domain_ext_str == ' ') 
+            $this->domain_ext_str .= "'".$v."'";
+          else
+            $this->domain_ext_str .= ",'".$v."'";
+        }
+        $this->domain_ext_str = '('.$this->domain_ext_str.')';
+      }
+       
+      //$date_flag = 0;
+    }
+
     public function search(Request $request)
     {
       ini_set('max_execution_time', 346000);
@@ -931,6 +1198,12 @@ public function download_csv_single_page(Request $request)
           //initiating MY VARIABLES
           $this->setVariables($request);
           //initiate variables done
+
+          //----------check in the metadata table----------------//
+          //echo($this->checkMetadata_Search($request));
+          //exit();
+
+          //
 
           //-----------Selecting leads from search parameters------------//
           $leads = $this->leads_Search($request);

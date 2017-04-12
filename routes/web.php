@@ -11,19 +11,67 @@
 |
 */
 Route::get('/aaaa',function(){
+    $last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record` where id = 53'));
+    dd($last_csv_insert_time[0]->created);
 
-//$string = str_repeat('1234567890'.implode('',range('a','z')),48800);
-$string='';
-for($i=0;$i<10000000;$i++) $string .= $i.",";
-//dd($string);
-echo strlen($string);//1756800 bytes
+    //echo(\Carbon\carbon::now());
+
+// //$string = str_repeat('1234567890'.implode('',range('a','z')),48800);
+// $string='';
+// for($i=0;$i<10000000;$i++) $string .= $i.",";
+// //dd($string);
+// echo strlen($string).'<br/>';//1756800 bytes
 
 
-$compressed = gzdeflate($string,  9);
-$compressed = gzdeflate($compressed, 9);
+// $last_size = strlen($string);
+// $compressed = $string;
+// $ratio = 0;
+// while(true)
+// {
+//     if($ratio > 10) break;
+
+    
+//     $min_size   = strlen(gzdeflate($compressed, 9));
+    
+//     if($min_size >= $last_size) 
+//         break;
+
+//     $compressed = gzdeflate($compressed, 9);
+//     $last_size = $min_size;
+//     $ratio++;
+
+//     echo $last_size.'<br/>';
+
+    
+// }
+
+// $s = $compressed;
+// while($ratio--)
+// {
+//     $s = gzinflate($s);
+// }
+
+// dd($s);
+
+
+//$compressed = gzdeflate($string,  9);
+//$compressed = gzdeflate($compressed, 9);
+//$compressed = gzdeflate($compressed, 9);
+//$compressed = gzdeflate($compressed, 9);
+//$compressed = gzdeflate($compressed, 9);
+//$compressed = gzdeflate($compressed, 9);
+//$compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+// $compressed = gzdeflate($compressed, 9);
+
 
 //dd($compressed);
-echo '<br/>'.strlen($compressed).'<br/>';//99 bytes
+//echo '<br/>'.strlen($compressed).'<br/>';//99 bytes
 
 //echo gzinflate(gzinflate($compressed));
 
