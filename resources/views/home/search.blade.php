@@ -250,16 +250,16 @@ form{
 			<div>
 			@if($record !== null)
 
-			<span class="pull-left"> Total Leads   : {{ $record->total()}}</span>
+			<span class="pull-left"> Total Leads   : {{$totalLeads}}</span>
 			
 			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
 
 			<form class="col-md-12" style="margin-left: 10px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
 
 		         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
+		         <input type="hidden" id="leads_for_export" name="leads_for_export" value="">
 		         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
 				 <button class="btn btn-primary" id="exportID">Export</button>
-
 			</form>
 
 				<table class="table table-hover table-bordered domainDAta">
@@ -279,126 +279,118 @@ form{
 					<tr>
 
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
+							@if(isset($users_array[$each['registrant_email']]))
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
+								<input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="{{$each['id']}}">
 							@else
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each->registrant_email}}' , '{{$key}}')" name="ch_{{$key}}">
-								
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}">	
+								<input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="">
 							@endif
-
 						</th>
+
 						<th>
-                            @if(isset($chkWebsite_array[$each->registrant_email]))
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" disabled="true">Created website</button>
+						{{$each['id']}}
+                            @if(isset($chkWebsite_array[$each['registrant_email']]))
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" disabled="true">Created website</button>
 							@else
-								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$each->each_domain->first()->domain_name}}','{{$key}}','{{$each->registrant_email}}')" >Create website</button>
+								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" >Create website</button>
 							@endif
 							
-							@if(isset($users_array[$each->registrant_email]))
-								<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}"  @if(in_array($each->registrant_email, $emailID_list)) {{'checked'}}  @endif >
+							@if(isset($users_array[$each['registrant_email']]))
+								<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each['registrant_email']}}"  @if(in_array($each['registrant_email'], $emailID_list)) {{'checked'}}  @endif >
 							@else
-								
-								<small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each->registrant_email}}" <?php if(in_array($each->registrant_email, $emailID_list)){ echo "checked";} ?>>
+								<small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each['registrant_email']}}" <?php if(in_array($each['registrant_email'], $emailID_list)){ echo "checked";} ?>>
 								</small>
 								<small id="hideCSV_{{$key}}">***</small>
-
 							@endif
 						</th>
+
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<small id="domain_name_{{$key}}"><b>{{$each->each_domain->first()->domain_name}}</b></small>
+							@if(isset($users_array[$each['registrant_email']]))
+								<small><b  id="domain_name_{{$key}}">{{$domain_list[$each['registrant_email']]['domain_name']}}</b></small>
 							@else
 								<small id="domain_name_{{$key}}">***</small>
 							@endif
 							<br>
-							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each->unlocked_num}}</span></small>
+							<small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
 							<br>
-							<small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each->registrant_email)}}">{{$each->domains_count}}</a></small> 
+							<small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small> 
 							<!-- leadArr[$each->registrant_email] -->
 						</th>
+
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<small id="registrant_name_{{$key}}">{{$each->registrant_fname}} {{$each->registrant_lname}}</small>
+							@if(isset($users_array[$each['registrant_email']]))
+								<small id="registrant_name_{{$key}}">{{$each['name']}}</small>
 							@else
 								<small id="registrant_name_{{$key}}">***</small>
 							@endif
 
 						</th>
+
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<small id="registrant_email_{{$key}}">{{$each->registrant_email}}</small>
+							@if(isset($users_array[$each['registrant_email']]))
+								<small id="registrant_email_{{$key}}">{{$each['registrant_email']}}</small>
 							@else
 								<small id="registrant_email_{{$key}}">***</small>
 							@endif
 						</th>
+
 						<th>
-							@if(isset($users_array[$each->registrant_email]))	
-								<small id="registrant_phone_{{$key}}">{{$each->registrant_phone}}</small>
+							@if(isset($users_array[$each['registrant_email']]))	
+								<small id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
 
 								@if(isset($each->valid_phone)) 
 
-									@if($each->valid_phone->number_type == "Cell Number")
+									@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
 									<img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
 
 								
 
-									@elseif($each->valid_phone->number_type == "Landline")
+									@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
 									<img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
 									@endif
 
 								@endif
 
-							
-
 							@else
 								<small id="registrant_phone_{{$key}}">***</small>
-
 								@if(isset($each->valid_phone)) 
 
-									@if($each->valid_phone->number_type == "Cell Number")
+									@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
 									<img  id="phone_{{$key}}" style="width:20px; height:40px; display:none" src="{{url('/')}}/images/phone.png">
-
-								
-
-									@elseif($each->valid_phone->number_type == "Landline")
+									
+									@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
 									<img id="phone_{{$key}}" style="width:30px; height:40px; display:none" src="{{url('/')}}/images/landline.png">
 
 									@endif
-
 								@endif
-
-
 							@endif
-
 							<br>
 						</th>
+
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<small id="domains_create_date_{{$key}}">{{$each->first()->each_domain->first()->domains_info->domains_create_date}}</small>
+							@if(isset($users_array[$each['registrant_email']]))
+								<small id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
 							@else
 								<small id="domains_create_date_{{$key}}">***</small>
 							@endif
 						</th>
+
 						<th>
-							@if(isset($users_array[$each->registrant_email]))
-								<small id="registrant_company_{{$key}}">{{$each->registrant_company}}</small>
+							@if(isset($users_array[$each['registrant_email']]))
+								<small id="registrant_company_{{$key}}">{{$each['registrant_company']}}</small>
 							@else
 								<small id="registrant_company_{{$key}}">***</small>
 							@endif
 						</th>
 					</tr>
 					@endforeach
-					
 				</table>
 			@endif
 			</div>
 
-			@if($record)
-			 
-			 {{$record->appends(\Request::except('page'))->links()}}
-			 
-			@endif
+			
 
 
 		</div>
@@ -422,67 +414,88 @@ form{
 		
 </body>
 	<script>
+
+	var leads_for_export = ''; // stores id
+	$(function(){
+		$('.leads_id').each(function(i,j){
+			if(leads_for_export == '')
+				leads_for_export += $(this).val();
+			else
+				leads_for_export += ","+$(this).val();
+		});
+
+		console.log(leads_for_export);
+	});
+   	
+    var _token='{{csrf_token()}}';
+    $('.eachrow_download').click(function(event){
    
-          var _token='{{csrf_token()}}';
-	    $('.eachrow_download').click(function(event){
-       
-		  // $("#domains_for_export_id_allChecked").val(0);
-		  // $(".downloadcsv_all").prop( "checked", false);
-		   var id=$(this).attr('id');
-		   var emailID=$(this).attr('emailID');
-			    if($("#"+id).is(':checked')) {
-			    var  isChecked=1;
-			    } else {
-			    var  isChecked=0;
-			     
-			    }
-		        
-		        
-			     
-			     $.ajax({
-	               type:'POST',
-	               url:'storechkboxvariable',
-	               beforeSend: function()
-						{
-							//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
-						},
-	               data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
-	               success:function(response){
-	               	 
-	                 
-	               }
-                });
-	   
- 	    });
-		function unlock(reg_em , key)
-		{
-			var id = '{{\Auth::user()->id}}';
-			$.ajax({
-				type : 'POST',
-				url  : '/unlockleed',
-				data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
-				success :function(response)
-				{
-					console.log(response);
-					$('#domain_name_'+key).text(response.domain_name);
-					$('#registrant_email_'+key).text(response.registrant_email);
-					$('#registrant_name_'+key).text(response.registrant_name);
-					$('#registrant_phone_'+key).text(response.registrant_phone);
-					$('#registrant_company_'+key).text(response.registrant_company);
-					$('#domains_create_date_'+key).text(response.domains_create_date);
-					$('#phone_'+key).show();
-					$('#ch_'+key).prop('checked'	, true);
-					$('#ch_'+key).prop('disabled'	, true);
-					$('#unlocked_num_'+key).text(response.unlocked_num);
-					$('#showCSV_'+key).show();
-					$('#hideCSV_'+key).hide();
-				}
-			});
-		}
-	  	$(function(){
-	    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-	    	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-	  	});
+	  // $("#domains_for_export_id_allChecked").val(0);
+	  // $(".downloadcsv_all").prop( "checked", false);
+	   var id=$(this).attr('id');
+	   var emailID=$(this).attr('emailID');
+		    if($("#"+id).is(':checked')) {
+		    var  isChecked=1;
+		    } else {
+		    var  isChecked=0;
+		     
+		    }
+	        
+	        
+		     
+		     $.ajax({
+               type:'POST',
+               url:'storechkboxvariable',
+               beforeSend: function()
+					{
+						//$('#chkDomainForWebsiteID_'+key).html('<span align="center"><img src="theme/images/loading.gif">checking...</span>');
+					},
+               data:'isChecked='+isChecked+'&_token='+_token+'&emailID='+emailID,
+               success:function(response){
+               	 
+                 
+               }
+            });
+   
+	});
+
+	function unlock(reg_em , key)
+	{
+		var id = '{{\Auth::user()->id}}';
+		$.ajax({
+			type : 'POST',
+			url  : '/unlockleed',
+			data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
+			success :function(response)
+			{
+				console.log(response);
+				$('#domain_name_'+key).text(response.domain_name);
+				$('#registrant_email_'+key).text(response.registrant_email);
+				$('#registrant_name_'+key).text(response.registrant_name);
+				$('#registrant_phone_'+key).text(response.registrant_phone);
+				$('#registrant_company_'+key).text(response.registrant_company);
+				$('#domains_create_date_'+key).text(response.domains_create_date);
+				$('#leads_id_'+key).val(response.id);
+				if(leads_for_export == '')
+					leads_for_export += response.id;
+				else
+					leads_for_export += ","+response.id;
+				$('#phone_'+key).show();
+				$('#ch_'+key).prop('checked'	, true);
+				$('#ch_'+key).prop('disabled'	, true);
+				$('#unlocked_num_'+key).text(response.unlocked_num);
+				$('#showCSV_'+key).show();
+				$('#hideCSV_'+key).hide();
+
+				console.log(leads_for_export);
+			}
+		});
+	}
+
+  	$(function(){
+    	$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+    	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+  	});
   	</script>
 
 

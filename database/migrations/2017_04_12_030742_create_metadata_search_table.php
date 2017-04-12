@@ -27,7 +27,9 @@ class CreateMetadataSearchTable extends Migration
             $table->unsignedInteger('domains_count')->nullable()->index();
             $table->string('leads_unlocked_operator',1)->nullable()->index();
             $table->unsignedInteger('leads_unlocked')->nullable()->index();
-            $table->unsignedInteger('priority')->nullable()->index();
+            $table->unsignedInteger('search_priority')->nullable()->index();
+            $table->unsignedInteger('totalLeads')->nullable()->index();
+            $table->unsignedInteger('totalDomains')->nullable()->index();
             $table->dateTime('last_searched')->nullable()->index();
             $table->longText('leads')->nullable();
             $table->timestamps();

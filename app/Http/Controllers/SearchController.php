@@ -31,6 +31,9 @@ class SearchController extends Controller
 {   
 
 
+public $phone_type_array = array();
+public $domain_ext_str   = ' ';
+ 
 public function downloadExcel2(Request $request)
 {
   dd($request->all());
@@ -99,7 +102,7 @@ public function download_csv_single_page(Request $request)
 
   public function downloadExcel(Request $request)
   {
-    dd($request->all());
+    //dd($request->all());
     $type='csv'; 
       
       $user_type=Auth::user()->user_type;
@@ -434,6 +437,7 @@ public function download_csv_single_page(Request $request)
 
           $array = array();
           $array['status'] = 'success';
+          $array['id']     = $data->id;
           $array['registrant_email']    = $data->registrant_email;
           $array['registrant_name']     = $data->registrant_fname." ".$data->registrant_lname;
           $array['registrant_phone']    = $data->registrant_phone;
@@ -649,38 +653,40 @@ public function download_csv_single_page(Request $request)
       return \Response::json(array('data'=>$data , 'time'=>$time));
     }
 
-    public function search(Request $request)
+    private function setVariables(Request $request)
     {
-      ini_set('max_execution_time', 346000);
-      if(\Auth::check())
+      //variables
+      $this->phone_type_array = array();
+      $this->domain_ext_str = ' ';
+      
+      if($request->landline_number) 
+        array_push($this->phone_type_array,'Landline');
+      if($request->cell_number)     
+        array_push($this->phone_type_array,'Cell Number');
+      if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
+        $this->domain_ext = $request->domain_ext;
+      
+      if(isset($request->domain_ext))
       {
-        if($request->all())
+        foreach($request->domain_ext as $k => $v)
         {
-            //dd($request->all());
-            $start = microtime(true);
-            
-            //initiating MY VARIABLES
-            $phone_type_array = array();
-            $domain_ext = null;
+          if($this->domain_ext_str == ' ') 
+            $this->domain_ext_str .= "'".$v."'";
+          else
+            $this->domain_ext_str .= ",'".$v."'";
+        }
+        $this->domain_ext_str = '('.$this->domain_ext_str.')';
+      }
+       
+      //$date_flag = 0;
+    }
 
-            if($request->landline_number) array_push($phone_type_array,'Landline');
-            if($request->cell_number)     array_push($phone_type_array,'Cell Number');
-            if(isset($request->domain_ext) && sizeof($request->domain_ext)>0)
-             $domain_ext = $request->domain_ext;
-
-            $domain_ext_str = ' ';
-            if(isset($request->domain_ext))
-            {
-              foreach($request->domain_ext as $k => $v)
-              {
-                if($domain_ext_str == ' ') $domain_ext_str .= "'".$v."'";
-                else                       $domain_ext_str .= ",'".$v."'";
-              }
-              $domain_ext_str = '('.$domain_ext_str.')';
-            }
-             
-            $date_flag = 0;
-            $sql = "SELECT DISTINCT l.registrant_email 
+    private function leads_Search(Request $request)
+    {
+      $date_flag = 0;
+      $phone_type_array = $this->phone_type_array;
+      $domain_ext_str   = $this->domain_ext_str;
+      $sql = "SELECT DISTINCT l.registrant_email 
             , l.id
             , l.registrant_fname 
             , l.registrant_lname 
@@ -766,7 +772,6 @@ public function download_csv_single_page(Request $request)
                   }
               }
             }
-
             if(isset($phone_type_array))
             {
               $phone_type_array_str = ' ';
@@ -781,7 +786,6 @@ public function download_csv_single_page(Request $request)
                 $sql .= " and vp.number_type IN ".$phone_type_array_str;
               }
             }
-
             if(isset($request->sort)) 
             {
                 $req = $request->sort;
@@ -791,132 +795,180 @@ public function download_csv_single_page(Request $request)
                 else if($req == 'domain_count_dcnd')  $sql .= " ORDER BY l.domains_count DESC";
             }
             //echo($sql);exit();
-          
             $leads = DB::select(DB::raw($sql));
-            $totalLeads = sizeof($leads);
-            
-            $leadsid_per_page   = array(); 
-            $i=$x=$z=$totalDomains=$lastz=0;
-            $leads_string = ' ';
-            $data = array();
-            foreach($leads as $each)
-            {
-              $i++;
-              if(!isset($leadsid_per_page[$z])) 
-                $leadsid_per_page[$z] = $each->id;
-              else                              
-                $leadsid_per_page[$z] .= ",".$each->id;
+            return $leads;
+    }
+
+    private function leadsFirstPage_Search($pagination,$leads)
+    {
+        $leads_string = ' ';
+        $totalLeads = sizeof($leads);
+        $leadsid_per_page   = array(); 
+        $i=$x=$z=$totalDomains=$lastz=0;
+        $leads_string = ' ';
+        $data = array();
+        foreach($leads as $each)
+        {
+          $i++;
+          if(!isset($leadsid_per_page[$z])) 
+            $leadsid_per_page[$z] = $each->id;
+          else                              
+            $leadsid_per_page[$z] .= ",".$each->id;
+          
+          if($i % $pagination == 0)
+          {
+            $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+            $lastz = $z;
+            $z++;
+          }
+
+          $totalDomains += $each->domains_count;
+          if($i>=0 && $i<= $pagination)
+          {
+            $data[$x]['id'] = $each->id;
+            $data[$x]['registrant_email']   = $each->registrant_email;
+            $data[$x]['name']               = $each->registrant_fname.' '.$each->registrant_lname;
+            $data[$x]['registrant_country'] = $each->registrant_country;
+            $data[$x]['registrant_company'] = $each->registrant_company;
+            $data[$x]['registrant_phone']   = $each->registrant_phone;
+            $data[$x]['unlocked_num']       = $each->unlocked_num;
+            $data[$x]['domains_count']      = $each->domains_count;
+            $data[$x++]['registrant_state'] = $each->registrant_state;
+
+            if($leads_string == ' ') $leads_string .= "'".$each->registrant_email."'";
+            else                     $leads_string .= ",'".$each->registrant_email."'";
+          }
+        }
+        $totalPage = $z;
+        if($lastz != $z) $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+        $leads_string = "(".$leads_string.")";
+
+        return array('data'=>$data
+                     ,'leadsid_per_page'=>$leadsid_per_page
+                     ,'leads_string'    =>$leads_string
+                     ,'totalDomains'    =>$totalDomains
+                     ,'totalLeads'      =>$totalLeads
+                     ,'totalPage'       =>$totalPage);
+
+        //return $leads_string;
+    }
+    private function domainsFirstPage_Search(Request $request,$leads_string)
+    {
+      $phone_type_array = $this->phone_type_array;
+      $date_flag = 0;
+
+      $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
+        INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
+        INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
+        WHERE ed.registrant_email 
+        IN ".$leads_string;
+              //$flag = 0;
               
-              if($i % $request->pagination == 0)
-              {
-                $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
-                $lastz = $z;
-                $z++;
-              }
 
-              $totalDomains += $each->domains_count;
-              if($i>=0 && $i<= $request->pagination)
+        foreach ($request->all() as $key=>$req) 
+        {
+          if(!is_null($req))
+          {
+            if($key == 'domain_name')
+            {
+              $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
+            }
+            else if($key == 'domain_ext')
+            {
+              $sql .= " and ed.domain_ext IN ".$domain_ext_str." "; 
+            }
+            else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+                && $date_flag == 0)
+            {
+                  $date_flag = 1;
+                  $dates_array = generateDateRange(
+                            $request->domains_create_date,
+                            $request->domains_create_date2);
+                  
+              if(isset($dates_array))
               {
-                $data[$x]['id'] = $each->id;
-                $data[$x]['registrant_email']   = $each->registrant_email;
-                $data[$x]['name']               = $each->registrant_fname.' '.$each->registrant_lname;
-                $data[$x]['registrant_country'] = $each->registrant_country;
-                $data[$x]['registrant_company'] = $each->registrant_company;
-                $data[$x]['registrant_phone']   = $each->registrant_phone;
-                $data[$x]['unlocked_num']       = $each->unlocked_num;
-                $data[$x]['domains_count']      = $each->domains_count;
-                $data[$x++]['registrant_state'] = $each->registrant_state;
-
-                if($leads_string == ' ') $leads_string .= "'".$each->registrant_email."'";
-                else                     $leads_string .= ",'".$each->registrant_email."'";
+                if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
+                                                   .$dates_array[0]."' "; 
+                
+                else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
+                                                        .$dates_array[0]
+                                                        ."' and di.domains_create_date <= '"
+                                                        .$dates_array[1]."'";
               }
             }
-            
-            $totalPage = $z;
-            if($lastz != $z) $leadsid_per_page[$z] = "(".$leadsid_per_page[$z].")";
+          }
+        }
+        // echo $sql;
+        // dd('---');
 
-            $leads_string = "(".$leads_string.")";
+        if(isset($phone_type_array))
+        {
+          $phone_type_array_str = ' ';
+          foreach($phone_type_array as $k=>$v)
+          {
+            if($phone_type_array_str == ' ') $phone_type_array_str .= "'".$v."'";
+            else                             $phone_type_array_str .= ",'".$v."'";
+          }
+          if($phone_type_array_str != ' ')
+          {
+            $phone_type_array_str = "(".$phone_type_array_str.")";
+            $sql .= " and vp.number_type IN ".$phone_type_array_str;
+          }
+        }
+        $domains = DB::select(DB::raw($sql));
+        return $domains;
+    }
+
+    public function search(Request $request)
+    {
+      ini_set('max_execution_time', 346000);
+      if(\Auth::check())
+      {
+        if($request->all())
+        {
+
+          $start = microtime(true);
+          //initiating MY VARIABLES
+          $this->setVariables($request);
+          //initiate variables done
+
+          //-----------Selecting leads from search parameters------------//
+          $leads = $this->leads_Search($request);
+          //------------------------------------------------------------//
+
+          //--------------------------Data for single page-------------//
+          $array = $this->leadsFirstPage_Search($request->pagination , $leads);
+          $data             = $array['data'];
+          $leadsid_per_page = $array['leadsid_per_page'];
+          $leads_string     = $array['leads_string'];
+          $totalDomains     = $array['totalDomains'];
+          $totalLeads       = $array['totalLeads'];
+          $totalPage        = $array['totalPage'];
+          //----------------------------------------------------------//
           
 
           //dd($leads_string);
           // going to second level table
           if($leads_string != "( )")
           {
-              $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
-              INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
-              INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
-              WHERE ed.registrant_email 
-              IN ".$leads_string;
-              //$flag = 0;
-              $date_flag = 0;
-
-              foreach ($request->all() as $key=>$req) 
+            //------------Selecting domains for selected leads------------//
+            $domains = $this->domainsFirstPage_Search($request,$leads_string);
+            //------------------------------------------------------//
+            $domain_list = array();
+            foreach($data as $k=>$v) // setting up the leads array
+              $domain_list[$v['registrant_email']]['checked'] = false;
+            
+            foreach($domains as $k=>$v)
+            {
+              if(!($domain_list[$v->registrant_email]['checked']))
               {
-                if(!is_null($req))
-                {
-                  if($key == 'domain_name')
-                  {
-                    $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
-                  }
-                  else if($key == 'domain_ext')
-                  {
-                    $sql .= " and ed.domain_ext IN ".$domain_ext_str." "; 
-                  }
-                  else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
-                      && $date_flag == 0)
-                  {
-                        $date_flag = 1;
-                        $dates_array = generateDateRange(
-                                  $request->domains_create_date,
-                                  $request->domains_create_date2);
-                        
-                    if(isset($dates_array))
-                    {
-                      if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
-                                                         .$dates_array[0]."' "; 
-                      
-                      else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
-                                                              .$dates_array[0]
-                                                              ."' and di.domains_create_date <= '"
-                                                              .$dates_array[1]."'";
-                    }
-                  }
-                }
+                $domain_list[$v->registrant_email]['checked'] = true;
+                $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
+                $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
+                $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
+                $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
               }
-              // echo $sql;
-              // dd('---');
-
-              if(isset($phone_type_array))
-              {
-                $phone_type_array_str = ' ';
-                foreach($phone_type_array as $k=>$v)
-                {
-                  if($phone_type_array_str == ' ') $phone_type_array_str .= "'".$v."'";
-                  else                             $phone_type_array_str .= ",'".$v."'";
-                }
-                if($phone_type_array_str != ' ')
-                {
-                  $phone_type_array_str = "(".$phone_type_array_str.")";
-                  $sql .= " and vp.number_type IN ".$phone_type_array_str;
-                }
-              }
-              $domains = DB::select(DB::raw($sql));
-
-              $domain_list = array();
-              foreach($data as $k=>$v) // setting up the leads array
-                $domain_list[$v['registrant_email']]['checked'] = false;
-              
-              foreach($domains as $k=>$v)
-              {
-                if(!($domain_list[$v->registrant_email]['checked']))
-                {
-                  $domain_list[$v->registrant_email]['checked'] = true;
-                  $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
-                  $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
-                  $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
-                  $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
-                }
-              }
+            }
           }
           
           //$data = new Paginator($data, $request->pagination);
@@ -969,14 +1021,17 @@ public function download_csv_single_page(Request $request)
 
 
             return view('home.search' , 
-                  ['record' => $data, 
-                  'leadArr'=>$leads_arr , 
-                  'page'   => 1,
-                  'string_leads'=>$string_leads,
-                  'totalDomains'=>100,
-                  'users_array'=>$users_array,
-                  'obj_array'=>$obj_array,
-                  'query_time'=>$end]);
+                  ['record'       => $data, 
+                   'page'         => 1,
+                   'leadsid_per_page'  => $leadsid_per_page,
+                   'totalLeads'   =>$totalLeads,
+                   'totalDomains' =>$totalDomains,
+                   'domain_list'       =>isset($domain_list) ? $domain_list : null,
+                   'leadArr'      =>$leads_arr , 
+                   'string_leads'=>$string_leads,
+                   'users_array'=>$users_array,
+                   'obj_array'=>$obj_array,
+                   'query_time'=>$end]);
         }
         else
         {

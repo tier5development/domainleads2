@@ -410,7 +410,7 @@
 				
 			</form>
 
-			<div id="page_forms">
+			<div style="display: none;" id="page_forms">
 				<button id="previous">Previous</button>
 				@foreach($leadsid_per_page as $k=>$v)
 
