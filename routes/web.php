@@ -11,8 +11,12 @@
 |
 */
 Route::get('/aaaa',function(){
-    $last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record` where id = 53'));
-    dd($last_csv_insert_time[0]->created);
+
+    $x = DB::select(DB::raw('SELECT leads from search_metadata where id = 1'));
+    dd(gzinflate($x[0]->leads));
+
+    //$last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record` where id = 53'));
+    //dd($last_csv_insert_time[0]->created);
 
     //echo(\Carbon\carbon::now());
 

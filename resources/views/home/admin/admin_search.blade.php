@@ -412,6 +412,7 @@
 
 			<div style="display: none;" id="page_forms">
 				<button id="previous">Previous</button>
+				@if(isset($leadsid_per_page))
 				@foreach($leadsid_per_page as $k=>$v)
 
 				<form class="page_form" style="width: 50px; float: left;" method="POST" action="{{Route('search_paginated')}}">
@@ -427,6 +428,7 @@
 				</form>
 
 				@endforeach
+				@endif
 				<button id="next">Next</button>
 			</div>
 

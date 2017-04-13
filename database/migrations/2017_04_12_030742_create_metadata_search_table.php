@@ -36,9 +36,11 @@ class CreateMetadataSearchTable extends Migration
             //$table->dateTime('last_searched')->nullable()->index();
 
             $table->unsignedTinyInteger('compression_level')->nullable()->index();
-            $table->longText('leads')->nullable();
+            //$table->longText('leads')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE `search_metadata` ADD `leads` LONGBLOB NULL AFTER `updated_at`');
     }
 
     /**
