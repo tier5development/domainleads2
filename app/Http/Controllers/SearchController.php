@@ -888,6 +888,7 @@ public function download_csv_single_page(Request $request)
 
     private function checkMetadata_Search(Request $request)
     {
+      //dd($request->all());
       $date_flag = 0;
       $phone_type_meta  = '('.implode(',',$this->phone_type_array).')';
       $domain_ext_meta  = '('.implode(',',$this->domain_ext_arr).')';
@@ -914,7 +915,7 @@ public function download_csv_single_page(Request $request)
       }
 
 
-      $sql = "SELECT id,leads,compression_level,updated_at from search_metadata WHERE leads != '' ";
+      $sql = "SELECT id,leads,compression_level,`totalLeads`,`totalDomains`,updated_at from search_metadata WHERE leads != '' ";
       foreach ($request->all() as $key => $req) 
       {
         if(!is_null($request->$key))
@@ -955,25 +956,27 @@ public function download_csv_single_page(Request $request)
                                                   .$dates_array[1]."'";
               }
           }
-          else if($key=='gt_ls_leadsunlocked_no')
-          {
-              $sql .= " and leads_unlocked_operator = '".$gt_ls_leadsunlocked_no."'"; 
-          }
+          // else if($key=='gt_ls_leadsunlocked_no')
+          // {
+          //     $sql .= " and leads_unlocked_operator = '".$gt_ls_leadsunlocked_no."'"; 
+          // }
           else if($key == 'leadsunlocked_no')
           {
               if($gt_ls_leadsunlocked_no == '') continue;
+              else if($gt_ls_leadsunlocked_no != '' && is_null($req)) continue;
               if($req == '')  $req=0;
-              $sql .= " and unlocked_num = ".$req; 
+              $sql .= " and unlocked_num = ".$req." and leads_unlocked_operator = '".$gt_ls_leadsunlocked_no."'"; 
           }
-          else if($key=='gt_ls_domaincount_no')
-          {
-              $sql .= " and domains_count_operator = '".$gt_ls_leadsunlocked_no."'"; 
-          }
+          // else if($key=='gt_ls_domaincount_no')
+          // {
+          //     $sql .= " and domains_count_operator = '".$gt_ls_leadsunlocked_no."'"; 
+          // }
           else if($key == 'domaincount_no')
           {
               if($gt_ls_domaincount_no == '') continue;
+              else if($gt_ls_domaincount_no != '' && is_null($req)) continue;
               if($req=='') $req = 0;
-              $sql .= " and domains_count = ".$req;
+              $sql .= " and domains_count = ".$req." and domains_count_operator = '".$gt_ls_leadsunlocked_no."'";
           }
         }
       }
@@ -994,11 +997,12 @@ public function download_csv_single_page(Request $request)
         // else if($req == 'domain_count_dcnd')  $sql .= " ORDER BY domains_count DESC";
       }
 
-      //return $sql;
+      //echo($sql);exit();
       $meta_data_leads = DB::select(DB::raw($sql));
 
       if($meta_data_leads == null)
       {
+        //dd('--null');
         $leads = $this->leads_Search($request);
         $leads_id = '';
         $this->totalLeads   = 0;
@@ -1028,14 +1032,20 @@ public function download_csv_single_page(Request $request)
         $last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record`'));
         $last_query_update_time = strtotime($meta_data_leads[0]->updated_at); 
         $last_csv_insert_time   = strtotime($last_csv_insert_time[0]->created);
+        //dd($last_query_update_time);
         if($last_query_update_time > $last_csv_insert_time)
         {
+          //dd($last_query_update_time > $last_csv_insert_time);
           $this->update_metadata_partial($meta_data_leads[0]->id);
           $raw_leads_id = $this->uncompress($meta_data_leads[0]->leads,$meta_data_leads[0]->compression_level);
+          //dd($meta_data_leads[0]);
+          $this->totalDomains = $meta_data_leads[0]->totalDomains;
+          $this->totalLeads   = $meta_data_leads[0]->totalLeads;
           return $this->raw_leads("(".$raw_leads_id.")");
         }
         else
         {
+          //dd('in else');
           $leads = $this->leads_Search($request);
           $leads_id = '';
           $totalLeads   = 0;
