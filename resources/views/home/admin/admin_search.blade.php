@@ -493,6 +493,7 @@
 	//page_form
 	function load_new_page(page)
 	{
+		if(isNaN(page)) return false;
 		$('#table').hide();
 		$('#ajax-loader').show();
 		var reg_date = $('#registered_date').val();
@@ -512,7 +513,7 @@
 			dataType: 'json',
 			data : {_token : "{{csrf_token()}}" , 
 					meta_id             : meta_id,
-					thisPage            : page,
+					thisPage            : parseInt(page),
 					pagination          : per_page,
 					totalPage           : totalPage,
 					domain_ext          : domain_ext,
@@ -538,7 +539,7 @@
 						$('#phone_'+i).css('src','');
 						$('#row_'+i).hide();
 					});
-					thisPage = page;
+					thisPage = parseInt(page);
 					adjust();
 					$('#pg_'+thisPage).addClass('btn-info');
 					//setup_pages();
@@ -576,18 +577,18 @@
 
 	$('.pg_btn').click(function(e){
 		e.preventDefault();
-		load_new_page($(this).val());
+		load_new_page(parseInt($(this).val()));
 	});
 
 	$('#pg_next').click(function(e){
 		e.preventDefault();
-		load_new_page(thisPage+1);
+		load_new_page(parseInt(thisPage)+1);
 		adjust();
 	});
 
 	$('#pg_prev').click(function(e){
 		e.preventDefault();
-		load_new_page(thisPage-1);
+		load_new_page(parseInt(thisPage)-1);
 		adjust();
 	});
 
