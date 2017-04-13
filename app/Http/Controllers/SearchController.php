@@ -542,8 +542,8 @@ public function download_csv_single_page(Request $request)
                ,'domain_ext' =>$request->domain_ext
                ,'domains_create_date'=>$request->domains_create_date
                ,'domains_create_date2'=>$request->domains_create_date2];
-      $data         = $array['data'];
-      $domains = $this->domainsPerPage_Search($param,$request->phone_type_array,$array['leads_string']);
+      $data   = $array['data'];
+      $domains= $this->domainsPerPage_Search($param,$request->phone_type_array,$array['leads_string']);
 
 
       $domain_list = array();
@@ -695,8 +695,8 @@ public function download_csv_single_page(Request $request)
           $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
         }
       }
-      //dd($domain_list);
-      //return \Response::json($domain_list);
+      dd($domain_list);
+      return \Response::json($domain_list);
 
       $set = array();
 
@@ -851,7 +851,7 @@ public function download_csv_single_page(Request $request)
             //dd($leads[$i]);
             $data[$x]['id']                 = $leads[$i]->id;
             $data[$x]['registrant_email']   = $leads[$i]->registrant_email;
-            $data[$x]['name']               = $leads[$i]->registrant_fname.' '.$leads[$i]->registrant_lname;
+            $data[$x]['registrant_name']               = $leads[$i]->registrant_fname.' '.$leads[$i]->registrant_lname;
             $data[$x]['registrant_country'] = $leads[$i]->registrant_country;
             $data[$x]['registrant_company'] = $leads[$i]->registrant_company;
             $data[$x]['registrant_phone']   = $leads[$i]->registrant_phone;
@@ -885,7 +885,9 @@ public function download_csv_single_page(Request $request)
       $domain_ext_str   = $this->domain_ext_str;
       $date_flag = 0;
 
-      $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
+      if($leads_string != '()')
+      {
+        $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
         INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
         INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
         WHERE ed.registrant_email 
@@ -951,6 +953,9 @@ public function download_csv_single_page(Request $request)
         }
         $domains = DB::select(DB::raw($sql));
         return $domains;
+      }
+      return null;
+      
 
 
         // foreach ($request->all() as $key=>$req) 
@@ -1247,7 +1252,6 @@ public function download_csv_single_page(Request $request)
             else
               $leads_id .= ','.$val->id;
           }
-
           if($this->update_metadata_full($meta_data_leads[0]->id
                               ,$totalLeads
                               ,$totalDomains
@@ -1257,7 +1261,6 @@ public function download_csv_single_page(Request $request)
         //return $meta_data_leads[0];
       }
     }
-
     private function update_metadata_partial($id)
     {
       $meta = SearchMetadata::where('id',$id)->first();
@@ -1270,13 +1273,12 @@ public function download_csv_single_page(Request $request)
       }
       dd('error in update_metadata_partial');
     }
-
     private function update_metadata_full($id,$totalLeads,$totalDomains,$compresed_leads)
     {
       $meta = SearchMetadata::where('id',$id)->first();
       $meta->search_priority++;
       $meta->totalLeads         = $totalLeads;
-      $meta->totalLeads         = $totalDomains;
+      $meta->totalDomains       = $totalDomains;
       $meta->leads              = $compresed_leads['compressed'];
       $meta->compression_level  = $compresed_leads['compression_level'];
       if($meta->save())

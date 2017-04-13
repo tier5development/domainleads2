@@ -370,7 +370,7 @@
 						</td>
 
 						<td>
-							<small class="reg_name" id="registrant_name_{{$key}}">{{$each['name']}}</small>	
+							<small class="reg_name" id="registrant_name_{{$key}}">{{$each['registrant_name']}}</small>	
 						</td>
 
 						<td>
@@ -461,221 +461,246 @@
 	var URL          = "{{url('/')}}";
 	var left_most    = 1;
 	var per_page     = parseInt($('#pagination').val());
-	var right_most   = parseInt("{{$totalLeads}}")/per_page;
+	var right_most   = Math.ceil(parseInt("{{$totalLeads}}")/per_page);
 	var meta_id      = parseInt("{{$meta_id}}");
-		$('.page-link').change(function(e){
-			alert(1);
-		});
+	var display_limit= 5;
 
-		//page_form
+	//alert(right_most);
+		
 
-		function load_new_page(page)
+	function adjust()
+	{
+		if(thisPage == left_most)
 		{
-			$('#table').hide();
-			$('#ajax-loader').show();
-			var reg_date = $('#registered_date').val();
-			var reg_date2 = $('#registered_date2').val();
-			var domain_name = $('#domain_name').val();
-			var domain_ext = $('#domain_ext').val(); 
-			var num_type = $('#number_type').val();
-			var total_domains = "{{$totalDomains}}";
-			var total_leads = "{{$totalLeads}}";
-			var lead_list  = $(this).find('.leads_list_cls').val();
-			$('#pg_'+thisPage).removeClass('btn-info');
-			//var page = $(this).val();
-
-			$.ajax({
-				url  : URL+'/ajax_search_paginated',
-				type : 'post',
-				dataType: 'json',
-				data : {_token : "{{csrf_token()}}" , 
-						meta_id             : meta_id,
-						thisPage            : page,
-						pagination          : per_page,
-						totalPage           : totalPage,
-						domain_ext          : domain_ext,
-						domain_name         : domain_name,
-						domains_create_date : reg_date,
-						domains_create_date2: reg_date2
-					},
-					success:function(response)
-					{
-						console.log(response);
-						$('.single_row').each(function(i,j){
-							$('#reg_email'+i).val('');
-							$('#domain_name_'+i).text('');
-							$('#unlocked_num_'+i).text('');
-							$('#domains_count_'+i).text('');
-							$('#domains_count_'+i).attr('href',null);
-							$('#domains_create_date_'+i).text('');
-							$('#registrant_phone_'+i).text('');
-							$('#registrant_name_'+i).text('');
-							$('#registrant_company_'+i).text('');
-							$('#registrant_country_'+i).text('');
-							$('#registrant_email_'+i).text('');
-							$('#phone_'+i).css('src','');
-							$('#row_'+i).hide();
-						});
-						thisPage = page;
-
-						$('#pg_'+thisPage).addClass('btn-info');
-						//setup_pages();
-						pages();
-						$('#search_time').text(response.time);
-						for(i=0 ; i<response.data.length ; i++)
-						{
-							//alert(i);
-							$('#row_'+i).show();
-							$('#reg_email_'+i).val(response.data[i]['registrant_email']);
-							$('#domain_name_'+i).text(response.data[i]['domain_name']);
-							$('#unlocked_num_'+i).text(response.data[i]['unlocked_num']);
-							$('#domains_count_'+i).text(response.data[i]['domains_count']);
-							$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['domains_link']);
-							$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
-							$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
-							$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
-							$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
-							$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
-							$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
-							$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
-
-							if(response.data[i]['number_type'] == 'Landline')
-								$('#phone_'+i).css('src',URL+'/images/landline.png');
-							else if(response.data[i]['number_type'] == 'Cell Number')
-								$('#phone_'+i).css('src',URL+'/images/phone.png');
-							else
-								$('#phone_'+i).css('src',null);
-						}
-						$('#table').show();
-						$('#ajax-loader').hide();
-					}
-				});
+			$('#pg_prev').hide();
 		}
-
-		$('.pg_btn').click(function(e){
-			e.preventDefault();
-			load_new_page($(this).val());
-		});
-
-		$('#pg_next').click(function(e){
-			e.preventDefault();
-			load_new_page(thisPage+1);
-		});
-
-		$('#pg_prev').click(function(e){
-			e.preventDefault();
-			load_new_page(thisPage-1);
-		});
-
-
-		$(function(){
-			pages();
-			setup_pages();
-		});
-
-		$('#next').click(function(e){
-			thisPage += 5;
-			setup_pages();
-		});
-		$('#previous').click(function(e){
-			thisPage -= 5;
-			setup_pages();
-		});
-
-		function pages()
+		else if(thisPage == right_most)
 		{
-			//console.log('in pages');
-			console.log(thisPage);
-			low  = parseInt(thisPage) -5;
-			high = parseInt(thisPage) +5;
-			console.log(low,high);
-			if(low < 0)
-			{
-				high = high - low;
-				low  = low  - low; 
-			}
-			console.log(low,high);
-			if(high > totalPage)
-			{
-				high = high - (high - totalPage);
-				low  = low - (high - totalPage);
-			} 
-			console.log(low,high);
-			$('.pg_btn').each(function(i,j){
+			$('#pg_next').hide();
+		}
+		else
+		{
+			$('#pg_next').show();
+			$('#pg_prev').show();
+		}
+		if(totalPage < 2*display_limit)
+		{
+			$('#pg_next').hide();
+			$('#pg_prev').hide();
+		}
+	}
 
-				if(i>= low && i<=high)
+	//page_form
+	function load_new_page(page)
+	{
+		$('#table').hide();
+		$('#ajax-loader').show();
+		var reg_date = $('#registered_date').val();
+		var reg_date2 = $('#registered_date2').val();
+		var domain_name = $('#domain_name').val();
+		var domain_ext = $('#domain_ext').val(); 
+		var num_type = $('#number_type').val();
+		var total_domains = "{{$totalDomains}}";
+		var total_leads = "{{$totalLeads}}";
+		var lead_list  = $(this).find('.leads_list_cls').val();
+		$('#pg_'+thisPage).removeClass('btn-info');
+		//var page = $(this).val();
+
+		$.ajax({
+			url  : URL+'/ajax_search_paginated',
+			type : 'post',
+			dataType: 'json',
+			data : {_token : "{{csrf_token()}}" , 
+					meta_id             : meta_id,
+					thisPage            : page,
+					pagination          : per_page,
+					totalPage           : totalPage,
+					domain_ext          : domain_ext,
+					domain_name         : domain_name,
+					domains_create_date : reg_date,
+					domains_create_date2: reg_date2
+				},
+				success:function(response)
 				{
-					$('#pg_'+i).show();
-					console.log(i,'--show');
-				}
-				else
-				{
-					$('#pg_'+i).hide();
-					console.log(i,'--hide');
+					console.log(response);
+					$('.single_row').each(function(i,j){
+						$('#reg_email'+i).val('');
+						$('#domain_name_'+i).text('');
+						$('#unlocked_num_'+i).text('');
+						$('#domains_count_'+i).text('');
+						$('#domains_count_'+i).attr('href',null);
+						$('#domains_create_date_'+i).text('');
+						$('#registrant_phone_'+i).text('');
+						$('#registrant_name_'+i).text('');
+						$('#registrant_company_'+i).text('');
+						$('#registrant_country_'+i).text('');
+						$('#registrant_email_'+i).text('');
+						$('#phone_'+i).css('src','');
+						$('#row_'+i).hide();
+					});
+					thisPage = page;
+					adjust();
+					$('#pg_'+thisPage).addClass('btn-info');
+					//setup_pages();
+					pages();
+					$('#search_time').text(response.time);
+					for(i=0 ; i<response.data.length ; i++)
+					{
+						//alert(i);
+						$('#row_'+i).show();
+						$('#reg_email_'+i).val(response.data[i]['registrant_email']);
+						$('#domain_name_'+i).text(response.data[i]['domain_name']);
+						$('#unlocked_num_'+i).text(response.data[i]['unlocked_num']);
+						$('#domains_count_'+i).text(response.data[i]['domains_count']);
+						$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['domains_link']);
+						$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
+						$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
+						$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
+						$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
+						$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
+						$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
+						$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
+
+						if(response.data[i]['number_type'] == 'Landline')
+							$('#phone_'+i).css('src',URL+'/images/landline.png');
+						else if(response.data[i]['number_type'] == 'Cell Number')
+							$('#phone_'+i).css('src',URL+'/images/phone.png');
+						else
+							$('#phone_'+i).css('src',null);
+					}
+					$('#table').show();
+					$('#ajax-loader').hide();
 				}
 			});
-		}
+	}
 
-		function setup_pages()
+	$('.pg_btn').click(function(e){
+		e.preventDefault();
+		load_new_page($(this).val());
+	});
+
+	$('#pg_next').click(function(e){
+		e.preventDefault();
+		load_new_page(thisPage+1);
+		adjust();
+	});
+
+	$('#pg_prev').click(function(e){
+		e.preventDefault();
+		load_new_page(thisPage-1);
+		adjust();
+	});
+
+
+	$(function(){
+		pages();
+		setup_pages();
+	});
+
+	$('#next').click(function(e){
+		thisPage += 5;
+		setup_pages();
+	});
+	$('#previous').click(function(e){
+		thisPage -= 5;
+		setup_pages();
+	});
+
+	function pages()
+	{
+		//console.log('in pages');
+		console.log(thisPage);
+		low  = parseInt(thisPage)-display_limit;
+		high = parseInt(thisPage)+display_limit;
+		console.log(low,high);
+		if(low < 0)
 		{
-			$('#page_forms').hide();
-			var totalPage = "{{sizeof($leadsid_per_page)}}";
-			var pages     = [];
-			var limit = 9;
-			l  = parseInt(thisPage) -5;
-			h  = parseInt(thisPage) +5;
-			l_most = 0;
-			r_most = 
-			
-			$('.page_form').each(function(i,j)
-			{
-				if(thisPage == 1)
-				{
-					if(i<10)
-						$(this).show();
+			high = high - low;
+			low  = low  - low; 
+		}
+		console.log(low,high);
+		if(high > totalPage)
+		{
+			high = high - (high - totalPage);
+			low  = low - (high - totalPage);
+		} 
+		console.log(low,high);
+		$('.pg_btn').each(function(i,j){
 
-					else
-						$(this).hide();
-				}
-				else
-				{
-					if(i>=l && i<=h)
-					{
-						$(this).show();
-						console.log('++show-- ',i,thisPage,l,h);
-					}
-					else
-					{
-						$(this).hide();
-						console.log('++hide-- ',i,thisPage);
-					}
-				}
-			});
-			if(thisPage <= left_most+limit)
+			if(i>= low && i<=high)
 			{
-				$('#previous').hide();
-			}	
-			else if(thisPage >= right_most-limit)
-			{
-				$('#next').hide();
+				$('#pg_'+i).show();
+				console.log(i,'--show');
 			}
 			else
 			{
-				$('#previous').show();
-				$('#next').show();
+				$('#pg_'+i).hide();
+				console.log(i,'--hide');
 			}
-			$('#page_forms').show();
-		}
+		});
+		adjust();
+	}
+
+	function setup_pages()
+	{
+		$('#page_forms').hide();
+		var totalPage = "{{sizeof($leadsid_per_page)}}";
+		var pages     = [];
+		var limit = 9;
+		l  = parseInt(thisPage) -5;
+		h  = parseInt(thisPage) +5;
+		l_most = 0;
+		r_most = 
 		
-	  	$(function(){
-	  		$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-	    	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-	  	});
-	  	$("#refine_searchID").click(function(){
+		$('.page_form').each(function(i,j)
+		{
+			if(thisPage == 1)
+			{
+				if(i<10)
+					$(this).show();
 
-     	    $("#postSearchDataForm").submit();
+				else
+					$(this).hide();
+			}
+			else
+			{
+				if(i>=l && i<=h)
+				{
+					$(this).show();
+					console.log('++show-- ',i,thisPage,l,h);
+				}
+				else
+				{
+					$(this).hide();
+					console.log('++hide-- ',i,thisPage);
+				}
+			}
+		});
+		if(thisPage <= left_most+limit)
+		{
+			$('#previous').hide();
+		}	
+		else if(thisPage >= right_most-limit)
+		{
+			$('#next').hide();
+		}
+		else
+		{
+			$('#previous').show();
+			$('#next').show();
+		}
+		$('#page_forms').show();
+	}
+	
+  	$(function(){
+  		$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+    	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+  	});
+  	$("#refine_searchID").click(function(){
 
-        });
+ 	    $("#postSearchDataForm").submit();
+
+    });
   	</script>
 
 
