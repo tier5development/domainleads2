@@ -330,7 +330,7 @@
 			 	<span id="search_time">{{$query_time}}</span>
 			 	<br>
 				 	
-				<div id="ajax-loader" style="display: none">
+				<div id="ajax-loader" style="display: none; padding-left: 450px;">
 				 	<img src="{{url('/')}}/images/ajax-loader.gif">
 				</div>
 			
