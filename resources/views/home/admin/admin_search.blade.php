@@ -456,26 +456,23 @@
 
 
 	<script>
-	var thisPage     = "{{$page}}";
-	var totalPage    = "{{$totalPage}}";
+	var thisPage     = parseInt("{{$page}}");
+	var totalPage    = parseInt("{{$totalPage}}");
 	var URL          = "{{url('/')}}";
 	var left_most    = 1;
 	var per_page     = parseInt($('#pagination').val());
-	var right_most   = "{{$totalLeads}}"/per_page;
-	var meta_id      = "{{$meta_id}}";
+	var right_most   = parseInt("{{$totalLeads}}")/per_page;
+	var meta_id      = parseInt("{{$meta_id}}");
 		$('.page-link').change(function(e){
 			alert(1);
 		});
 
 		//page_form
-		$('.pg_btn').click(function(e){
-			e.preventDefault();
+
+		function load_new_page(page)
+		{
 			$('#table').hide();
 			$('#ajax-loader').show();
-			
-
-			//console.log($(this).val());
-
 			var reg_date = $('#registered_date').val();
 			var reg_date2 = $('#registered_date2').val();
 			var domain_name = $('#domain_name').val();
@@ -484,13 +481,9 @@
 			var total_domains = "{{$totalDomains}}";
 			var total_leads = "{{$totalLeads}}";
 			var lead_list  = $(this).find('.leads_list_cls').val();
-			//var page = $(this).find('.page_cls').val();
-
 			$('#pg_'+thisPage).removeClass('btn-info');
+			//var page = $(this).val();
 
-			var page = $(this).val();
-			//alert(page);
-			//console.log(lead_list);
 			$.ajax({
 				url  : URL+'/ajax_search_paginated',
 				type : 'post',
@@ -523,11 +516,9 @@
 							$('#phone_'+i).css('src','');
 							$('#row_'+i).hide();
 						});
-
 						thisPage = page;
 
 						$('#pg_'+thisPage).addClass('btn-info');
-
 						//setup_pages();
 						pages();
 						$('#search_time').text(response.time);
@@ -559,6 +550,21 @@
 						$('#ajax-loader').hide();
 					}
 				});
+		}
+
+		$('.pg_btn').click(function(e){
+			e.preventDefault();
+			load_new_page($(this).val());
+		});
+
+		$('#pg_next').click(function(e){
+			e.preventDefault();
+			load_new_page(thisPage+1);
+		});
+
+		$('#pg_prev').click(function(e){
+			e.preventDefault();
+			load_new_page(thisPage-1);
 		});
 
 
