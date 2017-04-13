@@ -80,6 +80,9 @@ Route::get('/aaaa',function(){
 //echo gzinflate(gzinflate($compressed));
 
 });
+
+Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated']);
+
 Route::get('/aaa',function(){
     $v = custom_curl_errors();
     dd($v);

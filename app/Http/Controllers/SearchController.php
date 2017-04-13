@@ -39,6 +39,7 @@ public $domain_ext_str   = ' ';
 public $totalLeads;
 public $totalDomains;
 public $totalPage;
+public $meta_id;
  
 public function downloadExcel2(Request $request)
 {
@@ -524,6 +525,56 @@ public function download_csv_single_page(Request $request)
       return $leads;
     }
 
+    public function ajax_search_paginated(Request $request)
+    {
+      //dd($request->all());
+      $start = microtime(true);
+      $sql    = "SELECT leads,compression_level from search_metadata 
+                where id = ".$request->meta_id;
+      $data   = DB::select(DB::raw($sql)); 
+      $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
+      $data   = null;
+
+      $leads  = $this->raw_leads("(".$leads.")");
+
+      $array  = $this->leadsPerPage_Search($request->thisPage,$request->pagination,$leads);
+      $param  = ['domain_name'=>$request->domain_name
+               ,'domain_ext' =>$request->domain_ext
+               ,'domains_create_date'=>$request->domains_create_date
+               ,'domains_create_date2'=>$request->domains_create_date2];
+      $data         = $array['data'];
+      $domains = $this->domainsPerPage_Search($param,$request->phone_type_array,$array['leads_string']);
+
+
+      $domain_list = array();
+      foreach($data as $k=>$v) // setting up the leads array
+        $domain_list[$v['registrant_email']]['checked'] = false;
+      
+      foreach($domains as $k=>$v)
+      {
+        if(!($domain_list[$v->registrant_email]['checked']))
+        {
+          $domain_list[$v->registrant_email]['checked'] = true;
+          $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
+          $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
+          $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
+          $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
+        }
+      }
+
+      foreach ($data as $key => $value) 
+      {
+        $data[$key]['domain_name'] = $domain_list[$value['registrant_email']]['domain_name'];
+        $data[$key]['domain_ext']  = $domain_list[$value['registrant_email']]['domain_ext'];
+        $data[$key]['domains_create_date'] = $domain_list[$value['registrant_email']]['domains_create_date'];
+        $data[$key]['number_type'] = $domain_list[$value['registrant_email']]['number_type'];
+      }
+      //dd($data);
+      $time = microtime(true) - $start;
+      return \Response::json(array('data'=>$data , 'time'=>$time));
+
+    }
+
     public function search_paginated(Request $request)
     {
 
@@ -792,7 +843,7 @@ public function download_csv_single_page(Request $request)
 
         $low =($page-1)*$pagination;
         $high=$low + $pagination;
-        //dd($leads);
+        //dd($low.' '.$high);
         for($i=$low ; $i<$high ; $i++)
         {
           if(isset($leads[$i]))
@@ -813,13 +864,23 @@ public function download_csv_single_page(Request $request)
           }
         }
         $leads_string = "(".$leads_string.")";
-        $this->totalPage = (int)($totalLeads/$pagination) + ($totalLeads%$pagination) == 0 ? 0 : 1;
+        //dd($totalLeads);
+        //dd($pagination);
+        //dd(($totalLeads%$pagination) == 0 ? 0 : 1);
+        $pages    = (int)($totalLeads/$pagination) ;
+        $lastpage = ($totalLeads%$pagination) == 0 ? 0 : 1;
+        $this->totalPage =  $pages+$lastpage;
+        //dd($pages+$lastpage);
+        //dd($this->totalPage);
         return array('data'=>$data,'leads_string'=>$leads_string);
 
         //return $leads_string;
     }
-    private function domainsPerPage_Search(Request $request,$leads_string)
+    private function domainsPerPage_Search($param, $phone_type_array ,$leads_string)
     {
+      //dd($param);
+      //dd($phone_type_array);
+      //dd($leads_string);
       $phone_type_array = $this->phone_type_array;
       $domain_ext_str   = $this->domain_ext_str;
       $date_flag = 0;
@@ -830,27 +891,33 @@ public function download_csv_single_page(Request $request)
         WHERE ed.registrant_email 
         IN ".$leads_string;
               //$flag = 0;
-              
-
-        foreach ($request->all() as $key=>$req) 
+             
+        /*
+        param :
+              domain_name
+              domain_ext
+              domains_create_date
+              domains_create_date2
+        
+        phone_type_array
+        */
+        foreach ($param as $key=>$req) 
         {
           if(!is_null($req))
           {
             if($key == 'domain_name')
-            {
               $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
-            }
+            
             else if($key == 'domain_ext')
-            {
-              $sql .= " and ed.domain_ext IN ".$domain_ext_str." "; 
-            }
+              $sql .= " and ed.domain_ext IN ".$req." ";
+
             else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
                 && $date_flag == 0)
             {
                   $date_flag = 1;
                   $dates_array = generateDateRange(
-                            $request->domains_create_date,
-                            $request->domains_create_date2);
+                            $param['domains_create_date'],
+                            $param['domains_create_date2']);
                   
               if(isset($dates_array))
               {
@@ -868,7 +935,7 @@ public function download_csv_single_page(Request $request)
         // echo $sql;
         // dd('---');
 
-        if(isset($phone_type_array))
+        if(isset($phone_type_array) && !is_null($phone_type_array))
         {
           $phone_type_array_str = ' ';
           foreach($phone_type_array as $k=>$v)
@@ -884,11 +951,83 @@ public function download_csv_single_page(Request $request)
         }
         $domains = DB::select(DB::raw($sql));
         return $domains;
+
+
+        // foreach ($request->all() as $key=>$req) 
+        // {
+        //   if(!is_null($req))
+        //   {
+        //     if($key == 'domain_name')
+        //     {
+        //       $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
+        //     }
+        //     else if($key == 'domain_ext')
+        //     {
+        //       $sql .= " and ed.domain_ext IN ".$domain_ext_str." "; 
+        //     }
+        //     else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
+        //         && $date_flag == 0)
+        //     {
+        //           $date_flag = 1;
+        //           $dates_array = generateDateRange(
+        //                     $request->domains_create_date,
+        //                     $request->domains_create_date2);
+                  
+        //       if(isset($dates_array))
+        //       {
+        //         if(sizeof($dates_array) == 1) $sql .= " and di.domains_create_date = '"
+        //                                            .$dates_array[0]."' "; 
+                
+        //         else if(sizeof($dates_array) == 2) $sql .= " and di.domains_create_date >= '"
+        //                                                 .$dates_array[0]
+        //                                                 ."' and di.domains_create_date <= '"
+        //                                                 .$dates_array[1]."'";
+        //       }
+        //     }
+        //   }
+        // }
+        // // echo $sql;
+        // // dd('---');
+
+        // if(isset($phone_type_array))
+        // {
+        //   $phone_type_array_str = ' ';
+        //   foreach($phone_type_array as $k=>$v)
+        //   {
+        //     if($phone_type_array_str == ' ') $phone_type_array_str .= "'".$v."'";
+        //     else                             $phone_type_array_str .= ",'".$v."'";
+        //   }
+        //   if($phone_type_array_str != ' ')
+        //   {
+        //     $phone_type_array_str = "(".$phone_type_array_str.")";
+        //     $sql .= " and vp.number_type IN ".$phone_type_array_str;
+        //   }
+        // }
+        // $domains = DB::select(DB::raw($sql));
+        // return $domains;
+    }
+
+    private function estimated_input_fields()
+    {
+      //'cell_number','landline_number' -> condensed into phone_type
+      return ['domain_name'=>false
+              ,'registrant_country'=>false
+              ,'registrant_state'=>false
+              ,'domains_create_date'=>false
+              ,'domains_create_date2'=>false
+              ,'number_type'=>false
+              ,'pagination'=>false
+              ,'sort'=>false
+              ,'gt_ls_domaincount_no'=>false
+              ,'domaincount_no'=>false
+              ,'gt_ls_leadsunlocked_no'=>false
+              ,'leadsunlocked_no'=>false];
     }
 
     private function checkMetadata_Search(Request $request)
     {
       //dd($request->all());
+      $input = $this->estimated_input_fields();
       $date_flag = 0;
       $phone_type_meta  = '('.implode(',',$this->phone_type_array).')';
       $domain_ext_meta  = '('.implode(',',$this->domain_ext_arr).')';
@@ -898,19 +1037,19 @@ public function download_csv_single_page(Request $request)
 
       switch($request->gt_ls_leadsunlocked_no)
       {
-          case 0 : $gt_ls_leadsunlocked_no='';
-          case 1 : $gt_ls_leadsunlocked_no='>';
-          case 2 : $gt_ls_leadsunlocked_no='<';
-          case 3 : $gt_ls_leadsunlocked_no='=';
+          case 0 : $gt_ls_leadsunlocked_no=''; break;
+          case 1 : $gt_ls_leadsunlocked_no='>'; break;
+          case 2 : $gt_ls_leadsunlocked_no='<'; break;
+          case 3 : $gt_ls_leadsunlocked_no='='; break;
           default: break;
       }
 
       switch ($request->gt_ls_domaincount_no) 
       {
-          case 0 : $gt_ls_domaincount_no='';
-          case 1 : $gt_ls_domaincount_no='>';
-          case 2 : $gt_ls_domaincount_no='<';
-          case 3 : $gt_ls_domaincount_no='=';
+          case 0 : $gt_ls_domaincount_no=''; break;
+          case 1 : $gt_ls_domaincount_no='>'; break;
+          case 2 : $gt_ls_domaincount_no='<'; break;
+          case 3 : $gt_ls_domaincount_no='='; break;
           default: break;
       }
 
@@ -923,20 +1062,24 @@ public function download_csv_single_page(Request $request)
           if($key == 'registrant_country')
           {
               $sql .= " and registrant_country='".$req."' ";
+              $input[$key] = true;
           }
           else if($key == 'registrant_state')
           {
               $sql .= " and registrant_state='".$req."' ";
+              $input[$key] = true;
           }
           else if($key == 'domain_name')
           {
               $sql .= " and domain_name = '".$req."'"; 
+              $input[$key] = true;
           }
           else if($key == 'domain_ext')
           {   
             if($domain_ext_meta != '()')
             {
               $sql .= " and domain_ext = '".$domain_ext_meta."'";  
+              $input[$key] = true;
             }
           }
           else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
@@ -948,12 +1091,17 @@ public function download_csv_single_page(Request $request)
               
               if(isset($dates_array))
               {
-                if(sizeof($dates_array) == 1) $sql .= " and domains_create_date1 = '"
-                                                   .$dates_array[0]."' ";
-
-                else if(sizeof($dates_array) == 2) $sql .= " and domains_create_date1 = '"
-                                                  .$dates_array[0]."' and domains_create_date2 = '"
-                                                  .$dates_array[1]."'";
+                if(sizeof($dates_array) == 1)
+                { 
+                  $sql .= " and domains_create_date1 = '".$dates_array[0]."' ";
+                  $input['domains_create_date'] = true;
+                }
+                else if(sizeof($dates_array) == 2)
+                {
+                  $sql .= " and domains_create_date1 = '".$dates_array[0]."' and domains_create_date2 = '".$dates_array[1]."'";
+                  $input['domains_create_date'] = true;
+                  $input['domains_create_date2'] = true;
+                }
               }
           }
           // else if($key=='gt_ls_leadsunlocked_no')
@@ -966,6 +1114,8 @@ public function download_csv_single_page(Request $request)
               else if($gt_ls_leadsunlocked_no != '' && is_null($req)) continue;
               if($req == '')  $req=0;
               $sql .= " and unlocked_num = ".$req." and leads_unlocked_operator = '".$gt_ls_leadsunlocked_no."'"; 
+              $input[$key] = true;
+              $input['gt_ls_leadsunlocked_no'] = true;
           }
           // else if($key=='gt_ls_domaincount_no')
           // {
@@ -977,18 +1127,56 @@ public function download_csv_single_page(Request $request)
               else if($gt_ls_domaincount_no != '' && is_null($req)) continue;
               if($req=='') $req = 0;
               $sql .= " and domains_count = ".$req." and domains_count_operator = '".$gt_ls_leadsunlocked_no."'";
+              $input[$key] = true;
+              $input['gt_ls_domaincount_no'] = true;
           }
         }
       }
 
       if($phone_type_meta != '()')
       {
+        $input['number_type'] = true;
         $sql .= " and number_type = '".$phone_type_meta."'"; 
       }
 
       if(isset($request->sort) && !is_null($request->sort))
       {
+        $input['sort'] = true;
         $req = $request->sort;
+
+        foreach ($input as $key=>$value) 
+        {
+          if(!$value)
+          {
+            switch($key)
+            {
+              case 'domain_name': $sql .= " and domain_name IS NULL";
+                    break;     
+              case 'registrant_country': $sql .= " and registrant_country IS NULL";
+                    break;
+              case 'registrant_state' : $sql .= " and registrant_state IS NULL";
+                    break;
+              case 'domains_create_date' : 
+                    if(!$input['domains_create_date2'])
+                    $sql .= " and domains_create_date1 IS NULL and domains_create_date2 IS NULL";
+                    else
+                    $sql .= " and domains_create_date1 IS NULL";
+                    break;
+              case 'number_type' : $sql .=" and number_type IS NULL";
+                    break;
+              case 'gt_ls_domaincount_no' : $sql .= " and domains_count_operator IS NULL";
+                    break;
+              case 'domaincount_no' : $sql .= " and domains_count IS NULL";
+                    break;
+              case 'gt_ls_leadsunlocked_no' : $sql .=" and leads_unlocked_operator IS NULL";
+                    break;
+              case 'leadsunlocked_no' : $sql .= " and unlocked_num IS NULL";
+                    break;
+              default: break;
+            }
+          }
+        }
+
         $sql .= " and sortby = '".$req."'";
 
         // if($req == 'unlocked_asnd')  $sql .= " ORDER BY unlocked_num ASC ";   
@@ -998,6 +1186,7 @@ public function download_csv_single_page(Request $request)
       }
 
       //echo($sql);exit();
+
       $meta_data_leads = DB::select(DB::raw($sql));
 
       if($meta_data_leads == null)
@@ -1035,10 +1224,9 @@ public function download_csv_single_page(Request $request)
         //dd($last_query_update_time);
         if($last_query_update_time > $last_csv_insert_time)
         {
-          //dd($last_query_update_time > $last_csv_insert_time);
           $this->update_metadata_partial($meta_data_leads[0]->id);
-          $raw_leads_id = $this->uncompress($meta_data_leads[0]->leads,$meta_data_leads[0]->compression_level);
-          //dd($meta_data_leads[0]);
+          $raw_leads_id = $this->uncompress($meta_data_leads[0]->leads
+                                  ,$meta_data_leads[0]->compression_level);
           $this->totalDomains = $meta_data_leads[0]->totalDomains;
           $this->totalLeads   = $meta_data_leads[0]->totalLeads;
           return $this->raw_leads("(".$raw_leads_id.")");
@@ -1076,7 +1264,10 @@ public function download_csv_single_page(Request $request)
       $meta->search_priority++;
 
       if($meta->save())
+      {
+        $this->meta_id = $meta->id;
         return true;
+      }
       dd('error in update_metadata_partial');
     }
 
@@ -1086,12 +1277,16 @@ public function download_csv_single_page(Request $request)
       $meta->search_priority++;
       $meta->totalLeads         = $totalLeads;
       $meta->totalLeads         = $totalDomains;
-      $meta->leads              = $compressed_leads['compressed'];
-      $meta->compression_level  = $compressed_leads['compression_level'];
+      $meta->leads              = $compresed_leads['compressed'];
+      $meta->compression_level  = $compresed_leads['compression_level'];
       if($meta->save())
+      {
+        $this->meta_id = $meta->id;
         return true;
+      }
       dd('error in update_metadata_full');
     }
+    //https://t5ilmpnba:4on9sq6ae8lMRVHCZxp2@www.whoxy.com/newly-registered-domains/download.php?file=2017-03-19_proxies.zip
 
     private function insert_metadata($compress,Request $request,$phone_type_meta
                                       ,$domain_ext_meta,$dates_array
@@ -1110,8 +1305,10 @@ public function download_csv_single_page(Request $request)
       $meta->number_type             = $phone_type_meta == '()' ? null : $phone_type_meta;
       $meta->sortby                  = (isset($request->sort) && !is_null($request->sort)) ? 
                                         $request->sort : null;
-      $meta->domains_count_operator  = $domains_count_operator;
-      $meta->leads_unlocked_operator = $leads_unlocked_operator;
+      $meta->domains_count_operator  = $domains_count_operator == null?null
+                                          :$domains_count_operator;
+      $meta->leads_unlocked_operator = $leads_unlocked_operator == null?null
+                                          :$leads_unlocked_operator;
       $meta->unlocked_num            = $request->leadsunlocked_no == null ? null : $request->leadsunlocked_no;
       $meta->search_priority         = 1;
       $meta->totalLeads              = $this->totalLeads;
@@ -1119,8 +1316,11 @@ public function download_csv_single_page(Request $request)
       $meta->compression_level       = $compress['compression_level'];
       $meta->leads                   = $compress['compressed'];
       
-      if($meta->save()) 
+      if($meta->save())
+      {
+        $this->meta_id = $meta->id; 
         return true;
+      }
       dd('problem in insert metadata function');
     }
 
@@ -1150,7 +1350,6 @@ public function download_csv_single_page(Request $request)
       while($compression_level--) $leads = gzinflate($leads);
       return $leads;
     }
-
     private function setVariables(Request $request)
     {
       //variables
@@ -1222,7 +1421,16 @@ public function download_csv_single_page(Request $request)
           if($leads_string != "()")
           {
             //------------Selecting domains for selected leads------------//
-            $domains = $this->domainsPerPage_Search($request,$leads_string);
+
+            $param = ['domain_name'=>$request->domain_name
+                     ,'domain_ext' =>$request->domain_ext
+                     ,'domains_create_date'=>$request->domains_create_date
+                     ,'domains_create_date2'=>$request->domains_create_date2];
+            $phone_type_array = $this->phone_type_array;
+            $domains = $this->domainsPerPage_Search($param,$this->phone_type_array,$leads_string);
+
+            //$domains = $this->domainsPerPage_Search($request,$leads_string);
+            
             //------------------------------------------------------//
             $domain_list = array();
             foreach($data as $k=>$v) // setting up the leads array
@@ -1275,19 +1483,20 @@ public function download_csv_single_page(Request $request)
 
             if(\Auth::user()->user_type == 2)
             {
-                return view('home.admin.admin_search',
-                  [ 'record'            =>$data,
-                    'page'              => 1,
-                    'leadsid_per_page'  => isset($leadsid_per_page) ? $leadsid_per_page : null,
-                    'totalLeads'        =>$this->totalLeads,
-                    'totalDomains'      =>$this->totalDomains,
-                    'totalPage'         =>$this->totalPage,
-                    'domain_list'       =>isset($domain_list) ? $domain_list : null,
-                    'leadArr'           =>$leads_arr,
-                    'string_leads'      =>$string_leads,
-                    'users_array'       =>$users_array,
-                    'query_time'        =>$end
-                  ]);      
+              return view('home.admin.admin_search',
+                [ 'record'            =>$data,
+                  'page'              => 1,
+                  'meta_id'           => $this->meta_id,
+                  'leadsid_per_page'  => isset($leadsid_per_page) ? $leadsid_per_page : null,
+                  'totalLeads'        =>$this->totalLeads,
+                  'totalDomains'      =>$this->totalDomains,
+                  'totalPage'         =>$this->totalPage,
+                  'domain_list'       =>isset($domain_list) ? $domain_list : null,
+                  'leadArr'           =>$leads_arr,
+                  'string_leads'      =>$string_leads,
+                  'users_array'       =>$users_array,
+                  'query_time'        =>$end       
+                ]);      
             }
 
 

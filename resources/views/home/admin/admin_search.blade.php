@@ -410,27 +410,22 @@
 				
 			</form>
 
-			<div style="display: none;" id="page_forms">
-				<button id="previous">Previous</button>
-				@if(isset($leadsid_per_page))
-				@foreach($leadsid_per_page as $k=>$v)
 
-				<form class="page_form" style="width: 50px; float: left;" method="POST" action="{{Route('search_paginated')}}">
-
-				<input type="hidden" name="_token" value="{{csrf_token()}}">
-				<input type="hidden" name="totalDomains" value="{{$totalDomains}}">
-				<input type="hidden" name="totalLeads" value="{{$totalLeads}}">
-
-				<!-- <button id="page_{{$k}}" data-page = "{{$k+1}}" data-leads = "{{$v}}" ></button> -->
-				<input type="submit" class="page_cls" id="page_{{$k}}" name="page" value="{{$k+1}}">
-				<input type="hidden" class="leads_list_cls" id="lead_list_{{$k}}" name="lead_list" value="{{$v}}">
-
-				</form>
-
-				@endforeach
-				@endif
-				<button id="next">Next</button>
+			<div class="pg_" id="pages">
+				<button class="pg_btn" value="prev" id="pg_prev">Previous</button>
+				<?php $i=$page-1; ?>
+				@while(++$i <= $totalPage)
+					@if($i<10)
+						<button class="pg_btn @if($i==1) btn-info @endif" id="pg_{{$i}}" value="{{$i}}">{{$i}}</button>
+					@else
+						<button class="pg_btn" id="pg_{{$i}}" value="{{$i}}" style="display:none;">{{$i}}</button>
+					@endif
+				@endwhile
+				<button class="pg_btn" value="next" id="pg_next">Next</button>
 			</div>
+			<br><br><br>
+
+			
 
 			@endif
 			</div>
@@ -462,19 +457,23 @@
 
 	<script>
 	var thisPage     = "{{$page}}";
+	var totalPage    = "{{$totalPage}}";
 	var URL          = "{{url('/')}}";
 	var left_most    = 1;
 	var per_page     = parseInt($('#pagination').val());
 	var right_most   = "{{$totalLeads}}"/per_page;
-
+	var meta_id      = "{{$meta_id}}";
 		$('.page-link').change(function(e){
 			alert(1);
 		});
 
-		$('.page_form').submit(function(e){
+		//page_form
+		$('.pg_btn').click(function(e){
 			e.preventDefault();
 			$('#table').hide();
 			$('#ajax-loader').show();
+			
+
 			//console.log($(this).val());
 
 			var reg_date = $('#registered_date').val();
@@ -485,80 +484,86 @@
 			var total_domains = "{{$totalDomains}}";
 			var total_leads = "{{$totalLeads}}";
 			var lead_list  = $(this).find('.leads_list_cls').val();
-			var page = $(this).find('.page_cls').val();
-			console.log(lead_list);
+			//var page = $(this).find('.page_cls').val();
 
+			$('#pg_'+thisPage).removeClass('btn-info');
+
+			var page = $(this).val();
+			//alert(page);
+			//console.log(lead_list);
 			$.ajax({
-				url  : '/search_paginated',
+				url  : URL+'/ajax_search_paginated',
 				type : 'post',
 				dataType: 'json',
 				data : {_token : "{{csrf_token()}}" , 
-						domains_create_date  : reg_date,
-						domains_create_date2 : reg_date2, 
-						domain_name          : domain_name,
-						domain_ext           : domain_ext,
-						number_type          : num_type,
-						totalDomains         : total_domains,
-						totalLeads           : total_leads,
-						lead_list            : lead_list,
-						page                 : page
+						meta_id             : meta_id,
+						thisPage            : page,
+						pagination          : per_page,
+						totalPage           : totalPage,
+						domain_ext          : domain_ext,
+						domain_name         : domain_name,
+						domains_create_date : reg_date,
+						domains_create_date2: reg_date2
 					},
-				success : function(response)
-				{
-					//console.log(response);
-					//alert(response[0]['registrant_email']);
-					$('.single_row').each(function(i,j){
-						$('#reg_email'+i).val('');
-						$('#domain_name_'+i).text('');
-						$('#unlocked_num_'+i).text('');
-						$('#domains_count_'+i).text('');
-						$('#domains_count_'+i).attr('href',null);
-						$('#domains_create_date_'+i).text('');
-						$('#registrant_phone_'+i).text('');
-						$('#registrant_name_'+i).text('');
-						$('#registrant_company_'+i).text('');
-						$('#registrant_country_'+i).text('');
-						$('#registrant_email_'+i).text('');
-						$('#phone_'+i).css('src','');
-						$('#row_'+i).hide();
-					});
-
-					thisPage = page;
-					setup_pages();
-					$('#search_time').text(response.time);
-					for(i=0 ; i<response.data.length ; i++)
+					success:function(response)
 					{
-						//alert(i);
-						$('#row_'+i).show();
-						$('#reg_email_'+i).val(response.data[i]['registrant_email']);
-						$('#domain_name_'+i).text(response.data[i]['domain_name']);
-						$('#unlocked_num_'+i).text(response.data[i]['unlocked_num']);
-						$('#domains_count_'+i).text(response.data[i]['domains_count']);
-						$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['domains_link']);
-						$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
-						$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
-						$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
-						$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
-						$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
-						$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
-						$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
+						console.log(response);
+						$('.single_row').each(function(i,j){
+							$('#reg_email'+i).val('');
+							$('#domain_name_'+i).text('');
+							$('#unlocked_num_'+i).text('');
+							$('#domains_count_'+i).text('');
+							$('#domains_count_'+i).attr('href',null);
+							$('#domains_create_date_'+i).text('');
+							$('#registrant_phone_'+i).text('');
+							$('#registrant_name_'+i).text('');
+							$('#registrant_company_'+i).text('');
+							$('#registrant_country_'+i).text('');
+							$('#registrant_email_'+i).text('');
+							$('#phone_'+i).css('src','');
+							$('#row_'+i).hide();
+						});
 
-						if(response.data[i]['number_type'] == 'Landline')
-							$('#phone_'+i).css('src',URL+'/images/landline.png');
-						else if(response.data[i]['number_type'] == 'Cell Number')
-							$('#phone_'+i).css('src',URL+'/images/phone.png');
-						else
-							$('#phone_'+i).css('src',null);
+						thisPage = page;
 
+						$('#pg_'+thisPage).addClass('btn-info');
+
+						//setup_pages();
+						pages();
+						$('#search_time').text(response.time);
+						for(i=0 ; i<response.data.length ; i++)
+						{
+							//alert(i);
+							$('#row_'+i).show();
+							$('#reg_email_'+i).val(response.data[i]['registrant_email']);
+							$('#domain_name_'+i).text(response.data[i]['domain_name']);
+							$('#unlocked_num_'+i).text(response.data[i]['unlocked_num']);
+							$('#domains_count_'+i).text(response.data[i]['domains_count']);
+							$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['domains_link']);
+							$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
+							$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
+							$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
+							$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
+							$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
+							$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
+							$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
+
+							if(response.data[i]['number_type'] == 'Landline')
+								$('#phone_'+i).css('src',URL+'/images/landline.png');
+							else if(response.data[i]['number_type'] == 'Cell Number')
+								$('#phone_'+i).css('src',URL+'/images/phone.png');
+							else
+								$('#phone_'+i).css('src',null);
+						}
+						$('#table').show();
+						$('#ajax-loader').hide();
 					}
-					$('#table').show();
-					$('#ajax-loader').hide();
-				}
-			});
+				});
 		});
 
 
 		$(function(){
+			pages();
 			setup_pages();
 		});
 
@@ -570,6 +575,40 @@
 			thisPage -= 5;
 			setup_pages();
 		});
+
+		function pages()
+		{
+			//console.log('in pages');
+			console.log(thisPage);
+			low  = parseInt(thisPage) -5;
+			high = parseInt(thisPage) +5;
+			console.log(low,high);
+			if(low < 0)
+			{
+				high = high - low;
+				low  = low  - low; 
+			}
+			console.log(low,high);
+			if(high > totalPage)
+			{
+				high = high - (high - totalPage);
+				low  = low - (high - totalPage);
+			} 
+			console.log(low,high);
+			$('.pg_btn').each(function(i,j){
+
+				if(i>= low && i<=high)
+				{
+					$('#pg_'+i).show();
+					console.log(i,'--show');
+				}
+				else
+				{
+					$('#pg_'+i).hide();
+					console.log(i,'--hide');
+				}
+			});
+		}
 
 		function setup_pages()
 		{
