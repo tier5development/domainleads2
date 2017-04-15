@@ -61,7 +61,7 @@
                             <li><a href="#portfolio">How it works</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#clients">Clients</a></li>
-                            <li><a href="{{url('/')}}/plans">Plans</a></li>
+                            <li><a href="#plans">Plans</a></li>
                             <li><a href="#price">Pricing</a></li>
                              @if (Auth::check())
                              <li> <a href="{{ URL::to('search') }}">Search Domain</a></li>

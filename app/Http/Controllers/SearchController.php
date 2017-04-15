@@ -40,6 +40,7 @@ public $totalLeads;
 public $totalDomains;
 public $totalPage;
 public $meta_id;
+public $leads_id;
  
 public function downloadExcel2(Request $request)
 {
@@ -544,32 +545,8 @@ public function download_csv_single_page(Request $request)
                ,'domains_create_date2'=>$request->domains_create_date2];
       $data   = $array['data'];
       $domains= $this->domainsPerPage_Search($param,$request->phone_type_array,$array['leads_string']);
+      $data = $this->domains_output_Search($data,$domains);
 
-
-      $domain_list = array();
-      foreach($data as $k=>$v) // setting up the leads array
-        $domain_list[$v['registrant_email']]['checked'] = false;
-      
-      //dd($domains);
-      foreach($domains as $k=>$v)
-      {
-        if(!($domain_list[$v->registrant_email]['checked']))
-        {
-          $domain_list[$v->registrant_email]['checked'] = true;
-          $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
-          $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
-          $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
-          $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
-        }
-      }
-
-      foreach ($data as $key => $value) 
-      {
-        $data[$key]['domain_name'] = $domain_list[$value['registrant_email']]['domain_name'];
-        $data[$key]['domain_ext']  = $domain_list[$value['registrant_email']]['domain_ext'];
-        $data[$key]['domains_create_date'] = $domain_list[$value['registrant_email']]['domains_create_date'];
-        $data[$key]['number_type'] = $domain_list[$value['registrant_email']]['number_type'];
-      }
       //dd($data);
       unset($domain_list);
       unset($leads);
@@ -727,6 +704,15 @@ public function download_csv_single_page(Request $request)
       $date_flag = 0;
       $phone_type_array = $this->phone_type_array;
       $domain_ext_str   = $this->domain_ext_str;
+
+      // isset($phone_type_array) && !is_null($phone_type_array)
+      //         ? $sql .= " INNER JOIN valid_phone AS vp "
+      //         : $sql .= " LEFT JOIN valid_phone AS vp ";
+
+      // (isset($phone_type_array) && !is_null($phone_type_array)
+      //         ? dd('no value')
+      //         : dd('value'));
+
       $sql = "SELECT DISTINCT l.registrant_email 
             , l.id
             , l.registrant_fname 
@@ -737,14 +723,17 @@ public function download_csv_single_page(Request $request)
             , l.registrant_state 
             , l.domains_count 
             , l.unlocked_num 
+            , vp.number_type
 
             FROM leads as l INNER JOIN each_domain AS ed 
             ON ed.registrant_email = l.registrant_email
             INNER JOIN domains_info AS di 
-            ON di.domain_name = ed.domain_name 
-            INNER JOIN valid_phone AS vp 
-            ON vp.registrant_email = l.registrant_email 
-            WHERE l.registrant_email != '' ";
+            ON di.domain_name = ed.domain_name ";
+            $sql .= isset($phone_type_array) && sizeof($phone_type_array) > 0
+              ? " INNER JOIN valid_phone AS vp "
+              : " LEFT JOIN valid_phone AS vp ";
+            $sql .="ON vp.registrant_email = l.registrant_email 
+            WHERE l.registrant_email != '' and ed.registrant_email != '' ";
 
 
             $flag = 0;
@@ -813,7 +802,7 @@ public function download_csv_single_page(Request $request)
                 }
               }
             }
-            if(isset($phone_type_array))
+            if(isset($phone_type_array) && sizeof($phone_type_array) > 0)
             {
               $phone_type_array_str = ' ';
               foreach($phone_type_array as $k=>$v)
@@ -836,7 +825,44 @@ public function download_csv_single_page(Request $request)
                 else if($req == 'domain_count_dcnd')  $sql .= " ORDER BY l.domains_count DESC";
             }
             //echo($sql);exit();
+            // trial
+            $sql = "SELECT DISTINCT l.registrant_email , l.id , l.registrant_fname , l.registrant_lname , l.registrant_country , l.registrant_company , l.registrant_phone , l.registrant_state , l.domains_count , l.unlocked_num , vp.number_type FROM leads as l INNER JOIN each_domain AS ed ON ed.registrant_email = l.registrant_email INNER JOIN domains_info AS di ON di.domain_name = ed.domain_name LEFT JOIN valid_phone AS vp ON vp.registrant_email = l.registrant_email WHERE l.registrant_email != '' and ed.registrant_email != '' and ed.domain_name LIKE '%trump%' and l.domains_count > 0 ORDER BY l.unlocked_num ASC LIMIT 500 OFFSET 100";
+            //trial
+
             $leads = DB::select(DB::raw($sql));
+            //////////////////////////////////////////////////////////////////////
+
+            // $leads_ = DB::select(DB::raw("SELECT DISTINCT registrant_email from leads"));
+            // $l_hash = array();
+            // $o_hash = array();
+            // $op = array();
+            // foreach ($leads_ as $key => $value) 
+            // {
+            //   if(!isset($l_hash[$value->registrant_email]))
+            //     $l_hash[$value->registrant_email] = 1;
+            //   else
+            //     dd($value->registrant_email);
+            // }
+            // //dd(sizeof($l_hash));
+            // //dd(sizeof($leads));
+            // $i=0;
+            // foreach ($leads as $key => $value) 
+            // {
+            //   $i++;
+            //   if(!isset($o_hash[$value->registrant_email]))
+            //     $o_hash[$value->registrant_email] = 1;
+            //   else
+            //   {
+            //      array_push($op,$value->registrant_email." +++ ".$i);
+            //      echo "<pre>";var_dump($value);
+            //   }
+            // }
+            // //exit();
+            // dd($op);
+            // dd($leads);
+            // dd($l_hash);
+
+            //////////////////////////////////////////////////////////////////////
             return $leads;
     }
 
@@ -896,8 +922,12 @@ public function download_csv_single_page(Request $request)
       if($leads_string != '()')
       {
         $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
-        INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
-        INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
+        INNER JOIN domains_info as di  
+        ON di.domain_name = ed.domain_name ";
+        isset($phone_type_array) && sizeof($phone_type_array)>0
+              ? $sql .= " INNER JOIN valid_phone AS vp "
+              : $sql .= " LEFT JOIN valid_phone AS vp ";
+        $sql .=" ON vp.registrant_email = ed.registrant_email 
         WHERE ed.registrant_email 
         IN ".$leads_string;
               //$flag = 0;
@@ -1226,25 +1256,15 @@ public function download_csv_single_page(Request $request)
       if($meta_data_leads == null)
       {
         //dd('--null');
+
         $leads = $this->leads_Search($request);
         //dd($leads);
-        $leads_id = '';
-        $this->totalLeads   = 0;
-        $this->totalDomains = 0;
-        foreach($leads as $key=>$val)
-        {
-          $this->totalLeads ++;
-          $this->totalDomains += $val->domains_count;
-          if($leads_id == '')
-            $leads_id .= $val->id;
-          else
-            $leads_id .= ','.$val->id;
-        }
+        $this->counting_leads_domains($leads);
         //dd(strlen($leads_id));
 
         if(sizeof($leads) > 0)
         {
-          if($this->insert_metadata($this->compress($leads_id)
+          if($this->insert_metadata($this->compress($this->leads_id)
                               ,$request
                               ,$phone_type_meta
                               ,$domain_ext_meta
@@ -1282,27 +1302,31 @@ public function download_csv_single_page(Request $request)
         else
         {
           //dd('in else');
-          $leads = $this->leads_Search($request);
-          $leads_id = '';
-          $totalLeads   = 0;
-          $totalDomains = 0;
-          foreach($leads as $key=>$val)
-          {
-            $totalLeads ++;
-            $totalDomains += $val->domains_count;
-            if($leads_id == '')
-              $leads_id .= $val->id;
-            else
-              $leads_id .= ','.$val->id;
-          }
+          $this->counting_leads_domains($leads);
           if($this->update_metadata_full($meta_data_leads[0]->id
                               ,$totalLeads
                               ,$totalDomains
-                              ,$this->compress($leads_id)))
+                              ,$this->compress($this->leads_id)))
           return $leads;
         }
         //return $meta_data_leads[0];
       }
+    }
+    private function counting_leads_domains($leads)
+    {
+        $this->leads_id = '';
+        $this->totalLeads   = 0;
+        $this->totalDomains = 0;
+        foreach($leads as $key=>$val)
+        {
+          $this->totalLeads ++;
+          $this->totalDomains += $val->domains_count;
+          if($this->leads_id == '')
+            $this->leads_id .= $val->id;
+          else
+            $this->leads_id .= ','.$val->id;
+        }
+        return;
     }
     private function update_metadata_partial($id)
     {
@@ -1427,6 +1451,36 @@ public function download_csv_single_page(Request $request)
       //$date_flag = 0;
     }
 
+    private function domains_output_Search($data , $domains)
+    {
+      $domain_list = array();
+      foreach($data as $k=>$v) // setting up the leads array
+        $domain_list[$v['registrant_email']]['checked'] = false;
+      
+      foreach($domains as $k=>$v)
+      {
+        if(!($domain_list[$v->registrant_email]['checked']))
+        {
+          $domain_list[$v->registrant_email]['checked']             = true;
+          $domain_list[$v->registrant_email]['domain_name']         = $v->domain_name;
+          $domain_list[$v->registrant_email]['domain_ext']          = $v->domain_ext;
+          $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
+          $domain_list[$v->registrant_email]['number_type']         = $v->number_type;
+        }
+      }
+      foreach ($data as $key => $value) 
+      {
+        $data[$key]['domain_name']          = $domain_list[$value['registrant_email']]['domain_name'];
+        $data[$key]['domain_ext']           = $domain_list[$value['registrant_email']]['domain_ext'];
+        $data[$key]['domains_create_date']  = $domain_list[$value['registrant_email']]['domains_create_date'];
+        $data[$key]['number_type']          = $domain_list[$value['registrant_email']]['number_type'];
+      }
+      return $data;
+    }
+
+
+
+
     public function search(Request $request)
     {
       ini_set('max_execution_time', 346000);
@@ -1441,12 +1495,12 @@ public function download_csv_single_page(Request $request)
           $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
           
           //$leads = $this->leads_Search($request);//---Selecting leads from search parameters
+          //$this->counting_leads_domains($leads);
 
           //--------------------------Data for single page-------------//
           $array = $this->leadsPerPage_Search(1,$request->pagination,$leads);
           //dd($array);
           $data             = $array['data'];
-          //$leadsid_per_page = $array['leadsid_per_page'];
           $leads_string     = $array['leads_string'];
           $totalDomains     = $this->totalDomains;
           $totalLeads       = $this->totalLeads;
@@ -1463,21 +1517,30 @@ public function download_csv_single_page(Request $request)
             $phone_type_array = $this->phone_type_array;
             $domains = $this->domainsPerPage_Search($param,$this->phone_type_array
                                               ,$leads_string);
-            $domain_list = array();
-            foreach($data as $k=>$v) // setting up the leads array
-              $domain_list[$v['registrant_email']]['checked'] = false;
+
+            //dd($domains);
+
+            //////////////////////////////////////////////////////////////////
+
+            // $domain_list = array();
+            // foreach($data as $k=>$v) // setting up the leads array
+            //   $domain_list[$v['registrant_email']]['checked'] = false;
             
-            foreach($domains as $k=>$v)
-            {
-              if(!($domain_list[$v->registrant_email]['checked']))
-              {
-                $domain_list[$v->registrant_email]['checked'] = true;
-                $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
-                $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
-                $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
-                $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
-              }
-            }
+            // foreach($domains as $k=>$v)
+            // {
+            //   if(!($domain_list[$v->registrant_email]['checked']))
+            //   {
+            //     $domain_list[$v->registrant_email]['checked'] = true;
+            //     $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
+            //     $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
+            //     $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
+            //     $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
+            //   }
+            // }
+
+            ////////////////////////////////////////////////////////////////
+
+            $data=$this->domains_output_Search($data,$domains);
           }
           //dd($data);
           
@@ -1506,7 +1569,7 @@ public function download_csv_single_page(Request $request)
           // exit();
           $end = microtime(true)-$start;
           //echo "time : ".$end."<br>";
-
+          //dd($data);
 
             if(\Auth::user()->user_type == 2)
             {
@@ -1550,6 +1613,7 @@ public function download_csv_single_page(Request $request)
       }
       else
       {
+
         dd('Please log in');  
       }
     }

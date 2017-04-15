@@ -58,12 +58,23 @@ class ImportExport extends Controller
         }
       }
   }
+  private function destroy()
+  {
+      $this->Area_state               = null;
+      $this->Area_major_city          = null;
+      $this->Area_codes_primary_city  = null;
+      $this->Area_codes_county        = null;
+      $this->Area_codes_carrier_name  = null;
+      $this->Area_codes_number_type   = null;
+      $this->__leads  = null;
+      $this->__leads  = null;
+      $this->__domains= null;
+  }
 
 
 
     public function importExport()
     {
-
       try
       {
         if(\Auth::check())
@@ -83,7 +94,6 @@ class ImportExport extends Controller
      
         //dd('here');
         $start = microtime(true);
-        
         $upload = $request->file('import_file');
         $filepath = $upload->getRealPath();
         $original_file_name = $request->import_file->getClientOriginalName();
@@ -211,7 +221,7 @@ class ImportExport extends Controller
 		  			$arr = ($this->validateUSPhoneNumber($no[1]));
 		  		else
 		  			$arr = ($this->validateUSPhoneNumber($no[0]));
-		  		if($arr['http_code'] == 200)
+		  		if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number'))
 		  		{
 		  			$str = "NULL , '"
 		  					.$arr['phone_number']
@@ -319,7 +329,7 @@ class ImportExport extends Controller
           }
 
 
-          $q_valid_phone  = "INSERT IGNORE `valid_phone` ".$valid_phone_head." VALUES ".$VALID_PHONE;
+          $q_valid_phone  = "REPLACE `valid_phone` ".$valid_phone_head." VALUES ".$VALID_PHONE;
         }
 
           $q_each_domains = "REPLACE `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
@@ -396,6 +406,8 @@ class ImportExport extends Controller
 
     public function insertion_Execl($file)
     {
+
+        $query_time_array = array();
 
 
         ini_set("memory_limit","7G");
@@ -543,8 +555,9 @@ class ImportExport extends Controller
                           ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                           ,$domains_status_head         , $DOMAINS_STATUS);
                   $ed = microtime(true)-$st;
+                  $query_time_array = array_push($query_time_array, $d);
 
-                  //echo('time = '.$ed.'<br>');
+                  //echo ($ed."<br/>");
 
                   $LEADS          = '';
                   $EACH_DOMAINS       = '';
@@ -574,14 +587,20 @@ class ImportExport extends Controller
                         ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                         ,$domains_status_head         , $DOMAINS_STATUS);
                   $ed = microtime(true)-$st;
+                  
+                  //echo ($ed."<br/>");
                 }
                 break;
             }    
         }
       $this->rectify_leads();
       $end = microtime(true) - $start;
+
+      \Log::info('time ==>> ',$query_time_array);
+
       //echo('TOTAL TIME: ' . $end . " seconds");
       //\Log::info('TOTAL TIME: ' . $end . " seconds");
+      $this->destroy();
       return;
     }
 

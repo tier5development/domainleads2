@@ -10,6 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/aaaaa',function(){
+    dd(DB::select(DB::raw("SHOW KEYS FROM leads WHERE Key_name='leads_registrant_country_index'")));
+});
+
 Route::get('/aaaa',function(){
 
     $x = DB::select(DB::raw('SELECT leads from search_metadata where id = 1'));
@@ -81,7 +86,7 @@ Route::get('/aaaa',function(){
 
 });
 
-Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated']);
+Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
 
 Route::get('/aaa',function(){
     $v = custom_curl_errors();
@@ -139,6 +144,7 @@ Route::get('/aa',function(){
     //Route::get('downloadExcel' , ['uses'=>'SearchController@downloadExcel','as'=>'downloadExcel']);
 
 	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
+
 	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
 
     Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);

@@ -32,6 +32,11 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        //dd($exception);
+        // if ($exception instanceof 'MethodNotAllowedHttpException') {
+        //     return response()->view('errors.custom', [], 500);
+        // }
+        
         parent::report($exception);
     }
 
@@ -42,9 +47,16 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+        
+        if ($e instanceof MethodNotAllowedHttpException) {
+            //dd(888);
+            return response()->view('errors.500', [], 500);
+        }
+
+
+        return parent::render($request, $e);
     }
 
     /**

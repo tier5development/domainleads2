@@ -12,21 +12,13 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  	<link rel="stylesheet" href="/resources/demos/style.css">
   	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
   	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="{{url('/')}}/resources/assets/css/bootstrap.css">
-	
-	<!-- <script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery-1.12.0.js"></script>
-	<script type="text/javascript" src="{{url('/')}}/resources/assets/js/jquery.dataTables.js"></script> -->
-      <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
-
-    
+    <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
     <link type="text/css" rel="stylesheet" href="{{url('/')}}/public/css/simplePagination.css"/>
-	
 	<script type="text/javascript" src="{{url('/')}}/public/js/jquery.simplePagination.js"></script>
 
 
@@ -360,7 +352,7 @@
 						</td>
 
 						<td>
-							<small><b class="reg_email" id="domain_name_{{$key}}">{{ $domain_list[$each['registrant_email']]['domain_name']}}</b></small>
+							<small><b class="reg_email" id="domain_name_{{$key}}">{{$each['domain_name']}}</b></small>
 							
 							<br>
 							<small> Unlocked Num : <span class="unlocked_num" id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
@@ -380,12 +372,12 @@
 						<td>
 							<small class="reg_phone" id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
 
-							@if(isset($domain_list[$each['registrant_email']]['number_type'])) 
+							@if(isset($each['number_type'])) 
 
-								@if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
+								@if($each['number_type']== "Cell Number")
 								<img class="mobile" id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
 
-								@elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
+								@elseif($each['number_type']=="Landline")
 								<img class="landline" id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
 								@endif
@@ -394,7 +386,7 @@
 						</td>
 
 						<td>
-							<small class="create_date" id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
+							<small class="create_date" id="domains_create_date_{{$key}}">{{$each['domains_create_date']}}</small>
 						</td>
 
 						<td>
@@ -523,7 +515,7 @@
 				},
 				success:function(response)
 				{
-					console.log(response);
+					//console.log(response);
 					$('.single_row').each(function(i,j){
 						$('#reg_email'+i).val('');
 						$('#domain_name_'+i).text('');
@@ -610,33 +602,33 @@
 	function pages()
 	{
 		//console.log('in pages');
-		console.log(thisPage);
+		//console.log(thisPage);
 		low  = parseInt(thisPage)-display_limit;
 		high = parseInt(thisPage)+display_limit;
-		console.log(low,high);
+		//console.log(low,high);
 		if(low < 0)
 		{
 			high = high - low;
 			low  = low  - low; 
 		}
-		console.log(low,high);
+		//console.log(low,high);
 		if(high > totalPage)
 		{
 			high = high - (high - totalPage);
 			low  = low - (high - totalPage);
 		} 
-		console.log(low,high);
+		//console.log(low,high);
 		$('.pg_btn').each(function(i,j){
 
 			if(i>= low && i<=high)
 			{
 				$('#pg_'+i).show();
-				console.log(i,'--show');
+				//console.log(i,'--show');
 			}
 			else
 			{
 				$('#pg_'+i).hide();
-				console.log(i,'--hide');
+				//console.log(i,'--hide');
 			}
 		});
 		adjust();
