@@ -49,6 +49,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        
         switch ($e->getStatusCode()) 
         {
             case 404:
@@ -59,9 +60,10 @@ class Handler extends ExceptionHandler
                 return redirect()->route('500');
                 break;
             
-            default:
+            case 200:
                 return parent::render($request, $e);
                 break;
+            default: break;
         }
         //return parent::render($request, $e);
     }

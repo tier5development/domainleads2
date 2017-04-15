@@ -319,7 +319,7 @@
 			 	<span>{{$totalDomains}}</span>
 			 	<br>
 			 	<label>Search Time ::</label>
-			 	<span id="search_time">{{$query_time}}</span>
+			 	<span id="search_time">  {{number_format($query_time,4)}} seconds</span>
 			 	<br>
 				 	
 				<div id="ajax-loader" style="display: none; padding-left: 450px;">
