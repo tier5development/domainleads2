@@ -18,7 +18,8 @@
 	<div class="error-page-wrap">
 		<article class="error-page gradient">
 			<hgroup>
-				<img style="width:750px; height:500" src="{{url('/')}}/images/errors/500.png">
+				
+				<img style="width:750px; height:500" src="{{url('/')}}/images/errors/404.jpg">
 				<h2>oops! page not found</h2>
 			</hgroup>
 			<a href="{{url('/')}}" title="Back to site" class="error-back">home</a>

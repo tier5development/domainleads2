@@ -21,6 +21,15 @@ use GuzzleHttp\Client;
 
 class Maintainance extends Controller
 {
+  public function notfound_404()
+  {
+    return view('errors.404');
+  }
+  public function notfound_500()
+  {
+    return view('errors.500');
+  }
+
   // public function async_domain()
   // {
   //   $promise = new Promise();

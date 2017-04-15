@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
         // if ($exception instanceof 'MethodNotAllowedHttpException') {
         //     return response()->view('errors.custom', [], 500);
         // }
-        
+
         parent::report($exception);
     }
 
@@ -49,14 +49,21 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        
-        if ($e instanceof MethodNotAllowedHttpException) {
-            //dd(888);
-            return response()->view('errors.500', [], 500);
+        switch ($e->getStatusCode()) 
+        {
+            case 404:
+                return redirect()->route('404');
+                break;
+
+            case 500:
+                return redirect()->route('500');
+                break;
+            
+            default:
+                return parent::render($request, $e);
+                break;
         }
-
-
-        return parent::render($request, $e);
+        //return parent::render($request, $e);
     }
 
     /**

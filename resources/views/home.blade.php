@@ -329,9 +329,6 @@
                                 <p>"Every website needs a logo, with domainleads I can search for specific keywords in domains and quickly send out MMS messages with samples of similar logos I've created. I'm constantly getting sales usings domainleads."</p>
                                 <div class="whopic">
                                     <div class="arrow"></div>
-                                   
-                                    
-                                    <img src="{{url('/')}}/theme/images/steph.png">
                                     <strong>Stephine Ayrs
                                         <small>Founder - Item Strategies LLC</small>
                                     </strong>
@@ -343,9 +340,6 @@
                                 <p>"I always go for the old leads, Skybound only does SEO and digital marketing. With domain leads I can quickly filter by leads that already have a website, I love this feature becuase that is my target audience for our service. DomainLeads gives me the tools I need to target leads and make sales."</p>
                                 <div class="whopic">
                                     <div class="arrow"></div>
-                                 
-                                    
-                                    <img src="{{url('/')}}/theme/images/brandon.png">
                                     <strong>Brandon Shavers
                                         <small>Founder - Skybound Digital</small>
                                     </strong>
@@ -512,8 +506,6 @@
         <script type="text/javascript" src="{{url('/')}}/theme/js/jquery.cslider.js"></script>
 
         <script type="text/javascript" src="{{url('/')}}/theme/js/jquery.placeholder.js"></script>
-
-        <script type="text/javascript" src="{{url('/')}}/theme/js/inview.js"></script>
 
         <script type="text/javascript" src="{{url('/')}}/theme/js/app.js"></script>
 

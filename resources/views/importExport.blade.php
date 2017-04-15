@@ -28,7 +28,6 @@
                 {{ Session::get('msg')}}
                 @endif
 			</div>
-
 		</div>
 
 	
@@ -47,14 +46,6 @@
 	</div>
 
 </body>
-
-
-<script type="text/javascript">
-	$(function(){
-    	$( "#start_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-    	$( "#end_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-  	});
-</script>
 
 
 
