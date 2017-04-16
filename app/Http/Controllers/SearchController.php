@@ -510,6 +510,9 @@ public function download_csv_single_page(Request $request)
 
     private function raw_leads($leads_str)
     {
+
+
+
       $sql = "SELECT DISTINCT l.registrant_email 
       , l.id
       , l.registrant_fname 
@@ -521,7 +524,9 @@ public function download_csv_single_page(Request $request)
       , l.domains_count 
       , l.unlocked_num 
       FROM leads as l
-      WHERE l.id IN ".$leads_str;
+      WHERE l.id IN (".$leads_str.") 
+      ORDER BY FIELD(id,".$leads_str.")";
+      //dd($sql);
       $leads = DB::select(DB::raw($sql));
       return $leads;
     }
@@ -536,7 +541,8 @@ public function download_csv_single_page(Request $request)
       $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
       $data   = null;
 
-      $leads  = $this->raw_leads("(".$leads.")");
+      //$leads  = $this->raw_leads("(".$leads.")");
+      $leads  = $this->raw_leads($leads);
 
       $array  = $this->leadsPerPage_Search($request->thisPage,$request->pagination,$leads);
       $param  = ['domain_name'=>$request->domain_name
@@ -559,144 +565,7 @@ public function download_csv_single_page(Request $request)
 
     }
 
-    public function search_paginated(Request $request)
-    {
-
-      $start = microtime(true);
-      $leads = $this->raw_leads($request->lead_list);
-
-      $i=0;
-      $x=0;
-      $data = array();
-      $leads_string = ' ';
-      foreach($leads as $each)
-      {
-        $i++; 
-        
-        $data[$x]['registrant_email']   = $each->registrant_email;
-        $data[$x]['registrant_name']               = $each->registrant_fname.' '.$each->registrant_lname;
-        $data[$x]['registrant_country'] = $each->registrant_country;
-        $data[$x]['registrant_company'] = $each->registrant_company;
-        $data[$x]['registrant_phone']   = $each->registrant_phone;
-        $data[$x]['unlocked_num']       = $each->unlocked_num;
-        $data[$x]['domains_count']      = $each->domains_count;
-        $data[$x++]['registrant_state'] = $each->registrant_state;
-        if($leads_string == ' ')
-        {
-           $leads_string .= "'".$each->registrant_email."'";
-        }
-        else
-        {
-           $leads_string .= ",'".$each->registrant_email."'";
-        }
-              
-      }
-
-      $leads_string= '('.$leads_string.')';
-
-      $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,vp.number_type FROM `each_domain` ed 
-              INNER JOIN domains_info as di ON di.domain_name = ed.domain_name 
-              INNER JOIN valid_phone as vp ON vp.registrant_email = ed.registrant_email 
-              WHERE ed.registrant_email 
-              IN ".$leads_string;
-
-
-
-      $date_flag = 0;
-             // domain_name , domain_ext , domains_create_date , domains_create_date2
-      foreach ($request->all() as $key=>$req) 
-      {
-        if(!is_null($req))
-        {
-          if($key == 'domain_name')
-          {
-            $sql .= " and ed.domain_name LIKE '%".$req."%' "; 
-          }
-          else if($key == 'domain_ext')
-          {
-            $sql .= " and ed.domain_ext IN ".$domain_ext_str." "; 
-          }
-          else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
-              && $date_flag == 0)
-          {
-                $date_flag = 1;
-                $dates_array = generateDateRange(
-                          $request->domains_create_date,
-                          $request->domains_create_date2);
-                
-            if(isset($dates_array))
-            {
-              if(sizeof($dates_array) == 1)
-              {
-                $sql .= " and di.domains_create_date = '".$dates_array[0]."' "; 
-              }
-              else if(sizeof($dates_array) == 2)
-              {
-                $sql .= " and di.domains_create_date >= '".$dates_array[0]."' and di.domains_create_date <= '".$dates_array[1]."'";
-              }
-            }
-          }
-        }
-      }
-
-
-
-      if(isset($phone_type_array))
-      {
-        $phone_type_array_str = ' ';
-        foreach($phone_type_array as $k=>$v)
-        {
-          if($v == ' ')
-            $phone_type_array_str .= "'".$v."'";
-          else
-            $phone_type_array_str .= ",'".$v."'";
-        }
-        if($phone_type_array_str != ' ')
-        {
-          $phone_type_array_str = "(".$phone_type_array_str.")";
-          $sql .= " and vp.number_type IN ".$phone_type_array_str;
-        }
-      }
-
-      //dd($sql);
-
-      $domains = DB::select(DB::raw($sql));
-      $domain_list = array();
-
-      foreach($data as $k=>$v) // setting up the leads array
-      {
-        $domain_list[$v['registrant_email']]['checked'] = false;
-      }
-
-      foreach($domains as $k=>$v)
-      {
-        if(!($domain_list[$v->registrant_email]['checked']))
-        {
-          $domain_list[$v->registrant_email]['checked'] = true;
-          $domain_list[$v->registrant_email]['domain_name'] = $v->domain_name;
-          $domain_list[$v->registrant_email]['domain_ext']  = $v->domain_ext;
-          $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
-          $domain_list[$v->registrant_email]['number_type'] = $v->number_type;
-        }
-      }
-      dd($domain_list);
-      return \Response::json($domain_list);
-
-      $set = array();
-
-      foreach ($data as $key => $value) 
-      {
-
-        $data[$key]['domain_name'] = $domain_list[$value['registrant_email']]['domain_name'];
-        $data[$key]['domain_ext']  = $domain_list[$value['registrant_email']]['domain_ext'];
-        $data[$key]['domains_create_date'] = $domain_list[$value['registrant_email']]['domains_create_date'];
-        $data[$key]['number_type'] = $domain_list[$value['registrant_email']]['number_type'];
-      }
-      //dd($data);
-      $time = microtime(true) - $start;
-      return \Response::json(array('data'=>$data , 'time'=>$time));
-    }
-
+    
     
 
     private function leads_Search(Request $request)
@@ -722,18 +591,21 @@ public function download_csv_single_page(Request $request)
             , l.registrant_phone 
             , l.registrant_state 
             , l.domains_count 
-            , l.unlocked_num 
-            , vp.number_type
+            , l.unlocked_num ";
+            $sql .= isset($phone_type_array) && sizeof($phone_type_array) > 0
+              ? " , vp.number_type "
+              : " ";
 
-            FROM leads as l INNER JOIN each_domain AS ed 
+            $sql .="FROM leads as l INNER JOIN each_domain AS ed 
             ON ed.registrant_email = l.registrant_email
             INNER JOIN domains_info AS di 
             ON di.domain_name = ed.domain_name ";
             $sql .= isset($phone_type_array) && sizeof($phone_type_array) > 0
-              ? " INNER JOIN valid_phone AS vp "
-              : " LEFT JOIN valid_phone AS vp ";
-            $sql .="ON vp.registrant_email = l.registrant_email 
-            WHERE l.registrant_email != '' and ed.registrant_email != '' ";
+              ? " INNER JOIN valid_phone AS vp ON vp.registrant_email = l.registrant_email "
+              : " ";
+            //$sql .="ON vp.registrant_email = l.registrant_email ";
+            
+            $sql .=" WHERE l.registrant_email != '' and ed.registrant_email != '' ";
 
 
             $flag = 0;
@@ -819,6 +691,7 @@ public function download_csv_single_page(Request $request)
             if(isset($request->sort)) 
             {
                 $req = $request->sort;
+
                 if($req == 'unlocked_asnd')  $sql .= " ORDER BY l.unlocked_num ASC ";   
                 else if($req == 'unlocked_dcnd') $sql .= " ORDER BY l.unlocked_num DESC ";
                 else if($req == 'domain_count_asnd')  $sql .= " ORDER BY l.domains_count ASC ";
@@ -828,8 +701,9 @@ public function download_csv_single_page(Request $request)
             // trial
             
             //trial
-
+            //$t1 = microtime(true);
             $leads = DB::select(DB::raw($sql));
+            //dd(microtime(true)-$t1);
             //////////////////////////////////////////////////////////////////////
 
             // $leads_ = DB::select(DB::raw("SELECT DISTINCT registrant_email from leads"));
@@ -1297,9 +1171,15 @@ public function download_csv_single_page(Request $request)
           $this->update_metadata_partial($meta_data_leads[0]->id);
           $raw_leads_id = $this->uncompress($meta_data_leads[0]->leads
                                   ,$meta_data_leads[0]->compression_level);
+          //dd($raw_leads_id);
           $this->totalDomains = $meta_data_leads[0]->totalDomains;
           $this->totalLeads   = $meta_data_leads[0]->totalLeads;
-          return $this->raw_leads("(".$raw_leads_id.")");
+
+          //dd($this->raw_leads("(".$raw_leads_id.")"));
+          //dd($this->raw_leads($raw_leads_id));
+
+
+          return $this->raw_leads($raw_leads_id);
         }
         else
         {
@@ -1398,12 +1278,14 @@ public function download_csv_single_page(Request $request)
 
     private function compress($string)
     {
+
       $last_size = strlen($string);
+      //dd($last_size);
+      //dd($string);
       $compressed = $string;
       $ratio = 0;
-      while(true)
+      while($ratio < 255)
       {
-          if($ratio > 255) break;
           $min_size   = strlen(gzdeflate($compressed, 9));
           if($min_size >= $last_size)  break;
 
@@ -1412,14 +1294,20 @@ public function download_csv_single_page(Request $request)
           $ratio++;   
           //echo $last_size.'<br/>'; 
       }
-      //echo($compressed);exit();
+      //echo(strlen($compressed));exit();
+      //dd($this->uncompress($compressed,$ratio));
+      //dd('over');
 
       return array('compressed'=>$compressed
                     ,'compression_level'=>$ratio);
     }
     private function uncompress($leads,$compression_level)
     {
-      while($compression_level--) $leads = gzinflate($leads);
+      while($compression_level--) 
+        {
+          $leads = gzinflate($leads);
+          //echo(strlen($leads)."<br/>");
+        }
       return $leads;
     }
     private function setVariables(Request $request)
@@ -1512,6 +1400,7 @@ public function download_csv_single_page(Request $request)
           //$this->counting_leads_domains($leads);
 
           //--------------------------Data for single page-------------//
+          //dd($leads);
           $array = $this->leadsPerPage_Search(1,$request->pagination,$leads);
           
           $data             = $array['data'];
