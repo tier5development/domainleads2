@@ -211,11 +211,12 @@ form{
 							
 								<label>Data Per-Page</label>
 								<select id="pagination" name="pagination">
+									<option value="10" @if(Input::get('pagination')=='10') selected @endif>10</option>
 									<option value="20" @if(Input::get('pagination')=='20') selected @endif>20</option>
 									<option value="50" @if(Input::get('pagination')=='50') selected @endif>50</option>
 									<option value="100" @if(Input::get('pagination')=='100') selected @endif>100</option>
+									<option value="200" @if(Input::get('pagination')=='200') selected @endif>200</option>
 									<option value="500" @if(Input::get('pagination')=='500') selected @endif>500</option>
-									<option value="1000" @if(Input::get('pagination')=='1000') selected @endif>1000</option>
 								</select>
 						</div>
 

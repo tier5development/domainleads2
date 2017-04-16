@@ -542,9 +542,25 @@ public function download_csv_single_page(Request $request)
       $data   = null;
 
       //$leads  = $this->raw_leads("(".$leads.")");
-      $leads  = $this->raw_leads($leads);
+      //$leads  = $this->raw_leads($leads);
 
-      $array  = $this->leadsPerPage_Search($request->thisPage,$request->pagination,$leads);
+      $offset = ($request->thisPage-1) * $request->pagination;
+      $limit  = $request->pagination;
+
+      // dd($leads);
+      // dd($limit." ".$offset);
+      $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
+
+
+      
+
+
+
+      //dd($leads_str);
+      $leads  = $this->raw_leads($leads_str);
+      
+      $array  = $this->leadsPerPage_Search($leads);
+
       $param  = ['domain_name'=>$request->domain_name
                ,'domain_ext' =>$request->domain_ext
                ,'domains_create_date'=>$request->domains_create_date
@@ -740,7 +756,7 @@ public function download_csv_single_page(Request $request)
             return $leads;
     }
 
-    private function leadsPerPage_Search($page,$pagination,$leads)
+    private function leadsPerPage_Search($leads)
     {
         $leads_string = '';
         $totalLeads = sizeof($leads);
@@ -748,10 +764,10 @@ public function download_csv_single_page(Request $request)
         $i=$x=$z=$totalDomains=$lastz=0;
         $data = array();
 
-        $low =($page-1)*$pagination;
-        $high=$low + $pagination;
+        //$low =($page-1)*$pagination;
+        //$high=$low + $pagination;
         //dd($low.' '.$high);
-        for($i=$low ; $i<$high ; $i++)
+        for($i=0 ; $i<sizeof($leads) ; $i++)
         {
           if(isset($leads[$i]))
           {
@@ -775,9 +791,9 @@ public function download_csv_single_page(Request $request)
         //dd($totalLeads);
         //dd($pagination);
         //dd(($totalLeads%$pagination) == 0 ? 0 : 1);
-        $pages    = (int)($totalLeads/$pagination) ;
-        $lastpage = ($totalLeads%$pagination) == 0 ? 0 : 1;
-        $this->totalPage =  $pages+$lastpage;
+        //$pages    = (int)($totalLeads/$pagination) ;
+        //$lastpage = ($totalLeads%$pagination) == 0 ? 0 : 1;
+        //$this->totalPage =  $pages+$lastpage;
         //dd($pages+$lastpage);
         //dd($this->totalPage);
         return array('data'=>$data,'leads_string'=>$leads_string);
@@ -969,7 +985,8 @@ public function download_csv_single_page(Request $request)
       $dates_array = array();
       $leads_unlocked_operator = '';
       $domains_count_operator  = '';
-      
+      $limit = $request->pagination;
+      $offset = isset($request->page) ? $request->page :1;
 
       switch($request->gt_ls_leadsunlocked_no)
       {
@@ -1136,6 +1153,7 @@ public function download_csv_single_page(Request $request)
         $leads = $this->leads_Search($request);
         //dd($leads);
         $this->counting_leads_domains($leads);
+        $this->count_total_pages($request->pagination);
         //dd(strlen($leads_id));
 
         if(sizeof($leads) > 0)
@@ -1148,7 +1166,8 @@ public function download_csv_single_page(Request $request)
                               ,$domains_count_operator
                               ,$leads_unlocked_operator)) 
           {
-            return $leads;
+            return $this->limit($leads,$limit,$offset);
+            //return $leads;
           }
           else
             dd('error in checkMetadata_Search');  
@@ -1174,25 +1193,72 @@ public function download_csv_single_page(Request $request)
           //dd($raw_leads_id);
           $this->totalDomains = $meta_data_leads[0]->totalDomains;
           $this->totalLeads   = $meta_data_leads[0]->totalLeads;
-
+          $this->count_total_pages($request->pagination);
           //dd($this->raw_leads("(".$raw_leads_id.")"));
           //dd($this->raw_leads($raw_leads_id));
-
+          $raw_leads_id = $this->paginated_raw_leads($raw_leads_id,$limit,$offset);
 
           return $this->raw_leads($raw_leads_id);
+
+          //return $this->raw_leads($raw_leads_id);
         }
         else
         {
           //dd('in else');
-          $this->counting_leads_domains($leads);
+          $this->counting_leads_domains($leads,$request->pagination); //update the new count
+          $this->count_total_pages($request->pagination);
           if($this->update_metadata_full($meta_data_leads[0]->id
                               ,$totalLeads
                               ,$totalDomains
                               ,$this->compress($this->leads_id)))
-          return $leads;
+
+          return $this->limit($leads,$limit,$offset);
+          //return $leads;
         }
         //return $meta_data_leads[0];
       }
+    }
+    private function paginated_raw_leads($raw_leads,$limit,$offset)
+    {
+      //dd($raw_leads);
+      $array = explode(",",$raw_leads);
+      //dd($array);
+      $return = "";
+      //$offset = $offset;
+      for($i=$offset ; $i<$limit+$offset; $i++)
+      {
+        if(!isset($array[$i])) break;
+        if($return == "") $return .= $array[$i];
+        else $return .= ",".$array[$i];
+      }
+      return $return;
+    }
+    private function limit($leads,$limit,$offset)
+    {
+      $offset = $offset-1;
+      $filtered_leads = array();
+      $j=0;
+      for($i=$offset ; $i<$limit ; $i++)
+      {
+        if(!isset($leads[$i])) break;
+
+        $filtered_leads[$j++] = $leads[$i];
+        //dd($leads[$i]);///////////////////////
+        //$filtered_leads = array_push($filtered_leads,$leads[$i]);
+      }
+      return $filtered_leads;
+    }
+    private function count_total_pages($pagination)
+    {
+      $extraPage = (int)($this->totalLeads%$pagination);
+      $extraPage = $extraPage > 0 ? 1 : 0;
+      $this->totalPage = (int)($this->totalLeads/$pagination) + $extraPage;
+
+
+      //dd($pagination);
+      //dd($this->totalLeads);
+      //dd($this->totalPage);
+      return;
     }
     private function counting_leads_domains($leads)
     {
@@ -1401,7 +1467,7 @@ public function download_csv_single_page(Request $request)
 
           //--------------------------Data for single page-------------//
           //dd($leads);
-          $array = $this->leadsPerPage_Search(1,$request->pagination,$leads);
+          $array = $this->leadsPerPage_Search($leads);
           
           $data             = $array['data'];
           $leads_string     = $array['leads_string'];
