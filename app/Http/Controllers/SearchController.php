@@ -683,7 +683,11 @@ public function download_csv_single_page(Request $request)
                 }
                 else if($key == 'domaincount_no')
                 {
-                    if($gt_ls_domaincount_no == '') continue;
+                    if($gt_ls_domaincount_no == '') 
+                    {
+                        $sql .= " and l.domains_count > 0";
+                        continue;
+                    }
                     if($req=='') $req = 0;
                     $sql .= " and l.domains_count ".$gt_ls_domaincount_no." ".$req;
                 }
@@ -1001,7 +1005,10 @@ public function download_csv_single_page(Request $request)
           }
           else if($key == 'domaincount_no')
           {
-              if($gt_ls_domaincount_no == '') continue;
+              if($gt_ls_domaincount_no == '') 
+              {
+                continue;
+              }
               else if($gt_ls_domaincount_no != '' && is_null($req)) continue;
               if($req=='') $req = 0;
               $sql .= " and domains_count = ".$req." and domains_count_operator = '".$gt_ls_domaincount_no."'";
@@ -1043,9 +1050,9 @@ public function download_csv_single_page(Request $request)
                     break;
               case 'number_type' : $sql .=" and number_type IS NULL";
                     break;
-              case 'gt_ls_domaincount_no' : $sql .= " and domains_count_operator IS NULL";
+              case 'gt_ls_domaincount_no' : $sql .= " and domains_count_operator = '>'";
                     break;
-              case 'domaincount_no' : $sql .= " and domains_count IS NULL";
+              case 'domaincount_no' : $sql .= " and domains_count = 0";
                     break;
               case 'gt_ls_leadsunlocked_no' : $sql .=" and leads_unlocked_operator IS NULL";
                     break;
@@ -1230,23 +1237,42 @@ public function download_csv_single_page(Request $request)
     {
       
       $meta = new SearchMetadata();
-      $meta->domain_name             = $request->domain_name==null?null:$request->domain_name;
-      $meta->domain_ext              = $domain_ext_meta ==null || $domain_ext_meta =='()'?null:$domain_ext_meta;
-      $meta->registrant_country      = $request->registrant_country ==null ? null
-                                                :$request->registrant_country;
-      $meta->registrant_state        = $request->registrant_state ==null ? null
-                                                :$request->registrant_state;
-      $meta->domains_create_date1    = isset($dates_array[0])?$dates_array[0]:null;
-      $meta->domains_create_date2    = isset($dates_array[1])?$dates_array[1]:null;
-      $meta->domains_count           = $request->domaincount_no == null ? null : $request->domaincount_no;
-      $meta->number_type             = $phone_type_meta == '()' ? null : $phone_type_meta;
-      $meta->sortby                  = (isset($request->sort) && !is_null($request->sort)) ? 
-                                        $request->sort : null;
-      $meta->domains_count_operator  = $domains_count_operator == null?null
+      $meta->domain_name             = $request->domain_name==null
+                                          ? null
+                                          :$request->domain_name;
+      $meta->domain_ext              = $domain_ext_meta ==null || $domain_ext_meta =='()'
+                                          ? null
+                                          :$domain_ext_meta;
+      $meta->registrant_country      = $request->registrant_country ==null 
+                                          ? null
+                                          :$request->registrant_country;
+      $meta->registrant_state        = $request->registrant_state ==null 
+                                          ? null
+                                          :$request->registrant_state;
+      $meta->domains_create_date1    = isset($dates_array[0])
+                                          ? $dates_array[0]
+                                          :null;
+      $meta->domains_create_date2    = isset($dates_array[1])
+                                          ? $dates_array[1]
+                                          :null;
+      $meta->domains_count           = $request->domaincount_no == null 
+                                          ? 0 
+                                          : $request->domaincount_no;
+      $meta->number_type             = $phone_type_meta == '()' 
+                                          ? null 
+                                          : $phone_type_meta;
+      $meta->sortby                  = (isset($request->sort) && !is_null($request->sort)) 
+                                          ? $request->sort 
+                                          : null;
+      $meta->domains_count_operator  = $domains_count_operator == null
+                                          ?'>'
                                           :$domains_count_operator;
-      $meta->leads_unlocked_operator = $leads_unlocked_operator == null?null
+      $meta->leads_unlocked_operator = $leads_unlocked_operator == null
+                                          ?null
                                           :$leads_unlocked_operator;
-      $meta->unlocked_num            = $request->leadsunlocked_no == null ? null : $request->leadsunlocked_no;
+      $meta->unlocked_num            = $request->leadsunlocked_no == null 
+                                          ? null 
+                                          : $request->leadsunlocked_no;
       $meta->search_priority         = 1;
       $meta->totalLeads              = $this->totalLeads;
       $meta->totalDomains            = $this->totalDomains;
