@@ -555,7 +555,7 @@ class ImportExport extends Controller
                           ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                           ,$domains_status_head         , $DOMAINS_STATUS);
                   $ed = microtime(true)-$st;
-                  $query_time_array = array_push($query_time_array, $d);
+                  array_push($query_time_array, $ed);
 
                   //echo ($ed."<br/>");
 
@@ -587,6 +587,7 @@ class ImportExport extends Controller
                         ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                         ,$domains_status_head         , $DOMAINS_STATUS);
                   $ed = microtime(true)-$st;
+                  array_push($query_time_array, $ed);
                   
                   //echo ($ed."<br/>");
                 }
