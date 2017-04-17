@@ -82,6 +82,7 @@ public function print_csv($leads,$type)
 
 public function download_csv_single_page(Request $request)
 {
+  //dd($request->all());
   $type = 'csv';
   if($request->exportLeads)
   {
@@ -100,9 +101,75 @@ public function download_csv_single_page(Request $request)
   }
   else
   {
-    $this->print_csv(unserialize($request->all_leads_to_export[0]),$type);
+    //dd('here');
+    //dd($request->landline);
 
-    return;
+
+    $phone_type_array = array();
+    if(isset($request->cell) && $request->cell != null)
+      array_push($phone_type_array, 'Cell Number');
+
+    if(isset($request->landline) && $request->landline != null)  
+      array_push($phone_type_array, 'Landline');
+
+
+    $start = microtime(true);
+    $sql    = "SELECT leads,compression_level from search_metadata 
+              where id = ".$request->meta_id;
+    $data   = DB::select(DB::raw($sql));
+    $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
+    $data   = null;
+    $offset = 1;
+    $limit  = $request->totalLeads;
+
+    // dd($leads);
+    // dd($limit." ".$offset);
+    $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
+    //dd($leads_str);
+    $leads  = $this->raw_leads($leads_str);
+    
+    $array  = $this->leadsPerPage_Search($leads);
+
+    $param  = ['domain_name'=>$request->domainname
+             ,'domain_ext' =>$request->domainext
+             ,'domains_create_date'=>$request->createdate1
+             ,'domains_create_date2'=>$request->createdate2];
+    $data   = $array['data'];
+    $domains= $this->domainsPerPage_Search($param,$phone_type_array,$array['leads_string']);
+    $data = $this->domains_output_Search($data,$domains);
+
+    //dd($data);
+    unset($domain_list);
+    unset($leads);
+    unset($sql);
+    unset($param);
+    unset($domains);
+
+
+    $reqData = array();
+    $key=0;
+    $hash = array();
+    foreach($data as $i=>$val)
+    {
+      $name = explode(' ',$val['registrant_name']);
+      $reqData[$i]['first_name'] = isset($name[0]) ? $name[0] : '';
+      $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
+      $reqData[$i]['website']    = $val['domain_name'];
+      $reqData[$i]['phone']      = $val['registrant_phone'];
+      $reqData[$i]['email_id'] = $val['registrant_email'];
+    }
+
+    return Excel::create('domainleads', function($excel) use ($reqData) {
+
+      $excel->sheet('mySheet', function($sheet) use ($reqData){
+        $sheet->fromArray($reqData);
+      });
+    })->download($type);
+
+
+    //$this->print_csv(unserialize($request->all_leads_to_export[0]),$type);
+
+    //return;
   }
 }
 
@@ -1415,16 +1482,16 @@ public function download_csv_single_page(Request $request)
             $data=$this->domains_output_Search($data,$domains);
           }
           
-          $leads_arr = array(); //consists only leads
-          foreach ($data as $key => $value) 
-          {
-            if(!isset($leads_arr[$value['registrant_email']]))
-            {
-              $leads_arr[$value['registrant_email']] = 1;
-            }
-            else
-              $leads_arr[$value['registrant_email']]++;
-          }
+          // $leads_arr = array(); //consists only leads
+          // foreach ($data as $key => $value) 
+          // {
+          //   if(!isset($leads_arr[$value['registrant_email']]))
+          //   {
+          //     $leads_arr[$value['registrant_email']] = 1;
+          //   }
+          //   else
+          //     $leads_arr[$value['registrant_email']]++;
+          // }
 
               
           $user_id = \Auth::user()->id;
@@ -1436,7 +1503,7 @@ public function download_csv_single_page(Request $request)
           //dd($leadsid_per_page);
           //dd($allrecords->count());
 
-          $string_leads = serialize($leads_arr);
+          //$string_leads = serialize($leads_arr);
           // exit();
           $end = microtime(true)-$start;
           //echo "time : ".$end."<br>";
@@ -1453,8 +1520,8 @@ public function download_csv_single_page(Request $request)
                   'totalDomains'      =>$this->totalDomains,
                   'totalPage'         =>$this->totalPage,
                   'domain_list'       =>isset($domain_list) ? $domain_list : null,
-                  'leadArr'           =>$leads_arr,
-                  'string_leads'      =>$string_leads,
+                  // 'leadArr'           =>$leads_arr,
+                  // 'string_leads'      =>$string_leads,
                   // 'users_array'       =>$users_array,
                   'query_time'        =>$end       
                 ]);      
@@ -1467,8 +1534,8 @@ public function download_csv_single_page(Request $request)
                    'totalLeads'   =>$totalLeads,
                    'totalDomains' =>$totalDomains,
                    'domain_list'       =>isset($domain_list) ? $domain_list : null,
-                   'leadArr'      =>$leads_arr , 
-                   'string_leads'=>$string_leads,
+                   // 'leadArr'      =>$leads_arr , 
+                   // 'string_leads'=>$string_leads,
                    'users_array'=>$users_array,
                    'obj_array'=>$obj_array,
                    'query_time'=>$end]);
