@@ -2,6 +2,7 @@
 @include('layouts.header')
 <head>
 
+
 	<title>Search</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
@@ -147,7 +148,7 @@ form{
 
 			<div class="col-md-12">
 
-				<form method="POST" action="{{Route('search')}}" class="col-md-6">
+				<form method="POST" action="{{Route('search')}}" class="">
 						<div class="form-group">
 							<label>Domain Name : </label>
 							<input type="text" value="{{ Input::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
@@ -162,10 +163,22 @@ form{
 						</div>
 						<div class="form-group">
 							<label>Domains Create Date</label>
+							<div class="row">
+							<div class="col-sm-6">
 
-							<input style="width: 150px" type="date" value="{{ Input::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control">
+							<div class="row">
 
-							<input style="width: 150px" type="date" value="{{ Input::get('domains_create_date2') }}" name="domains_create_date2" id="registered_date2" class="form-control">
+							<div class="col-sm-6">	
+							<input style="width: 150px" type="date" value="{{ Input::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control" placeholder="From Date">
+							</div>
+							<div class="col-sm-6">
+							<input style="width: 150px" type="date" value="{{ Input::get('domains_create_date2') }}" name="domains_create_date2" id="registered_date2" class="form-control" placeholder="To Date">
+							</div>
+
+							</div>
+
+							</div>
+							</div>
 
 						</div>
 						<div class="from-group">
@@ -219,8 +232,8 @@ form{
 									<option value="500" @if(Input::get('pagination')=='500') selected @endif>500</option>
 								</select>
 						</div>
-
-						<div>
+						<div class="row">
+						<div class="col-sm-6">
 							<label>Sort filter</label>
 							<select id="sort" name="sort">
 								<option value="unlocked_asnd" @if(Input::get('sort')=='unlocked_asnd') selected @endif>unlocked_asnd</option>
@@ -229,9 +242,12 @@ form{
 								<option value="domain_count_dcnd" @if(Input::get('sort')=='domain_count_dcnd') selected @endif>domain_count_dcnd</option>
 							</select>
 						</div>
-		
+					<div class="col-sm-6">
 				<input type="hidden" name="_token" value="{{csrf_token()}}">
 				<input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
+				<div class="clearfix"></div>
+				</div>
+				</div>
 
 			</form>
 				
