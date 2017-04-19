@@ -279,25 +279,19 @@ class ImportExport extends Controller
               $str .= "NULL , '".$rec."' ,";
             }
          }	
-		  		else if($i != $high)
-		  		{
-		  			if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;
-		  			
-		  			else          $str  .= "'".$rec."'," ;
-		  		}
-		  			
-		  		else
-		  		{
-		  			$str  .= "'".$rec."','".$created_at."' , '".$updated_at."'";
-
-		  			if($low != 10)
-			  		   
-                $str .= ",'".str_replace($this->search, $this->replace, $record[1])."'";
-			  		
-            else
-
-              $str .= ",0,".$domains_count;
-		  		}
+	  		else if($i != $high)
+	  		{
+	  			if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;
+	  			else          $str  .= "'".$rec."'," ;
+	  		}
+	  		else
+	  		{
+	  			$str  .= "'".$rec."','".$created_at."' , '".$updated_at."'";
+	  			if($low != 10)
+              $str .= ",'".str_replace($this->search, $this->replace, $record[1])."'";
+          else
+            $str .= ",0,".$domains_count;
+	  		}
 		 	}
 	 	}
 	 	return $str;			
@@ -317,18 +311,16 @@ class ImportExport extends Controller
 
     try
     {
+        DB::statement(DB::raw('RESET QUERY CACHE;'));
         $q_leads    = "REPLACE `leads` ". $leads_head. " VALUES ".$LEADS;
 
         if($VALID_PHONE != '')
         { 
-
           $len_ = strlen($VALID_PHONE);
           if($VALID_PHONE[$len_ -1] == ",")
           {
             $VALID_PHONE[$len_ -1] = " ";
           }
-
-
           $q_valid_phone  = "REPLACE `valid_phone` ".$valid_phone_head." VALUES ".$VALID_PHONE;
         }
 
@@ -374,7 +366,6 @@ class ImportExport extends Controller
             else
             {
                 $this->__leads[$this->__domains[$domain_name]] --;
-
                 $this->__clipboard[$this->__domains[$domain_name]] = $this->__leads[$this->__domains[$domain_name]];
 
 
@@ -408,7 +399,9 @@ class ImportExport extends Controller
     {
 
         $query_time_array = array();
+        $loop_time = array();
 
+        $tm1 = microtime(true);
 
         ini_set("memory_limit","7G");
         ini_set('max_execution_time', '0');
@@ -416,9 +409,7 @@ class ImportExport extends Controller
         set_time_limit(0);
         ignore_user_abort(true);
         $this->create();
-
         $start = microtime(true);
-
         $cnt = 0;
         $header = fgetcsv($file); // get the head row of csv file
         $length = count($header); // get the count of columns in it
@@ -476,8 +467,9 @@ class ImportExport extends Controller
         $DOMIANS_NAMESERVER       = '';
         $DOMAINS_STATUS          = '';
 
-        $BATCH  = 10000; // to insert 10000 data at 1 go 
+        $BATCH  = 15000; // to insert 10000 data at 1 go 
 
+        //array_push($loop_time, microtime(true)-$tm1);
       
         $counter = 0;
         while(true)
@@ -556,17 +548,18 @@ class ImportExport extends Controller
                           ,$domains_status_head         , $DOMAINS_STATUS);
                   $ed = microtime(true)-$st;
                   array_push($query_time_array, $ed);
-
+                  //dd($query_time_array);
                   //echo ($ed."<br/>");
 
-                  $LEADS          = '';
-                  $EACH_DOMAINS       = '';
-                  $DOMAINS_INFO       = '';
+                  $LEADS                  = '';
+                  $VALID_PHONE            = '';
+                  $EACH_DOMAINS           = '';
+                  $DOMAINS_INFO           = '';
                   $DOMAINS_ADMINISTRATIVE = ''; 
-                  $DOMIANS_TECHNICAL    = '';
-                  $DOMIANS_BILLING    = '';
-                  $DOMIANS_NAMESERVER   = '';
-                  $DOMAINS_STATUS     = '';
+                  $DOMIANS_TECHNICAL      = '';
+                  $DOMIANS_BILLING        = '';
+                  $DOMIANS_NAMESERVER     = '';
+                  $DOMAINS_STATUS         = '';
 
                   //dd('first_batch_complete');
                   
@@ -599,6 +592,7 @@ class ImportExport extends Controller
 
       \Log::info('time ==>> ',$query_time_array);
 
+      echo "<pre>";print_r($query_time_array);
       //echo('TOTAL TIME: ' . $end . " seconds");
       //\Log::info('TOTAL TIME: ' . $end . " seconds");
       $this->destroy();
