@@ -148,7 +148,7 @@ form{
 
 			<div class="col-md-12">
 
-				<form method="POST" action="{{Route('search')}}" class="">
+				<form method="POST" action="{{Route('search')}}" class="col-md-6">
 						<div class="form-group">
 							<label>Domain Name : </label>
 							<input type="text" value="{{ Input::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">

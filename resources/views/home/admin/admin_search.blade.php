@@ -155,7 +155,7 @@
          </div>
          <div class="row">
             <div class="col-md-12">
-               <form method="POST" action="{{Route('search')}}" class="search_form" id="postSearchDataForm">
+               <form method="POST" action="{{Route('search')}}" class="col-md-6 search_form" id="postSearchDataForm">
                   <div class="form-group">
                      <label>Domain Name : </label>
                      <input type="text" value="{{ Input::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
@@ -258,7 +258,7 @@
                   </div>
 
                   <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
-                  <div class="row">
+                  <div class="row form-group">
                   <div class="col-md-4 col-sm-3">
                      <label>DomainCount :</label> <br>
                   </div>
@@ -271,7 +271,7 @@
                      </select>
                   </div>
                   <div class="col-md-4 col-sm-3">   
-                     <input type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
+                     <input class="form-control" type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
                   </div>   
 
                   </div> 
@@ -288,11 +288,11 @@
                      </select>
                      </div>
                      <div class="col-md-4 col-sm-3">  
-                     <input type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
+                     <input class="form-control" type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
                      </div>
 
                  </div>    
-
+                 <br>
                      <div class="btn btn-primary pull-right" id="refine_searchID">Refine Search</div>
                      <div class="clearfix"></div>
                   </div>
