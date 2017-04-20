@@ -1195,13 +1195,10 @@ public function download_csv_single_page(Request $request)
         else
         {
           //dd('in else');
+          $leads = $this->leads_Search($request);
           $this->counting_leads_domains($leads,$request->pagination); //update the new count
           $this->count_total_pages($request->pagination);
-          if($this->update_metadata_full($meta_data_leads[0]->id
-                              ,$totalLeads
-                              ,$totalDomains
-                              ,$this->compress($this->leads_id)))
-
+          if($this->update_metadata_full($meta_data_leads[0]->id,$this->compress($this->leads_id)))
           return $this->limit($leads,$limit,$offset);
         }
       }
@@ -1280,12 +1277,12 @@ public function download_csv_single_page(Request $request)
 
     //update previous meta data set fully if new records are inserted
     //after the last search date with similar parameters
-    private function update_metadata_full($id,$totalLeads,$totalDomains,$compresed_leads)
+    private function update_metadata_full($id,$compresed_leads)
     {
       $meta = SearchMetadata::where('id',$id)->first();
       $meta->search_priority++;
-      $meta->totalLeads         = $totalLeads;
-      $meta->totalDomains       = $totalDomains;
+      $meta->totalLeads         = $this->totalLeads;
+      $meta->totalDomains       = $this->totalDomains;
       $meta->leads              = $compresed_leads['compressed'];
       $meta->compression_level  = $compresed_leads['compression_level'];
       if($meta->save())
