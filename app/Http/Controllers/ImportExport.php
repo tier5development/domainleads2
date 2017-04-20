@@ -395,6 +395,31 @@ class ImportExport extends Controller
         return $this->__leads[$registrant_email];
     }
 
+
+    //atrocious data populates when server gets shut down or import data process is forced stopped while execution or server restarts or mysql restarts.
+    //this clears out data with mismatches 
+    private function remove_atrocious_data() 
+    {
+      DB::statement(DB::raw('DELETE from each_domain where each_domain.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
+
+      DB::statement(DB::raw('DELETE from valid_phone where valid_phone.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
+
+      DB::statement(DB::raw('DELETE from domains_info where domains_info.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+      DB::statement(DB::raw('DELETE from domains_technical where domains_technical.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+      DB::statement(DB::raw('DELETE from domains_status where domains_status.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+      DB::statement(DB::raw('DELETE from domains_nameserver where domains_nameserver.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+      DB::statement(DB::raw('DELETE from domains_feedback where domains_feedback.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+      DB::statement(DB::raw('DELETE from domains_billing where domains_billing.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+      DB::statement(DB::raw('DELETE from domains_administrative where domains_administrative.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+
+    }
+
     public function insertion_Execl($file)
     {
 
@@ -408,7 +433,21 @@ class ImportExport extends Controller
         ini_set('max_input_time', '0');
         set_time_limit(0);
         ignore_user_abort(true);
+
+
+        $st = microtime(true);
+        $this->remove_atrocious_data();
+        $ed = microtime(true)-$st;
+        array_push($query_time_array,'database_cleanup',$ed);
+        
+
+        $st = microtime(true);
         $this->create();
+        $ed = microtime(true) - $st;
+        array_push($query_time_array,'create globals',$ed);
+        
+
+
         $start = microtime(true);
         $cnt = 0;
         $header = fgetcsv($file); // get the head row of csv file
@@ -587,9 +626,14 @@ class ImportExport extends Controller
                 break;
             }    
         }
-      $this->rectify_leads();
-      $end = microtime(true) - $start;
 
+      $st = microtime(true);  
+      $this->rectify_leads();
+      $ed = microtime(true)-$st;
+      array_push($query_time_array,'rectification_of_inserted_data',$ed);
+
+
+      $end = microtime(true) - $start;
       \Log::info('time ==>> ',$query_time_array);
 
       echo "<pre>";print_r($query_time_array);
