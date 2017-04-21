@@ -21,8 +21,11 @@
       @else
         <li class="pull-right"><a href="#">advanced membership</a></li>
       @endif
-
         <li class="pull-right"><a href="#">Notifications</a></li>
+
+      @if(\Auth::user()->user_type == 2)
+        <li class="pull-right"><a href="{{url('/')}}/manage">Manage</a></li>
+      @endif
 
     </ul>
   </div>

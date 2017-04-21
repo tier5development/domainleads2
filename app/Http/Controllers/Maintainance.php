@@ -12,6 +12,7 @@ use \App\ValidatedPhone;
 use \App\Wordpress_env;
 use \App\CurlError;
 use \App\DomainFeedback;
+use \App\CSV;
 use DB;
 use Carbon\Carbon;
 use Zipper;
@@ -29,6 +30,32 @@ class Maintainance extends Controller
   {
     return view('errors.500');
   }
+
+
+  public function manage()
+  {
+    $data = CSV::select('file_name','query_time','leads_inserted','domains_inserted','status')->get();
+    $data_head = array('file_name','insert_time','total_leads','total_domains'
+                ,'status','link','delete');
+
+    $data_arr = array();
+    $i=0;
+    foreach ($data as $key => $value) 
+    {
+      $data_arr[$i]['file_name'] = $value->file_name;
+      $data_arr[$i]['insert_time']= $value->query_time;
+      $data_arr[$i]['leads_inserted'] = $value->leads_inserted;
+      $data_arr[$i]['domains_inserted']= $value->domains_inserted;
+      $data_arr[$i]['status'] = $value->status;
+      $data_arr[$i]['link'] = 'some_link';
+      $data_arr[$i++]['delete'] = 'delete';
+    }
+    
+    return view('home.admin.manage.manage'
+            ,['data'=>$data_arr,'data_head'=>$data_head]);
+    //dd($csv);
+  }
+
 
   // public function async_domain()
   // {
@@ -54,7 +81,7 @@ class Maintainance extends Controller
   {
       $start = microtime(true);
 
-      $limit = 50; //--<selects how many domain to ping with a get request..>
+      $limit = 5000; //--<selects how many domain to ping with a get request..>
 
       $curl_errors = CurlError::pluck('err_reason','curl_error')->toArray();
 

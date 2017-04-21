@@ -253,10 +253,16 @@ class ImportExport extends Controller
 	 	$str = '';
 	 	if($high - $low == 0)
 	 	{
-	 		$rec = str_replace($this->search, $this->replace, $record[$low]);
+
+      $rg_em = str_replace($this->search, $this->replace, $record[17]);
+      $rec = str_replace($this->search, $this->replace, $record[$low]);
 	 		$d_ext = explode("." , $rec);
-          	$ext = $d_ext[sizeof($d_ext)-1];
-          	$str .= "NULL,'".$rec."','".$ext."','0',NULL,NULL,'".str_replace($this->search, $this->replace, $record[17])."'";
+      $ext = $d_ext[sizeof($d_ext)-1];
+
+      if(strlen($rg_em) > 110 || strlen($rec)>100 || strlen($ext)>30)
+        return -1;
+
+      $str .= "NULL,'".$rec."','".$ext."','0',NULL,NULL,'".$rg_em."'";
 	 	}
 	 	else
 	 	{
@@ -294,7 +300,8 @@ class ImportExport extends Controller
 	  		}
 		 	}
 	 	}
-	 	return $str;			
+	 	
+    return $str;			
 	}
 
   private function execute_batch_query($leads_head    ,$LEADS
@@ -336,20 +343,51 @@ class ImportExport extends Controller
 
 
           //dd($q_leads);
+          $time_array = array();
+
+          $t = microtime(true);
           DB::statement($q_leads);
+          array_push($time_array, 'leads -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           if(isset($q_valid_phone)) DB::statement($q_valid_phone);
+          array_push($time_array, 'valid_phone -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_each_domains);
+          array_push($time_array, 'each_domain -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_domains_info);
+          array_push($time_array, 'domains_info -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_domains_administrative);
+          array_push($time_array, 'domains_info -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_domains_technical);
+          array_push($time_array, 'domains_technical -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_domains_billing);
+          array_push($time_array, 'domains_billing -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_domains_nameserver);
+          array_push($time_array, 'domains_nameserver -> '.(microtime(true)-$t));
+
+          $t = microtime(true);
           DB::statement($q_domains_status);
+          array_push($time_array, 'domains_status -> '.(microtime(true)-$t));
+
+          return $time_array;
     }
     catch(\Exception $e)
     {
-      //\Log::info('From import export :: while querry executing :: '.$e->getMessage());
-      //dd($e->getMessage());
+
+      \Log::info('From import export :: while querry executing :: '.$e->getMessage());
+      dd($e->getMessage());
     }
     
   }
@@ -420,9 +458,22 @@ class ImportExport extends Controller
 
     }
 
+    private function validate_input($row)
+    {
+      $email  = str_replace($this->search, $this->replace, $row[17]);
+      $domain = str_replace($this->search, $this->replace, $row[1]);
+      $d_ext  = explode("." , $domain);
+      $ext    = $d_ext[sizeof($d_ext)-1];
+      $zip    = str_replace($this->search, $this->replace, $row[15]);
+
+      if(strlen($email)>110 || strlen($domain)>100 || strlen($ext)>30 || strlen($zip)>15)
+        return false;
+
+      return true;
+    }
+
     public function insertion_Execl($file)
     {
-
         $query_time_array = array();
         $loop_time = array();
 
@@ -486,27 +537,27 @@ class ImportExport extends Controller
         $domains_status_head = "(`id`,`domain_status_1`,`domain_status_2`,`domain_status_3`,`domain_status_4`,`created_at`,`updated_at`, `domain_name`)";
 
 
-        $each_domains       = '';
-        $domains_info       = '';
-        $leads          = '';
-        $valid_phone        = '';
+        $each_domains             = '';
+        $domains_info             = '';
+        $leads                    = '';
+        $valid_phone              = '';
         $domains_administrative   = '';
-        $domains_technical    = '';
-        $domains_billing      = ''; 
-        $domains_nameserver     = '';
-        $domains_status       = '';
+        $domains_technical        = '';
+        $domains_billing          = ''; 
+        $domains_nameserver       = '';
+        $domains_status           = '';
 
-        $EACH_DOMAINS       = '';
-        $DOMAINS_INFO       = '';
-        $LEADS          = '';
-        $VALID_PHONE        = '';
+        $EACH_DOMAINS             = '';
+        $DOMAINS_INFO             = '';
+        $LEADS                    = '';
+        $VALID_PHONE              = '';
         $DOMAINS_ADMINISTRATIVE   = '';
-        $DOMIANS_TECHNICAL    = '';
-        $DOMIANS_BILLING      = '';
+        $DOMIANS_TECHNICAL        = '';
+        $DOMIANS_BILLING          = '';
         $DOMIANS_NAMESERVER       = '';
-        $DOMAINS_STATUS          = '';
+        $DOMAINS_STATUS           = '';
 
-        $BATCH  = 15000; // to insert 10000 data at 1 go 
+        $BATCH  = 5000; // to insert 10000 data at 1 go 
 
         //array_push($loop_time, microtime(true)-$tm1);
       
@@ -542,22 +593,36 @@ class ImportExport extends Controller
                 $domains_status = '';
 
 
-
                 $created_at             = str_replace($this->search, $this->replace, Carbon::now());
                 $updated_at             = str_replace($this->search, $this->replace, Carbon::now());
+
+
+                // checking if reg_email > 110 characters or domain_name > 100 characters
+                // or domain extension > 30 characters
+                $return_val = $this->make_query(1 , 1 , $row,$created_at,$updated_at,null);
+                if($return_val == -1) continue; 
+                $each_domains = $return_val;
+
+                $rg_em = str_replace($this->search, $this->replace, $row[17]);
+
                 $domains_count          = $this->set($row[1],$row[17]); //-------------
-                $leads                  = $this->make_query(10 , 19 , $row ,$created_at,$updated_at
-                                                            ,$domains_count);
-                $rg_em                  = str_replace($this->search, $this->replace, $row[17]);
+                $leads                  = $this->make_query(10 , 19 , $row ,$created_at
+                                                ,$updated_at,$domains_count);
+                
                 $valid_phone            = $this->validate_phone_query_builder($row[18]
                                                             ,$rg_em,$counter,$created_at,$updated_at);
-                $each_domains           = $this->make_query(1 , 1 ,   $row,$created_at,$updated_at,null);
-                $domains_info           = $this->make_query(2 , 9 ,   $row,$created_at,$updated_at,null);
-                $domains_administrative = $this->make_query(20 , 29 , $row,$created_at,$updated_at,null);
-                $domains_technical      = $this->make_query(30 , 39 , $row,$created_at,$updated_at,null);
-                $domains_billing        = $this->make_query(40 , 49 , $row,$created_at,$updated_at,null);
-                $domains_nameserver     = $this->make_query(50 , 53 , $row,$created_at,$updated_at,null);
-                $domains_status         = $this->make_query(54 , 57 , $row,$created_at,$updated_at,null);
+                $domains_info           = $this->make_query(2 , 9 , $row,$created_at
+                                          ,$updated_at,null);
+                $domains_administrative = $this->make_query(20 , 29 , $row,$created_at
+                                          ,$updated_at,null);
+                $domains_technical      = $this->make_query(30 , 39 , $row,$created_at
+                                          ,$updated_at,null);
+                $domains_billing        = $this->make_query(40 , 49 , $row,$created_at
+                                          ,$updated_at,null);
+                $domains_nameserver     = $this->make_query(50 , 53 , $row,$created_at
+                                          ,$updated_at,null);
+                $domains_status         = $this->make_query(54 , 57 , $row,$created_at
+                                          ,$updated_at,null);
                   
 
 
@@ -573,10 +638,8 @@ class ImportExport extends Controller
 
                 if($counter%$BATCH == 0)
                 {
-                  
-
-                  $st = microtime(true);
-                  $this->execute_batch_query($leads_head    ,$LEADS
+                  //$st = microtime(true);
+                  $ed = $this->execute_batch_query($leads_head    ,$LEADS
                           ,$valid_phone_head            ,$VALID_PHONE
                           ,$each_domains_head           ,$EACH_DOMAINS
                           ,$domains_info_head           ,$DOMAINS_INFO
@@ -585,7 +648,7 @@ class ImportExport extends Controller
                           ,$domains_billing_head        , $DOMIANS_BILLING
                           ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                           ,$domains_status_head         , $DOMAINS_STATUS);
-                  $ed = microtime(true)-$st;
+                  //$ed = microtime(true)-$st;
                   array_push($query_time_array, $ed);
                   //dd($query_time_array);
                   //echo ($ed."<br/>");
@@ -601,15 +664,14 @@ class ImportExport extends Controller
                   $DOMAINS_STATUS         = '';
 
                   //dd('first_batch_complete');
-                  
                 }
               }
               else
               {
                 if($counter % $BATCH != 0)
                 {
-                  $st = microtime(true);
-                  $this->execute_batch_query($leads_head    ,$LEADS
+                  //$st = microtime(true);
+                  $ed = $this->execute_batch_query($leads_head    ,$LEADS
                         ,$valid_phone_head            ,$VALID_PHONE
                         ,$each_domains_head           ,$EACH_DOMAINS
                         ,$domains_info_head           ,$DOMAINS_INFO
@@ -618,7 +680,7 @@ class ImportExport extends Controller
                         ,$domains_billing_head        , $DOMIANS_BILLING
                         ,$domains_nameserver_head     , $DOMIANS_NAMESERVER
                         ,$domains_status_head         , $DOMAINS_STATUS);
-                  $ed = microtime(true)-$st;
+                  //$ed = microtime(true)-$st;
                   array_push($query_time_array, $ed);
                   
                   //echo ($ed."<br/>");
@@ -629,7 +691,7 @@ class ImportExport extends Controller
 
       $st = microtime(true);  
       $this->rectify_leads();
-      $ed = microtime(true)-$st;
+      $ed = microtime(true) - $st;
       array_push($query_time_array,'rectification_of_inserted_data',$ed);
 
 

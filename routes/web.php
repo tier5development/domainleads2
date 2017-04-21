@@ -17,72 +17,8 @@ Route::get('/aaaaa',function(){
 
 Route::get('/aaaa',function(){
 
-    $x = DB::select(DB::raw('SELECT leads from search_metadata where id = 1'));
-    dd(gzinflate($x[0]->leads));
-
-    //$last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record` where id = 53'));
-    //dd($last_csv_insert_time[0]->created);
-
-    //echo(\Carbon\carbon::now());
-
-// //$string = str_repeat('1234567890'.implode('',range('a','z')),48800);
-// $string='';
-// for($i=0;$i<10000000;$i++) $string .= $i.",";
-// //dd($string);
-// echo strlen($string).'<br/>';//1756800 bytes
-
-
-// $last_size = strlen($string);
-// $compressed = $string;
-// $ratio = 0;
-// while(true)
-// {
-//     if($ratio > 10) break;
-
-    
-//     $min_size   = strlen(gzdeflate($compressed, 9));
-    
-//     if($min_size >= $last_size) 
-//         break;
-
-//     $compressed = gzdeflate($compressed, 9);
-//     $last_size = $min_size;
-//     $ratio++;
-
-//     echo $last_size.'<br/>';
-
-    
-// }
-
-// $s = $compressed;
-// while($ratio--)
-// {
-//     $s = gzinflate($s);
-// }
-
-// dd($s);
-
-
-//$compressed = gzdeflate($string,  9);
-//$compressed = gzdeflate($compressed, 9);
-//$compressed = gzdeflate($compressed, 9);
-//$compressed = gzdeflate($compressed, 9);
-//$compressed = gzdeflate($compressed, 9);
-//$compressed = gzdeflate($compressed, 9);
-//$compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-// $compressed = gzdeflate($compressed, 9);
-
-
-//dd($compressed);
-//echo '<br/>'.strlen($compressed).'<br/>';//99 bytes
-
-//echo gzinflate(gzinflate($compressed));
+   $x = DB::select(DB::raw("select column_name, data_type, character_maximum_length from information_schema.columns where table_name = 'leads'"));
+   dd($x);
 
 });
 
@@ -134,25 +70,27 @@ Route::get('/aa',function(){
 
    	Route::group(['middleware' => 'auth'],function(){
 
-	Route::get('importExport', 'ImportExport@importExport');
+    	Route::get('importExport', 'ImportExport@importExport');
 
-	Route::post('/importExcel', 'ImportExport@importExcel'); // new version of import exel
+    	Route::post('/importExcel', 'ImportExport@importExcel'); // new version of import exel
 
-    Route::get('downloadExcel', 'SearchController@downloadExcel');
+        Route::get('downloadExcel', 'SearchController@downloadExcel');
 
-    Route::get('downloadExcel2', 'SearchController@downloadExcel2');
-    //Route::get('downloadExcel' , ['uses'=>'SearchController@downloadExcel','as'=>'downloadExcel']);
+        Route::get('downloadExcel2', 'SearchController@downloadExcel2');
+        //Route::get('downloadExcel' , ['uses'=>'SearchController@downloadExcel','as'=>'downloadExcel']);
 
-	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
+    	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 
-	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
+    	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
 
-    Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
-    Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
-    Route::post('removeChkedEmailfromSession' , ['uses'=>'SearchController@removeChkedEmailfromSession','as'=>'removeChkedEmailfromSession']);
+        Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
+        Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
+        Route::post('removeChkedEmailfromSession' , ['uses'=>'SearchController@removeChkedEmailfromSession','as'=>'removeChkedEmailfromSession']);
 
-	Route::get('/myLeads/{id}',['uses'=>'SearchController@myLeads','as'=>'myLeads']);
-	Route::post('/unlockleed' , ['uses'=>'SearchController@unlockleed','as'=>'unlockleed']);
+    	Route::get('/myLeads/{id}',['uses'=>'SearchController@myLeads','as'=>'myLeads']);
+    	Route::post('/unlockleed' , ['uses'=>'SearchController@unlockleed','as'=>'unlockleed']);
+
+        Route::get('/manage',['uses'=>'Maintainance@manage','as'=>'manage']);
 
 
 
