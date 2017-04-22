@@ -43,7 +43,7 @@ class Maintainance extends Controller
     foreach ($data as $key => $value) 
     {
       $data_arr[$i]['file_name'] = $value->file_name;
-      $data_arr[$i]['insert_time']= $value->query_time;
+      $data_arr[$i]['insert_time']= gmdate("H:i:s", $value->query_time);
       $data_arr[$i]['leads_inserted'] = $value->leads_inserted;
       $data_arr[$i]['domains_inserted']= $value->domains_inserted;
       $data_arr[$i]['status'] = $value->status;

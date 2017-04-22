@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Admin Panel | </title>
+    <title>Domainleads|Admin Panel</title>
 
     <!-- Bootstrap -->
     <link href="{{url('/')}}/theme_vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -275,7 +275,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Tables <small>Some examples to get you started</small></h3>
+                <h3>CSV <small>ALL INSERTIONS</small></h3>
               </div>
 
               <div class="title_right">
@@ -288,6 +288,20 @@
                   </div>
                 </div>
               </div>
+
+              <div class="row">
+                
+                  <form class="title_left" action="{{url('/')}}/importExcel" method="post" enctype="multipart/form-data">
+
+                    <input type="file" name="import_file" id="import_file" />
+
+                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+
+                    <input type="submit" id="import" value="Import" class="btn btn-primary">
+                  </form>
+                
+              </div>
+
             </div>
 
             <div class="clearfix"></div>

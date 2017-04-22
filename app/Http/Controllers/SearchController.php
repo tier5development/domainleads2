@@ -131,9 +131,10 @@ public function download_csv_single_page(Request $request)
     $array  = $this->leadsPerPage_Search($leads);
 
     $param  = ['domain_name'=>$request->domainname
-             ,'domain_ext' =>$request->domainext
+             ,'domain_ext' =>($request->domainext == null ? null : $request->domainext)
              ,'domains_create_date'=>$request->createdate1
              ,'domains_create_date2'=>$request->createdate2];
+    //dd($param);
     $data   = $array['data'];
     $domains= $this->domainsPerPage_Search($param,$phone_type_array,$array['leads_string']);
     $data = $this->domains_output_Search($data,$domains);
@@ -158,6 +159,7 @@ public function download_csv_single_page(Request $request)
       $reqData[$i]['phone']      = $val['registrant_phone'];
       $reqData[$i]['email_id'] = $val['registrant_email'];
     }
+    dd($reqData);
 
     return Excel::create('domainleads', function($excel) use ($reqData) {
 

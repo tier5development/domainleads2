@@ -301,6 +301,7 @@
          </div>
          <br><br>
          <div>
+
             @if($record !== null)
             <hr>
             <br><br>
@@ -316,17 +317,22 @@
                <label>Search Time ::</label>
                <span id="search_time">  {{number_format($query_time,4)}} seconds</span>
                <br>
+
                <!-- <div id="ajax-loader" style="display: none; padding-left: 450px;">
                   <img src="{{url('/')}}/images/ajax-loader.gif">
                   </div> -->
-               <div class="table-responsive">   
+               <div class="table-responsive">
+
+
                <table id="table" class="table table-hover table-bordered domainDAta">
                   <input id="exportLeads" type="submit" name="exportLeads" value="Export">
                   <input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
                   <input type="hidden" name="meta_id" value="{{$meta_id}}">
                   <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
                   <input type="hidden" name="domainname" value="{{ Input::get('domain_name') }}">
-                  <input type="hidden" name="domainext"  value="{{ Input::get('domain_ext') }}">
+                  <input type="hidden" name="domainext"  value="{{ null!==Input::get('domain_ext') 
+                  ? implode(',',Input::get('domain_ext'))
+                  : '' }}">
                   <input type="hidden" name="createdate1" value="{{ Input::get('domains_create_date') }}">
                   <input type="hidden" name="createdate2" value="{{ Input::get('domains_create_date2') }}">
                   <input type="hidden" name="cell" value="{{Input::get('cell_number')}}" >
@@ -343,6 +349,7 @@
                      <th>Domains Create Date</th>
                      <th>Registrant Company</th>
                   </tr>
+
                   @foreach($record as $key=>$each)
                   <tr id="row_{{$key}}">
                      <td>
