@@ -218,9 +218,16 @@ class ImportExport extends Controller
 	  			$no = explode('.',$num);
 
 	  			if(isset($no[1]))
+          {
+            
 		  			$arr = ($this->validateUSPhoneNumber($no[1]));
+          }
 		  		else
+          {
+            
 		  			$arr = ($this->validateUSPhoneNumber($no[0]));
+          }
+
 		  		if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number'))
 		  		{
 		  			$str = "NULL , '"
@@ -762,8 +769,10 @@ class ImportExport extends Controller
 
   public function checknum($num)
   {
-    $x = ValidatedPhone::where('phone_number','like', '%'.$num.'%')->first();
-    dd($x);
+    $this->create();
+    dd($this->validateUSPhoneNumber($num));
+    //$x = ValidatedPhone::where('phone_number','like', '%'.$num.'%')->first();
+    //dd($x);
   }
 
   public function validateUSPhoneNumber($ph)

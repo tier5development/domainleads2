@@ -1447,6 +1447,12 @@ public function download_csv_single_page(Request $request)
       }
       foreach ($data as $key => $value) 
       {
+
+        $phone = explode('.',$value['registrant_phone']);
+        $phone = isset($phone[1]) ? $phone[1] : $phone[0];
+
+        $data[$key]['registrant_phone']     = $phone;
+
         $data[$key]['domain_name']          = isset($domain_list[$value['registrant_email']]['domain_name']) 
                                               ? $domain_list[$value['registrant_email']]['domain_name']
                                               : null;

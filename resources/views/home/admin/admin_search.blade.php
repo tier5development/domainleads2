@@ -382,6 +382,11 @@
                         <small class="reg_email" id="registrant_email_{{$key}}">{{$each['registrant_email']}} </small>
                      </td>
                      <td>
+                        <?php
+                          //$phone = explode('.',$each['registrant_phone']);
+                          //$phone = isset($phone[1]) ? $phone[1] : $phone[0];
+                         ?> 
+
                         <small class="reg_phone" id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
                         @if(isset($each['number_type'])) 
                         @if($each['number_type']== "Cell Number")
