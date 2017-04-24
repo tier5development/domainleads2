@@ -168,6 +168,10 @@
                      <label>Registrant State : </label>
                      <input type="text" value="{{ Input::get('registrant_state') }}" name="registrant_state" id="registrant_state" class="form-control">
                   </div>
+                  <div>
+                    <label>zip : </label>
+                    <input type="text" name="registrant_zip" value="{{Input::get('registrant_zip')}}">
+                  </div>
                   <div class="form-group">
                      <label>Domains Create Date</label><br>
                      <div class="row">
@@ -343,6 +347,7 @@
                   <tr>
                      <th style="width: 40px"><input type="checkbox"  value="1" class="downloadcsv_all" id=""> Select Leads</th>
                      <th>Domain Name</th>
+                     <th>Zip Code</th>
                      <th>Registrant Name</th>
                      <th>Registrant Email</th>
                      <th>Registrant Phone</th>
@@ -351,12 +356,14 @@
                   </tr>
 
                   @foreach($record as $key=>$each)
+
                   <tr id="row_{{$key}}">
                      <td>
                         <small>
                         <input id="reg_email_{{$key}}" class="eachrow_download single_row" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
                         </small>
                      </td>
+                     
                      <td>
                         <small><b class="reg_email" id="domain_name_{{$key}}">{{$each['domain_name']}}</b></small>
                         <br>
@@ -366,10 +373,13 @@
                         <!-- leadArr[$each->registrant_email] -->
                      </td>
                      <td>
+                       <small id="registrant_zip_{{$key}}">{{$each['registrant_zip']}}</small>
+                     </td>
+                     <td>
                         <small class="reg_name" id="registrant_name_{{$key}}">{{$each['registrant_name']}}</small>	
                      </td>
                      <td>
-                        <small class="reg_email" id="registrant_email_{{$key}}">{{$each['registrant_email']}}</small>
+                        <small class="reg_email" id="registrant_email_{{$key}}">{{$each['registrant_email']}} </small>
                      </td>
                      <td>
                         <small class="reg_phone" id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>

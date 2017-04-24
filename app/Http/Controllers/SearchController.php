@@ -159,7 +159,7 @@ public function download_csv_single_page(Request $request)
       $reqData[$i]['phone']      = $val['registrant_phone'];
       $reqData[$i]['email_id'] = $val['registrant_email'];
     }
-    dd($reqData);
+    //dd($reqData);
 
     return Excel::create('domainleads', function($excel) use ($reqData) {
 
@@ -585,6 +585,7 @@ public function download_csv_single_page(Request $request)
       , l.registrant_company 
       , l.registrant_phone 
       , l.registrant_state 
+      , l.registrant_zip
       , l.domains_count 
       , l.unlocked_num 
       FROM leads as l
@@ -677,6 +678,7 @@ public function download_csv_single_page(Request $request)
             , l.registrant_company 
             , l.registrant_phone 
             , l.registrant_state 
+            , l.registrant_zip
             , l.domains_count 
             , l.unlocked_num ";
             $sql .= isset($phone_type_array) && sizeof($phone_type_array) > 0
@@ -704,6 +706,10 @@ public function download_csv_single_page(Request $request)
                 else if($key == 'registrant_state')
                 {
                     $sql .= " and l.registrant_state='".$req."' ";
+                }
+                else if($key == 'registrant_zip')
+                {
+                    $sql .= " and l.registrant_zip = '".$req."'";
                 }
                 else if($key == 'domain_name')
                 {
@@ -846,6 +852,7 @@ public function download_csv_single_page(Request $request)
             $data[$x]['registrant_country'] = $leads[$i]->registrant_country;
             $data[$x]['registrant_company'] = $leads[$i]->registrant_company;
             $data[$x]['registrant_phone']   = $leads[$i]->registrant_phone;
+            $data[$x]['registrant_zip']     = $leads[$i]->registrant_zip;
             $data[$x]['unlocked_num']       = $leads[$i]->unlocked_num;
             $data[$x]['domains_count']      = $leads[$i]->domains_count;
             $data[$x++]['registrant_state'] = $leads[$i]->registrant_state;
@@ -962,6 +969,7 @@ public function download_csv_single_page(Request $request)
       return ['domain_name'=>false
               ,'registrant_country'=>false
               ,'registrant_state'=>false
+              ,'registrant_zip'=>false
               ,'domains_create_date'=>false
               ,'domains_create_date2'=>false
               ,'number_type'=>false
@@ -1025,6 +1033,11 @@ public function download_csv_single_page(Request $request)
           else if($key == 'registrant_state')
           {
               $sql .= " and registrant_state='".$req."' ";
+              $input[$key] = true;
+          }
+          else if($key == 'registrant_zip')
+          {
+              $sql .= " and registrant_zip='".$req."' ";
               $input[$key] = true;
           }
           else if($key == 'domain_name')
@@ -1110,6 +1123,8 @@ public function download_csv_single_page(Request $request)
               case 'registrant_country': $sql .= " and registrant_country IS NULL";
                     break;
               case 'registrant_state' : $sql .= " and registrant_state IS NULL";
+                    break;
+              case 'registrant_zip'   : $sql .= " and registrant_zip IS NULL";
                     break;
               case 'domains_create_date' : 
                     if(!$input['domains_create_date2'])

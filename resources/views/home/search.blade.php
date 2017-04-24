@@ -161,6 +161,11 @@ form{
 							<label>Registrant State : </label>
 							<input type="text" value="{{ Input::get('registrant_state') }}" name="registrant_state" id="registrant_state" class="form-control">
 						</div>
+						<div>
+							<label>zip : </label>
+		                    <input type="number" name="zip" value="">
+		               	</div>
+		               	<br>
 						<div class="form-group">
 							<label>Domains Create Date</label>
 							<div class="row">
@@ -214,6 +219,7 @@ form{
 							  <!-- <button>Filter</button> -->
 							</dl>
 						</div>
+
 						<div class="form-group">
 							<label>cell number</label>
 							<input type="checkbox" name="cell_number" value="cell number" @if(Input::get('cell_number')) checked @endif>

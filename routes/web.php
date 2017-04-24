@@ -17,8 +17,13 @@ Route::get('/aaaaa',function(){
 
 Route::get('/aaaa',function(){
 
-   $x = DB::select(DB::raw("select column_name, data_type, character_maximum_length from information_schema.columns where table_name = 'leads'"));
-   dd($x);
+   //$x = DB::select(DB::raw("select column_name, data_type, character_maximum_length from information_schema.columns where table_name = 'leads'"));
+
+    $x = DB::select(DB::raw('Show INDEX FROM leads'));
+    foreach ($x as $a => $b) {
+        //dd($b);
+    }
+    dd($x);
 
 });
 
