@@ -27,6 +27,8 @@ Route::get('/aaaa',function(){
 
 });
 
+Route::get('/update_metadata_today/{date}',['uses'=>'SearchController@update_metadata_today']);
+
 Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
 
 Route::get('/aaa',function(){

@@ -27,6 +27,27 @@ class Kernel extends ConsoleKernel
     {
         
         $schedule->call(function(){
+            date_default_timezone_set('Asia/Kolkata');
+            $date = date('Y-m-d',time());
+            $ch = curl_init();
+            $url = env('APP_URL');
+
+            \Log::info($url.'/update_metadata_today/'.$date);
+
+            \Log::info(env('DB_PASSWORD')." process:: ".getmypid());
+            curl_setopt($ch, CURLOPT_URL, $url.'/update_metadata_today/'.$date);
+            curl_setopt($ch, CURLOPT_HEADER, FALSE);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            $head = curl_exec($ch); 
+
+            $result = json_decode($head,true);
+
+            //\Log::info('from schedule ++++++>> STATUS : '.$result['status']);
+            \Log::info($result);
+
+        })->dailyAt('20:31');
+        
+        $schedule->call(function(){
             try
             {
                 //2017-02-06 ===>> small date

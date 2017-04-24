@@ -568,6 +568,178 @@ public function download_csv_single_page(Request $request)
       }
     }
 
+    public function update_metadata_today($date)
+    {
+      //dd($date);
+      $sql = "SELECT * from search_metadata ORDER BY query_time,search_priority DESC";
+      $data = DB::select(DB::raw($sql));
+      $i=0;
+
+
+      $last_csv_insert_date = DB::select(DB::raw('SELECT MAX(date(created_at)) as created FROM `csv_record`'));
+      $last_csv_insert_date   = strtotime($last_csv_insert_date[0]->created);
+
+      //if($date != $last_csv_insert_date[0])
+      // return 'updated';
+
+      
+
+      foreach ($data as $key => $value) 
+      {
+        //dd($value);
+        $i++;
+        $date_flag=0;
+        $sql = "SELECT DISTINCT l.registrant_email 
+            , l.id
+            , l.registrant_fname 
+            , l.registrant_lname 
+            , l.registrant_country 
+            , l.registrant_company 
+            , l.registrant_phone 
+            , l.registrant_state 
+            , l.registrant_zip
+            , l.domains_count 
+            , l.unlocked_num ";
+
+        $date_flag = $value->domains_create_date1 == null 
+                  ? $value->domains_create_date2 == null 
+                    ? 0
+                    : 1
+                  :  1;
+
+        $sql .= $date_flag == 1 
+                ? " , vp.number_type "
+                : " ";
+
+        $sql .= "FROM leads as l 
+                INNER JOIN each_domain AS ed ON ed.registrant_email = l.registrant_email
+                INNER JOIN domains_info AS di ON di.domain_name = ed.domain_name ";
+
+        
+        $sql .= $date_flag == 1 
+                ? " INNER JOIN valid_phone AS vp ON vp.registrant_email = l.registrant_email "
+                : " ";
+
+        //dd($sql);
+        //echo($sql);exit();
+            
+        $sql .=" WHERE l.registrant_email != '' ";
+        $flag = 0;
+        $checked = 0;
+        foreach ($value as $key => $req) 
+        {
+            if($key == 'registrant_country' && $req != null)
+            {
+                $sql .= " and l.registrant_country='".$req."' ";
+                
+            }
+            else if($key == 'registrant_state' && $req != null)
+            {
+                $sql .= " and l.registrant_state='".$req."' ";
+            }
+            else if($key == 'registrant_zip' && $req != null)
+            {
+                $sql .= " and l.registrant_zip = '".$req."'";
+            }
+            else if($key == 'domain_name' && $req != null)
+            {
+                $sql .= " and ed.domain_name LIKE '%".$req."%' ";
+            }
+            else if($key == 'domain_ext' && $req != null)
+            {
+                $sql .= " and ed.domain_ext IN '".$req."' ";
+            }
+            else if($key == 'number_type' && $req != null)
+            {
+                $sql .= " and vp.number_type IN '".$req."' ";
+            }
+            else if($key == 'domains_count' && ($value->domains_count_operator != '' || 
+                $value->domains_count_operator != null) && $req != null)
+            {
+              $sql .= " and l.domains_count ".$value->domains_count_operator
+                      ." "
+                      .$req;
+            }
+            else if($key == 'unlocked_num' 
+                  && ($value->leads_unlocked_operator != '' || 
+                  $value->leads_unlocked_operator != null) && 
+                  $req != null)
+            {
+              $sql .= " and l.unlocked_num ".$value->leads_unlocked_operator
+                      ." "
+                      .$req;
+            }
+            else if($key == 'sortby' && $req != null)
+            {
+              switch ($req) 
+              {
+                case 'unlocked_asnd': $sql .= " ORDER BY l.unlocked_num ASC ";
+                  # code...
+                  break;
+
+                case 'unlocked_dcnd': $sql .= " ORDER BY l.unlocked_num DESC ";
+                  # code...
+                  break;
+
+                case 'domain_count_asnd': $sql .=" ORDER BY l.domains_count ASC ";
+                  # code...
+                  break;
+
+                case 'domain_count_dcnd': $sql .= " ORDER BY l.domains_count DESC";
+                  # code...
+                  break;
+                
+                default:
+                  # code...
+                  break;
+              }
+            }
+            else if(($key == 'domains_create_date1' || $key == 'domains_create_date2')
+              && $date_flag != 0 && $checked == 0)
+            {
+              $checked = 1;
+              if($value->domains_create_date1 != null && $value->domains_create_date2 != null)
+              {
+                $sql .= " and di.domains_create_date >= "
+                        .$value->domains_create_date1
+                        ." and di.domains_create_date <= "
+                        .$value->domains_create_date2;
+              }
+              else 
+              {
+                  if($value->domains_create_date1 != null)
+                  {
+                    $sql .= " and di.domains_create_date = ".$value->domains_create_date1." ";
+                  }
+                  else if($value->domains_create_date2 != null)
+                  {
+                    $sql .= " and di.domains_create_date = ".$value->domains_create_date2." ";
+                  }
+              }
+            }
+        }
+
+
+
+        
+        //dd($leads);
+
+
+
+        $t1 = microtime(true);
+        $leads = DB::select(DB::raw($sql));
+        $t2 = microtime(true);
+        $query_time = $t2-$t1;
+
+        $this->counting_leads_domains($leads); //update the new count
+        //$this->count_total_pages($request->pagination);
+        $status = $this->update_metadata_full($value->id,$this->compress($this->leads_id)
+                                        ,$query_time);
+
+        echo $status;
+      }
+    }
+
 
     /*
     search result for selecting leads with selected raw leads id
@@ -956,6 +1128,7 @@ public function download_csv_single_page(Request $request)
             $sql .= " and vp.number_type IN ".$phone_type_array_str;
           }
         }
+        
         $domains = DB::select(DB::raw($sql));
         return $domains;
       }
@@ -1163,7 +1336,11 @@ public function download_csv_single_page(Request $request)
       {
         //dd('--null');
 
+        $t1 = microtime(true);
         $leads = $this->leads_Search($request);
+        $t2 = microtime(true);
+        $query_time = $t2-$t1;
+
         //dd($leads);
         $this->counting_leads_domains($leads);
         $this->count_total_pages($request->pagination);
@@ -1177,7 +1354,8 @@ public function download_csv_single_page(Request $request)
                               ,$domain_ext_meta
                               ,$dates_array
                               ,$domains_count_operator
-                              ,$leads_unlocked_operator)) 
+                              ,$leads_unlocked_operator
+                              ,$query_time)) 
           {
             return $this->limit($leads,$limit,$offset);
             //return $leads;
@@ -1212,10 +1390,15 @@ public function download_csv_single_page(Request $request)
         else
         {
           //dd('in else');
+
+          $t1 = microtime(true);
           $leads = $this->leads_Search($request);
-          $this->counting_leads_domains($leads,$request->pagination); //update the new count
+          $t2 = microtime(true);
+          $query_time = $t2-$t1;
+
+          $this->counting_leads_domains($leads); //update the new count
           $this->count_total_pages($request->pagination);
-          if($this->update_metadata_full($meta_data_leads[0]->id,$this->compress($this->leads_id)))
+          if($this->update_metadata_full($meta_data_leads[0]->id,$this->compress($this->leads_id),$query_time))
           return $this->limit($leads,$limit,$offset);
         }
       }
@@ -1294,7 +1477,7 @@ public function download_csv_single_page(Request $request)
 
     //update previous meta data set fully if new records are inserted
     //after the last search date with similar parameters
-    private function update_metadata_full($id,$compresed_leads)
+    private function update_metadata_full($id,$compresed_leads,$query_time)
     {
       $meta = SearchMetadata::where('id',$id)->first();
       $meta->search_priority++;
@@ -1302,6 +1485,7 @@ public function download_csv_single_page(Request $request)
       $meta->totalDomains       = $this->totalDomains;
       $meta->leads              = $compresed_leads['compressed'];
       $meta->compression_level  = $compresed_leads['compression_level'];
+      $meta->query_time         = $query_time;
       if($meta->save())
       {
         $this->meta_id = $meta->id;
@@ -1314,7 +1498,8 @@ public function download_csv_single_page(Request $request)
     //insert mmetadatafor a new search set -- leads id inserted in zipped format
     private function insert_metadata($compress,Request $request,$phone_type_meta
                                       ,$domain_ext_meta,$dates_array
-                                      ,$domains_count_operator,$leads_unlocked_operator)
+                                      ,$domains_count_operator,$leads_unlocked_operator
+                                      ,$query_time)
     {
       
       $meta = new SearchMetadata();
@@ -1359,6 +1544,8 @@ public function download_csv_single_page(Request $request)
       $meta->totalDomains            = $this->totalDomains;
       $meta->compression_level       = $compress['compression_level'];
       $meta->leads                   = $compress['compressed'];
+
+      $meta->query_time              = $query_time;
       
       if($meta->save())
       {
