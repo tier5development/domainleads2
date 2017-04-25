@@ -588,7 +588,39 @@ public function download_csv_single_page(Request $request)
       {
         //dd($value);
         $i++;
-        $date_flag=0;
+        $phone_flag=0;
+        $number_type_str = '';
+        $domain_ext_str = '';
+
+        if($value->domain_ext != null)
+        {
+
+          $domain_ext = substr($value->domain_ext,1,-1);
+          $domain_ext = explode(',', $domain_ext);
+          foreach($domain_ext as $i=>$j)
+          {
+            if($domain_ext_str == "") $domain_ext_str .= "'".$j."'";
+            else  $domain_ext_str .= ",'".$j."'"; 
+          }
+        }
+        $domain_ext_str = "(".$domain_ext_str.")";
+        //dd($domain_ext_str);
+
+        if($value->number_type != null)
+        {
+
+          $num_type = substr($value->number_type,1,-1);
+          $num_type = explode(',', $num_type);
+          foreach($num_type as $i=>$j)
+          {
+            if($number_type_str == "") $number_type_str .= "'".$j."'";
+            else  $number_type_str .= ",'".$j."'"; 
+          }
+        }
+        $number_type_str = "(".$number_type_str.")";
+        //dd($number_type_str);
+
+
         $sql = "SELECT DISTINCT l.registrant_email 
             , l.id
             , l.registrant_fname 
@@ -601,13 +633,11 @@ public function download_csv_single_page(Request $request)
             , l.domains_count 
             , l.unlocked_num ";
 
-        $date_flag = $value->domains_create_date1 == null 
-                  ? $value->domains_create_date2 == null 
+        $phone_flag = $value->number_type == null 
                     ? 0
-                    : 1
-                  :  1;
+                    : 1;
 
-        $sql .= $date_flag == 1 
+        $sql .= $phone_flag == 1 
                 ? " , vp.number_type "
                 : " ";
 
@@ -616,7 +646,7 @@ public function download_csv_single_page(Request $request)
                 INNER JOIN domains_info AS di ON di.domain_name = ed.domain_name ";
 
         
-        $sql .= $date_flag == 1 
+        $sql .= $phone_flag == 1 
                 ? " INNER JOIN valid_phone AS vp ON vp.registrant_email = l.registrant_email "
                 : " ";
 
@@ -647,11 +677,12 @@ public function download_csv_single_page(Request $request)
             }
             else if($key == 'domain_ext' && $req != null)
             {
-                $sql .= " and ed.domain_ext IN '".$req."' ";
+                //dd($req);
+                $sql .= " and ed.domain_ext IN ".$domain_ext_str." ";
             }
             else if($key == 'number_type' && $req != null)
             {
-                $sql .= " and vp.number_type IN '".$req."' ";
+                $sql .= " and vp.number_type IN ".$number_type_str." ";
             }
             else if($key == 'domains_count' && ($value->domains_count_operator != '' || 
                 $value->domains_count_operator != null) && $req != null)
@@ -695,25 +726,25 @@ public function download_csv_single_page(Request $request)
               }
             }
             else if(($key == 'domains_create_date1' || $key == 'domains_create_date2')
-              && $date_flag != 0 && $checked == 0)
+               && $checked == 0)
             {
               $checked = 1;
               if($value->domains_create_date1 != null && $value->domains_create_date2 != null)
               {
-                $sql .= " and di.domains_create_date >= "
+                $sql .= " and di.domains_create_date >= '"
                         .$value->domains_create_date1
-                        ." and di.domains_create_date <= "
-                        .$value->domains_create_date2;
+                        ."' and di.domains_create_date <= '"
+                        .$value->domains_create_date2."' ";
               }
               else 
               {
                   if($value->domains_create_date1 != null)
                   {
-                    $sql .= " and di.domains_create_date = ".$value->domains_create_date1." ";
+                    $sql .= " and di.domains_create_date = '".$value->domains_create_date1."' ";
                   }
                   else if($value->domains_create_date2 != null)
                   {
-                    $sql .= " and di.domains_create_date = ".$value->domains_create_date2." ";
+                    $sql .= " and di.domains_create_date = '".$value->domains_create_date2."' ";
                   }
               }
             }
@@ -724,17 +755,25 @@ public function download_csv_single_page(Request $request)
         
         //dd($leads);
 
+        //dd($sql);
 
+        try{
+          $t1 = microtime(true);
+          $leads = DB::select(DB::raw($sql));
+          $t2 = microtime(true);
+          $query_time = $t2-$t1;
 
-        $t1 = microtime(true);
-        $leads = DB::select(DB::raw($sql));
-        $t2 = microtime(true);
-        $query_time = $t2-$t1;
-
-        $this->counting_leads_domains($leads); //update the new count
-        //$this->count_total_pages($request->pagination);
-        $status = $this->update_metadata_full($value->id,$this->compress($this->leads_id)
-                                        ,$query_time);
+          $this->counting_leads_domains($leads); //update the new count
+          //$this->count_total_pages($request->pagination);
+          $status = $this->update_metadata_full($value->id,$this->compress($this->leads_id)
+                                        ,$query_time);  
+        }
+        catch(\Exception $e)
+        {
+          \Log::info($e->getMessage());
+          //dd($e->getMessage());
+        }
+        
 
         echo $status;
       }

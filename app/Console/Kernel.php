@@ -45,7 +45,7 @@ class Kernel extends ConsoleKernel
             //\Log::info('from schedule ++++++>> STATUS : '.$result['status']);
             \Log::info($result);
 
-        })->dailyAt('20:31');
+        })->dailyAt('16:40');
         
         $schedule->call(function(){
             try
