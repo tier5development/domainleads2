@@ -369,7 +369,7 @@
                         <br>
                         <small> Unlocked Num : <span class="unlocked_num" id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
                         <br>
-                        <small > Total Domains : <a class="domains_count" id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small>
+                        <small > Total Domains : <a class="domains_count" id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{$each['email_link']}}">{{$each['domains_count']}}</a></small>
                         <!-- leadArr[$each->registrant_email] -->
                      </td>
                      <td>
@@ -510,7 +510,7 @@
       			},
       			success:function(response)
       			{
-      				//console.log(response);
+      				console.log(response);
       				$('.single_row').each(function(i,j){
       					$('#reg_email'+i).val('');
       					$('#domain_name_'+i).text('');
@@ -540,7 +540,7 @@
       					$('#domain_name_'+i).text(response.data[i]['domain_name']);
       					$('#unlocked_num_'+i).text(response.data[i]['unlocked_num']);
       					$('#domains_count_'+i).text(response.data[i]['domains_count']);
-      					$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['domains_link']);
+      					$('#domains_count_'+i).attr('href',URL+'/lead/'+response.data[i]['email_link']);
       					$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
       					$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
       					$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
@@ -559,6 +559,7 @@
       				$('#table').show();
       				$('#ajax-loader').hide();
       			}
+            
       		});
       }
       

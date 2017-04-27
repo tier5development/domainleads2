@@ -1693,7 +1693,10 @@ public function download_csv_single_page(Request $request)
                                               ['number_type']) 
                                               ? $domain_list[$value['registrant_email']]['number_type']
                                               : null;
+
+        $data[$key]['email_link']           = encrypt($data[$key]['registrant_email']);
       }
+      
       return $data;
     }
 
