@@ -1700,94 +1700,95 @@ public function download_csv_single_page(Request $request)
       return $data;
     }
 
+    private function search_algo(Request $request)
+    {   
+      $start = microtime(true);   
+      $this->setVariables($request); //initiating MY VARIABLES
+      $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
+      $array = $this->leadsPerPage_Search($leads);
+      
+      $data             = $array['data'];
+      $leads_string     = $array['leads_string'];
+      $totalDomains     = $this->totalDomains;
+      $totalLeads       = $this->totalLeads;
+      $totalPage        = $this->totalPage;
+      
+      if($leads_string != "()")
+      {
+        $param = ['domain_name'=>$request->domain_name
+                 ,'domain_ext' =>$request->domain_ext
+                 ,'domains_create_date'=>$request->domains_create_date
+                 ,'domains_create_date2'=>$request->domains_create_date2];
+        $phone_type_array = $this->phone_type_array;
+        $domains = $this->domainsPerPage_Search($param,$this->phone_type_array
+                                          ,$leads_string);
+        $data=$this->domains_output_Search($data,$domains);
+      }
+
+          
+      $user_id = \Auth::user()->id;
+      $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+      $users_array = array_flip($users_array);
+      $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
+      $obj_array = array_flip($obj_array);
+    
+      $end = microtime(true)-$start;
+
+      return  [ 'record'            =>$data,
+              'page'              => 1,
+              'meta_id'           => $this->meta_id,
+              'leadsid_per_page'  => isset($leadsid_per_page) 
+                                      ? $leadsid_per_page 
+                                      : null,
+              'totalLeads'        =>$this->totalLeads,
+              'totalDomains'      =>$this->totalDomains,
+              'totalPage'         =>$this->totalPage,
+              'domain_list'       =>isset($domain_list) ? $domain_list : null,
+              'query_time'        =>$end       
+            ];  
+
+      return $data; 
+    }
+
+    public function search_api($request)
+    {
+        $start  = microtime(true);          
+        $result = $this->search_algo($request);
+        $end    = microtime(true)-$start;
+
+        return $result;
+    }
+
     public function search(Request $request)
     {
+      //dd($request->all());
       ini_set('max_execution_time', 346000);
       if(\Auth::check())
       {
         if($request->all())
         {
-          $start = microtime(true);
-          
-          $this->setVariables($request); //initiating MY VARIABLES
-          $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
-          $array = $this->leadsPerPage_Search($leads);
-          
-          $data             = $array['data'];
-          $leads_string     = $array['leads_string'];
-          $totalDomains     = $this->totalDomains;
-          $totalLeads       = $this->totalLeads;
-          $totalPage        = $this->totalPage;
-          
-          if($leads_string != "()")
-          {
-            $param = ['domain_name'=>$request->domain_name
-                     ,'domain_ext' =>$request->domain_ext
-                     ,'domains_create_date'=>$request->domains_create_date
-                     ,'domains_create_date2'=>$request->domains_create_date2];
-            $phone_type_array = $this->phone_type_array;
-            $domains = $this->domainsPerPage_Search($param,$this->phone_type_array
-                                              ,$leads_string);
-            $data=$this->domains_output_Search($data,$domains);
-          }
-          
-          // $leads_arr = array(); //consists only leads
-          // foreach ($data as $key => $value) 
-          // {
-          //   if(!isset($leads_arr[$value['registrant_email']]))
-          //   {
-          //     $leads_arr[$value['registrant_email']] = 1;
-          //   }
-          //   else
-          //     $leads_arr[$value['registrant_email']]++;
-          // }
-
-              
-          $user_id = \Auth::user()->id;
-          $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
-          $users_array = array_flip($users_array);
-          $obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray(); 
-          $obj_array = array_flip($obj_array);
-        
-          //dd($leadsid_per_page);
-          //dd($allrecords->count());
-
-          //$string_leads = serialize($leads_arr);
-          // exit();
+          $start = microtime(true);          
+          $result = $this->search_algo($request);
           $end = microtime(true)-$start;
           //echo "time : ".$end."<br>";
           //dd($data);
 
-            if(\Auth::user()->user_type == 2)
-            {
-              return view('home.admin.admin_search',
-                [ 'record'            =>$data,
-                  'page'              => 1,
-                  'meta_id'           => $this->meta_id,
-                  'leadsid_per_page'  => isset($leadsid_per_page) ? $leadsid_per_page : null,
-                  'totalLeads'        =>$this->totalLeads,
-                  'totalDomains'      =>$this->totalDomains,
-                  'totalPage'         =>$this->totalPage,
-                  'domain_list'       =>isset($domain_list) ? $domain_list : null,
-                  // 'leadArr'           =>$leads_arr,
-                  // 'string_leads'      =>$string_leads,
-                  // 'users_array'       =>$users_array,
-                  'query_time'        =>$end       
-                ]);      
-            }
+            //if(\Auth::user()->user_type == 2)
+            //{
+              return view('home.admin.admin_search',$result);      
+            //}
 
-
-            return view('home.search' , 
-                  ['record'       => $data, 
-                   'page'         => 1,
-                   'totalLeads'   =>$totalLeads,
-                   'totalDomains' =>$totalDomains,
-                   'domain_list'       =>isset($domain_list) ? $domain_list : null,
-                   // 'leadArr'      =>$leads_arr , 
-                   // 'string_leads'=>$string_leads,
-                   'users_array'=>$users_array,
-                   'obj_array'=>$obj_array,
-                   'query_time'=>$end]);
+            // return view('home.search' , 
+            //       ['record'       => $data, 
+            //        'page'         => 1,
+            //        'totalLeads'   =>$totalLeads,
+            //        'totalDomains' =>$totalDomains,
+            //        'domain_list'       =>isset($domain_list) ? $domain_list : null,
+            //        // 'leadArr'      =>$leads_arr , 
+            //        // 'string_leads'=>$string_leads,
+            //        'users_array'=>$users_array,
+            //        'obj_array'=>$obj_array,
+            //        'query_time'=>$end]);
         }
         else
         {

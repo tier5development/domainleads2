@@ -90,6 +90,8 @@ Route::get('/aa',function(){
 
     	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
 
+        Route::post('/search_api','SearchController@search_api');
+
         Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
         Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
         Route::post('removeChkedEmailfromSession' , ['uses'=>'SearchController@removeChkedEmailfromSession','as'=>'removeChkedEmailfromSession']);
