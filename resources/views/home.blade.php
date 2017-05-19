@@ -165,7 +165,7 @@ We have ensured that detailed information about your leads is available to you, 
                                 <img src="{{url('/')}}/theme/images/Service2.png">
                             </div>
                             <h3>Powerful Filters</h3>
-                            <p>Easily filter by TDL, Location, Registered Date, Valid contact info, and much more. Search niche specific domains quickly.</p>
+                            <p>Easily filter by TDL, Location, Registered Date, Valid contact info, and much more. Search specific domains quickly.</p>
                         </div>
                     </div>
                     <div class="span4">
@@ -175,7 +175,7 @@ We have ensured that detailed information about your leads is available to you, 
                                 <img src="{{url('/')}}/theme/images/Service3.png">
                             </div>
                             <h3>User-friendly CRM</h3>
-                            <p>Not only do we offer fresh and high-quality leads, we also ensure that it’s user-friendly CRM. Thus, you can easily unlock your leads and explore.</p>
+                            <p>Not only do we offer fresh and high-quality leads, we also ensure that it’s user-friendly CRM. You can easily unlock your leads and explore.</p>
                         </div>
                     </div>
                 </div>
