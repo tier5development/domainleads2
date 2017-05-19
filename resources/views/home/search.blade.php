@@ -138,7 +138,7 @@ form{
 
 		    
 			<div>
-				<a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
+				<!-- <a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a> -->
 			</div>
 
 			<div>

@@ -46,7 +46,7 @@
                     <a href="#" class="brand">
                     
                         <!--<img src="images/logo.png" width="120" height="40" alt="Logo" />-->
-                        <img src="{{url('/')}}/theme/images/logo.png">
+                        <img src="{{url('/')}}/theme/images/Domain-leads-_logo.png">
                         <!-- This is website logo -->
                     </a>
                     <!-- Navigation button, visible on small resolution -->
@@ -396,7 +396,42 @@ We have ensured that detailed information about your leads is available to you, 
                         <p>Have any doubts, we're here to clear the air.</p>
                     </div>
                 </div>
-                <div class="map-wrapper">
+                <div class="container">
+                        <div class="row-fluid">
+                            <div class="span12 contact-form centered" style="margin-top: -66px;" >
+                                <h3>Engage with us!</h3>
+                                <div id="successSend" class="alert alert-success invisible">
+                                    <strong>We listen!</strong>Your message has been sent.</div>
+                                <div id="errorSend" class="alert alert-error invisible">There was an error.</div>
+                                <form id="contact-form" action="php/mail.php">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <input class="span12" type="text" id="name" name="name" placeholder="* Your name..." />
+                                            <div class="error left-align" id="err-name">Please enter name.</div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <input class="span12" type="email" name="email" id="email" placeholder="* Your email..." />
+                                            <div class="error left-align" id="err-email">Please enter valid email adress.</div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <textarea class="span12" name="comment" id="comment" placeholder="* Comments..."></textarea>
+                                            <div class="error left-align" id="err-comment">Please enter your comment.</div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <button id="send-mail" class="message-btn">Send message</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <!-- <div class="map-wrapper">
                     <div class="map-canvas" id="map-canvas">Loading map...</div>
                     <div class="container">
                         <div class="row-fluid">
@@ -433,11 +468,12 @@ We have ensured that detailed information about your leads is available to you, 
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="container">
                     <div class="span9 center contact-info">
                         
-                        <p class="info-mail"><a href="mailto:hello@tier5.us">hello@tier5.us</a></p>
+                        <p class="info-mail"><a href="mailto:hello@tier5.us" style="color:white;" onMouseOver="this.style.color='black'"
+   onMouseOut="this.style.color='white'" >hello@tier5.us</a></p>
                         <!-- <p>+11 234 567 890</p>
                         <p>+11 286 543 850</p>
                         <div class="title">
