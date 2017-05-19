@@ -88,9 +88,8 @@ Route::get('/aa',function(){
 
     	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 
-    	
-
-        Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
+    	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
+        
 
         Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
         Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
