@@ -225,9 +225,10 @@ p {
     border:1px solid #181A1C;
     color:#181A1C;
     background-color:transparent;
-    padding:15px 30px;
+    padding:10px 25px;
     font-size:17px;
     line-height:auto;
+    
 }
 .button:hover, .button:active{
     background-color:#181A1C;

@@ -57,12 +57,14 @@
                     <div class="nav-collapse collapse pull-right">
                         <ul class="nav" id="top-navigation">
                             <li class="active"><a href="{{url('/')}}">Home</a></li>
-                            <li><a href="#service">Services</a></li>
-                            <li><a href="#portfolio">How it works</a></li>
                             <li><a href="#about">About</a></li>
-                            <li><a href="#clients">Clients</a></li>
-                            <li><a href="#plans">Plans</a></li>
-                            <li><a href="#price">Pricing</a></li>
+                            
+                            <li><a href="#portfolio">How it works</a></li>
+                            
+                            <li><a href="#lead">Lead Conversion</a></li>
+                            <li><a href="#testemonial">Testimonial</a></li>
+                            <!-- <li><a href="#plans">Plans</a></li>
+                            <li><a href="#price">Pricing</a></li> -->
                              @if (Auth::check())
                              <li> <a href="{{ URL::to('search') }}">Search Domain</a></li>
                              <li> <a href="{{ URL::to('logout') }}">Logout</a></li>
@@ -90,10 +92,10 @@
                 <div class="container">
                     <!-- Start first slide -->
                     <div class="da-slide">
-                        <h2 class="fittext2">Welcome to pluton theme</h2>
-                        <h4>Clean & responsive</h4>
-                        <p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane.</p>
-                        <a href="#" class="da-link button">Read more</a>
+                        <h2 class="fittext2">BETA Domain Leads</h2>
+                        <h4>Free Leads</h4>
+                        <p>We provide Filtered out 3rd party private registration data which you can search by domain name, registrant country, registrant state, zip, domain creation date and domain extension.</p>
+                        
                         <div class="da-img">
                             <img src="{{url('/')}}/theme/images/Slider01.png">
                         </div>
@@ -101,10 +103,10 @@
                     <!-- End first slide -->
                     <!-- Start second slide -->
                     <div class="da-slide">
-                        <h2>Easy management</h2>
-                        <h4>Easy to use</h4>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-                        <a href="#" class="da-link button">Read more</a>
+                        <h2>Verified Cell Numbers</h2>
+                        <h4>U.S ONLY</h4>
+                        <p>We provide verified active mobile numbers of leads. People who have recently booked a domain name and looking for web services.</p>
+                        
                         <div class="da-img">
                            <img src="{{url('/')}}/theme/images/Slider02.png">
                         </div>
@@ -112,10 +114,10 @@
                     <!-- End second slide -->
                     <!-- Start third slide -->
                     <div class="da-slide">
-                        <h2>Revolution</h2>
-                        <h4>Customizable</h4>
-                        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-                        <a href="#" class="da-link button">Read more</a>
+                        <h2>Easy Dashboard</h2>
+                        <h4>Unlock Leads Easily</h4>
+                        <p>We offer a simple, clean and user-friendly dashboard while communicating crucial lead data and key information to our users.</p>
+                        
                         <div class="da-img">
                            <!-- <img src="images/Slider03.png" width="320" alt="image03"> -->
                            <img src="{{url('/')}}/theme/images/Slider03.png">
@@ -134,13 +136,14 @@
         </div>
         <!-- End home section -->
         <!-- Service section start -->
-        <div class="section primary-section" id="service">
+        <div class="section primary-section" id="about">
             <div class="container">
                 <!-- Start title section -->
                 <div class="title">
-                    <h1>Why use DomainLeads?</h1>
+                    <h1>Why use Domain Leads?</h1>
                     <!-- Section's title goes here -->
-                    <p>Simple, our leads go out and your sales come in.</p>
+                    <p>Let’s face the reality, without the leads there is no business. The major hitch every vendor and affiliate faces is getting fresh leads which you can connect with.
+We have ensured that detailed information about your leads is available to you, like which is the best number to contact your leads. We give out details like how many domains they have and what is their creation date. You can unlock and export these leads as per your needs. </p>
                     <!--Simple description for section goes here. -->
                 </div>
                 <div class="row-fluid">
@@ -151,8 +154,8 @@
                                 
                                 <img src="{{url('/')}}/theme/images/Service1.png">
                             </div>
-                            <h3>Pre-Verified Leads</h3>
-                            <p>All our leads are pre-verfied and you can see how many other users are engaged with any lead before you unlock.</p>
+                            <h3>Verified U.S Cell Numbers </h3>
+                            <p>All our leads are Verified U.S Cell Numbers and you can follow what they are using, a cell phone or a land-line number.</p>
                         </div>
                     </div>
                     <div class="span4">
@@ -161,8 +164,8 @@
                             
                                 <img src="{{url('/')}}/theme/images/Service2.png">
                             </div>
-                            <h3>Powerfull Filters</h3>
-                            <p>Easily filter by TDL, Location, Registered Date, Valid contact info, and much more. Search nitch specific domains quickly.</p>
+                            <h3>Powerful Filters</h3>
+                            <p>Easily filter by TDL, Location, Registered Date, Valid contact info, and much more. Search niche specific domains quickly.</p>
                         </div>
                     </div>
                     <div class="span4">
@@ -171,8 +174,8 @@
                                
                                 <img src="{{url('/')}}/theme/images/Service3.png">
                             </div>
-                            <h3>Full CRM</h3>
-                            <p>Not only do we provide fresh high quality leads, we also provide a full CRM for you SMS, Call, Email leads, manage contacts and call backs, and record sales.</p>
+                            <h3>User-friendly CRM</h3>
+                            <p>Not only do we offer fresh and high-quality leads, we also ensure that it’s user-friendly CRM. Thus, you can easily unlock your leads and explore.</p>
                         </div>
                     </div>
                 </div>
@@ -207,14 +210,14 @@
         </div>
         <!-- Portfolio section end -->
         <!-- About us section start -->
-        <div class="section primary-section" id="about">
+        <div class="section primary-section" id="lead">
             <div class="triangle"></div>
             <div class="container">
                 <div class="title">
-                    <h1>Industry Unique Features</h1>
+                    <h1>Lead Conversion</h1>
                     <p>You won't find anyone else with these powerful features.</p>
                 </div>
-                <div class="row-fluid team">
+                <!-- <div class="row-fluid team">
                     <div class="span4" id="first-person">
                         <div class="thumbnail">
                            
@@ -254,11 +257,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="about-text centered">
+                </div> -->
+                <!-- <div class="about-text centered">
                     <h3>About Us</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
-                </div>
+                    <p>Tier5 is an American IT Company specializing in subscription based software, lead generation, and business solution. Headquartered in Indiana, we combine diverse skill sets through our network of trained developers. Our subscription based portals are developed under strict, process oriented methodology and supervision. This approach allows us to constantly grow our user base, while delivering quality functionalities to our subscribers. </p>
+                </div> -->
                 <h3>Typical Lead Conversions</h3>
                 <div class="row-fluid">
                     <div class="span6">
@@ -282,10 +285,10 @@
                         </ul>
                     </div>
                     <div class="span6">
-                        <div class="highlighted-box center">
-                            <h1>Get real results!</h1>
-                            <p>If you need real conversions you should be using DomainLeads. We give you the newest leads with a proven high sales conversion rate. We also provide all the tools necessary to put your marketing campaigns on auto-piliot. Kick back and watch our system do all the work while you rack up the sales.</p>
-                            <button class="button button-sp">Join Us</button>
+                        <div class="highlighted-box center" style="padding: 10px 30px !important;">
+                            <h1 style="margin: -4px;"">Get real results!</h1>
+                            <p>If you need real conversions, you should be using Text In Bulk. We give you the newest way to generate leads with a proven high sales conversion rate. We also provide all the tools necessary to put your sales on auto-pilot. Kick back and watch our system do all the work while you rack up the sales. Visit <a href="https://www.textinbulk.com/">www.textinbulk.com</a> or Click on Try Text In Bulk. Generate Inbound Calls, Send Bulk text, Cue your Outbound Calls and Much More.</p>
+                            <a href="https://www.textinbulk.com/"><button class="button button-sp"                         style="margin-bottom:10px; margin-top: -11px;">Try Text In Bulk</button></a>
                         </div>
                     </div>
                 </div>
@@ -296,13 +299,13 @@
             <div class="triangle"></div>
             <div class="container centered">
                 <p class="large-text">Our leads are ready to buy your services, what are you waiting for?</p>
-                <a href="#" class="button">Join now</a>
+                <a href="https://www.textinbulk.com/" class="button">Join Text In Bulk</a>
             </div>
         </div>
         <!-- Client section start -->
         <!-- Client section start -->
         <div id="clients">
-            <div class="section primary-section">
+            <div class="section primary-section" id="testemonial">
                 <div class="triangle"></div>
                 <div class="container">
                     <div class="title">
@@ -317,7 +320,7 @@
                                     <div class="arrow"></div>
                                    
                                     
-                                    <img src="{{url('/')}}/theme/images/jon.jpg">
+                                    <!-- <img src="{{url('/')}}/theme/images/jon.jpg"> -->
                                     <strong>Jon Vaughn
                                         <small>CEO Tier5 LLC</small>
                                     </strong>
@@ -371,7 +374,7 @@
                     <strong>You're on your way!</strong>Check your email to finish up and get your free weekly leads and help from our experts.</div>
                 <div class="row-fluid">
                     <div class="span5">
-                        <p>Sign up to get 10 free leads a week plus the hottest tips and tricks to get more sales conversions from your leads.</p>
+                        <p>Sign up to Get leads for prospects who showed interest to buy web services</p>
                     </div>
                     <div class="span7">
                         <form class="inline-form">
@@ -433,32 +436,32 @@
                 </div>
                 <div class="container">
                     <div class="span9 center contact-info">
-                        <p>123 Fifth Avenue, 12th,Belgrade,SRB 11000</p>
-                        <p class="info-mail">ourstudio@somemail.com</p>
-                        <p>+11 234 567 890</p>
+                        
+                        <p class="info-mail"><a href="mailto:hello@tier5.us">hello@tier5.us</a></p>
+                        <!-- <p>+11 234 567 890</p>
                         <p>+11 286 543 850</p>
                         <div class="title">
                             <h3>We Are Social</h3>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row-fluid centered">
                         <ul class="social">
                             <li>
-                                <a href="">
+                                <a href="https://www.facebook.com/domainleads.io/">
                                     <span class="icon-facebook-circled"></span>
                                 </a>
                             </li>
                             <li>
-                                <a href="">
-                                    <span class="icon-twitter-circled"></span>
+                                <a href="skype:tier5development" >
+                                    <span class="icon-skype-circled"></span>
                                 </a>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a href="">
                                     <span class="icon-linkedin-circled"></span>
                                 </a>
-                            </li>
-                            <li>
+                            </li> -->
+                            <!-- <li>
                                 <a href="">
                                     <span class="icon-pinterest-circled"></span>
                                 </a>
@@ -467,12 +470,12 @@
                                 <a href="">
                                     <span class="icon-dribbble-circled"></span>
                                 </a>
-                            </li>
-                            <li>
+                            </li> -->
+                            <!-- <li>
                                 <a href="">
                                     <span class="icon-gplus-circled"></span>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -574,7 +577,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     ×</button>
                 <h4 class="modal-title" id="myLargeModalLabel">
-                    Register</h4>
+                    Register(Free)</h4>
                     <div id="errormsg_reg"></div>
             </div>
             <div class="modal-body">
@@ -642,7 +645,7 @@ $( document ).ready(function() {
                success:function(data){
                // console.log(data);
                 if(data=='success'){
-                  window.location.href = 'importExport';
+                  window.location.href = 'search';
                 }
                 if(data=='error1'){
                    $("#errormsg").html('User is not registered');
