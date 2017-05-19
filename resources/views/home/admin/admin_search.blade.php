@@ -262,6 +262,7 @@
                   </div>
 
                   <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
+                  
                   <div class="row form-group">
                   <div class="col-md-4 col-sm-3">
                      <label>DomainCount :</label> <br>
@@ -295,7 +296,8 @@
                      <input class="form-control" type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
                      </div>
 
-                 </div>    
+                 </div>  
+                   
                  <br>
                      <div class="btn btn-primary pull-right" id="refine_searchID">Refine Search</div>
                      <div class="clearfix"></div>

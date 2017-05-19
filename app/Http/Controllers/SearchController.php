@@ -1731,6 +1731,7 @@ public function download_csv_single_page(Request $request)
     {
         //dd($request->all());
         $status = 'ok';
+        $result = null;
         try{
           $start  = microtime(true);          
           $result = $this->search_algo($request);
