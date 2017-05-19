@@ -1427,7 +1427,7 @@ public function download_csv_single_page(Request $request)
       
       $array = explode(",",$raw_leads);
       $return = "";
-      for($i=$offset ; $i<$limit+$offset; $i++)
+      for($i=$offset-1 ; $i<$limit+$offset; $i++)
       {
         if(!isset($array[$i])) break;
         if($return == "") $return .= $array[$i];
