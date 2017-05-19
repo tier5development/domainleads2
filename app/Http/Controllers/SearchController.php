@@ -134,22 +134,27 @@ public function download_csv_single_page(Request $request)
   private function all_lead_domains_set(Request $request,$phone_type_array,$meta_id)
                                         
   {
+
     $sql    = "SELECT leads,compression_level from search_metadata 
               where id = ".$meta_id;
     $data   = DB::select(DB::raw($sql));
+
     $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
     $data   = null;
     $offset = 1;
     $limit  = $request->totalLeads;
 
-    // dd($leads);
-    // dd($limit." ".$offset);
-    $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
-    //dd($leads_str);
-    $leads  = $this->raw_leads($leads_str);
-    
-    $array  = $this->leadsPerPage_Search($leads);
 
+    if($limit == null)
+    {
+      $count_leads = explode(',',$leads);
+      $limit = sizeof($count_leads);
+    }
+    
+
+    $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
+    $leads  = $this->raw_leads($leads_str);
+    $array  = $this->leadsPerPage_Search($leads);
     $param  = ['domain_name'=>$request->domainname
              ,'domain_ext' =>($request->domainext == null ? null : $request->domainext)
              ,'domains_create_date'=>$request->createdate1
@@ -1201,7 +1206,7 @@ public function download_csv_single_page(Request $request)
       $sql = "SELECT id,leads,compression_level,`totalLeads`,`totalDomains`,updated_at from search_metadata WHERE leads != '' ";
       foreach ($request->all() as $key => $req) 
       {
-        if(!is_null($request->$key))
+        if(!is_null($request->$key) && $req != '')
         {
           if($key == 'registrant_country')
           {
@@ -1335,7 +1340,9 @@ public function download_csv_single_page(Request $request)
 
       //echo($sql);exit();
 
+
       $meta_data_leads = DB::select(DB::raw($sql));
+      
 
       if($meta_data_leads == null)
       {
@@ -1391,6 +1398,7 @@ public function download_csv_single_page(Request $request)
           $this->totalLeads   = $meta_data_leads[0]->totalLeads;
           $this->count_total_pages($request->pagination);
           
+
           $raw_leads_id = $this->paginated_raw_leads($raw_leads_id,$limit,$offset);
 
           return $this->raw_leads($raw_leads_id);
@@ -1721,11 +1729,29 @@ public function download_csv_single_page(Request $request)
 
     public function search_api(Request $request)
     {
-        //dd('here');
-        $start  = microtime(true);          
-        $result = $this->search_algo($request);
-        $end    = microtime(true)-$start;
-        return \Response::json($result);
+        //dd($request->all());
+        $status = 'ok';
+        try{
+          $start  = microtime(true);          
+          $result = $this->search_algo($request);
+          $end    = microtime(true)-$start;
+
+          $phone_type_array = array();
+          if(isset($request->cell) && $request->cell != null)
+            array_push($phone_type_array, 'Cell Number');
+
+          if(isset($request->landline) && $request->landline != null)  
+            array_push($phone_type_array, 'Landline');
+
+
+          $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id);
+        }
+        catch(\Exception $e)
+        {
+          $status = $e->getMessage();
+        }
+        
+        return \Response::json(array('result'=>$result,'status'=>$status));
     }
 
     public function search(Request $request)
@@ -1739,6 +1765,8 @@ public function download_csv_single_page(Request $request)
           $start = microtime(true);          
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
+          //dd($this->meta_id);
+
           //echo "time : ".$end."<br>";
           //dd($data);
 
