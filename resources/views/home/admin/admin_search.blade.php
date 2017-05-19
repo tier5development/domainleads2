@@ -256,7 +256,7 @@
                      </select>
                   </div>
                   <div class="col-md-6 col-sm-6">
-                  <input type="hidden" name="_token" value="{{csrf_token()}}">
+                  
                   <input class="btn btn-info pull-right" type="submit" name="Submit" value="Submit">
                   </div>
                   </div>
@@ -633,7 +633,6 @@
       function setup_pages()
       {
       	$('#page_forms').hide();
-      	var totalPage = "{{sizeof($leadsid_per_page)}}";
       	var pages     = [];
       	var limit = 9;
       	l  = parseInt(thisPage) -5;
