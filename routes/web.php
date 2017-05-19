@@ -88,7 +88,9 @@ Route::get('/aa',function(){
 
     	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 
-    	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
+    	
+
+        Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
 
         Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
         Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
@@ -99,9 +101,10 @@ Route::get('/aa',function(){
 
         Route::get('/manage',['uses'=>'Maintainance@manage','as'=>'manage']);
 
-
-
  });
+
+
+
 
 Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'=>'search_paginated']);
 

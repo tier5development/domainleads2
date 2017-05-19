@@ -1,0 +1,40 @@
++--------+--------------------------------+------------------------------+-----------------------------+-------------------------------------------------------------------+--------------+
+| Domain | Method                         | URI                          | Name                        | Action                                                            | Middleware   |
++--------+--------------------------------+------------------------------+-----------------------------+-------------------------------------------------------------------+--------------+
+|        | GET|HEAD                       | /                            | home                        | App\Http\Controllers\AccountController@home                       | web          |
+|        | GET|HEAD                       | 404                          | 404                         | App\Http\Controllers\Maintainance@notfound_404                    | web          |
+|        | GET|HEAD                       | 500                          | 500                         | App\Http\Controllers\Maintainance@notfound_500                    | web          |
+|        | GET|HEAD                       | aa                           |                             | Closure                                                           | web          |
+|        | GET|HEAD                       | aaa                          |                             | Closure                                                           | web          |
+|        | GET|HEAD                       | aaaa                         |                             | Closure                                                           | web          |
+|        | GET|HEAD                       | aaaaa                        |                             | Closure                                                           | web          |
+|        | GET|HEAD                       | abc                          |                             | App\Http\Controllers\ImportExport@validate_ph_no                  | web          |
+|        | POST                           | ajax_search_paginated        | ajax_search_paginated       | App\Http\Controllers\SearchController@ajax_search_paginated       | web          |
+|        | POST                           | api/search_api               |                             | App\Http\Controllers\SearchController@search_api                  | api          |
+|        | GET|HEAD                       | api/user                     |                             | Closure                                                           | api,auth:api |
+|        | GET|HEAD                       | checknum/{num}               |                             | App\Http\Controllers\ImportExport@checknum                        | web          |
+|        | POST                           | createWordpressForDomain     | createWordpressForDomain    | App\Http\Controllers\SearchController@createWordpressForDomain    | web,auth     |
+|        | GET|HEAD                       | downloadExcel                |                             | App\Http\Controllers\SearchController@downloadExcel               | web,auth     |
+|        | GET|HEAD                       | downloadExcel2               |                             | App\Http\Controllers\SearchController@downloadExcel2              | web,auth     |
+|        | POST                           | download_csv_single_page     |                             | App\Http\Controllers\SearchController@download_csv_single_page    | web          |
+|        | GET|HEAD                       | fill_csv_table_default       | fill_csv_table_default      | App\Http\Controllers\ImportExport@fill_csv_table_default          | web          |
+|        | POST                           | importExcel                  |                             | App\Http\Controllers\ImportExport@importExcel                     | web,auth     |
+|        | GET|HEAD                       | importExeclfromCron/{date}   | importExeclfromCron         | App\Http\Controllers\ImportExport@importExeclfromCron             | web          |
+|        | GET|HEAD                       | importExport                 |                             | App\Http\Controllers\ImportExport@importExport                    | web,auth     |
+|        | GET|HEAD                       | lead/{email}                 |                             | App\Http\Controllers\SearchController@lead_domains                | web          |
+|        | POST                           | login                        |                             | App\Http\Controllers\AccountController@login                      | web          |
+|        | GET|HEAD                       | logout                       |                             | App\Http\Controllers\AccountController@logout                     | web          |
+|        | GET|HEAD                       | manage                       | manage                      | App\Http\Controllers\Maintainance@manage                          | web,auth     |
+|        | GET|HEAD                       | myLeads/{id}                 | myLeads                     | App\Http\Controllers\SearchController@myLeads                     | web,auth     |
+|        | POST                           | removeChkedEmailfromSession  | removeChkedEmailfromSession | App\Http\Controllers\SearchController@removeChkedEmailfromSession | web,auth     |
+|        | GET|HEAD|POST|PUT|PATCH|DELETE | search                       | search                      | App\Http\Controllers\SearchController@search                      | web          |
+|        | POST                           | search_paginated             | search_paginated            | App\Http\Controllers\SearchController@search_paginated            | web          |
+|        | POST                           | signme                       |                             | App\Http\Controllers\AccountController@signme                     | web          |
+|        | GET|HEAD                       | sss                          |                             | App\Http\Controllers\Maintainance@async_domain                    | web          |
+|        | POST                           | storechkboxvariable          | storechkboxvariable         | App\Http\Controllers\SearchController@storechkboxvariable         | web,auth     |
+|        | GET|HEAD                       | tstt                         |                             | App\Http\Controllers\Maintainance@each_domain_verification        | web          |
+|        | POST                           | unlockleed                   | unlockleed                  | App\Http\Controllers\SearchController@unlockleed                  | web,auth     |
+|        | GET|HEAD                       | update_metadata_today/{date} |                             | App\Http\Controllers\SearchController@update_metadata_today       | web          |
+|        | GET|HEAD                       | verify_domains               |                             | App\Http\Controllers\Maintainance@verify_domains                  | web          |
+|        | GET|HEAD                       | wb                           |                             | Closure                                                           | web          |
++--------+--------------------------------+------------------------------+-----------------------------+-------------------------------------------------------------------+--------------+
