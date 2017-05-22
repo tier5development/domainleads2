@@ -429,7 +429,7 @@ We have ensured that detailed information about your leads is available to you, 
                                     </div>
                                     <div class="control-group">
                                         <div class="controls">
-                                            <button id="send-mail" class="message-btn">Send message</button>
+                                            <button id="send-mail" class="button">Send message</button>
                                         </div>
                                     </div>
                                 </form>
