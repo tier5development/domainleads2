@@ -717,6 +717,7 @@ $( document ).ready(function() {
                     console.log(data);
                     if(data.msg =='success'){
                        $("#errormsg_reg").html('Successfully Signed');
+                       window.location.href = 'search';
                     }
                     if(data.msg =='error1'){
                        $("#errormsg_reg").html('Data not correct');
