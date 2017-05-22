@@ -716,9 +716,9 @@ $( document ).ready(function() {
                {
                     console.log(data);
                     if(data.msg =='success'){
-                       $("#errormsg_reg").html('Successfully Signed /n You Can SignIn Now');
+                       $("#errormsg_reg").html('Successfully Signed <br> You Can SignIn Now');
                        
-                       
+
                     }
                     if(data.msg =='error1'){
                        $("#errormsg_reg").html('Data not correct');
