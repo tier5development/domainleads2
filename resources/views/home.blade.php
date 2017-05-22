@@ -718,8 +718,7 @@ $( document ).ready(function() {
                     if(data.msg =='success'){
                        $("#errormsg_reg").html('Successfully Signed /n You Can SignIn Now');
                        
-                       $("#myModal_for_reg" ).fadeOut('slow');
-                       $("#myModal").fadeIn('slow');
+                       
                     }
                     if(data.msg =='error1'){
                        $("#errormsg_reg").html('Data not correct');
