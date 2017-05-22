@@ -774,15 +774,15 @@ p {
     color:#181A1C;
 }
 .contact-form {
-    background:#fff;
-    background: rgba(255, 255, 255, 0.9);
+    /*background:#fff;*/
+    /*background: rgba(255, 255, 255, 0.9);*/
     z-index:110;
     position:relative;
     margin-top:-25px;
     padding:20px;
 }
 .contact-form h3 {
-    color:#838589;
+    color:#222222;
     padding-bottom:20px;
 }
 .message-btn {

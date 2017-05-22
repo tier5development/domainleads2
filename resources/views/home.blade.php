@@ -72,7 +72,7 @@
 
 
                             <li> <button class="" id="popupid" data-toggle="modal" data-target="#myModal">SignIn</button></li>
-                            <li><button class="" id="popupid_for_reg" data-toggle="modal" data-target="#myModal_for_reg">SignUp</button></li>
+                            <li><button class="" id="popupid_for_reg" data-toggle="modal" data-target="#myModal_for_reg">Register</button></li>
                             @endif
                         </ul>
                        
@@ -144,8 +144,12 @@
                     <!-- Section's title goes here -->
                     <p>Let’s face the reality, without the leads there is no business. The major hitch every vendor and affiliate faces is getting fresh leads which you can connect with.
 We have ensured that detailed information about your leads is available to you, like which is the best number to contact your leads. We give out details like how many domains they have and what is their creation date. You can unlock and export these leads as per your needs. </p>
-                    <!--Simple description for section goes here. -->
+                    <div class="container centered" style="padding-top: 1px !important; padding-bottom: 10px !important;">
+                <a href="" id="popupid_for_reg" data-toggle="modal" data-target="#myModal_for_reg" class="button button-sp">Register</a>
+
                 </div>
+                </div>
+                
                 <div class="row-fluid">
                     <div class="span4">
                         <div class="centered service">
@@ -300,7 +304,7 @@ We have ensured that detailed information about your leads is available to you, 
             <div class="triangle"></div>
             <div class="container centered">
                 <p class="large-text">Our leads are ready to buy your services, what are you waiting for?</p>
-                <a href="https://www.textinbulk.com/" class="button">Join Text In Bulk</a>
+                <a href="" class="button" id="popupid_for_reg" data-toggle="modal" data-target="#myModal_for_reg" class="button button-sp">Register</a>
             </div>
         </div>
         <!-- Client section start -->
@@ -425,7 +429,7 @@ We have ensured that detailed information about your leads is available to you, 
                                     </div>
                                     <div class="control-group">
                                         <div class="controls">
-                                            <button id="send-mail" class="message-btn">Send message</button>
+                                            <button id="send-mail" class="button">Send message</button>
                                         </div>
                                     </div>
                                 </form>
