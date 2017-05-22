@@ -717,7 +717,23 @@ $( document ).ready(function() {
                     console.log(data);
                     if(data.msg =='success'){
                        $("#errormsg_reg").html('Successfully Signed');
-                       window.location.href = 'search';
+                       
+                        $.ajax({
+                        type:'POST',
+                        url:'{{url('/')}}/login',
+                        data:{email:email , password:password , _token:'{{csrf_token()}}'},
+                        success:function(data){
+                        // console.log(data);
+                        if(data=='success'){
+                        window.location.href = 'search';
+                        }
+                        if(data=='error1'){
+                        $("#errormsg").html('User is not registered');
+                        }
+
+
+                        }
+                        });
                     }
                     if(data.msg =='error1'){
                        $("#errormsg_reg").html('Data not correct');
