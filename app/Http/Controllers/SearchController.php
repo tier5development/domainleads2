@@ -156,7 +156,7 @@ public function download_csv_single_page(Request $request)
     $leads  = $this->raw_leads($leads_str);
     $array  = $this->leadsPerPage_Search($leads);
     $param  = ['domain_name'=>$request->domainname
-             ,'domain_ext' =>($request->domainext == null ? null : $request->domainext)
+             ,'domain_ext' =>($request->domainext == null ? null : explode(',',$request->domainext))
              ,'domains_create_date'=>$request->createdate1
              ,'domains_create_date2'=>$request->createdate2];
     //dd($param);
