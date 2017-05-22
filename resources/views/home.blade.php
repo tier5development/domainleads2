@@ -716,24 +716,10 @@ $( document ).ready(function() {
                {
                     console.log(data);
                     if(data.msg =='success'){
-                       $("#errormsg_reg").html('Successfully Signed');
+                       $("#errormsg_reg").html('Successfully Signed /n You Can SignIn Now');
                        
-                        $.ajax({
-                        type:'POST',
-                        url:'{{url('/')}}/login',
-                        data:{email:email , password:password , _token:'{{csrf_token()}}'},
-                        success:function(data){
-                        // console.log(data);
-                        if(data=='success'){
-                        window.location.href = 'search';
-                        }
-                        if(data=='error1'){
-                        $("#errormsg").html('User is not registered');
-                        }
-
-
-                        }
-                        });
+                       $("#myModal_for_reg" ).fadeOut('slow');
+                       $("#myModal").fadeIn('slow');
                     }
                     if(data.msg =='error1'){
                        $("#errormsg_reg").html('Data not correct');
