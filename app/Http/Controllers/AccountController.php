@@ -147,6 +147,12 @@ class AccountController extends Controller
                     $message->to($email,$user_name);
                     $message->subject($subject);
                 });
+                \Mail::send('emails.accback', ['title' => $title, 'content' => $content,'user_name'=>$user_name,'email'=>$email], function ($message)use ($admin_users_email,$email,$user_name,$subject)
+                {
+                    $message->from($email,$user_name);
+                    $message->to($admin_users_email);
+                    $message->subject($subject);
+                });
 			 	return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
 			 }
 			 else {
