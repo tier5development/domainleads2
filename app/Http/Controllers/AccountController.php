@@ -9,6 +9,7 @@ use DB;
 use Hash;
 use Auth;
 use Session;
+use Mail;
 
 class AccountController extends Controller
 {
@@ -135,6 +136,16 @@ class AccountController extends Controller
 			 if($u->save()) {
 			 	\Session::put('emailset',$email);
 			 	\Session::put('passset',$password);
+			 	$admin_users_email="work@tier5.us";
+			 	$title="Thanks for sign up with DomainLeads";
+                $subject="DomainLeads Signup";
+                $content="Thanks for sign up with DomainLeads";
+                \Mail::send('emails.forget_password', ['title' => $title, 'content' => $content], function ($message)use ($admin_users_email,$user_email_id,$user_name,$subject)
+                {
+                    $message->from($admin_users_email);
+                    $message->to($email,$u->name);
+                    $message->subject($subject);
+                });
 			 	return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
 			 }
 			 else {
