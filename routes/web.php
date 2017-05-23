@@ -114,4 +114,4 @@ Route::get('logout', 'AccountController@logout');
 Route::get('/404',['uses'=>'Maintainance@notfound_404','as'=>'404']);
 Route::get('/500',['uses'=>'Maintainance@notfound_500','as'=>'500']);
 
-
+Route::any('regredirect',['uses'=>'AccountController@regredirect','as'=>'regredirect']);
