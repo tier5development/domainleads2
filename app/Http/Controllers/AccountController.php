@@ -137,13 +137,14 @@ class AccountController extends Controller
 			 	\Session::put('emailset',$email);
 			 	\Session::put('passset',$password);
 			 	$admin_users_email="work@tier5.us";
+			 	$user_name=$u->name;
 			 	$title="Thanks for sign up with DomainLeads";
                 $subject="DomainLeads Signup";
                 $content="Thanks for sign up with DomainLeads";
-                \Mail::send('emails.forget_password', ['title' => $title, 'content' => $content], function ($message)use ($admin_users_email,$user_email_id,$user_name,$subject)
+                \Mail::send('emails.thankyou', ['title' => $title, 'content' => $content,'user_name'=>$user_name], function ($message)use ($admin_users_email,$email,$user_name,$subject)
                 {
                     $message->from($admin_users_email);
-                    $message->to($email,$u->name);
+                    $message->to($email,$user_name);
                     $message->subject($subject);
                 });
 			 	return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
