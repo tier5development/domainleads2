@@ -147,5 +147,8 @@ class AccountController extends Controller
 	   
 	}
 
-
+	public function UserList(){
+		$User=User::where('user_type','!=',2)->get();
+		return view('home.userList',compact('User'));
+	}
 }
