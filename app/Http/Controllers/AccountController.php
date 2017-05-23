@@ -8,7 +8,7 @@ use \App\User;
 use DB;
 use Hash;
 use Auth;
-
+use Session;
 
 class AccountController extends Controller
 {
@@ -59,7 +59,24 @@ class AccountController extends Controller
       }
     }
   }
-
+  public function regredirect(){
+		
+		$userdata = array(
+		'email' => \Session::get('emailset'),
+		'password' => \Session::get('passset')
+		);
+		
+			if (Auth::validate($userdata)) {
+				if (Auth::attempt($userdata)) {
+					return redirect()->route('search');
+				}
+			} 
+			else 
+			{
+				return "error1";
+			}
+		
+  }
 
   public function logout() 
   {
@@ -115,10 +132,14 @@ class AccountController extends Controller
 		 	$u->user_type = 1;
 		 	
 		 	
-			 if($u->save()) 
+			 if($u->save()) {
+			 	\Session::put('emailset',$email);
+			 	\Session::put('passset',$password);
 			 	return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
-			 else 
+			 }
+			 else {
 				return \Response::json(array("msg"=>"error2" , "user_id"=>null));
+			}
 	     }   
 	     return \Response::json(array("msg"=>"error3" , "user_id"=>null));
 		 
