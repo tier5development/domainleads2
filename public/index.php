@@ -62,4 +62,4 @@ $kernel->terminate($request, $response);
 | PHP ini memory limit increasing  
 |
 */
-ini_set('memory_limit', '-1');
+//ini_set('memory_limit', '-1');
