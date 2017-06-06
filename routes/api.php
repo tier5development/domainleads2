@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/search_api','SearchController@search_api');
+Route::post('/oldest_registration_date','SearchController@getOldestDate');

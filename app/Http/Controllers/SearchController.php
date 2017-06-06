@@ -1803,4 +1803,14 @@ public function download_csv_single_page(Request $request)
         dd('Please log in');  
       }
     }
+    public function getOldestDate() {
+      //$data = DomainInfo::select('domains_create_date')->get();
+      $results = DB::select('SELECT MIN( domains_create_date ) AS min_date FROM domains_info');
+      if ($results) {
+        return $results;
+      } else {
+        return null;
+      }
+      //return $results;
+    }
 }
