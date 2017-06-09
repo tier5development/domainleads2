@@ -13,7 +13,9 @@ use \App\CSV;
 use DB;
 use Carbon\Carbon;
 use Zipper;
-
+use Excel;
+use App\Jobs\ImportCsv;
+use Session;
 
 class ImportExport extends Controller
 {
@@ -777,20 +779,25 @@ class ImportExport extends Controller
 
   public function validateUSPhoneNumber($ph)
     {
+        //dd($ph);
         $unmaskedPhoneNumber = preg_replace('/[\s()+-]+/', null, $ph);
         $phoneNumberLength = strlen($unmaskedPhoneNumber);
+        //dd($phoneNumberLength);
         if ($phoneNumberLength === 10) 
         {
             return ($this->validateAreaCode($unmaskedPhoneNumber, false));
         } 
         elseif ($phoneNumberLength === 11) 
-        {
+        { 
+
             if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1) 
             {
+              //dd("here");
             	return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
             } 
             else
             {
+              //dd("here");
                 return [
                     "http_code" => 404,
                     "validation_status" => "invalid",
@@ -812,7 +819,7 @@ class ImportExport extends Controller
     {
         $areaPrefix = substr($phoneNumber, 0, 3);
         $areaIdentifier = substr($phoneNumber, 0, 6);
-        
+        //dd($areaPrefix);
         if (isset($this->Area_state[$areaPrefix]))
         {
         	
@@ -866,5 +873,58 @@ class ImportExport extends Controller
         //     }
         // }
         
+    }
+    public function importExcelNew(Request $request) {
+      //dd($request);
+      if ($request->hasFile('import_file')) {
+
+          $old_name = $request->file('import_file')->getClientOriginalName();
+          //dd($old_name);
+          Session::put('old_name',$old_name);
+
+          Session::save();
+          
+          $csv_file = $request->file('import_file');
+
+          $extension =$csv_file->getClientOriginalExtension();
+
+          $destinationPath = 'storage/uploads/';   // upload path
+
+          $new_name = rand(111111111,999999999).'.'.$extension; // renameing image
+          $csv_file->move($destinationPath, $new_name); // uploading file to given path
+
+          //\Log::info($new_name);
+
+          $count_rows = count(Excel::load('storage/uploads/'.$new_name, function($reader) {})->get());
+
+          //\Log::info($count_rows);
+
+          if ($count_rows < 10000) {
+            Excel::load('storage/uploads/'.$new_name, function($reader) {
+
+              //echo "<pre>";
+              //print_r($reader->toArray());
+              $this->importEachRow($reader->toArray());
+
+            });
+          } else {
+              Excel::filter('chunk')->load('storage/uploads/'.$new_name)->chunk(10000, function($results)
+              {
+                  //echo "<pre>";
+                  //print_r($results->toArray());  
+                  $this->importEachRow($results->toArray());      
+              });
+          }
+
+          return redirect()->back()->with('msg', 'Your File is uploading...');
+      } else {
+          return redirect()->back()->with('fail', 'Sorry No file found!');
+      }
+    }
+    public function importEachRow($arr = NULL) {
+      //dd($arr);
+      if (count($arr)) {
+        $this->dispatch(new ImportCsv($arr));
+      }
     }
 }

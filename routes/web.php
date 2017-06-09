@@ -116,3 +116,6 @@ Route::get('/500',['uses'=>'Maintainance@notfound_500','as'=>'500']);
 
 Route::any('regredirect',['uses'=>'AccountController@regredirect','as'=>'regredirect']);
 Route::any('UserList',['uses'=>'AccountController@UserList','as'=>'UserList']);
+//=============================new import===================================
+//importExcelNew
+Route::any('/import-excel', 'ImportExport@importExcelNew')->name('importExcelNew');
