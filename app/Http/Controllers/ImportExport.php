@@ -5,8 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\Area;
 use \App\AreaCode;
+
 use \App\Lead;
 use \App\EachDomain;
+use \App\DomainInfo;
+use \App\DomainNameServer;
+use \App\DomainStatus;
+use \App\DomainTechnical;
+use \App\DomainFeedback;
+use \App\DomainBilling;
+use \App\DomainAdministrative;
+
 use \App\LeadUser;
 use \App\ValidatedPhone;
 use \App\CSV;
@@ -447,7 +456,7 @@ class ImportExport extends Controller
     //this clears out data with mismatches 
     private function remove_atrocious_data() 
     {
-
+      
       DB::statement(DB::raw('DELETE from each_domain where each_domain.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
 
       DB::statement(DB::raw('DELETE from valid_phone where valid_phone.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
@@ -497,7 +506,7 @@ class ImportExport extends Controller
 
 
         $st = microtime(true);
-        //$this->remove_atrocious_data(); :: UCOMMENT THIS
+        $this->remove_atrocious_data(); //:: UCOMMENT THIS
         $ed = microtime(true)-$st;
         array_push($query_time_array,'database_cleanup',$ed);
         
