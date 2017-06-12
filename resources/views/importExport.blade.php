@@ -23,7 +23,7 @@
 		</div>
 	</div>
 	<div class="container">
-		<form style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;" class="form-horizontal" action="{{route('importExcelNew')}}" method="post" enctype="multipart/form-data">
+		<form style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;" class="form-horizontal" action="{{route('import_Excel')}}" method="post" enctype="multipart/form-data">
 
 			<input type="file" name="import_file" id="import_file" />
 

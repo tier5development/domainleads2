@@ -79,7 +79,7 @@ Route::get('/aa',function(){
 
     	Route::get('importExport', 'ImportExport@importExport');
 
-    	Route::post('/importExcel', 'ImportExport@importExcel'); // new version of import exel
+    	Route::post('/importExcel', 'ImportExport@importExcel')->name('import_Excel'); // new version of import exel
 
         Route::get('downloadExcel', 'SearchController@downloadExcel');
 

@@ -93,7 +93,7 @@ class ImportExport extends Controller
     public function importExcel(Request $request)
     {
       
-     
+        //dd($request->all());
         //dd('here');
         $start = microtime(true);
         $upload = $request->file('import_file');
@@ -447,6 +447,7 @@ class ImportExport extends Controller
     //this clears out data with mismatches 
     private function remove_atrocious_data() 
     {
+
       DB::statement(DB::raw('DELETE from each_domain where each_domain.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
 
       DB::statement(DB::raw('DELETE from valid_phone where valid_phone.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
@@ -488,7 +489,7 @@ class ImportExport extends Controller
 
         $tm1 = microtime(true);
 
-        ini_set("memory_limit","7G");
+        ini_set("memory_limit","15G");
         ini_set('max_execution_time', '0');
         ini_set('max_input_time', '0');
         set_time_limit(0);
@@ -496,7 +497,7 @@ class ImportExport extends Controller
 
 
         $st = microtime(true);
-        $this->remove_atrocious_data();
+        //$this->remove_atrocious_data(); :: UCOMMENT THIS
         $ed = microtime(true)-$st;
         array_push($query_time_array,'database_cleanup',$ed);
         
