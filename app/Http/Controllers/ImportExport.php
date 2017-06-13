@@ -456,25 +456,100 @@ class ImportExport extends Controller
     //this clears out data with mismatches 
     private function remove_atrocious_data() 
     {
+      $registrant_email   = Lead::pluck('registrant_email')->toArray();
+      $registrant_email   = array_flip($registrant_email);
       
-      DB::statement(DB::raw('DELETE from each_domain where each_domain.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
+      $domain_name        = EachDomain::pluck('domain_name')->toArray();
+      $domain_name        = array_flip($domain_name); 
 
-      DB::statement(DB::raw('DELETE from valid_phone where valid_phone.registrant_email NOT in (SELECT DISTINCT registrant_email from leads)'));
+      $ed_registrant_email= EachDomain::pluck('registrant_email')->toArray();
+      $ed_registrant_email= array_flip($ed_registrant_email); 
 
-      DB::statement(DB::raw('DELETE from domains_info where domains_info.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+      $d_info             = DomainInfo::pluck('domain_name')->toArray(); 
+      $d_technical        = DomainTechnical::pluck('domain_name')->toArray();
+      $d_status           = DomainStatus::pluck('domain_name')->toArray();
+      $d_nameserver       = DomainNameServer::pluck('domain_name')->toArray();
+      $d_feedback         = DomainFeedback::pluck('domain_name')->toArray();
+      $d_billing          = DomainBilling::pluck('domain_name')->toArray();
+      $d_administrative   = DomainAdministrative::pluck('domain_name')->toArray();
+      
+      $ed_delete               = array();
+      $d_info_delete           = array();
+      $d_technical_delete      = array();
+      $d_status_delete         = array();
+      $d_nameserver_delete     = array();
+      $d_feedback_delete       = array();
+      $d_billing_delete        = array();
+      $d_administrative_delete = array();
 
-      DB::statement(DB::raw('DELETE from domains_technical where domains_technical.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+      //checking anomalies in each_domain and leads table with respect to registrant_email column
+      foreach ($ed_registrant_email as $key => $value) {
+        if(!isset($registrant_email[$key]))
+          array_push($ed_delete, $key);
+      }
+      if(sizeof($ed_delete) > 0)
+      EachDomain::whereIn('domain_name',$ed_delete)->delete();
 
-      DB::statement(DB::raw('DELETE from domains_status where domains_status.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
 
-      DB::statement(DB::raw('DELETE from domains_nameserver where domains_nameserver.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+      /* checking anomalies with respect to domain_name */
+      //checking the domains_info
+      foreach ($d_info as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_info_delete = array_push($d_info_delete, $value);
+      }
+      if(sizeof($d_info_delete) > 0)
+      DomainInfo::whereIn('domain_name',$d_info_delete)->delete();
 
-      DB::statement(DB::raw('DELETE from domains_feedback where domains_feedback.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+      //checking the domains_technical
+      foreach ($d_technical as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_technical_delete = array_push($d_technical_delete, $value);
+      }
+      if(sizeof($d_technical_delete) > 0)
+      DomainTechnical::whereIn('domain_name',$d_technical_delete)->delete();
 
-      DB::statement(DB::raw('DELETE from domains_billing where domains_billing.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+      //checking the domains_status
+      foreach ($d_status as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_status_delete = array_push($d_status_delete, $value);
+      }
+      if(sizeof($d_status_delete) > 0)
+      DomainStatus::whereIn('domain_name',$d_status_delete)->delete();
 
-      DB::statement(DB::raw('DELETE from domains_administrative where domains_administrative.domain_name NOT in (SELECT DISTINCT domain_name from each_domain)'));
+      //checking the domains_nameserver
+      foreach ($d_nameserver as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_nameserver_delete = array_push($d_nameserver_delete, $value);
+      }
+      if(sizeof($d_nameserver_delete) > 0)
+      DomainNameServer::whereIn('domain_name',$d_nameserver_delete)->delete();
 
+      //checking the domains_feedback
+      foreach ($d_feedback as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_feedback_delete = array_push($d_feedback_delete, $value);
+      }
+      if(sizeof($d_feedback_delete) > 0)
+      DomainFeedback::whereIn('domain_name',$d_feedback_delete)->delete();
+
+      //checking the domains_billing
+      foreach ($d_billing as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_billing_delete = array_push($d_billing_delete, $value);
+      }
+      if(sizeof($d_billing_delete) > 0)
+      DomainBilling::whereIn('domain_name',$d_billing_delete)->delete();
+
+      //checking the domains_administrative
+      foreach ($d_administrative as $key => $value) {
+        if(!isset($domain_name[$value]))
+          $d_administrative_delete = array_push($d_administrative_delete, $value);
+      }
+      if(sizeof($d_administrative_delete) > 0)
+      DomainAdministrative::whereIn('domain_name',$d_administrative_delete)->delete();
+
+      //flushing out querry log
+      DB::statement(DB::raw('RESET QUERY CACHE'));
     }
 
     private function validate_input($row)
@@ -539,7 +614,7 @@ class ImportExport extends Controller
 
         //20-29 goes to domains administrative
         $domains_administrative_head = "(`id` , `administrative_name`,`administrative_company`,`administrative_address`,`administrative_city`,
-      `administrative_state`,`administrative_zip` , `administrative_country`, `administrative_email` , `administrative_phone`, `administrative_fax` , `created_at`,`updated_at`,`domain_name`)";
+        `administrative_state`,`administrative_zip` , `administrative_country`, `administrative_email` , `administrative_phone`, `administrative_fax` , `created_at`,`updated_at`,`domain_name`)";
 
 
         //30-39 goes to domains_technical table
@@ -612,8 +687,8 @@ class ImportExport extends Controller
                 $domains_status = '';
 
 
-                $created_at             = str_replace($this->search, $this->replace, Carbon::now());
-                $updated_at             = str_replace($this->search, $this->replace, Carbon::now());
+                $created_at = str_replace($this->search, $this->replace, Carbon::now());
+                $updated_at = str_replace($this->search, $this->replace, Carbon::now());
 
 
                 // checking if reg_email > 110 characters or domain_name > 100 characters
@@ -802,12 +877,10 @@ class ImportExport extends Controller
 
             if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1) 
             {
-              //dd("here");
             	return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
             } 
             else
             {
-              //dd("here");
                 return [
                     "http_code" => 404,
                     "validation_status" => "invalid",
