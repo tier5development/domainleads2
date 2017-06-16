@@ -826,20 +826,22 @@ public function download_csv_single_page(Request $request)
                 where id = ".$request->meta_id;
       $data   = DB::select(DB::raw($sql)); 
       $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
+      //dd($leads);
       $data   = null;
 
       //$leads  = $this->raw_leads("(".$leads.")");
       //$leads  = $this->raw_leads($leads);
 
+      //dd($request->thisPage);
       $offset = ($request->thisPage-1) * $request->pagination;
       $limit  = $request->pagination;
 
-      // dd($leads);
+      //dd($leads." -- ".$limit." -- ".$offset);
       // dd($limit." ".$offset);
       $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
 
 
-      
+      //dd($leads_str);
 
 
 
@@ -979,6 +981,11 @@ public function download_csv_single_page(Request $request)
                     }
                     if($req=='') $req = 0;
                     $sql .= " and l.domains_count ".$gt_ls_domaincount_no." ".$req;
+                }
+                else if($key == 'mode' && $req == 'getting expired')
+                {
+                    $sql .= " and di.expiry_date >= date(now()) and 
+                              di.expiry_date <= date(now()+interval 30 day)";  
                 }
               }
             }
@@ -1171,6 +1178,7 @@ public function download_csv_single_page(Request $request)
 
     private function checkMetadata_Search(Request $request)
     {
+      //dd($request->all());
       $input = $this->estimated_input_fields();
       $date_flag = 0;
       $phone_type_meta  = '('.implode(',',$this->phone_type_array).')';
@@ -1181,10 +1189,10 @@ public function download_csv_single_page(Request $request)
 
       $limit =  $request->pagination == null 
                   ? 10
-                  : $request->pagination;
-
-                  
-      $offset = isset($request->page) ? $request->page :1;
+                  : $request->pagination;        
+      $offset = isset($request->page) 
+                  ? $request->page 
+                  : 1;
 
       switch($request->gt_ls_leadsunlocked_no)
       {
@@ -1239,24 +1247,24 @@ public function download_csv_single_page(Request $request)
           else if(($key == 'domains_create_date' || $key == 'domains_create_date2') 
             && $date_flag == 0)
           {
-              $date_flag = 1;
-              $dates_array = generateDateRange($request->domains_create_date,
-                              $request->domains_create_date2);
-              
-              if(isset($dates_array))
-              {
-                if(sizeof($dates_array) == 1)
-                { 
-                  $sql .= " and domains_create_date1 = '".$dates_array[0]."' ";
-                  $input['domains_create_date'] = true;
-                }
-                else if(sizeof($dates_array) == 2)
-                {
-                  $sql .= " and domains_create_date1 = '".$dates_array[0]."' and domains_create_date2 = '".$dates_array[1]."'";
-                  $input['domains_create_date'] = true;
-                  $input['domains_create_date2'] = true;
-                }
+            $date_flag = 1;
+            $dates_array = generateDateRange($request->domains_create_date,
+                            $request->domains_create_date2);
+            
+            if(isset($dates_array))
+            {
+              if(sizeof($dates_array) == 1)
+              { 
+                $sql .= " and domains_create_date1 = '".$dates_array[0]."' ";
+                $input['domains_create_date'] = true;
               }
+              else if(sizeof($dates_array) == 2)
+              {
+                $sql .= " and domains_create_date1 = '".$dates_array[0]."' and domains_create_date2 = '".$dates_array[1]."'";
+                $input['domains_create_date'] = true;
+                $input['domains_create_date2'] = true;
+              }
+            }
           }
           else if($key == 'leadsunlocked_no')
           {
@@ -1280,6 +1288,11 @@ public function download_csv_single_page(Request $request)
               $input[$key] = true;
               $input['gt_ls_domaincount_no'] = true;
               $domains_count_operator = $gt_ls_domaincount_no;
+          }
+          else if($key == 'mode' && $req == 'getting expired')
+          {
+              $sql .= " and expiry_date >= date(now()) and 
+                        expiry_date <= date(now()+interval 30 day)";  
           }
         }
       }
@@ -1379,7 +1392,6 @@ public function download_csv_single_page(Request $request)
         {
          return null;
         }
-
       }
       else
       {
@@ -1400,7 +1412,6 @@ public function download_csv_single_page(Request $request)
           
 
           $raw_leads_id = $this->paginated_raw_leads($raw_leads_id,$limit,$offset);
-
           return $this->raw_leads($raw_leads_id);
         }
         else
@@ -1427,8 +1438,10 @@ public function download_csv_single_page(Request $request)
       
       $array = explode(",",$raw_leads);
       $return = "";
-      for($i=$offset-1 ; $i<$limit+$offset; $i++)
+      
+      for($i=$offset ; $i<$limit+$offset; $i++)
       {
+        //dd($i." -- ".($limit+$offset));
         if(!isset($array[$i])) break;
         if($return == "") $return .= $array[$i];
         else $return .= ",".$array[$i];
@@ -1682,6 +1695,7 @@ public function download_csv_single_page(Request $request)
 
     private function search_algo(Request $request)
     {   
+
       $start = microtime(true);   
       $this->setVariables($request); //initiating MY VARIABLES
       $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
@@ -1766,27 +1780,24 @@ public function download_csv_single_page(Request $request)
           $start = microtime(true);          
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
-          //dd($this->meta_id);
+          
 
-          //echo "time : ".$end."<br>";
-          //dd($data);
+          if(\Auth::user()->user_type == 2)
+          {
+            return view('home.admin.admin_search',$result);      
+          }
 
-            if(\Auth::user()->user_type == 2)
-            {
-              return view('home.admin.admin_search',$result);      
-            }
-
-            return view('home.search' , 
-                  ['record'       => $data, 
-                   'page'         => 1,
-                   'totalLeads'   =>$totalLeads,
-                   'totalDomains' =>$totalDomains,
-                   'domain_list'       =>isset($domain_list) ? $domain_list : null,
-                   // 'leadArr'      =>$leads_arr , 
-                   // 'string_leads'=>$string_leads,
-                   'users_array'=>$users_array,
-                   'obj_array'=>$obj_array,
-                   'query_time'=>$end]);
+          return view('home.search' , 
+                ['record'       => $data, 
+                 'page'         => 1,
+                 'totalLeads'   =>$totalLeads,
+                 'totalDomains' =>$totalDomains,
+                 'domain_list'  =>isset($domain_list) ? $domain_list : null,
+                 // 'leadArr'      =>$leads_arr , 
+                 // 'string_leads'=>$string_leads,
+                 'users_array'=>$users_array,
+                 'obj_array'=>$obj_array,
+                 'query_time'=>$end]);
         }
         else
         {

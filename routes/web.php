@@ -12,7 +12,11 @@
 */
 
 Route::get('/aaaaa',function(){
-    dd(DB::select(DB::raw("SHOW KEYS FROM leads WHERE Key_name='leads_registrant_country_index'")));
+    //dd(DB::select(DB::raw("SHOW KEYS FROM leads WHERE Key_name='leads_registrant_country_index'")));
+
+    if(DB::select(DB::raw("SHOW KEYS FROM domains_info WHERE Key_name='domains_info_expiry_date_index'")) == null)
+    dd(123);
+            
 });
 
 Route::get('/aaaa',function(){
