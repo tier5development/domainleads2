@@ -1435,9 +1435,10 @@ public function download_csv_single_page(Request $request)
     //according to offset and limit derived from pagination
     private function paginated_raw_leads($raw_leads,$limit,$offset)
     {
-      
+      //dd($raw_leads.'--'.$offset.'--'.$limit);
       $array = explode(",",$raw_leads);
       $return = "";
+      if($offset == 1) $offset--;
       
       for($i=$offset ; $i<$limit+$offset; $i++)
       {
@@ -1759,7 +1760,15 @@ public function download_csv_single_page(Request $request)
             array_push($phone_type_array, 'Landline');
 
 
-          $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id);
+          if($this->meta_id != null)
+          {
+            $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id);
+          }
+          else
+          {
+            $total_data = 0;
+            return \Response::json(array('result'=>null,'total_data'=>$total_data,'status'=>$status));
+          }
         }
         catch(\Exception $e)
         {
