@@ -162,7 +162,7 @@ public function download_csv_single_page(Request $request)
     //dd($param);
     $data   = $array['data'];
     $domains= $this->domainsPerPage_Search($param,$phone_type_array,$array['leads_string']);
-    $data = $this->domains_output_Search($data,$domains);
+    $data   = $this->domains_output_Search($data,$domains);
 
     $reqData = array();
     $key=0;
@@ -174,7 +174,7 @@ public function download_csv_single_page(Request $request)
       $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
       $reqData[$i]['website']    = $val['domain_name'];
       $reqData[$i]['phone']      = $val['registrant_phone'];
-      $reqData[$i]['email_id'] = $val['registrant_email'];
+      $reqData[$i]['email_id']   = $val['registrant_email'];
     }
 
     return $reqData;
@@ -1765,8 +1765,8 @@ public function download_csv_single_page(Request $request)
         {
           $status = $e->getMessage();
         }
-        
-        return \Response::json(array('result'=>$result,'status'=>$status));
+        $total_data = sizeof($result);
+        return \Response::json(array('result'=>$result,'total_data'=>$total_data,'status'=>$status));
     }
 
     public function search(Request $request)
