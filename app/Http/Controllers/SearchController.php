@@ -175,6 +175,7 @@ public function download_csv_single_page(Request $request)
       $reqData[$i]['website']    = $val['domain_name'];
       $reqData[$i]['phone']      = $val['registrant_phone'];
       $reqData[$i]['email_id']   = $val['registrant_email'];
+      $reqData[$i]['company']   = $val['registrant_company'];
     }
 
     return $reqData;

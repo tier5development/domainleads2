@@ -12,9 +12,10 @@ class AreaCodesTableSeeder extends Seeder
     public function run()
     {
         $path = getcwd()."/area_codes.sql";
-        //DB::unprepared(file_get_contents($path));
         $passw = env('DB_PASSWORD');
         $db =    env('DB_DATABASE');
-        exec('mysql -u root -p'.$passw.' '.$db.' < '.$path);
+        $user =  env('DB_USERNAME');
+        $host =  env('DB_HOST');
+        exec('mysql -h '.$host.' -u '.$user.' -p'.$passw.' '.$db.' < '.$path);
     }
 }
