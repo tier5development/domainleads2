@@ -64,7 +64,7 @@ class ImportExport extends Controller
         }
         catch(\Exception $e)
         {
-          echo($key.'  '.$val.'<br>');
+          echo($key.' previous did not happen correctly  '.$val.'<br>');
           dd($e);
         }
       }
@@ -495,7 +495,7 @@ class ImportExport extends Controller
       //checking the domains_info
       foreach ($d_info as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_info_delete = array_push($d_info_delete, $value);
+          array_push($d_info_delete, $value);
       }
       if(sizeof($d_info_delete) > 0)
       DomainInfo::whereIn('domain_name',$d_info_delete)->delete();
@@ -503,7 +503,7 @@ class ImportExport extends Controller
       //checking the domains_technical
       foreach ($d_technical as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_technical_delete = array_push($d_technical_delete, $value);
+          array_push($d_technical_delete, $value);
       }
       if(sizeof($d_technical_delete) > 0)
       DomainTechnical::whereIn('domain_name',$d_technical_delete)->delete();
@@ -511,7 +511,7 @@ class ImportExport extends Controller
       //checking the domains_status
       foreach ($d_status as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_status_delete = array_push($d_status_delete, $value);
+          array_push($d_status_delete, $value);
       }
       if(sizeof($d_status_delete) > 0)
       DomainStatus::whereIn('domain_name',$d_status_delete)->delete();
@@ -519,7 +519,7 @@ class ImportExport extends Controller
       //checking the domains_nameserver
       foreach ($d_nameserver as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_nameserver_delete = array_push($d_nameserver_delete, $value);
+          array_push($d_nameserver_delete, $value);
       }
       if(sizeof($d_nameserver_delete) > 0)
       DomainNameServer::whereIn('domain_name',$d_nameserver_delete)->delete();
@@ -527,7 +527,7 @@ class ImportExport extends Controller
       //checking the domains_feedback
       foreach ($d_feedback as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_feedback_delete = array_push($d_feedback_delete, $value);
+          array_push($d_feedback_delete, $value);
       }
       if(sizeof($d_feedback_delete) > 0)
       DomainFeedback::whereIn('domain_name',$d_feedback_delete)->delete();
@@ -535,7 +535,7 @@ class ImportExport extends Controller
       //checking the domains_billing
       foreach ($d_billing as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_billing_delete = array_push($d_billing_delete, $value);
+          array_push($d_billing_delete, $value);
       }
       if(sizeof($d_billing_delete) > 0)
       DomainBilling::whereIn('domain_name',$d_billing_delete)->delete();
@@ -543,13 +543,36 @@ class ImportExport extends Controller
       //checking the domains_administrative
       foreach ($d_administrative as $key => $value) {
         if(!isset($domain_name[$value]))
-          $d_administrative_delete = array_push($d_administrative_delete, $value);
+          array_push($d_administrative_delete, $value);
       }
       if(sizeof($d_administrative_delete) > 0)
       DomainAdministrative::whereIn('domain_name',$d_administrative_delete)->delete();
 
-      //flushing out querry log
+      //flushing out querry log and retrieve mysql occupying disk space
       DB::statement(DB::raw('RESET QUERY CACHE'));
+
+
+      // unsetting all variables to free the allocated memory
+      // required as the data sizes are big
+      unset($registrant_email);
+      unset($domain_name);
+      unset($ed_registrant_email);
+      unset($d_info);
+      unset($d_technical);
+      unset($d_status);
+      unset($d_nameserver);
+      unset($d_feedback);
+      unset($d_billing);
+      unset($d_administrative);
+      unset($ed_delete);
+      unset($d_info_delete);
+      unset($d_technical_delete);
+      unset($d_status_delete);
+      unset($d_nameserver_delete);
+      unset($d_feedback_delete);
+      unset($d_billing_delete);
+      unset($d_administrative_delete);
+
     }
 
     private function validate_input($row)
