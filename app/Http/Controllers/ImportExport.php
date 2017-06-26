@@ -488,7 +488,7 @@ class ImportExport extends Controller
           array_push($ed_delete, $key);
       }
       if(sizeof($ed_delete) > 0)
-      EachDomain::whereIn('domain_name',$ed_delete)->delete();
+      EachDomain::whereIn('registrant_email',$ed_delete)->delete();
 
 
       /* checking anomalies with respect to domain_name */
