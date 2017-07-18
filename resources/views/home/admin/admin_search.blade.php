@@ -107,49 +107,49 @@
          <div class="navbar-header">
             <?php if(Session::has('emailID_list')){
                $emailID_list=Session::get('emailID_list');
-               
+
                }else {
                 $emailID_list=array();
-               
+
                }
-               
+
                  $domainExtarray=Input::all();
                  if (array_key_exists("domain_ext",$domainExtarray)){
                  	 if (!array_key_exists("0",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][0]='';	
-                 	 }	
+                          $domainExtarray['domain_ext'][0]='';
+                 	 }
                  	 if (!array_key_exists("1",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][1]='';	
+                          $domainExtarray['domain_ext'][1]='';
                  	 }
                  	 if (!array_key_exists("2",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][2]='';	
+                          $domainExtarray['domain_ext'][2]='';
                  	 }
                  	 if (!array_key_exists("3",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][3]='';	
+                          $domainExtarray['domain_ext'][3]='';
                  	 }
                  	 if (!array_key_exists("4",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][4]='';	
+                          $domainExtarray['domain_ext'][4]='';
                  	 }
                  	 if (!array_key_exists("5",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][5]='';	
+                          $domainExtarray['domain_ext'][5]='';
                  	 }
                  	 if (!array_key_exists("6",$domainExtarray['domain_ext'])){
-                          $domainExtarray['domain_ext'][6]='';	
+                          $domainExtarray['domain_ext'][6]='';
                  	 }
-                    
+
                  }
                  else
                  {
-                   $domainExtarray['domain_ext'][0]='';	
-                   $domainExtarray['domain_ext'][1]='';	
-                   $domainExtarray['domain_ext'][2]='';	
-                   $domainExtarray['domain_ext'][3]='';	
-                   $domainExtarray['domain_ext'][4]='';	
-                   $domainExtarray['domain_ext'][5]='';	
-                   $domainExtarray['domain_ext'][6]='';	
+                   $domainExtarray['domain_ext'][0]='';
+                   $domainExtarray['domain_ext'][1]='';
+                   $domainExtarray['domain_ext'][2]='';
+                   $domainExtarray['domain_ext'][3]='';
+                   $domainExtarray['domain_ext'][4]='';
+                   $domainExtarray['domain_ext'][5]='';
+                   $domainExtarray['domain_ext'][6]='';
                  }
-                 
-               
+
+
                ?>
          </div>
          <div>
@@ -189,11 +189,11 @@
                   <input type="hidden" name="meta_id" value="{{$meta_id}}">
                   <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
                   <input type="hidden" name="domainname" value="{{ Input::get('domain_name') }}">
-                  <input type="hidden" name="domainext"  value="{{ null!==Input::get('domain_ext') 
+                  <input type="hidden" name="domainext"  value="{{ null!==Input::get('domain_ext')
                   ? implode(',',Input::get('domain_ext'))
                   : '' }}">
-                  <input type="hidden" name="createdate1" value="{{ Input::get('domains_create_date') }}">
-                  <input type="hidden" name="createdate2" value="{{ Input::get('domains_create_date2') }}">
+                  <input type="hidden" name="domains_create_date" value="{{ Input::get('domains_create_date') }}">
+                  <input type="hidden" name="domains_create_date2" value="{{ Input::get('domains_create_date2') }}">
                   <input type="hidden" name="cell" value="{{Input::get('cell_number')}}" >
                   <input type="hidden" name="landline" value="{{Input::get('landline_number')}}">
                   <!-- <button><id="exportLeads" class="btn btn-primary">Export</button>
@@ -218,7 +218,7 @@
                         <input id="reg_email_{{$key}}" class="eachrow_download single_row" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
                         </small>
                      </td>
-                     
+
                      <td>
                         <small><b class="reg_email" id="domain_name_{{$key}}">{{$each['domain_name']}}</b></small>
                         <br>
@@ -231,7 +231,7 @@
                        <small id="registrant_zip_{{$key}}">{{$each['registrant_zip']}}</small>
                      </td>
                      <td>
-                        <small class="reg_name" id="registrant_name_{{$key}}">{{$each['registrant_name']}}</small>	
+                        <small class="reg_name" id="registrant_name_{{$key}}">{{$each['registrant_name']}}</small>
                      </td>
                      <td>
                         <small class="reg_email" id="registrant_email_{{$key}}">{{$each['registrant_email']}} </small>
@@ -240,10 +240,10 @@
                         <?php
                           //$phone = explode('.',$each['registrant_phone']);
                           //$phone = isset($phone[1]) ? $phone[1] : $phone[0];
-                         ?> 
+                         ?>
 
                         <small class="reg_phone" id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
-                        @if(isset($each['number_type'])) 
+                        @if(isset($each['number_type']))
                         @if($each['number_type']== "Cell Number")
                         <img class="mobile" id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
                         @elseif($each['number_type']=="Landline")
@@ -306,10 +306,10 @@
       var right_most   = Math.ceil(parseInt("{{$totalLeads}}")/per_page);
       var meta_id      = parseInt("{{$meta_id}}");
       var display_limit= 5;
-      
+
       //alert(right_most);
-      	
-      
+
+
       function adjust()
       {
       	if(thisPage == left_most)
@@ -331,7 +331,7 @@
       		$('#pg_prev').hide();
       	}
       }
-      
+
       //page_form
       function load_new_page(page)
       {
@@ -341,19 +341,19 @@
       	var reg_date = $('#registered_date').val();
       	var reg_date2 = $('#registered_date2').val();
       	var domain_name = $('#domain_name').val();
-      	var domain_ext = $('#domain_ext').val(); 
+      	var domain_ext = $('#domain_ext').val();
       	var num_type = $('#number_type').val();
       	var total_domains = "{{$totalDomains}}";
       	var total_leads = "{{$totalLeads}}";
       	var lead_list  = $(this).find('.leads_list_cls').val();
       	$('#pg_'+thisPage).removeClass('btn-info');
       	//var page = $(this).val();
-      
+
       	$.ajax({
       		url  : URL+'/ajax_search_paginated',
       		type : 'post',
       		dataType: 'json',
-      		data : {_token : "{{csrf_token()}}" , 
+      		data : {_token : "{{csrf_token()}}" ,
       				meta_id             : meta_id,
       				thisPage            : parseInt(page),
       				pagination          : per_page,
@@ -403,7 +403,7 @@
       					$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
       					$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
       					$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
-      
+
       					if(response.data[i]['number_type'] == 'Landline')
       						$('#phone_'+i).css('src',URL+'/images/landline.png');
       					else if(response.data[i]['number_type'] == 'Cell Number')
@@ -414,33 +414,33 @@
       				$('#table').show();
       				$('#ajax-loader').hide();
       			}
-            
+
       		});
       }
-      
+
       $('.pg_btn').click(function(e){
       	e.preventDefault();
       	load_new_page(parseInt($(this).val()));
       });
-      
+
       $('#pg_next').click(function(e){
       	e.preventDefault();
       	load_new_page(parseInt(thisPage)+1);
       	adjust();
       });
-      
+
       $('#pg_prev').click(function(e){
       	e.preventDefault();
       	load_new_page(parseInt(thisPage)-1);
       	adjust();
       });
-      
-      
+
+
       $(function(){
       	pages();
       	setup_pages();
       });
-      
+
       $('#next').click(function(e){
       	thisPage += 5;
       	setup_pages();
@@ -449,7 +449,7 @@
       	thisPage -= 5;
       	setup_pages();
       });
-      
+
       function pages()
       {
       	//console.log('in pages');
@@ -460,17 +460,17 @@
       	if(low < 0)
       	{
       		high = high - low;
-      		low  = low  - low; 
+      		low  = low  - low;
       	}
       	//console.log(low,high);
       	if(high > totalPage)
       	{
       		high = high - (high - totalPage);
       		low  = low - (high - totalPage);
-      	} 
+      	}
       	//console.log(low,high);
       	$('.pg_btn').each(function(i,j){
-      
+
       		if(i>= low && i<=high)
       		{
       			$('#pg_'+i).show();
@@ -484,7 +484,7 @@
       	});
       	adjust();
       }
-      
+
       function setup_pages()
       {
       	$('#page_forms').hide();
@@ -493,15 +493,15 @@
       	l  = parseInt(thisPage) -5;
       	h  = parseInt(thisPage) +5;
       	l_most = 0;
-      	r_most = 
-      	
+      	r_most =
+
       	$('.page_form').each(function(i,j)
       	{
       		if(thisPage == 1)
       		{
       			if(i<10)
       				$(this).show();
-      
+
       			else
       				$(this).hide();
       		}
@@ -522,7 +522,7 @@
       	if(thisPage <= left_most+limit)
       	{
       		$('#previous').hide();
-      	}	
+      	}
       	else if(thisPage >= right_most-limit)
       	{
       		$('#next').hide();
@@ -534,29 +534,29 @@
       	}
       	$('#page_forms').show();
       }
-      
+
        	$(function(){
        		$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
          	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
        	});
        	$("#refine_searchID").click(function(){
-      
+
       	    $("#postSearchDataForm").submit();
-      
+
          });
-       	
+
    </script>
    <script type="text/javascript">
       var options = [];
-      
+
       $('.dropdown-menu a' ).on( 'click', function( event ) {
-      
+
       	//alert(1);
          var $target = $( event.currentTarget ),
              val = $target.attr( 'data-value' ),
              $inp = $target.find( 'input' ),
              idx;
-      
+
          if (( idx = options.indexOf(val)) > -1) {
             options.splice( idx, 1 );
             setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
@@ -564,29 +564,29 @@
             options.push( val );
             setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
          }
-      
+
          $( event.target ).blur();
          console.log( options );
          return false;
-      
+
          event.preventDefault();
       });
-      
-      
-      
+
+
+
       $(document).ready(function(){
-      
+
       $(window).on('hashchange',function(){
       	page = window.location.hash.replace('#','');
       	getProducts(page);
       });
-      
+
       });
    </script>
    <script type="text/javascript">
       var _token='{{csrf_token()}}';
           $('.eachrow_download').click(function(event){
-             
+
       	  // $("#domains_for_export_id_allChecked").val(0);
       	  // $(".downloadcsv_all").prop( "checked", false);
       	   var id=$(this).attr('id');
@@ -595,23 +595,23 @@
       		    var  isChecked=1;
       		    } else {
       		    var  isChecked=0;
-      		     
+
       		    }
       	    });
-      
-      
-          
+
+
+
           $('#exportLeads').click(function(e){
-          	
+
           	var csv_flag = 0;
           	$('.eachrow_download').each(function(e2){
-      
+
           		if(!$(this).is(':checked'))
           		{
           			csv_flag = 1;
           		}
           	});
-      
+
           	if(csv_flag == 1)
           	{
           		return true;
@@ -621,11 +621,11 @@
           		alert('please select some leads');
           	}
           });
-      
+
           $('.downloadcsv_all').click(function(event){
-        
+
               $("#domains_for_export_id").val('');
-              
+
       	    if($(this).is(':checked')) {
       	      $(".eachrow_download").prop( "checked", true);
       	      $("#domains_for_export_id_allChecked").val(1);
@@ -642,14 +642,14 @@
       					},
                      data:'_token='+_token,
                      success:function(response){
-                     	 
-                       
+
+
                      }
-                     }); 
-       
-         
+                     });
+
+
              });
-      
+
              function chkDomainForWebsite(domain_name,key,registrant_email){
                 var _token='{{csrf_token()}}';
                 var user_id = '{{\Auth::user()->id}}';
@@ -666,50 +666,50 @@
                        $("#popupid_for_domainexists").trigger('click');
                        $('#chkDomainForWebsiteID_'+key).html('Created website');
                         $('#chkDomainForWebsiteID_'+key).prop("disabled",true);
-                      
+
                     }
                  });
-      
+
           }
-      
+
       	$(".dropdown dt a").on('click', function(e) {
       	  $(".dropdown dd ul").slideToggle('fast');
       	  e.preventDefault();
       	});
-      
+
       	$(".dropdown dd ul li a").on('click', function(e) {
       	  $(".dropdown dd ul").hide();
       	  e.preventDefault();
       	});
-      
+
       	function getSelectedValue(id) {
       	  return $("#" + id).find("dt a span.value").html();
       	}
-      
+
       	$(document).bind('click', function(e) {
       	  var $clicked = $(e.target);
       	  if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
       	});
-      
+
       	$('.mutliSelect input[type="checkbox"]').on('click', function(){
-      
+
       	  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val();
       	    title = $(this).val() + ",";
-      
-      	  if ($(this).is(':checked')) 
+
+      	  if ($(this).is(':checked'))
       	  {
       	    var html = '<span title="' + title + '">' + title + '</span>';
       	    $('.multiSel').append(html);
       	    $(".hida").hide();
-      	  } 
-      	  else 
+      	  }
+      	  else
       	  {
       	    $('span[title="' + title + '"]').remove();
       	    var ret = $(".hida");
       	    $('.dropdown dt a').append(ret);
-      
+
       	  }
-      
+
       	});
    </script>
 </html>
