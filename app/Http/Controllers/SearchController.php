@@ -157,6 +157,7 @@ public function download_csv_single_page(Request $request)
                       ? $request->domain_ext
                       : explode(',',$request->domain_ext);
 
+    if($domain_ext_arr[0] == '') $domain_ext_arr = [];
 
     $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
     $leads  = $this->raw_leads($leads_str);
@@ -907,6 +908,8 @@ public function download_csv_single_page(Request $request)
             $sql .= " and vp.number_type IN ".$phone_type_array_str;
           }
         }
+
+
 
         $domains = DB::select(DB::raw($sql));
         return $domains;
