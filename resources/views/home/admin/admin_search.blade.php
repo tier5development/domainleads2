@@ -188,8 +188,8 @@
                   <input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
                   <input type="hidden" name="meta_id" value="{{$meta_id}}">
                   <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
-                  <input type="hidden" name="domainname" value="{{ Input::get('domain_name') }}">
-                  <input type="hidden" name="domainext"  value="{{ null!==Input::get('domain_ext')
+                  <input type="hidden" name="domain_name" value="{{ Input::get('domain_name') }}">
+                  <input type="hidden" name="domain_ext"  value="{{ null!==Input::get('domain_ext')
                   ? implode(',',Input::get('domain_ext'))
                   : '' }}">
                   <input type="hidden" name="domains_create_date" value="{{ Input::get('domains_create_date') }}">

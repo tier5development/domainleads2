@@ -134,9 +134,10 @@ public function download_csv_single_page(Request $request)
   private function all_lead_domains_set(Request $request,$phone_type_array,$meta_id)
 
   {
-
+    //dd($request->all());
     $sql    = "SELECT leads,compression_level from search_metadata
               where id = ".$meta_id;
+
     $data   = DB::select(DB::raw($sql));
 
     $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
@@ -152,14 +153,21 @@ public function download_csv_single_page(Request $request)
     }
 
 
+    $domain_ext_arr = is_array($request->domain_ext)
+                      ? $request->domain_ext
+                      : explode(',',$request->domain_ext);
+
+
     $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
     $leads  = $this->raw_leads($leads_str);
     $array  = $this->leadsPerPage_Search($leads);
-    $param  = ['domain_name'=>$request->domainname
-             ,'domain_ext' =>($request->domainext == null ? null : explode(',',$request->domainext))
+    $param  = ['domain_name'=>$request->domain_name
+             ,'domain_ext' =>(sizeof($domain_ext_arr) == 0 ? null : $domain_ext_arr)
              ,'domains_create_date'=>$request->domains_create_date
              ,'domains_create_date2'=>$request->domains_create_date2];
-    //dd($param);
+
+    \Log::info(' domainleads api :: '.print_r($param, true));
+
     $data   = $array['data'];
     $domains= $this->domainsPerPage_Search($param,$phone_type_array,$array['leads_string']);
     $data   = $this->domains_output_Search($data,$domains);
@@ -179,248 +187,6 @@ public function download_csv_single_page(Request $request)
     }
 
     return $reqData;
-  }
-
-  public function downloadExcel(Request $request)
-  {
-    //dd($request->all());
-    $type='csv';
-
-      $user_type=Auth::user()->user_type;
-      $user_id=Auth::user()->id;
-        $domains_for_export_allChecked=$request->domains_for_export_allChecked;
-        if($domains_for_export_allChecked==1){
-          if($user_type==1){
-            $exel_data=DB::table('leadusers')
-                          ->join('leads', 'leads.registrant_email', '=', 'leadusers.registrant_email')
-                          ->join('each_domain', 'each_domain.registrant_email', '=', 'leadusers.registrant_email')
-
-                          ->select('leads.registrant_fname as fname','leads.registrant_lname as lname','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
-                          ->where('leadusers.user_id',$user_id)
-                          ->groupBy('leads.registrant_email')
-                          ->get();
-
-          }else{
-
-
-          //$gt_ls_domaincount_no_downloadExcel=$request->gt_ls_domaincount_no_downloadExcel;
-          //$domaincount_no_downloadExcel=$request->domaincount_no_downloadExcel;
-          //$gt_ls_leadsunlocked_no_downloadExcel=$request->gt_ls_leadsunlocked_no_downloadExcel;
-          //$leadsunlocked_no_downloadExcel=$request->leadsunlocked_no_downloadExcel;
-
-          $filterOption_downloadExcel=$request->filterOption_downloadExcel;
-          $create_date=$request->domains_create_date_downloadExcel;
-          $registrant_state=$request->registrant_state_downloadExcel;
-          $tdl_com=$request->tdl_com_downloadExcel;
-          $tdl_net=$request->tdl_net_downloadExcel;
-          $tdl_org=$request->tdl_org_downloadExcel;
-          $tdl_io=$request->tdl_io_downloadExcel;
-          $tdl_gov=$request->tdl_gov_downloadExcel;
-          $tdl_edu=$request->tdl_edu_downloadExcel;
-          $tdl_in=$request->tdl_in_downloadExcel;
-
-           $cell_number=$request->cell_number_downloadExcel;
-           $landline=$request->landline_downloadExcel;
-
-          $phone_number=array();
-          if($cell_number=='cell number'){
-            $phone_number[]='Cell Number';
-          }
-          if($landline=='landline number'){
-            $phone_number[]='Landline';
-          }
-          //print_r($phone_number);dd();
-          $tdl=array();
-          if($tdl_com=='com'){
-           $tdl[]='com';
-          }
-          if($tdl_net=='net'){
-           $tdl[]='net';
-          }
-          if($tdl_org=='org'){
-           $tdl[]='org';
-          }
-          if($tdl_io=='io'){
-           $tdl[]='io';
-          }
-          if($tdl_gov=='gov'){
-           $tdl[]='gov';
-          }
-          if($tdl_edu=='edu'){
-           $tdl[]='edu';
-          }
-          if($tdl_in=='in'){
-           $tdl[]='in';
-          }
-
-
-         // if($gt_ls_domaincount_no_downloadExcel==0){
-          // $gt_ls_domaincount_no='>';
-         // }else if($gt_ls_domaincount_no_downloadExcel==1){
-          // $gt_ls_domaincount_no='>';
-         // }else{
-         //  $gt_ls_domaincount_no='<';
-          //}
-
-
-         // if($gt_ls_leadsunlocked_no_downloadExcel==0){
-          // $gt_ls_leadsunlocked_no='>';
-         // }else if($gt_ls_leadsunlocked_no_downloadExcel==1){
-          // $gt_ls_leadsunlocked_no='>';
-        //  }else{
-          // $gt_ls_leadsunlocked_no='<';
-          //}
-
-         //if($request->domaincount_no_downloadExcel){
-          //$domaincount_no=$request->domaincount_no_downloadExcel;
-        //}else {  $domaincount_no=0;    }
-        // $leadsunlocked_no=$request->leadsunlocked_no_downloadExcel;
-
-        switch ($filterOption_downloadExcel) {
-
-        case 'unlocked_asnd':
-            $key='leads.unlocked_num';
-            $value='asc';
-            break;
-        case 'unlocked_dcnd':
-            $key='leads.unlocked_num';
-            $value='desc';
-            break;
-        case 'domain_count_asnd':
-            $key='leads.domains_count';
-            $value='asc';
-            break;
-        case 'domain_count_dcnd':
-            $key='leads.domains_count';
-            $value='desc';
-            break;
-          default:
-          $key='domains_info.domains_create_date';
-          $value='desc';
-        }
-
-
-          $registrant_country=$request->registrant_country_downloadExcel;
-
-          $domain_name=$request->domain_name_downloadExcel;
-
-          $requiredData=array();
-          $leadusersData=array();
-          $user_id=Auth::user()->id;
-
-
-                 //dd($phone_number);
-            $exel_data = DB::table('leads')
-                    ->join('each_domain', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-                    //->join('valid_phone', 'valid_phone.registrant_email', '=', 'leads.registrant_email')
-
-                    ->join('domains_info', 'domains_info.domain_name', '=', 'each_domain.domain_name')
-                    ->select('leads.registrant_fname as fname','leads.registrant_lname as lname','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
-
-
-                    ->where(function($query) use ($create_date,$domain_name,$registrant_country,$phone_number,$tdl,$registrant_state)
-                      {
-                        if (!empty($phone_number)) {
-
-
-                            $query->whereExists(function ($query) use($phone_number) {
-                            $query->select(DB::raw(1))
-                            ->from('valid_phone')
-                            ->whereRaw('valid_phone.registrant_email = leads.registrant_email')
-                            ->whereIn('valid_phone.number_type', $phone_number);
-                            });
-
-
-                          }
-                          if (!empty($registrant_country)) {
-                              $query->where('leads.registrant_country', $registrant_country);
-                          }
-                          if (!empty($create_date)) {
-                              $query->where('domains_info.domains_create_date', $create_date);
-                          }
-                         //  if (!empty($leadsunlocked_no)) {
-                             // $query->where('leads.unlocked_num',$gt_ls_leadsunlocked_no, $leadsunlocked_no);
-                          //}
-                          if (!empty($domain_name)) {
-                             $query->where('each_domain.domain_name','like', '%'.$domain_name.'%');
-
-                          }
-                          if(!empty($registrant_state))
-                          {
-                              $query->where('leads.registrant_state', $registrant_state);
-                          }
-
-                          //dd($query);
-                           if (!empty($tdl)) {
-                              $query->whereIn('each_domain.domain_ext', $tdl);
-
-                          }
-
-                      })
-                 //->skip(0)
-                 //->take(50)
-
-                 ->groupBy('each_domain.registrant_email')
-                 // ->havingRaw('count(domains.user_id) '.$gt_ls_domaincount_no.''. $domaincount_no)
-                 //->orderBy($key,$value)
-
-                 ->get();
-
-
-             // dd($exel_data);
-
-          }
-        }else{
-            $emailID_list=array();
-            if(Session::has('emailID_list')){
-                   $emailID_list=Session::get('emailID_list');
-
-            }
-             Session::forget('emailID_list');
-            //print_r($emailID_list);dd();
-            $domains_for_export=$request->domains_for_export;
-            //$domainsforexport=explode(",",$domains_for_export);
-            //$req_domainsforexport=array();
-             // foreach($domainsforexport as $val){
-            //  $req_domainsforexport[]=$val;
-            //  }
-              $exel_data=DB::table('each_domain')
-                          ->join('leads', 'leads.registrant_email', '=', 'each_domain.registrant_email')
-
-                          ->select('leads.registrant_fname as fname','leads.registrant_lname as lname','each_domain.domain_name as website','leads.registrant_address as address','leads.registrant_phone as phone','leads.registrant_email as email_id')
-                          ->whereIn('each_domain.registrant_email',$emailID_list)
-                           ->groupBy('leads.registrant_email')
-                          ->get();
-          //print_r($exel_data);dd();
-
-        }
-
-
-
-
-       $data = json_decode(json_encode($exel_data), true);
-       //print_r($data);dd();
-       $reqData=array();
-       foreach($data as $key=>$result){
-          $reqData[$key]['first_name'] = $result['fname'];
-          $reqData[$key]['last_name']  = $result['lname'];
-          $reqData[$key]['website']=$result['website'];
-          $reqData[$key]['phone']=substr(strrchr($result['phone'], "."), 1);
-          $reqData[$key]['email_id']=$result['email_id'];
-       }
-      // print_r($reqData);dd();
-    return Excel::create('domainleads', function($excel) use ($reqData) {
-
-      $excel->sheet('mySheet', function($sheet) use ($reqData)
-
-          {
-
-        $sheet->fromArray($reqData);
-
-          });
-
-    })->download($type);
-
   }
 
     public function createWordpressForDomain(Request $request)
