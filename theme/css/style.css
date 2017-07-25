@@ -839,7 +839,7 @@ p {
     position:fixed;
     bottom:30px;
     right:20px;
-	border:1px solid #fff;
+    border:1px solid #fff;
     display:none;
     background: #FECE1A;
 }
@@ -1129,8 +1129,100 @@ p {
     height: 100%;
 }
 
+@media screen and (min-width:768px) and (max-width:991px){
+    .section .title h1 {
+        font-size: 30px;
+    }
+    .section .title > p, .highlighted-box p {
+        font-size: 14px;
+    }
+    .primary-section h3{
+        font-size: 15px;
+        line-height: 20px;
+    }
+    .primary-section h1 {
+        font-size: 22px;
+    }
+    .service p {
+        padding: 0 20px;
+        height: auto;
+        font-size: 14px;
+    }
+    .skills li h3{
+        font-size: 13px;
+    }
+    .testimonial p {
+        font-size: 14px;
+    }
+}
 @media screen and (max-width:767px){
     .videosection {
         margin: 0 20px;
+    }
+    .section .title h1 {
+        font-size: 30px;
+    }
+    .section .title > p, .highlighted-box p {
+        font-size: 14px;
+    }
+    .primary-section h3{
+        font-size: 15px;
+        line-height: 20px;
+    }
+    .primary-section h1 {
+        font-size: 22px;
+    }
+    .service p {
+        padding: 0 20px;
+        height: auto;
+        font-size: 14px;
+    }
+    .skills li h3{
+        font-size: 13px;
+    }
+    .testimonial p {
+        font-size: 14px;
+    }
+    .triangle {
+        border: none !important;
+    }
+    .da-slide .da-img {
+        display: block !important;
+        width: 20% !important;
+    }
+    .da-arrows span.da-arrows-next, .da-arrows span.da-arrows-prev {
+        background-size: 30% !important;
+        top: 10%;
+    }
+    .da-arrows span.da-arrows-next{
+        right: 0 !important;
+    }
+    .da-arrows span.da-arrows-prev{
+        left: 0 !important;
+    }
+}
+@media screen and (max-width: 480px){
+    .section .title h1 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        line-height: 20px;
+    }
+    .section .title > p, .highlighted-box p {
+        font-size: 12px;
+    }
+    .service p {
+        padding: 0;
+        font-size: 12px;
+    }
+    .large-text {
+        font-size: 18px;
+        padding: 0;
+    }
+    .da-slide h4 {
+        font-size: 12px !important;
+    }
+    .service img {
+        width: 100px;
+        height: 100px;
     }
 }
