@@ -60,7 +60,7 @@ class ImportExport extends Controller
       foreach($this->__domains as $key=>$val)
       {
         try{
-            $this->__leads[$val]++;  
+            $this->__leads[$val]++;
         }
         catch(\Exception $e)
         {
@@ -101,7 +101,7 @@ class ImportExport extends Controller
 
     public function importExcel(Request $request)
     {
-      
+
         //dd($request->all());
         //dd('here');
         $start = microtime(true);
@@ -144,14 +144,14 @@ class ImportExport extends Controller
                                            'status'=>500));
         }
 
-        
+
         //echo('TOTAL TIME TAKEN :: '.$end);
 
     }
 
     public function importExeclfromCron($date)
-    {   
-     
+    {
+
       $user = 't5ilmpnba';
       $pass = '4on9sq6ae8lMRVHCZxp2';  //+++++++ date format :: '2017-01-18';
 
@@ -205,7 +205,7 @@ class ImportExport extends Controller
                                            'status'=>500));
             }
 
-            
+
       }
       catch(\Exception $e)
       {
@@ -218,8 +218,8 @@ class ImportExport extends Controller
     }
 
   public function validate_phone_query_builder($num , $registrant_email,$i , $created_at , $updated_at)
-  { 
-  		
+  {
+
 
   		$str = '';
   		try
@@ -230,12 +230,12 @@ class ImportExport extends Controller
 
 	  			if(isset($no[1]))
           {
-            
+
 		  			$arr = ($this->validateUSPhoneNumber($no[1]));
           }
 		  		else
           {
-            
+
 		  			$arr = ($this->validateUSPhoneNumber($no[0]));
           }
 
@@ -258,7 +258,7 @@ class ImportExport extends Controller
   		}
   		catch(\Exception $e)
   		{
-  			
+
         //\Log::info('from :: validate_phone_query_builder :: '.$e->getMessage());
         dd($e);
   		}
@@ -302,7 +302,7 @@ class ImportExport extends Controller
             {
               $str .= "NULL , '".$rec."' ,";
             }
-         }	
+         }
 	  		else if($i != $high)
 	  		{
 	  			if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;
@@ -318,8 +318,8 @@ class ImportExport extends Controller
 	  		}
 		 	}
 	 	}
-	 	
-    return $str;			
+
+    return $str;
 	}
 
   private function execute_batch_query($leads_head    ,$LEADS
@@ -340,7 +340,7 @@ class ImportExport extends Controller
         $q_leads    = "REPLACE `leads` ". $leads_head. " VALUES ".$LEADS;
 
         if($VALID_PHONE != '')
-        { 
+        {
           $len_ = strlen($VALID_PHONE);
           if($VALID_PHONE[$len_ -1] == ",")
           {
@@ -352,7 +352,7 @@ class ImportExport extends Controller
           $q_each_domains = "REPLACE `each_domain` ". $each_domains_head. " VALUES ".$EACH_DOMAINS;
 
           $q_domains_info = "REPLACE `domains_info` ". $domains_info_head. " VALUES ".$DOMAINS_INFO;
-          
+
           $q_domains_administrative = "REPLACE `domains_administrative` ". $domains_administrative_head. " VALUES ".$DOMAINS_ADMINISTRATIVE;
           $q_domains_technical = "REPLACE `domains_technical` ". $domains_technical_head. " VALUES ".$DOMIANS_TECHNICAL;
           $q_domains_billing = "REPLACE `domains_billing` ". $domains_billing_head. " VALUES ".$DOMIANS_BILLING;
@@ -407,12 +407,12 @@ class ImportExport extends Controller
       \Log::info('From import export :: while querry executing :: '.$e->getMessage());
       dd($e->getMessage());
     }
-    
+
   }
 
     public function set($domain_name,$registrant_email)
     {
- 
+
         if(isset($this->__domains[$domain_name]))
         {
             if($this->__domains[$domain_name] == $registrant_email)
@@ -453,26 +453,26 @@ class ImportExport extends Controller
 
 
     //atrocious data populates when server gets shut down or import data process is forced stopped while execution or server restarts or mysql restarts.
-    //this clears out data with mismatches 
-    private function remove_atrocious_data() 
+    //this clears out data with mismatches
+    private function remove_atrocious_data()
     {
       $registrant_email   = Lead::pluck('registrant_email')->toArray();
       $registrant_email   = array_flip($registrant_email);
-      
+
       $domain_name        = EachDomain::pluck('domain_name')->toArray();
-      $domain_name        = array_flip($domain_name); 
+      $domain_name        = array_flip($domain_name);
 
       $ed_registrant_email= EachDomain::pluck('registrant_email')->toArray();
-      $ed_registrant_email= array_flip($ed_registrant_email); 
+      $ed_registrant_email= array_flip($ed_registrant_email);
 
-      $d_info             = DomainInfo::pluck('domain_name')->toArray(); 
+      $d_info             = DomainInfo::pluck('domain_name')->toArray();
       $d_technical        = DomainTechnical::pluck('domain_name')->toArray();
       $d_status           = DomainStatus::pluck('domain_name')->toArray();
       $d_nameserver       = DomainNameServer::pluck('domain_name')->toArray();
       $d_feedback         = DomainFeedback::pluck('domain_name')->toArray();
       $d_billing          = DomainBilling::pluck('domain_name')->toArray();
       $d_administrative   = DomainAdministrative::pluck('domain_name')->toArray();
-      
+
       $ed_delete               = array();
       $d_info_delete           = array();
       $d_technical_delete      = array();
@@ -597,6 +597,7 @@ class ImportExport extends Controller
         $tm1 = microtime(true);
 
         ini_set("memory_limit","15G");
+        set_time_limit(30000);
         ini_set('max_execution_time', '0');
         ini_set('max_input_time', '0');
         set_time_limit(0);
@@ -607,13 +608,13 @@ class ImportExport extends Controller
         $this->remove_atrocious_data(); //:: UCOMMENT THIS
         $ed = microtime(true)-$st;
         array_push($query_time_array,'database_cleanup',$ed);
-        
+
 
         $st = microtime(true);
         $this->create();
         $ed = microtime(true) - $st;
         array_push($query_time_array,'create globals',$ed);
-        
+
 
 
         $start = microtime(true);
@@ -643,7 +644,7 @@ class ImportExport extends Controller
         //30-39 goes to domains_technical table
         $domains_technical_head = "(`id` , `technical_name`,`technical_company`,`technical_address`,`technical_city`,`technical_state`,`technical_zip`,`technical_country`,`technical_email`,`technical_phone`,`technical_fax`,`created_at`,`updated_at`,`domain_name`)";
 
-    
+
           //40-49 goes to domains_billing
         $domains_billing_head = "(`id`,`billing_name`,`billing_company`,`billing_address`,`billing_city` , `billing_state`,`billing_zip`,`billing_country`,`billing_email`,`billing_phone`,`billing_fax` , `created_at`,`updated_at`,`domain_name`)";
 
@@ -660,7 +661,7 @@ class ImportExport extends Controller
         $valid_phone              = '';
         $domains_administrative   = '';
         $domains_technical        = '';
-        $domains_billing          = ''; 
+        $domains_billing          = '';
         $domains_nameserver       = '';
         $domains_status           = '';
 
@@ -674,18 +675,23 @@ class ImportExport extends Controller
         $DOMIANS_NAMESERVER       = '';
         $DOMAINS_STATUS           = '';
 
-        $BATCH  = 5000; // to insert 10000 data at 1 go 
+        $BATCH  = 5000; // to insert 10000 data at 1 go
 
         //array_push($loop_time, microtime(true)-$tm1);
-      
+
         $counter = 0;
         while(true)
         {
             $row = fgetcsv($file);
             $counter++ ;
-            
+
             if($row)
             {
+
+                $created_at = str_replace($this->search, $this->replace, Carbon::now());
+                $updated_at = str_replace($this->search, $this->replace, Carbon::now());
+                $return_val = $this->make_query(1 , 1 , $row,$created_at,$updated_at,null);
+                if($return_val == -1) continue;
 
                 $domain_name = str_replace($this->search, $this->replace, $row[1]);
                 if($LEADS != '') $LEADS .=',';
@@ -696,8 +702,8 @@ class ImportExport extends Controller
                 if($DOMAINS_ADMINISTRATIVE != '') $DOMAINS_ADMINISTRATIVE .=',';
                 if($DOMAINS_INFO != '') $DOMAINS_INFO .=',';
                 if($EACH_DOMAINS != '') $EACH_DOMAINS .=',';
-                if($VALID_PHONE !='' && $VALID_PHONE[strlen($VALID_PHONE)-1] != ',' ) 
-                    $VALID_PHONE = $VALID_PHONE .','; 
+                if($VALID_PHONE !='' && $VALID_PHONE[strlen($VALID_PHONE)-1] != ',' )
+                    $VALID_PHONE = $VALID_PHONE .',';
 
                 $leads = '';
                 $valid_phone = '';
@@ -705,19 +711,19 @@ class ImportExport extends Controller
                 $domains_info = '';
                 $domains_administrative = '';
                 $domains_technical = '';
-                $domains_billing = '' ; 
+                $domains_billing = '' ;
                 $domains_nameserver = '';
                 $domains_status = '';
 
 
-                $created_at = str_replace($this->search, $this->replace, Carbon::now());
-                $updated_at = str_replace($this->search, $this->replace, Carbon::now());
+                //$created_at = str_replace($this->search, $this->replace, Carbon::now());
+                //$updated_at = str_replace($this->search, $this->replace, Carbon::now());
 
 
                 // checking if reg_email > 110 characters or domain_name > 100 characters
                 // or domain extension > 30 characters
-                $return_val = $this->make_query(1 , 1 , $row,$created_at,$updated_at,null);
-                if($return_val == -1) continue; 
+                //$return_val = $this->make_query(1 , 1 , $row,$created_at,$updated_at,null);
+                //if($return_val == -1) continue;
                 $each_domains = $return_val;
 
                 $rg_em = str_replace($this->search, $this->replace, $row[17]);
@@ -725,7 +731,7 @@ class ImportExport extends Controller
                 $domains_count          = $this->set($row[1],$row[17]); //-------------
                 $leads                  = $this->make_query(10 , 19 , $row ,$created_at
                                                 ,$updated_at,$domains_count);
-                
+
                 $valid_phone            = $this->validate_phone_query_builder($row[18]
                                                             ,$rg_em,$counter,$created_at,$updated_at);
                 $domains_info           = $this->make_query(2 , 9 , $row,$created_at
@@ -740,14 +746,14 @@ class ImportExport extends Controller
                                           ,$updated_at,null);
                 $domains_status         = $this->make_query(54 , 57 , $row,$created_at
                                           ,$updated_at,null);
-                  
+
 
 
                 $LEADS .=     '('.$leads.')';
                 if($valid_phone != '')  $VALID_PHONE .= "(".$valid_phone.")";
                 $EACH_DOMAINS           .= '('.$each_domains.')';
                 $DOMAINS_INFO           .= '(' . $domains_info . ')';
-                $DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')'; 
+                $DOMAINS_ADMINISTRATIVE .= '('.$domains_administrative.')';
                 $DOMIANS_TECHNICAL      .= '('.$domains_technical.')';
                 $DOMIANS_BILLING        .= '('.$domains_billing.')';
                 $DOMIANS_NAMESERVER     .= '('.$domains_nameserver.')';
@@ -774,7 +780,7 @@ class ImportExport extends Controller
                   $VALID_PHONE            = '';
                   $EACH_DOMAINS           = '';
                   $DOMAINS_INFO           = '';
-                  $DOMAINS_ADMINISTRATIVE = ''; 
+                  $DOMAINS_ADMINISTRATIVE = '';
                   $DOMIANS_TECHNICAL      = '';
                   $DOMIANS_BILLING        = '';
                   $DOMIANS_NAMESERVER     = '';
@@ -799,14 +805,14 @@ class ImportExport extends Controller
                         ,$domains_status_head         , $DOMAINS_STATUS);
                   //$ed = microtime(true)-$st;
                   array_push($query_time_array, $ed);
-                  
+
                   //echo ($ed."<br/>");
                 }
                 break;
-            }    
+            }
         }
 
-      $st = microtime(true);  
+      $st = microtime(true);
       $this->rectify_leads();
       $ed = microtime(true) - $st;
       array_push($query_time_array,'rectification_of_inserted_data',$ed);
@@ -842,7 +848,7 @@ class ImportExport extends Controller
 
       if(isset($this->__clipboard) && sizeof($this->__clipboard)!= 0)
       {
-        
+
           $leads_head = "UPDATE `leads` SET domains_count = CASE registrant_email ";
           $query  = "";
           $reg_em = "";
@@ -863,7 +869,7 @@ class ImportExport extends Controller
             echo('In ..');
             dd($e);
           }
-          
+
 
           $faulty_leads = Lead::where('domains_count',0)->pluck('registrant_email')->toArray();
           ValidatedPhone::whereIn('registrant_email',$faulty_leads)->delete();
@@ -875,7 +881,7 @@ class ImportExport extends Controller
   }
 
 
- 
+
 
   public function checknum($num)
   {
@@ -891,17 +897,17 @@ class ImportExport extends Controller
         $unmaskedPhoneNumber = preg_replace('/[\s()+-]+/', null, $ph);
         $phoneNumberLength = strlen($unmaskedPhoneNumber);
         //dd($phoneNumberLength);
-        if ($phoneNumberLength === 10) 
+        if ($phoneNumberLength === 10)
         {
             return ($this->validateAreaCode($unmaskedPhoneNumber, false));
-        } 
-        elseif ($phoneNumberLength === 11) 
-        { 
+        }
+        elseif ($phoneNumberLength === 11)
+        {
 
-            if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1) 
+            if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1)
             {
             	return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
-            } 
+            }
             else
             {
                 return [
@@ -910,10 +916,10 @@ class ImportExport extends Controller
                     "validation_message" => "This phone number does not belongs to US."
                 ];
             }
-        } 
-        else 
+        }
+        else
         {
-          
+
             return [
                 "http_code" => 404,
                 "validation_status" => "invalid",
@@ -928,10 +934,10 @@ class ImportExport extends Controller
         //dd($areaPrefix);
         if (isset($this->Area_state[$areaPrefix]))
         {
-        	
+
             if(isset($this->Area_codes_primary_city[$areaIdentifier]))
             {
-            	
+
                 $actualPhoneNumber = (($isdPrefix === true) ? "+1" : null ). $phoneNumber;
                 return [
                 		"http_code" => 200,
@@ -944,8 +950,8 @@ class ImportExport extends Controller
                 		"carrier_name" => ucwords(trim($this->Area_codes_carrier_name[$areaIdentifier])),
                 		"number_type"  => ucwords(trim($this->Area_codes_number_type[$areaIdentifier]))
                 ];
-            } 
-            else 
+            }
+            else
             {
                 return [
                     "http_code" => 404,
@@ -953,8 +959,8 @@ class ImportExport extends Controller
                     "validation_message" => $areaIdentifier . " is an invalid US area identifier."
                 ];
             }
-        } 
-        else 
+        }
+        else
         {
             return [
                 "http_code" => 404,
@@ -978,7 +984,7 @@ class ImportExport extends Controller
         //         $dates_array[$temp[0]] = 'done';
         //     }
         // }
-        
+
     }
     public function importExcelNew(Request $request) {
       //dd($request);
@@ -989,7 +995,7 @@ class ImportExport extends Controller
           Session::put('old_name',$old_name);
 
           Session::save();
-          
+
           $csv_file = $request->file('import_file');
 
           $extension =$csv_file->getClientOriginalExtension();
@@ -1017,8 +1023,8 @@ class ImportExport extends Controller
               Excel::filter('chunk')->load('storage/uploads/'.$new_name)->chunk(10000, function($results)
               {
                   //echo "<pre>";
-                  //print_r($results->toArray());  
-                  $this->importEachRow($results->toArray());      
+                  //print_r($results->toArray());
+                  $this->importEachRow($results->toArray());
               });
           }
 
