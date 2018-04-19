@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Console\Commands;
+use Illuminate\Console\Command;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 use \App\Area;
 use \App\AreaCode;
 
@@ -26,133 +27,64 @@ use Excel;
 use App\Jobs\ImportCsv;
 use Session;
 
-class ImportExport extends Controller
+class WhoisProxy extends Command
 {
-  public $Area_state = array();
-  public $Area_major_city = array();
-  public $Area_codes_primary_city = array();
-  public $Area_codes_county = array();
-  public $Area_codes_carrier_name = array();
-  public $Area_codes_number_type = array();
-  public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
-  public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
-  public $__leads = array();
-  public $__domains = array();
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'whois:proxy';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = "Call Whois Proxies Removed Database to insert CSV record in domain database";
+
+    /**
+     * @var null
+     */
+    private $authToken = null;
+
+    /**
+     * @var null
+     */
+    private $adminId = null;
+
+    /**
+     * Create a new command instance.
+     */
+    
+    public $Area_state = array();
+    public $Area_major_city = array();
+    public $Area_codes_primary_city = array();
+    public $Area_codes_county = array();
+    public $Area_codes_carrier_name = array();
+    public $Area_codes_number_type = array();
+    public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
+    public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+    public $__leads = array();
+    public $__domains = array();
 
   public $__clipboard = array(); // stores leads which needs to be altered in the table--on basis of domains count
 
-  private function create()
-  {
-
-      $this->Area_state               = Area::pluck('state','prefix')->toArray();
-      $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
-      $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();
-      $this->Area_codes_county        = AreaCode::pluck('county','prefix')->toArray();
-      $this->Area_codes_carrier_name  = AreaCode::pluck('company','prefix')->toArray();
-      $this->Area_codes_number_type   = AreaCode::pluck('usage','prefix')->toArray();
-
-      $this->__leads  = Lead::pluck('registrant_email')->toArray();
-      $this->__leads  = array_flip($this->__leads);
-      $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
-
-      foreach($this->__leads as $key=>$val)  $this->__leads[$key] = 0;
-      //dd($this->__leads);
-      foreach($this->__domains as $key=>$val)
-      {
-        try{
-            $this->__leads[$val]++;
-        }
-        catch(\Exception $e)
-        {
-          echo($key.' previous did not happen correctly  '.$val.'<br>');
-          dd($e);
-        }
-      }
-  }
-  private function destroy()
-  {
-      $this->Area_state               = null;
-      $this->Area_major_city          = null;
-      $this->Area_codes_primary_city  = null;
-      $this->Area_codes_county        = null;
-      $this->Area_codes_carrier_name  = null;
-      $this->Area_codes_number_type   = null;
-      $this->__leads  = null;
-      $this->__leads  = null;
-      $this->__domains= null;
-  }
-
-
-
-    public function importExport()
+    public function __construct()
     {
-      try
-      {
-        if(\Auth::check())
-          return view('importExport');
-        else
-          return redirect('/home');
-      }
-      catch(\Exception $e)
-      {
-        dd($e->getMessage());
-      }
+        parent::__construct();
     }
 
-    public function importExcel(Request $request)
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
     {
-
-        //dd($request->all());
-        //dd('here');
-        $start = microtime(true);
-        $upload = $request->file('import_file');
-        $filepath = $upload->getRealPath();
-        $original_file_name = $request->import_file->getClientOriginalName();
-
-
-        $csv_exists = CSV::where('file_name',$original_file_name);
-        if($csv_exists->first() == null)
-        {
-          $total_leads_before_insertion = Lead::count();
-          $total_domains_before_insertion = EachDomain::count();
-          $file  = fopen($filepath , 'r');
-          $this->insertion_Execl($file);
-          fclose($file);
-          $leads_inserted   = Lead::count()-$total_leads_before_insertion;
-          $domains_inserted = EachDomain::count()-$total_domains_before_insertion;
-          $end = microtime(true) - $start;
-
-          $obj = new CSV();
-          $obj->file_name          = $original_file_name;
-          $obj->leads_inserted    = $leads_inserted;
-          $obj->domains_inserted  = $domains_inserted;
-          $obj->status            = 2;
-          $obj->query_time        = $end;
-          $obj->save();
-
-          return \Response::json(array('TOTAL TIME TAKEN:'=>$end." seconds",
-                                    'leads_inserted'=>$leads_inserted,
-                                    'domains_inserted'=>$domains_inserted,
-                                    'status'=>200,
-                                    'filename'=>$original_file_name));
-
-        }
-        else
-        {
-            return \Response::json(array('insertion_time'=>'null',
-                                           'message'=>'This file is inserted already::'.$original_file_name,
-                                           'status'=>500));
-        }
-
-    }
-
-    public function autoImportExcelFile(){
-
-      //$currentDate = date("Y-m-d");
-
-       $currentDate = date('Y-m-d',time()-3600*24);
-       $whoxyURL = "https://www.whoxy.com/newly-registered-domains/download.php?key=3b1205bf714563e&file=".$currentDate."_proxies.zip";
-      
+        $currentDate = date('Y-m-d',time()-3600*24);
+        $whoxyURL = "https://www.whoxy.com/newly-registered-domains/download.php?key=3b1205bf714563e&file=".$currentDate."_proxies.zip";
+      //$whoxyURL = "http://twk.pm/6kj9ulnydc";
       $startTime = microtime(true);
 
       try {
@@ -198,155 +130,88 @@ class ImportExport extends Controller
           return \Response::json(array('insertion_time'=>'null',
                                     'message'=>'This file is inserted already::'.$currentDate."_whois-proxies-removed.csv",
                                     'status'=>500));
+          \Log::info('from :: Error :: '.$exception->getMessage());
         }
 
       } catch (Exception $exception) {
 
-        dd($exception->getMessage());
+        \Log::info('from :: Error :: '.$exception->getMessage());
       }
     }
 
-    public function importExeclfromCron($date)
-    {
 
-      $user = 't5ilmpnba';
-      $pass = '4on9sq6ae8lMRVHCZxp2';  //+++++++ date format :: '2017-01-18';
-
-      $start = microtime(true);
-      //dd('kjyfgkg');
-      try{
-
-            $csv_exists = CSV::where('file_name',$date."_whois-proxies-removed.csv");
-            if($csv_exists->first() == null)
-            {
-              $dir = getcwd();
-              $str = "http://".$user.":".$pass."@download.whoxy.com/newly-registered-whois/whois-proxies-removed/".$date."_whois-proxies-removed.zip";
-              $data = file_get_contents($str);
-              file_put_contents($dir.'/zip/'.$date.'_whois-proxies-removed.zip',$data);
-              Zipper::make($dir.'/zip/'.$date.'_whois-proxies-removed.zip')->extractTo($dir.'/unzip/');
-
-              $filepath = $dir.'/unzip/'.$date.'_whois-proxies-removed.csv';
-              $file  = fopen($filepath , 'r');
-
-
-              $total_leads_before_insertion = Lead::count();
-              $total_domains_before_insertion = EachDomain::count();
-              $this->insertion_Execl($file);
-              fclose($file);
-              $leads_inserted   = Lead::count()-$total_leads_before_insertion;
-              $domains_inserted = EachDomain::count()-$total_domains_before_insertion;
-              $end = microtime(true) - $start;
-
-              $obj = new CSV();
-              $obj->file_name           = $date."_whois-proxies-removed.csv";
-              $obj->leads_inserted      = $leads_inserted;
-              $obj->domains_inserted    = $domains_inserted;
-              $obj->status              = 2;
-              $obj->query_time          = $end;
-              $obj->save();
-
-              unlink($filepath);
-              unlink($dir.'/zip/'.$date.'_whois-proxies-removed.zip');
-
-              return \Response::json(array('TOTAL TIME TAKEN:'=>$end." seconds",
-                                      'leads_inserted'=>$leads_inserted,
-                                      'domains_inserted'=>$domains_inserted,
-                                      'status'=>200,
-                                      'message'=>'success',
-                                      'filename'=>$date."_whois-proxies-removed.csv"));
-            }
-            else
-            {
-              return \Response::json(array('insertion_time'=>'null',
-                                           'message'=>'This file is inserted already::'.$date."_whois-proxies-removed.csv",
-                                           'status'=>500));
-            }
-
-
-      }
-      catch(\Exception $e)
-      {
-        $end = microtime(true);
-        return \Response::json(array(
-            'insertion_time ' => $end,
-            'message'         => $e->getMessage(),
-            'status'          => 'failure'));
-      }
-    }
-
-  public function validate_phone_query_builder($num , $registrant_email,$i , $created_at , $updated_at)
+    public function validate_phone_query_builder($num , $registrant_email,$i , $created_at , $updated_at)
   {
 
 
-  		$str = '';
-  		try
+        $str = '';
+        try
       {
-  			if($num != '')
-	  		{
-	  			$no = explode('.',$num);
+            if($num != '')
+            {
+                $no = explode('.',$num);
 
-	  			if(isset($no[1]))
+                if(isset($no[1]))
           {
 
-		  			$arr = ($this->validateUSPhoneNumber($no[1]));
+                    $arr = ($this->validateUSPhoneNumber($no[1]));
           }
-		  		else
+                else
           {
 
-		  			$arr = ($this->validateUSPhoneNumber($no[0]));
+                    $arr = ($this->validateUSPhoneNumber($no[0]));
           }
 
-		  		if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number'))
-		  		{
-		  			$str = "NULL , '"
-		  					.$arr['phone_number']
-		  					."','".str_replace($this->search, $this->replace, $arr['validation_status'])
-		  					."','".str_replace($this->search, $this->replace, $arr['state'])
-		  					."','".str_replace($this->search, $this->replace, $arr['major_city'])
-		  					."','".str_replace($this->search, $this->replace, $arr['primary_city'])
-		  					."','".str_replace($this->search, $this->replace, $arr['county'])
-		  					."','".str_replace($this->search, $this->replace, $arr['carrier_name'])
-		  					."','".str_replace($this->search, $this->replace, $arr['number_type'])
+                if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number'))
+                {
+                    $str = "NULL , '"
+                            .$arr['phone_number']
+                            ."','".str_replace($this->search, $this->replace, $arr['validation_status'])
+                            ."','".str_replace($this->search, $this->replace, $arr['state'])
+                            ."','".str_replace($this->search, $this->replace, $arr['major_city'])
+                            ."','".str_replace($this->search, $this->replace, $arr['primary_city'])
+                            ."','".str_replace($this->search, $this->replace, $arr['county'])
+                            ."','".str_replace($this->search, $this->replace, $arr['carrier_name'])
+                            ."','".str_replace($this->search, $this->replace, $arr['number_type'])
                 ."','".$created_at
                 ."','".$updated_at
-		  					."','".str_replace($this->search, $this->replace, $registrant_email)."'";
-		  		}
-	  		}
-  		}
-  		catch(\Exception $e)
-  		{
+                            ."','".str_replace($this->search, $this->replace, $registrant_email)."'";
+                }
+            }
+        }
+        catch(\Exception $e)
+        {
 
-        //\Log::info('from :: validate_phone_query_builder :: '.$e->getMessage());
-        dd($e);
-  		}
-  		return $str;
+        \Log::info('from :: Error :: '.$e->getMessage());
+        }
+        return $str;
   }
 
 
   public function make_query($low , $high , $record, $created_at, $updated_at,$domains_count)
-	{
-	 	$str = '';
-	 	if($high - $low == 0)
-	 	{
+    {
+        $str = '';
+        if($high - $low == 0)
+        {
 
       $rg_em = str_replace($this->search, $this->replace, $record[17]);
       $rec = str_replace($this->search, $this->replace, $record[$low]);
-	 		$d_ext = explode("." , $rec);
+            $d_ext = explode("." , $rec);
       $ext = $d_ext[sizeof($d_ext)-1];
 
       if(strlen($rg_em) > 110 || strlen($rec)>100 || strlen($ext)>30)
         return -1;
 
       $str .= "NULL,'".$rec."','".$ext."','0',NULL,NULL,'".$rg_em."'";
-	 	}
-	 	else
-	 	{
-	 		for($i = $low ; $i<= $high ; $i++)
-		 	{
+        }
+        else
+        {
+            for($i = $low ; $i<= $high ; $i++)
+            {
         $x = !isset($record[$i]) ? " " : $record[$i];
-		 		$rec = str_replace($this->search, $this->replace, $x);
+                $rec = str_replace($this->search, $this->replace, $x);
         $rec = trim($rec);
-		 		 if($i == $low)
+                 if($i == $low)
          {
             if($i == 10)
             {
@@ -360,24 +225,24 @@ class ImportExport extends Controller
               $str .= "NULL , '".$rec."' ,";
             }
          }
-	  		else if($i != $high)
-	  		{
-	  			if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;
-	  			else          $str  .= "'".$rec."'," ;
-	  		}
-	  		else
-	  		{
-	  			$str  .= "'".$rec."','".$created_at."' , '".$updated_at."'";
-	  			if($low != 10)
+            else if($i != $high)
+            {
+                if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;
+                else          $str  .= "'".$rec."'," ;
+            }
+            else
+            {
+                $str  .= "'".$rec."','".$created_at."' , '".$updated_at."'";
+                if($low != 10)
               $str .= ",'".str_replace($this->search, $this->replace, $record[1])."'";
           else
             $str .= ",0,".$domains_count;
-	  		}
-		 	}
-	 	}
+            }
+            }
+        }
 
     return $str;
-	}
+    }
 
   private function execute_batch_query($leads_head    ,$LEADS
                         ,$valid_phone_head            ,$VALID_PHONE
@@ -462,11 +327,50 @@ class ImportExport extends Controller
     {
 
       \Log::info('From import export :: while querry executing :: '.$e->getMessage());
-      dd($e->getMessage());
     }
 
   }
 
+private function create()
+  {
+
+      $this->Area_state               = Area::pluck('state','prefix')->toArray();
+      $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
+      $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();
+      $this->Area_codes_county        = AreaCode::pluck('county','prefix')->toArray();
+      $this->Area_codes_carrier_name  = AreaCode::pluck('company','prefix')->toArray();
+      $this->Area_codes_number_type   = AreaCode::pluck('usage','prefix')->toArray();
+
+      $this->__leads  = Lead::pluck('registrant_email')->toArray();
+      $this->__leads  = array_flip($this->__leads);
+      $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
+
+      foreach($this->__leads as $key=>$val)  $this->__leads[$key] = 0;
+      //dd($this->__leads);
+      foreach($this->__domains as $key=>$val)
+      {
+        try{
+            $this->__leads[$val]++;
+        }
+        catch(\Exception $e)
+        {
+          echo($key.' previous did not happen correctly  '.$val.'<br>');
+          dd($e);
+        }
+      }
+  }
+  private function destroy()
+  {
+      $this->Area_state               = null;
+      $this->Area_major_city          = null;
+      $this->Area_codes_primary_city  = null;
+      $this->Area_codes_county        = null;
+      $this->Area_codes_carrier_name  = null;
+      $this->Area_codes_number_type   = null;
+      $this->__leads  = null;
+      $this->__leads  = null;
+      $this->__domains= null;
+  }
     public function set($domain_name,$registrant_email)
     {
 
@@ -604,9 +508,9 @@ class ImportExport extends Controller
       }
       if(sizeof($d_administrative_delete) > 0)
       DomainAdministrative::whereIn('domain_name',$d_administrative_delete)->delete();
+      DB::statement(DB::raw('RESET QUERY CACHE;'));
 
       //flushing out querry log and retrieve mysql occupying disk space
-      DB::statement(DB::raw('RESET QUERY CACHE'));
 
 
       // unsetting all variables to free the allocated memory
@@ -877,10 +781,6 @@ class ImportExport extends Controller
 
       $end = microtime(true) - $start;
       \Log::info('time ==>> ',$query_time_array);
-
-      echo "<pre>";print_r($query_time_array);
-      //echo('TOTAL TIME: ' . $end . " seconds");
-      //\Log::info('TOTAL TIME: ' . $end . " seconds");
       $this->destroy();
       return;
     }
@@ -963,7 +863,7 @@ class ImportExport extends Controller
 
             if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1)
             {
-            	return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
+                return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
             }
             else
             {
@@ -997,15 +897,15 @@ class ImportExport extends Controller
 
                 $actualPhoneNumber = (($isdPrefix === true) ? "+1" : null ). $phoneNumber;
                 return [
-                		"http_code" => 200,
+                        "http_code" => 200,
                     "validation_status" => "valid",
-                		"phone_number" => $actualPhoneNumber,
-                		"state"        => !isset($this->Area_state[$areaPrefix]) ? null : ucwords(trim($this->Area_state[$areaPrefix])),
-                		"major_city"   => !isset($this->Area_major_city[$areaPrefix]) ? null : ucwords(trim($this->Area_major_city[$areaPrefix])),
-                		"primary_city" => ucwords(trim($this->Area_codes_primary_city[$areaIdentifier])),
-                		"county"       => ucwords(trim($this->Area_codes_county[$areaIdentifier])),
-                		"carrier_name" => ucwords(trim($this->Area_codes_carrier_name[$areaIdentifier])),
-                		"number_type"  => ucwords(trim($this->Area_codes_number_type[$areaIdentifier]))
+                        "phone_number" => $actualPhoneNumber,
+                        "state"        => !isset($this->Area_state[$areaPrefix]) ? null : ucwords(trim($this->Area_state[$areaPrefix])),
+                        "major_city"   => !isset($this->Area_major_city[$areaPrefix]) ? null : ucwords(trim($this->Area_major_city[$areaPrefix])),
+                        "primary_city" => ucwords(trim($this->Area_codes_primary_city[$areaIdentifier])),
+                        "county"       => ucwords(trim($this->Area_codes_county[$areaIdentifier])),
+                        "carrier_name" => ucwords(trim($this->Area_codes_carrier_name[$areaIdentifier])),
+                        "number_type"  => ucwords(trim($this->Area_codes_number_type[$areaIdentifier]))
                 ];
             }
             else
@@ -1029,71 +929,4 @@ class ImportExport extends Controller
         }
     }
 
-    public function fill_csv_table_default()
-    {
-        // $dates_array = array();
-        // $leads_array = Lead::pluck('registrant_email','created_at')->toArray();
-        // foreach($leads_array as $key=>$val)
-        // {
-        //     $temp = explode(" ", $key);
-        //     if(!isset($dates_array[$temp[0]]))
-        //     {
-        //         $dates_array[$temp[0]] = 'done';
-        //     }
-        // }
-
-    }
-    public function importExcelNew(Request $request) {
-      //dd($request);
-      if ($request->hasFile('import_file')) {
-
-          $old_name = $request->file('import_file')->getClientOriginalName();
-          //dd($old_name);
-          Session::put('old_name',$old_name);
-
-          Session::save();
-
-          $csv_file = $request->file('import_file');
-
-          $extension =$csv_file->getClientOriginalExtension();
-
-          $destinationPath = 'storage/uploads/';   // upload path
-
-          $new_name = rand(111111111,999999999).'.'.$extension; // renameing image
-          $csv_file->move($destinationPath, $new_name); // uploading file to given path
-
-          //\Log::info($new_name);
-
-          $count_rows = count(Excel::load('storage/uploads/'.$new_name, function($reader) {})->get());
-
-          //\Log::info($count_rows);
-
-          if ($count_rows < 10000) {
-            Excel::load('storage/uploads/'.$new_name, function($reader) {
-
-              //echo "<pre>";
-              //print_r($reader->toArray());
-              $this->importEachRow($reader->toArray());
-
-            });
-          } else {
-              Excel::filter('chunk')->load('storage/uploads/'.$new_name)->chunk(10000, function($results)
-              {
-                  //echo "<pre>";
-                  //print_r($results->toArray());
-                  $this->importEachRow($results->toArray());
-              });
-          }
-
-          return redirect()->back()->with('msg', 'Your File is uploading...');
-      } else {
-          return redirect()->back()->with('fail', 'Sorry No file found!');
-      }
-    }
-    public function importEachRow($arr = NULL) {
-      //dd($arr);
-      if (count($arr)) {
-        $this->dispatch(new ImportCsv($arr));
-      }
-    }
 }

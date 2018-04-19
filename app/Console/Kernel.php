@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\WhoisProxy::class,
     ];
 
     /**
@@ -106,8 +106,9 @@ class Kernel extends ConsoleKernel
             \Log::info('::time::');
         })->dailyAt('18:50');
         //\Log::info(date('Y-m-d',time()));
+    
 
-        
+        $schedule->command('whois:proxy')->dailyAt('2:00')->withoutOverlapping();;
         
         \Log::info(date('Y-m-d',time())); 
     }

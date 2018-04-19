@@ -72,6 +72,8 @@ Route::get('/aa',function(){
 
 	Route::get('/importExeclfromCron/{date}',['uses'=>'ImportExport@importExeclfromCron',
 		'as'=>'importExeclfromCron']);
+
+    Route::get('/autoImportExcelFile', 'ImportExport@autoImportExcelFile');
     
 	Route::post('/signme','AccountController@signme' );
 
