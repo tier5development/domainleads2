@@ -108,7 +108,7 @@ class Kernel extends ConsoleKernel
         //\Log::info(date('Y-m-d',time()));
     
 
-        $schedule->command('whois:proxy')->dailyAt('4:40')->withoutOverlapping();;
+        $schedule->command('whois:proxy')->dailyAt('16:43')->withoutOverlapping();;
         
         \Log::info(date('Y-m-d',time())); 
     }
