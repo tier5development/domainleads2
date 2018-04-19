@@ -26,89 +26,89 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         
-        $schedule->call(function(){
-            date_default_timezone_set('Asia/Kolkata');
-            $date = date('Y-m-d',time());
-            $ch = curl_init();
-            $url = env('APP_URL');
+        // $schedule->call(function(){
+        //     date_default_timezone_set('Asia/Kolkata');
+        //     $date = date('Y-m-d',time());
+        //     $ch = curl_init();
+        //     $url = env('APP_URL');
 
-            \Log::info($url.'/update_metadata_today/'.$date);
+        //     \Log::info($url.'/update_metadata_today/'.$date);
 
-            \Log::info(env('DB_PASSWORD')." process:: ".getmypid());
-            curl_setopt($ch, CURLOPT_URL, $url.'/update_metadata_today/'.$date);
-            curl_setopt($ch, CURLOPT_HEADER, FALSE);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-            $head = curl_exec($ch); 
+        //     \Log::info(env('DB_PASSWORD')." process:: ".getmypid());
+        //     curl_setopt($ch, CURLOPT_URL, $url.'/update_metadata_today/'.$date);
+        //     curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        //     $head = curl_exec($ch); 
 
-            $result = json_decode($head,true);
+        //     $result = json_decode($head,true);
 
-            //\Log::info('from schedule ++++++>> STATUS : '.$result['status']);
-            \Log::info($result);
+        //     //\Log::info('from schedule ++++++>> STATUS : '.$result['status']);
+        //     \Log::info($result);
 
-        })->dailyAt('16:40');
+        // })->dailyAt('16:40');
         
-        $schedule->call(function(){
-            try
-            {
-                //2017-02-06 ===>> small date
+        // $schedule->call(function(){
+        //     try
+        //     {
+        //         //2017-02-06 ===>> small date
 
-                \Log::info('calling scheduler');
-                date_default_timezone_set('Asia/Kolkata');
-                $date = date('Y-m-d',time()-3600*24);
+        //         \Log::info('calling scheduler');
+        //         date_default_timezone_set('Asia/Kolkata');
+        //         $date = date('Y-m-d',time()-3600*24);
 
-                $ch = curl_init();
-                $url = env('APP_URL');
+        //         $ch = curl_init();
+        //         $url = env('APP_URL');
 
-                \Log::info($url.'/importExeclfromCron/'.$date);
+        //         \Log::info($url.'/importExeclfromCron/'.$date);
 
-                \Log::info(env('DB_PASSWORD')." process:: ".getmypid());
-                curl_setopt($ch, CURLOPT_URL, $url.'/importExeclfromCron/'.$date);
-                curl_setopt($ch, CURLOPT_HEADER, FALSE);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-                $head = curl_exec($ch); 
+        //         \Log::info(env('DB_PASSWORD')." process:: ".getmypid());
+        //         curl_setopt($ch, CURLOPT_URL, $url.'/importExeclfromCron/'.$date);
+        //         curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        //         $head = curl_exec($ch); 
 
-                $result = json_decode($head,true);
+        //         $result = json_decode($head,true);
 
-                \Log::info('from schedule ++++++>> STATUS : '.$result['status']);
-                \Log::info($result);
-            }
-            catch(\Exception $e)
-            {
-                \Log::info('from catch block'.$e);
-            }
-            \Log::info('::time::');
+        //         \Log::info('from schedule ++++++>> STATUS : '.$result['status']);
+        //         \Log::info($result);
+        //     }
+        //     catch(\Exception $e)
+        //     {
+        //         \Log::info('from catch block'.$e);
+        //     }
+        //     \Log::info('::time::');
            
-        })->hourly();
+        // })->hourly();
        
 
 
-        $schedule->call(function(){
-            try
-            {
-               \Log::info('calling scheduler--for domain verification');
-                date_default_timezone_set('Asia/Kolkata');
+        // $schedule->call(function(){
+        //     try
+        //     {
+        //        \Log::info('calling scheduler--for domain verification');
+        //         date_default_timezone_set('Asia/Kolkata');
 
-                $ch = curl_init();
-                $url = env('APP_URL');
+        //         $ch = curl_init();
+        //         $url = env('APP_URL');
 
-                \Log::info($url.'/verify_domains');
-                curl_setopt($ch, CURLOPT_URL, $url.'/verify_domains');
-                curl_setopt($ch, CURLOPT_HEADER, FALSE);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-                $head = curl_exec($ch); 
-                $result = json_decode($head,true);
-                \Log::info('from schedule ++++++>> task details: '.json_encode($result));
-            }
-            catch(\Exception $e)
-            {
-               \Log::info($e->getMessage());
-            }
-            \Log::info('::time::');
-        })->dailyAt('18:50');
+        //         \Log::info($url.'/verify_domains');
+        //         curl_setopt($ch, CURLOPT_URL, $url.'/verify_domains');
+        //         curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        //         $head = curl_exec($ch); 
+        //         $result = json_decode($head,true);
+        //         \Log::info('from schedule ++++++>> task details: '.json_encode($result));
+        //     }
+        //     catch(\Exception $e)
+        //     {
+        //        \Log::info($e->getMessage());
+        //     }
+        //     \Log::info('::time::');
+        // })->dailyAt('18:50');
         //\Log::info(date('Y-m-d',time()));
     
 
-        $schedule->command('whois:proxy')->dailyAt('16:46')->withoutOverlapping();;
+        $schedule->command('whois:proxy')->dailyAt('16:53')->withoutOverlapping();;
         
         \Log::info(date('Y-m-d',time())); 
     }
