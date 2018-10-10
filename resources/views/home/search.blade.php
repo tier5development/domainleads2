@@ -184,10 +184,10 @@ form{
 
 						<th>
 							@if(isset($users_array[$each['registrant_email']]))
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}', this)" name="ch_{{$key}}" checked="true" disabled="true">
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
 								<input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="{{$each['id']}}">
 							@else
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}', this)" name="ch_{{$key}}">	
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}">	
 								<input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="">
 							@endif
 						</th>
@@ -362,42 +362,46 @@ form{
    
 	});
 
-	function unlock(reg_em , key, e)
+	function unlock(reg_em , key)
 	{
-		var id = '{{\Auth::user()->id}}';
-		$.ajax({
-			type : 'POST',
-			url  : '/unlockleed',
-			data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
-			success :function(response)
-			{
-				if(response.status) {
-					console.log(response);
-					$('#domain_name_'+key).text(response.domain_name);
-					$('#registrant_email_'+key).text(response.registrant_email);
-					$('#registrant_name_'+key).text(response.registrant_name);
-					$('#registrant_phone_'+key).text(response.registrant_phone);
-					$('#registrant_company_'+key).text(response.registrant_company);
-					$('#domains_create_date_'+key).text(response.domains_create_date);
-					$('#leads_id_'+key).val(response.id);
-					if(leads_for_export == '')
-						leads_for_export += response.id;
-					else
-						leads_for_export += ","+response.id;
-					$('#phone_'+key).show();
-					$('#ch_'+key).prop('checked'	, true);
-					$('#ch_'+key).prop('disabled'	, true);
-					$('#unlocked_num_'+key).text(response.unlocked_num);
-					$('#showCSV_'+key).show();
-					$('#hideCSV_'+key).hide();
-
-					console.log(leads_for_export);
-				} else {
-					alert(response.message);
-					$(this).prop('checked', false);
-				}
+			var id = '{{\Auth::user()->id}}';
+			var chk = document.getElementById('ch_'+key);
+			if(chk.checked == false) {
+					return;
 			}
-		});
+			$.ajax({
+					type : 'POST',
+					url  : '/unlockleed',
+					data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
+					success :function(response)
+					{
+							if(response.status) {
+									console.log(response);
+									$('#domain_name_'+key).text(response.domain_name);
+									$('#registrant_email_'+key).text(response.registrant_email);
+									$('#registrant_name_'+key).text(response.registrant_name);
+									$('#registrant_phone_'+key).text(response.registrant_phone);
+									$('#registrant_company_'+key).text(response.registrant_company);
+									$('#domains_create_date_'+key).text(response.domains_create_date);
+									$('#leads_id_'+key).val(response.id);
+									if(leads_for_export == '')
+											leads_for_export += response.id;
+									else
+											leads_for_export += ","+response.id;
+									$('#phone_'+key).show();
+									$('#ch_'+key).prop('checked'    , true);
+									$('#ch_'+key).prop('disabled'   , true);
+									$('#unlocked_num_'+key).text(response.unlocked_num);
+									$('#showCSV_'+key).show();
+									$('#hideCSV_'+key).hide();
+
+									console.log(leads_for_export);
+							} else {
+									alert(response.message);
+									//$(this).prop('checked', false);
+							}
+					}
+			});
 	}
 
   	$(function(){
