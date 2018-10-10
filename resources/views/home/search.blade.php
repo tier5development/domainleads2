@@ -371,26 +371,30 @@ form{
 			data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
 			success :function(response)
 			{
-				console.log(response);
-				$('#domain_name_'+key).text(response.domain_name);
-				$('#registrant_email_'+key).text(response.registrant_email);
-				$('#registrant_name_'+key).text(response.registrant_name);
-				$('#registrant_phone_'+key).text(response.registrant_phone);
-				$('#registrant_company_'+key).text(response.registrant_company);
-				$('#domains_create_date_'+key).text(response.domains_create_date);
-				$('#leads_id_'+key).val(response.id);
-				if(leads_for_export == '')
-					leads_for_export += response.id;
-				else
-					leads_for_export += ","+response.id;
-				$('#phone_'+key).show();
-				$('#ch_'+key).prop('checked'	, true);
-				$('#ch_'+key).prop('disabled'	, true);
-				$('#unlocked_num_'+key).text(response.unlocked_num);
-				$('#showCSV_'+key).show();
-				$('#hideCSV_'+key).hide();
+				if(response.status) {
+					console.log(response);
+					$('#domain_name_'+key).text(response.domain_name);
+					$('#registrant_email_'+key).text(response.registrant_email);
+					$('#registrant_name_'+key).text(response.registrant_name);
+					$('#registrant_phone_'+key).text(response.registrant_phone);
+					$('#registrant_company_'+key).text(response.registrant_company);
+					$('#domains_create_date_'+key).text(response.domains_create_date);
+					$('#leads_id_'+key).val(response.id);
+					if(leads_for_export == '')
+						leads_for_export += response.id;
+					else
+						leads_for_export += ","+response.id;
+					$('#phone_'+key).show();
+					$('#ch_'+key).prop('checked'	, true);
+					$('#ch_'+key).prop('disabled'	, true);
+					$('#unlocked_num_'+key).text(response.unlocked_num);
+					$('#showCSV_'+key).show();
+					$('#hideCSV_'+key).hide();
 
-				console.log(leads_for_export);
+					console.log(leads_for_export);
+				} else {
+					alert(response.message);
+				}
 			}
 		});
 	}

@@ -27,7 +27,7 @@ use Session;
 use Excel;
 use Input;
 use Illuminate\Pagination\Paginator;
-
+use \Carbon\Carbon as Carbon;
 
 class SearchController extends Controller
 {
@@ -268,6 +268,19 @@ public function download_csv_single_page(Request $request)
     //fired with ajax
     public function unlockleed(Request $request)
     {
+      try {
+
+        if(!\Auth::check()) {
+          return \Response::json(array('status'=>false , 'message' => 'Please login once again!'));
+        }
+
+        $count = LeadUser::where('user_id', \Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
+        if($count > config('settings.LIMIT-PER-DAY')) {
+          $array['status'] = false;
+          $array['message'] = 'Per day limit exceeded';
+          return \Response::json($array);
+        }
+
         $leaduser = new LeadUser();
         $leaduser->user_id = $request->user_id;
         $leaduser->registrant_email = $request->registrant_email;
@@ -278,9 +291,9 @@ public function download_csv_single_page(Request $request)
         if($lead->save() && $leaduser->save())
         {
           $data = Lead::where('registrant_email',$request->registrant_email)->first();
-
           $array = array();
-          $array['status'] = 'success';
+          $array['status'] = true;
+          $array['message'] = 'Success';
           $array['id']     = $data->id;
           $array['registrant_email']    = $data->registrant_email;
           $array['registrant_name']     = $data->registrant_fname." ".$data->registrant_lname;
@@ -290,14 +303,13 @@ public function download_csv_single_page(Request $request)
           $array['domains_create_date'] = $data->each_domain->first()->domains_info->first()->domains_create_date;
           $array['unlocked_num']        = $lead->unlocked_num;
           //$array['total_domain_count']  = $lead->each_domain;
-
           return \Response::json($array);
         }
-
-        return \Response::json(array('status'=>'failure'));
+        return \Response::json(array('status'=>false,'message' => 'Cannot connect with db, try again later'));
+      } catch(\Exception $e) {
+        return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage()));
+      }
     }
-
-
 
     //given a registrant email get all doains for it
     public function myLeads($id)

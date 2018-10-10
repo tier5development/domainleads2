@@ -11,25 +11,25 @@
 |
 */
 
-Route::get('/aaaaa',function(){
-    //dd(DB::select(DB::raw("SHOW KEYS FROM leads WHERE Key_name='leads_registrant_country_index'")));
+// Route::get('/aaaaa',function(){
+//     //dd(DB::select(DB::raw("SHOW KEYS FROM leads WHERE Key_name='leads_registrant_country_index'")));
 
-    if(DB::select(DB::raw("SHOW KEYS FROM domains_info WHERE Key_name='domains_info_expiry_date_index'")) == null)
-    dd(123);
+//     if(DB::select(DB::raw("SHOW KEYS FROM domains_info WHERE Key_name='domains_info_expiry_date_index'")) == null)
+//     dd(123);
             
-});
+// });
 
-Route::get('/aaaa',function(){
+// Route::get('/aaaa',function(){
 
-   //$x = DB::select(DB::raw("select column_name, data_type, character_maximum_length from information_schema.columns where table_name = 'leads'"));
+//    //$x = DB::select(DB::raw("select column_name, data_type, character_maximum_length from information_schema.columns where table_name = 'leads'"));
 
-    $x = DB::select(DB::raw('Show INDEX FROM leads'));
-    foreach ($x as $a => $b) {
-        //dd($b);
-    }
-    dd($x);
+//     $x = DB::select(DB::raw('Show INDEX FROM leads'));
+//     foreach ($x as $a => $b) {
+//         //dd($b);
+//     }
+//     dd($x);
 
-});
+// });
 
 Route::get('/update_metadata_today/{date}',['uses'=>'SearchController@update_metadata_today']);
 
