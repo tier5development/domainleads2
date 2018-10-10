@@ -1566,17 +1566,11 @@ public function download_csv_single_page(Request $request)
             return view('home.admin.admin_search',$result);
           }
 
-          return view('home.search' ,
-                ['record'       => $data,
-                 'page'         => 1,
-                 'totalLeads'   =>$totalLeads,
-                 'totalDomains' =>$totalDomains,
-                 'domain_list'  =>isset($domain_list) ? $domain_list : null,
-                 // 'leadArr'      =>$leads_arr ,
-                 // 'string_leads'=>$string_leads,
-                 'users_array'=>$users_array,
-                 'obj_array'=>$obj_array,
-                 'query_time'=>$end]);
+          $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+          $users_array = array_flip($users_array);
+          $result['users_array'] = $users_array;
+          // $result['obj_array'] = $obj_array;
+          return view('home.search',$result);
         }
         else
         {

@@ -193,7 +193,6 @@ form{
 						</th>
 
 						<th>
-						{{$each['id']}}
                             @if(isset($chkWebsite_array[$each['registrant_email']]))
 								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" disabled="true">Created website</button>
 							@else
