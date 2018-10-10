@@ -1577,7 +1577,7 @@ public function download_csv_single_page(Request $request)
           {
             return view('home.admin.admin_search',$result);
           }
-
+          $user_id = \Auth::user()->id;
           $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
           $users_array = array_flip($users_array);
           $result['users_array'] = $users_array;
@@ -1595,8 +1595,7 @@ public function download_csv_single_page(Request $request)
       }
       else
       {
-
-        dd('Please log in');
+        return redirect('home');
       }
     }
     public function getOldestDate() {
