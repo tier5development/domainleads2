@@ -184,10 +184,10 @@ form{
 
 						<th>
 							@if(isset($users_array[$each['registrant_email']]))
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}', this)" name="ch_{{$key}}" checked="true" disabled="true">
 								<input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="{{$each['id']}}">
 							@else
-								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}">	
+								<input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}', this)" name="ch_{{$key}}">	
 								<input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="">
 							@endif
 						</th>
@@ -362,7 +362,7 @@ form{
    
 	});
 
-	function unlock(reg_em , key)
+	function unlock(reg_em , key, e)
 	{
 		var id = '{{\Auth::user()->id}}';
 		$.ajax({
@@ -394,6 +394,7 @@ form{
 					console.log(leads_for_export);
 				} else {
 					alert(response.message);
+					$(this).prop('checked', false);
 				}
 			}
 		});
