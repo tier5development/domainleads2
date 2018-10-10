@@ -12,3 +12,4 @@ Homestead.yaml
 /unzip
 
 /.vagrant
+config/settings.php
