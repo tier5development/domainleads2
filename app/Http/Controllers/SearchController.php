@@ -20,7 +20,7 @@ use \App\CSV;
 use \App\SearchMetadata;
 use DB;
 use Hash;
-use Auth;
+use Auth, View;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
