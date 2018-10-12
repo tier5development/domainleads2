@@ -603,24 +603,23 @@
 
           $('#exportLeads').click(function(e){
             e.preventDefault();
-          	var csv_flag = 0;
-          	$('.eachrow_download').each(function(e2){
-
-          		if(!$(this).is(':checked'))
-          		{
-          			csv_flag = 1;
-          		}
-          	});
-
-          	if(csv_flag != 1)
-          	{
-              alert('please select some leads');
-          		return false;
-          	}
-          	else
-          	{
-              $('#csv_leads_form').submit();
-          	}
+                var csv_flag = 0;
+                console.log('came here');
+                $('#table input[type="checkbox"]').each(function(e2){
+                // console.log($(this).closest('.eachrow_download').prop('checked'));
+                  if($(this).is(':checked'))
+                  {
+                          console.log('checked');
+                          csv_flag++;
+                          return;
+                  }
+                });
+                if(csv_flag < 1)
+                {
+                  alert('please select some leads');
+                  return false;
+                }
+                $('#csv_leads_form').submit();
           });
 
           $('.downloadcsv_all').click(function(event){

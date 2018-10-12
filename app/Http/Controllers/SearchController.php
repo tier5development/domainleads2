@@ -71,7 +71,7 @@ public function print_csv($leads,$type)
           $reqData[$key++]['email_id'] = $each->registrant_email;
         }
       }
-
+      
       return Excel::create('domainleads', function($excel) use ($reqData) {
 
         $excel->sheet('mySheet', function($sheet) use ($reqData){
@@ -82,11 +82,22 @@ public function print_csv($leads,$type)
 
 public function download_csv_single_page(Request $request)
 {
-  //dd($request->all());
   $type = 'csv';
-  if($request->exportLeads)
-  {
-      $leads = array();
+  if($request->has('exportAllLeads') && strlen($request->exportAllLeads) > 0 ) {
+    $phone_type_array = array();
+    if(isset($request->cell) && $request->cell != null)
+      array_push($phone_type_array, 'Cell Number');
+    if(isset($request->landline) && $request->landline != null)
+      array_push($phone_type_array, 'Landline');
+    $start = microtime(true);
+    $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id);
+    return Excel::create('domainleads', function($excel) use ($reqData) {
+      $excel->sheet('mySheet', function($sheet) use ($reqData){
+        $sheet->fromArray($reqData);
+      });
+    })->download($type);
+  } else {
+    $leads = array();
       if($request->csv_leads)
       {
         $i = 0;
@@ -98,36 +109,6 @@ public function download_csv_single_page(Request $request)
         \Session::put('csv_msg','Please Select Some Leads and then Export..!');
         return \Redirect::back();
       }
-  }
-  else
-  {
-    //dd('here');
-    //dd($request->landline);
-
-    $phone_type_array = array();
-    if(isset($request->cell) && $request->cell != null)
-      array_push($phone_type_array, 'Cell Number');
-
-    if(isset($request->landline) && $request->landline != null)
-      array_push($phone_type_array, 'Landline');
-
-    $start = microtime(true);
-    $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id);
-
-
-    //dd($reqData);
-
-    return Excel::create('domainleads', function($excel) use ($reqData) {
-
-      $excel->sheet('mySheet', function($sheet) use ($reqData){
-        $sheet->fromArray($reqData);
-      });
-    })->download($type);
-
-
-    //$this->print_csv(unserialize($request->all_leads_to_export[0]),$type);
-
-    //return;
   }
 }
 
