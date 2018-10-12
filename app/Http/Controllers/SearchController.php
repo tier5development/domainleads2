@@ -1563,7 +1563,7 @@ public function download_csv_single_page(Request $request)
           $users_array = array_flip($users_array);
           $result['users_array'] = $users_array;
           // $result['obj_array'] = $obj_array;
-          return view('home.search',$result);
+          return view('home.search.search',$result);
         }
         else
         {
@@ -1571,7 +1571,7 @@ public function download_csv_single_page(Request $request)
           $allrecords = null;
           $leadArr = null;
           $totalDomains = null;
-          return view('home.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
+          return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
         }
       }
       else
