@@ -102,7 +102,7 @@
 
         <th>
             @if(isset($users_array[$each['registrant_email']]))
-                <small id="domains_create_date_{{$key}}">{{$domain_list[$each['registrant_email']]['domains_create_date']}}</small>
+                <small id="domains_create_date_{{$key}}">{{date('F dS, Y', strtotime($each["domains_create_date"]))}}</small>
             @else
                 <small id="domains_create_date_{{$key}}">***</small>
             @endif

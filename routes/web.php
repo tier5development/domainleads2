@@ -35,6 +35,8 @@ Route::get('/update_metadata_today/{date}',['uses'=>'SearchController@update_met
 
 Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
 
+Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);
+
 Route::get('/aaa',function(){
     $v = custom_curl_errors();
     dd($v);

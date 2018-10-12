@@ -114,8 +114,14 @@ form{
 </head>
 
 <body>
-	
 
+	<div id="ajax-loader" style="display: none;">
+		<div class="overlay">
+		   <div class="loader-main">
+			  <img src="{{url('/')}}/images/loader.gif">
+		   </div>
+		</div>
+	</div>
 
 		<div class="container">
 
@@ -176,25 +182,48 @@ form{
 
 		</div>
 		  <button style="display: none;" class="" id="popupid_for_domainexists" data-toggle="modal" data-target="#myModal_for_reg">popup</button>
-			<div class="modal fade" id="myModal_for_reg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-			aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-						×</button>
-						<h4 class="modal-title" id="myLargeModalLabel">
-						</h4>
-						
-						</div>
-
+		<div class="modal fade" id="myModal_for_reg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+		aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					×</button>
+					<h4 class="modal-title" id="myLargeModalLabel">
+					</h4>
+					
 					</div>
+
 				</div>
 			</div>
+		</div>
+		
+		<div class="pg_" id="pages">
+			<button class="pg_btn" value="prev" id="pg_prev">Previous</button>
+			<?php $i=$page-1; ?>
+			@while(++$i <= $totalPage)
+				@if($i<10)
+					<button class="pg_btn @if($i==1) btn-info @endif" id="pg_{{$i}}" value="{{$i}}">{{$i}}</button>
+				@else
+					<button class="pg_btn" id="pg_{{$i}}" value="{{$i}}" style="display:none;">{{$i}}</button>
+				@endif
+			@endwhile
+				<button class="pg_btn" value="next" id="pg_next">Next</button>
+		 </div>
+		 <br><br><br>
 
 		
 </body>
 	<script type="text/javascript">
+
+	var thisPage     = parseInt("{{$page}}");
+    var totalPage    = parseInt("{{$totalPage}}");
+    var URL          = "{{url('/')}}";
+    var left_most    = 1;
+    var per_page     = parseInt($('#pagination').val());
+    var right_most   = Math.ceil(parseInt("{{$totalLeads}}")/per_page);
+    var meta_id      = parseInt("{{$meta_id}}");
+    var display_limit= 5;
 
 	var leads_for_export = ''; // stores id
 	$(function(){
@@ -205,9 +234,196 @@ form{
 				leads_for_export += ","+$(this).val();
 		});
 
+		pages();
+		setup_pages();
 		console.log(leads_for_export);
 	});
+
+	$('#next').click(function(e){
+		thisPage += 5;
+		setup_pages();
+	});
+	$('#previous').click(function(e){
+		thisPage -= 5;
+		setup_pages();
+	});
+
+	function adjust()
+	{
+		if(thisPage == left_most)
+		{
+			$('#pg_prev').hide();
+		}
+		else if(thisPage == right_most)
+		{
+			$('#pg_next').hide();
+		}
+		else
+		{
+			$('#pg_next').show();
+			$('#pg_prev').show();
+		}
+		if(totalPage < 2*display_limit)
+		{
+			$('#pg_next').hide();
+			$('#pg_prev').hide();
+		}
+	}
+
+	function pages()
+	{
+		//console.log('in pages');
+		//console.log(thisPage);
+		low  = parseInt(thisPage)-display_limit;
+		high = parseInt(thisPage)+display_limit;
+		//console.log(low,high);
+		if(low < 0)
+		{
+			high = high - low;
+			low  = low  - low;
+		}
+		//console.log(low,high);
+		if(high > totalPage)
+		{
+			high = high - (high - totalPage);
+			low  = low - (high - totalPage);
+		}
+		//console.log(low,high);
+		$('.pg_btn').each(function(i,j){
+
+			if(i>= low && i<=high)
+			{
+				$('#pg_'+i).show();
+				//console.log(i,'--show');
+			}
+			else
+			{
+				$('#pg_'+i).hide();
+				//console.log(i,'--hide');
+			}
+		});
+		adjust();
+	}
+
+	function setup_pages()
+	{
+		$('#page_forms').hide();
+		var pages     = [];
+		var limit = 9;
+		l  = parseInt(thisPage) -5;
+		h  = parseInt(thisPage) +5;
+		l_most = 0;
+		r_most =
+
+		$('.page_form').each(function(i,j)
+		{
+			if(thisPage == 1)
+			{
+				if(i<10)
+					$(this).show();
+
+				else
+					$(this).hide();
+			}
+			else
+			{
+				if(i>=l && i<=h)
+				{
+					$(this).show();
+					console.log('++show-- ',i,thisPage,l,h);
+				}
+				else
+				{
+					$(this).hide();
+					console.log('++hide-- ',i,thisPage);
+				}
+			}
+		});
+		if(thisPage <= left_most+limit)
+		{
+			$('#previous').hide();
+		}
+		else if(thisPage >= right_most-limit)
+		{
+			$('#next').hide();
+		}
+		else
+		{
+			$('#previous').show();
+			$('#next').show();
+		}
+		$('#page_forms').show();
+	}
    	
+	function load_new_page(page)
+	{
+		if(isNaN(page)) return false;
+		$('#table').hide();
+		$('#ajax-loader').show();
+		var reg_date = $('#registered_date').val();
+		var reg_date2 = $('#registered_date2').val();
+		var domain_name = $('#domain_name').val();
+		var domain_ext = $('#domain_ext').val();
+		var num_type = $('#number_type').val();
+		var total_domains = "{{$totalDomains}}";
+		var total_leads = "{{$totalLeads}}";
+		var lead_list  = $(this).find('.leads_list_cls').val();
+		$('#pg_'+thisPage).removeClass('btn-info');
+		//var page = $(this).val();
+
+		$.ajax({
+			url  : URL+'/ajax_search_paginated',
+			type : 'post',
+			dataType: 'json',
+			data : {_token : "{{csrf_token()}}" ,
+				meta_id             : meta_id,
+				thisPage            : parseInt(page),
+				pagination          : per_page,
+				totalPage           : totalPage,
+				domain_ext          : domain_ext,
+				domain_name         : domain_name,
+				domains_create_date : reg_date,
+				domains_create_date2: reg_date2
+			},
+			success:function(response)
+			{
+				console.log(response);
+				if(response.status == true) {
+					$('.table-container').empty();
+					$('.table-container').append(response.view);
+					thisPage = parseInt(page);
+					adjust();
+					$('#pg_'+thisPage).addClass('btn-info');
+					pages();
+				} else {
+					thisPage = parseInt(page);
+					adjust();
+					$('#pg_'+thisPage).addClass('btn-info');
+					pages();
+				}
+				$('#table').show();
+				$('#ajax-loader').hide();
+			}
+		});
+	}
+
+	$('.pg_btn').click(function(e){
+		e.preventDefault();
+		load_new_page(parseInt($(this).val()));
+	});
+
+	$('#pg_next').click(function(e){
+		e.preventDefault();
+		load_new_page(parseInt(thisPage)+1);
+		adjust();
+	});
+
+	$('#pg_prev').click(function(e){
+		e.preventDefault();
+		load_new_page(parseInt(thisPage)-1);
+		adjust();
+	});
+
     var _token='{{csrf_token()}}';
     $('.eachrow_download').click(function(event){
    

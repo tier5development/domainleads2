@@ -1394,17 +1394,25 @@ public function download_csv_single_page(Request $request)
     }
 
     public function ajax_search_paginated_subadmin(Request $request) {
-      $start = microtime(true);
-      $data = $this->ajax_paginated_search_algo($request);
-      $return['record'] = $data;
-      $return['page']   = $request->thisPage;
-      $return['meta_id'] = $this->meta_id;
-      $return['totalLeads'] = $this->totalLeads;
-      $return['totalDomains'] = $this->totalDomains;
-      $result['totalPage'] = $this->totalPage;
-      $result['domain_list'] = isset($domain_list) ? $domain_list : null;
-      $result['query_time'] = $end;
-      $result['time'] =   microtime(true) - $start;
+      try {
+        $start = microtime(true);
+        $data = $this->ajax_paginated_search_algo($request);
+        $return['record'] = $data;
+        $return['page']   = $request->thisPage;
+        $return['meta_id'] = $this->meta_id;
+        $return['totalLeads'] = $this->totalLeads;
+        $return['totalDomains'] = $this->totalDomains;
+        $result['totalPage'] = $this->totalPage;
+        $result['domain_list'] = isset($domain_list) ? $domain_list : null;
+        $result['query_time'] = $end;
+        $result['time'] =   microtime(true) - $start;
+
+        $view = View::make('home.search.searchTable', $result)->render();
+        return \Response::json(['status' => true, 'message' => 'Success' ,'view' => $view]);
+
+      } catch(\Exception $e) {
+        return \Response::json(['status' => false, 'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine() ,'view' => null]);
+      }
     }
 
 
