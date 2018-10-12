@@ -570,69 +570,6 @@ public function download_csv_single_page(Request $request)
       $leads = DB::select(DB::raw($sql));
       return $leads;
     }
-
-
-    /*
-      search result for different page number with ajax request
-      complexity : n*log(l) + n*log(ed);
-      n :: record per page
-      l :: total leads in leads table
-      ed:: total domains in each_domain table
-    */
-    public function ajax_search_paginated(Request $request)
-    {
-      //dd($request->all());
-      $start = microtime(true);
-      $sql    = "SELECT leads,compression_level from search_metadata
-                where id = ".$request->meta_id;
-      $data   = DB::select(DB::raw($sql));
-      $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
-      //dd($leads);
-      $data   = null;
-
-      //$leads  = $this->raw_leads("(".$leads.")");
-      //$leads  = $this->raw_leads($leads);
-
-      //dd($request->thisPage);
-      $offset = ($request->thisPage-1) * $request->pagination;
-      $limit  = $request->pagination;
-
-      //dd($leads." -- ".$limit." -- ".$offset);
-      // dd($limit." ".$offset);
-      $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
-
-
-      //dd($leads_str);
-
-
-
-      //dd($leads_str);
-      $leads  = $this->raw_leads($leads_str);
-
-      $array  = $this->leadsPerPage_Search($leads);
-
-      $param  = ['domain_name'=>$request->domain_name
-               ,'domain_ext' =>$request->domain_ext
-               ,'domains_create_date'=>$request->domains_create_date
-               ,'domains_create_date2'=>$request->domains_create_date2];
-      $data   = $array['data'];
-      $domains= $this->domainsPerPage_Search($param,$request->phone_type_array,$array['leads_string']);
-      $data = $this->domains_output_Search($data,$domains);
-
-      //dd($data);
-      unset($domain_list);
-      unset($leads);
-      unset($sql);
-      unset($param);
-      unset($domains);
-
-      $time = microtime(true) - $start;
-      return \Response::json(array('data'=>$data , 'time'=>$time));
-
-    }
-
-
-
     /* search leads on basis of the search parameters given
 
     complexity of query [with inner join]: O(l+ed+di+vp) + O(log(l+ed+di+vp))
@@ -1410,6 +1347,66 @@ public function download_csv_single_page(Request $request)
 
       //$date_flag = 0;
     }
+
+    private function ajax_paginated_search_algo(Request $request) {
+      $sql    = "SELECT leads,compression_level from search_metadata
+                where id = ".$request->meta_id;
+      $data   = DB::select(DB::raw($sql));
+      $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
+      $data   = null;
+      $offset = ($request->thisPage-1) * $request->pagination;
+      $limit  = $request->pagination;
+
+      $leads_str  = $this->paginated_raw_leads($leads,$limit,$offset);
+      $leads  = $this->raw_leads($leads_str);
+      $array  = $this->leadsPerPage_Search($leads);
+      $param  = ['domain_name'=>$request->domain_name
+               ,'domain_ext' =>$request->domain_ext
+               ,'domains_create_date'=>$request->domains_create_date
+               ,'domains_create_date2'=>$request->domains_create_date2];
+      $data   = $array['data'];
+      $domains= $this->domainsPerPage_Search($param,$request->phone_type_array,$array['leads_string']);
+      $data = $this->domains_output_Search($data,$domains);
+
+      //dd($data);
+      unset($domain_list);
+      unset($leads);
+      unset($sql);
+      unset($param);
+      unset($domains);
+      return $data;
+    }
+
+    /*
+      search result for different page number with ajax request
+      complexity : n*log(l) + n*log(ed);
+      n :: record per page
+      l :: total leads in leads table
+      ed:: total domains in each_domain table
+    */
+    public function ajax_search_paginated(Request $request)
+    {
+      //dd($request->all());
+      $start = microtime(true);
+      $data = $this->ajax_paginated_search_algo($request);
+      $time = microtime(true) - $start;
+      return \Response::json(array('data'=>$data , 'time'=>$time));
+    }
+
+    public function ajax_search_paginated_subadmin(Request $request) {
+      $start = microtime(true);
+      $data = $this->ajax_paginated_search_algo($request);
+      $return['record'] = $data;
+      $return['page']   = $request->thisPage;
+      $return['meta_id'] = $this->meta_id;
+      $return['totalLeads'] = $this->totalLeads;
+      $return['totalDomains'] = $this->totalDomains;
+      $result['totalPage'] = $this->totalPage;
+      $result['domain_list'] = isset($domain_list) ? $domain_list : null;
+      $result['query_time'] = $end;
+      $result['time'] =   microtime(true) - $start;
+    }
+
 
     // Binding 2 tables - leads - each_domain -> dataset into 1 array
     private function domains_output_Search($data , $domains)

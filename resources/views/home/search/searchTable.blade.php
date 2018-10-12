@@ -42,7 +42,8 @@
 
         <th>
             @if(isset($users_array[$each['registrant_email']]))
-                <small><b  id="domain_name_{{$key}}">{{$domain_list[$each['registrant_email']]['domain_name']}}</b></small>
+                <small>
+                 <b id="domain_name_{{$key}}">{{$each['domain_name']}}</b></small>
             @else
                 <small id="domain_name_{{$key}}">***</small>
             @endif
@@ -72,32 +73,27 @@
 
         <th>
             @if(isset($users_array[$each['registrant_email']]))	
+		
                 <small id="registrant_phone_{{$key}}">{{$each['registrant_phone']}}</small>
 
-                @if(isset($each->valid_phone)) 
-
-                    @if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
+                @if(isset($each['number_type']) && ($each['number_type'] == "Cell Number" || $each["number_type"] == "Landline" )) 
+                    @if($each['number_type'] == "Cell Number")
                     <img id="phone_{{$key}}" style="width:20px; height:40px" src="{{url('/')}}/images/phone.png">
 
-                
-
-                    @elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
+                    @elseif($each['number_type'] == "Landline")
                     <img id="phone_{{$key}}" style="width:30px; height:40px" src="{{url('/')}}/images/landline.png">
 
                     @endif
-
                 @endif
-
             @else
+		
                 <small id="registrant_phone_{{$key}}">***</small>
-                @if(isset($each->valid_phone)) 
-
-                    @if($domain_list[$each['registrant_email']]['number_type'] == "Cell Number")
+                @if(isset($each['number_type']) && ($each["number_type"] == 'Cell Number' || $each["number_type"] == "Landline" ))
+                    @if($each['number_type'] == "Cell Number")
                     <img  id="phone_{{$key}}" style="width:20px; height:40px; display:none" src="{{url('/')}}/images/phone.png">
                     
-                    @elseif($domain_list[$each['registrant_email']]['number_type'] == "Landline")
+                    @elseif($each['number_type'] == "Landline")
                     <img id="phone_{{$key}}" style="width:30px; height:40px; display:none" src="{{url('/')}}/images/landline.png">
-
                     @endif
                 @endif
             @endif
