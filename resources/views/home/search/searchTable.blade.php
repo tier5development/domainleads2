@@ -1,10 +1,4 @@
-<?php 
-    if(Session::has('emailID_list')){
-        $emailID_list=Session::get('emailID_list');
-    } else {
-     $emailID_list=array();
-    }
-?>
+
 <table class="table table-hover table-bordered domainDAta">
     <tr>
         <th>Check box</th>
@@ -40,7 +34,7 @@
             <small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
             <br>
             <small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small> 
-            <!-- leadArr[$each->registrant_email] -->
+            
         </th>
 
         <th>

@@ -126,26 +126,10 @@ form{
 		<div class="container">
 
 			<div class="navbar-header">
-			
-                <?php if(Session::has('emailID_list'))
-                {
-                   $emailID_list=Session::get('emailID_list');
-                   
-                }else {
-                 $emailID_list=array();
-
-                }
-                
-               ?>
                  
 			</div>
 
 			<!-- form elements -->
-
-		    
-			<div>
-				<!-- <a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a> -->
-			</div>
 
 			<div>
 				<i class="fa fa-mobile" aria-hidden="true"></i>
