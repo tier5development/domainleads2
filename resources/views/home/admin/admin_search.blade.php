@@ -602,7 +602,7 @@
 
 
           $('#exportLeads').click(function(e){
-
+            e.preventDefault();
           	var csv_flag = 0;
           	$('.eachrow_download').each(function(e2){
 
@@ -612,13 +612,14 @@
           		}
           	});
 
-          	if(csv_flag == 1)
+          	if(csv_flag != 1)
           	{
-          		return true;
+              alert('please select some leads');
+          		return false;
           	}
           	else
           	{
-          		alert('please select some leads');
+              $('#csv_leads_form').submit();
           	}
           });
 
