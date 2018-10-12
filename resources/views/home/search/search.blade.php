@@ -160,7 +160,22 @@ form{
 				@include('home.search.searchTable', ['record' => $record, 'page' => $page, 'meta_id' => $meta_id, 'totalLeads' => $totalLeads, 'totalDomains' => $totalDomains, 
 				'totalPage' => $totalPage, 'query_time' => $query_time, 'users_array' => $users_array]);
 			</div>
-				
+			
+
+			<div class="pg_" id="pages">
+				<button class="pg_btn" value="prev" id="pg_prev">Previous</button>
+				<?php $i=$page-1; ?>
+				@while(++$i <= $totalPage)
+					@if($i<10)
+						<button class="pg_btn @if($i==1) btn-info @endif" id="pg_{{$i}}" value="{{$i}}">{{$i}}</button>
+					@else
+						<button class="pg_btn" id="pg_{{$i}}" value="{{$i}}" style="display:none;">{{$i}}</button>
+					@endif
+				@endwhile
+					<button class="pg_btn" value="next" id="pg_next">Next</button>
+			</div>
+			<br><br><br>
+
 			@endif
 			</div>
 
@@ -182,19 +197,7 @@ form{
 			</div>
 		</div>
 		
-		<div class="pg_" id="pages">
-			<button class="pg_btn" value="prev" id="pg_prev">Previous</button>
-			<?php $i=$page-1; ?>
-			@while(++$i <= $totalPage)
-				@if($i<10)
-					<button class="pg_btn @if($i==1) btn-info @endif" id="pg_{{$i}}" value="{{$i}}">{{$i}}</button>
-				@else
-					<button class="pg_btn" id="pg_{{$i}}" value="{{$i}}" style="display:none;">{{$i}}</button>
-				@endif
-			@endwhile
-				<button class="pg_btn" value="next" id="pg_next">Next</button>
-		 </div>
-		 <br><br><br>
+		
 
 		
 </body>
