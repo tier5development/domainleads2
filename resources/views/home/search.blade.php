@@ -193,11 +193,11 @@ form{
 						</th>
 
 						<th>
-                            @if(isset($chkWebsite_array[$each['registrant_email']]))
+                            {{-- @if(isset($chkWebsite_array[$each['registrant_email']]))
 								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" disabled="true">Created website</button>
 							@else
 								<button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" >Create website</button>
-							@endif
+							@endif --}}
 							
 							@if(isset($users_array[$each['registrant_email']]))
 								<input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each['registrant_email']}}"  @if(in_array($each['registrant_email'], $emailID_list)) {{'checked'}}  @endif >
@@ -292,9 +292,6 @@ form{
 				</table>
 			@endif
 			</div>
-
-			
-
 
 		</div>
 		  <button style="display: none;" class="" id="popupid_for_domainexists" data-toggle="modal" data-target="#myModal_for_reg">popup</button>
