@@ -1,7 +1,14 @@
+<?php 
+    if(Session::has('emailID_list')){
+        $emailID_list=Session::get('emailID_list');
+    } else {
+     $emailID_list=array();
+    }
+?>
 <table class="table table-hover table-bordered domainDAta">
     <tr>
         <th>Check box</th>
-        <th>Create Website</th>
+        {{-- <th>Create Website</th> --}}
         <th>Domain Name</th>
         <th>Registrant Name</th>
         <th>Registrant Email</th>
@@ -24,21 +31,22 @@
             @endif
         </th>
 
-        <th>
+        {{-- <th> --}}
             {{-- @if(isset($chkWebsite_array[$each['registrant_email']]))
                 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" disabled="true">Created website</button>
             @else
                 <button class="btn btn-primary" id="chkDomainForWebsiteID_{{$key}}" onclick="chkDomainForWebsite('{{$domain_list[$each['registrant_email']]['domain_name']}}','{{$key}}','{{$each['registrant_email']}}')" >Create website</button>
             @endif --}}
             
-            @if(isset($users_array[$each['registrant_email']]))
+            {{-- @if(isset($users_array[$each['registrant_email']]))
                 <input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each['registrant_email']}}"  @if(in_array($each['registrant_email'], $emailID_list)) {{'checked'}}  @endif >
             @else
-                <small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each['registrant_email']}}" <?php if(in_array($each['registrant_email'], $emailID_list)){ echo "checked";} ?>>
+                <small id="showCSV_{{$key}}" style="display: none"><input type="checkbox" name="downloadcsv" value="1" class="eachrow_download" id="eachrow_download_{{$key}}" emailID="{{$each['registrant_email']}}" 
+                    <?php //if(in_array($each['registrant_email'], $emailID_list)){ echo "checked";} ?> >
                 </small>
                 <small id="hideCSV_{{$key}}">***</small>
-            @endif
-        </th>
+            @endif --}}
+        {{-- </th> --}}
 
         <th>
             @if(isset($users_array[$each['registrant_email']]))

@@ -1395,17 +1395,25 @@ public function download_csv_single_page(Request $request)
 
     public function ajax_search_paginated_subadmin(Request $request) {
       try {
+        if(!\Auth::check()) {
+          return \Response::json(['status' => false, 'message' => 'Session expired' ,'view' => null]);  
+        }
         $start = microtime(true);
         $data = $this->ajax_paginated_search_algo($request);
-        $return['record'] = $data;
-        $return['page']   = $request->thisPage;
-        $return['meta_id'] = $this->meta_id;
-        $return['totalLeads'] = $this->totalLeads;
-        $return['totalDomains'] = $this->totalDomains;
+        $result['record'] = $data;
+        $result['page']   = $request->thisPage;
+        $result['meta_id'] = $this->meta_id;
+        $result['totalLeads'] = $this->totalLeads;
+        $result['totalDomains'] = $this->totalDomains;
         $result['totalPage'] = $this->totalPage;
-        $result['domain_list'] = isset($domain_list) ? $domain_list : null;
-        $result['query_time'] = $end;
+        // $result['domain_list'] = isset($domain_list) ? $domain_list : null;
+        $result['query_time'] = microtime(true)-$start;;
         $result['time'] =   microtime(true) - $start;
+
+        $user_id = \Auth::user()->id;
+        $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
+        $users_array = array_flip($users_array);
+        $result['users_array'] = $users_array;
 
         $view = View::make('home.search.searchTable', $result)->render();
         return \Response::json(['status' => true, 'message' => 'Success' ,'view' => $view]);

@@ -174,7 +174,7 @@ form{
 
 			<div class="table-container">
 				@include('home.search.searchTable', ['record' => $record, 'page' => $page, 'meta_id' => $meta_id, 'totalLeads' => $totalLeads, 'totalDomains' => $totalDomains, 
-				'totalPage' => $totalPage, 'domain_list' => $domain_list, 'query_time' => $query_time, 'users_array' => $users_array]);
+				'totalPage' => $totalPage, 'query_time' => $query_time, 'users_array' => $users_array]);
 			</div>
 				
 			@endif

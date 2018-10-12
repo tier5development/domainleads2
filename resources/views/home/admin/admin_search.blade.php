@@ -105,13 +105,7 @@
       </div>
       <div class="container">
          <div class="navbar-header">
-            <?php if(Session::has('emailID_list')){
-               $emailID_list=Session::get('emailID_list');
-
-               }else {
-                $emailID_list=array();
-
-               }
+            <?php 
 
                  $domainExtarray=Input::all();
                  if (array_key_exists("domain_ext",$domainExtarray)){
