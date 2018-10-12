@@ -372,7 +372,7 @@ form{
 		//var page = $(this).val();
 
 		$.ajax({
-			url  : URL+'/ajax_search_paginated',
+			url  : "{{route('ajax_search_paginated_subadmin')}}",
 			type : 'post',
 			dataType: 'json',
 			data : {_token : "{{csrf_token()}}" ,
