@@ -782,11 +782,11 @@ public function download_csv_single_page(Request $request)
     private function leadsPerPage_Search($leads)
     {
         $leads_string = '';
-        $totalLeads = sizeof($leads);
-        $leadsid_per_page   = array();
+        $totalLeads = count($leads);
+        // $leadsid_per_page   = array();
         $i=$x=$z=$totalDomains=$lastz=0;
         $data = array();
-        for($i=0 ; $i<sizeof($leads) ; $i++)
+        for($i=0 ; $i<$totalLeads ; $i++)
         {
           if(isset($leads[$i]))
           {
