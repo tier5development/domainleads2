@@ -11,7 +11,7 @@
 
     <p class="tableHeading">All leads unlocked </p>
 
-    <u class="totalPage">Total count : {{$leads->count()}}</u>
+    <u class="totalPage">Total count : {{$leads->total()}}</u>
     <form class="" action="{{route('myUnlockedDominasPost')}}" method="POST">
         <br>
             <p class="perPage">
