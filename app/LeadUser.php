@@ -9,10 +9,10 @@ class LeadUser extends Model
     protected $table='leadusers';
 
 
-    // public function leads()
-    // {
-    // 	return $this->hasMany('App\Lead','registrant_email','registrant_email');
-    // }
+    public function lead()
+    {
+    	return $this->hasOne('App\Lead','registrant_email','registrant_email');
+    }
 
     // public function user()
     // {

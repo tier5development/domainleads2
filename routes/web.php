@@ -85,6 +85,10 @@ Route::get('/aa',function(){
 
    	Route::group(['middleware' => 'auth'],function(){
 
+        Route::get('unlocked-domains', ['uses' => 'UserController@myUnlockedDominas', 'as' => 'myUnlockedDominas']);
+
+        Route::post('unlocked-domains', ['uses' => 'UserController@myUnlockedDominas', 'as' => 'myUnlockedDominasPost']);
+
     	Route::get('importExport', 'ImportExport@importExport');
 
     	Route::post('/importExcel', 'ImportExport@importExcel')->name('import_Excel'); // new version of import exel

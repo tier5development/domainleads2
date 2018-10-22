@@ -1443,9 +1443,12 @@ public function download_csv_single_page(Request $request)
       }
       foreach ($data as $key => $value)
       {
+        
+        // $phone = explode('.',$value['registrant_phone']);
+        // $phone = isset($phone[1]) ? $phone[1] : $phone[0];
 
-        $phone = explode('.',$value['registrant_phone']);
-        $phone = isset($phone[1]) ? $phone[1] : $phone[0];
+        //Logic changed to show original phone
+        $phone = $value['registrant_phone'];
 
         $data[$key]['registrant_phone']     = $phone;
 
@@ -1556,7 +1559,7 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
-      //dd($request->all());
+      // dd($request->all());
       ini_set('max_execution_time', 346000);
       if(\Auth::check())
       {

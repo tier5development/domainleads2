@@ -12,7 +12,12 @@
       @endif
       <li @if (Request::path() == 'search') class="active" @endif>
       <a href="{{ URL::to('search') }}"> Search Domain</a></li>
-      <li> <a href="{{ URL::to('logout') }}">Logout</a></li>
+      
+      @if(\Auth::user()->user_type == 1)
+        <li class="pull-right">
+          <a href="{{route('myUnlockedDominas')}}">Unlocked Domains</a>
+        </li>
+      @endif
       
 
       @if(\Auth::user()->membership_status == 0)
@@ -29,7 +34,8 @@
       @if(\Auth::user()->user_type == 2)
         <li class="pull-right"><a href="{{url('/')}}/manage">Manage</a></li>
       @endif
-      <li class="pull-right"><a href="https://www.textinbulk.com/">Text In Bulk</a></li>
+        <li class="pull-right"><a href="https://www.textinbulk.com/">Text In Bulk</a></li>
+      <li> <a href="{{ URL::to('logout') }}">Logout</a></li>
     </ul>
   </div>
 </nav>
