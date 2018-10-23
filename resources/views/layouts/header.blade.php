@@ -14,12 +14,12 @@
       <a href="{{ URL::to('search') }}"> Search Domain</a></li>
       
       @if(\Auth::user()->user_type == 1)
-        <li class="pull-right">
+        <li>
           <a href="{{route('myUnlockedDominas')}}">Unlocked Domains</a>
         </li>
       @endif
       
-
+        {{--
       @if(\Auth::user()->membership_status == 0)
         <li class="pull-right"><a href="#">free membership</a></li>
       @elseif(\Auth::user()->membership_status == 1)
@@ -30,12 +30,12 @@
         <li class="pull-right"><a href="#">advanced membership</a></li>
       @endif
        <!--  <li class="pull-right"><a href="#">Notifications</a></li> -->
-
+          --}}
       @if(\Auth::user()->user_type == 2)
-        <li class="pull-right"><a href="{{url('/')}}/manage">Manage</a></li>
+        <li ><a href="{{url('/')}}/manage">Manage</a></li>
       @endif
-        <li class="pull-right"><a href="https://www.textinbulk.com/">Text In Bulk</a></li>
-      <li> <a href="{{ URL::to('logout') }}">Logout</a></li>
+        {{-- <li class="pull-right"><a href="https://www.textinbulk.com/">Text In Bulk</a></li> --}}
+      <li class="pull-right"> <a href="{{ URL::to('logout') }}">Logout</a></li>
     </ul>
   </div>
 </nav>
