@@ -699,7 +699,7 @@ $( document ).ready(function() {
                   window.location.href = 'search';
                 }
                 if(data=='error1'){
-                   $("#errormsg").html('User is not registered');
+                   $("#errormsg").html('User is not registered or suspended');
                 }
                 if(data=='error2'){
                    $("#errormsg").html('Invalid login credentials');
