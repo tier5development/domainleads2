@@ -64,6 +64,7 @@ class UserController extends Controller
               ,'each_domain.domain_name'
               ,'valid_phone.number_type'
               ,'leadusers.id')
+              ->where('leadusers.user_id', \Auth::user()->id)
               ->groupBy('leads.registrant_email')
               ->orderBy('leadusers.id','ASC')
               ->get();
