@@ -82,7 +82,7 @@ ga('send', 'pageview');
 
 
                             <li> <button class="" id="popupid" data-toggle="modal" data-target="#myModal">SignIn</button></li>
-                            <li><button class="" id="popupid_for_reg" data-toggle="modal" data-target="#myModal_for_reg">Register</button></li>
+                            {{-- <li><button class="" id="popupid_for_reg" data-toggle="modal" data-target="#myModal_for_reg">Register</button></li> --}}
                             @endif
                         </ul>
                        
