@@ -52,6 +52,7 @@ class UserController extends Controller
     }
 
     public function downloadUnlockedLeads(Request $request) {
+        $date = $request->has('date') ? $request->date : null;
         $result = DB::table('leads')
             ->join('leadusers', 'leads.registrant_email', '=', 'leadusers.registrant_email')
             ->join('each_domain', function($join) {
@@ -64,8 +65,11 @@ class UserController extends Controller
               ,'each_domain.domain_name'
               ,'valid_phone.number_type'
               ,'leadusers.id')
-              ->where('leadusers.user_id', \Auth::user()->id)
-              ->groupBy('leads.registrant_email')
+              ->where('leadusers.user_id', \Auth::user()->id);
+              if($date) {
+                $result = $result->whereDate('leadusers.created_at', $date);
+              }
+              $result = $result->groupBy('leads.registrant_email')
               ->orderBy('leadusers.id','ASC')
               ->get();
         $exportArray = [];

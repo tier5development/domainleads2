@@ -30,6 +30,7 @@
 
     @if(count($leads) > 0 )
     <form method="POST" action="{{route('downloadUnlockedLeads')}}">
+        <input type="hidden" name="date" value="{{Request::has('date') ? Request::get('date') : null}}">
         <button type="submit" class="btn btn-info btn-sm pull-left">Download CSV</button>
         {{csrf_field()}}
     </form><br>
