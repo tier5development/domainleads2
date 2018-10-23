@@ -33,7 +33,7 @@ use \Carbon\Carbon as Carbon;
 
 class UserController extends Controller
 {
-    public function myUnlockedDominas(Request $request) {
+    public function myUnlockedLeads(Request $request) {
         if(Auth::check() && Auth::user()->user_type == 1) {
             $date = $request->has('date') ? $request->date : null;
             $data['perpage'] = $request->has('perpage') ? $request->perpage : 20;
@@ -43,11 +43,47 @@ class UserController extends Controller
                 // dd($date);
                 $data['leads'] = $data['leads']->whereDate('created_at', $date);
             }
-            $data['leads'] = $data['leads']->paginate($data['perpage']);
+            $data['leads'] = $data['leads']->orderBy('id', 'ASC')->paginate($data['perpage']);
             $data['title'] = 'Unlocked leads | Domainleads';
             return view('home.search.my-unlocked-domains', $data);
         } else {
             return redirect('search');
         }
     }
+
+    public function downloadUnlockedLeads(Request $request) {
+        $result = DB::table('leads')
+            ->join('leadusers', 'leads.registrant_email', '=', 'leadusers.registrant_email')
+            ->join('each_domain', function($join) {
+              $join->on('each_domain.registrant_email', '=', 'leads.registrant_email');
+            })->join('domains_info', 'each_domain.domain_name', '=', 'domains_info.domain_name')
+            ->leftJoin('valid_phone', 'leads.registrant_email', '=', 'valid_phone.registrant_email')
+            ->select('leads.registrant_email', 'leads.registrant_fname', 'registrant_lname'
+              ,'leads.registrant_company', 'leads.registrant_phone' 
+              ,'domains_info.created_at'
+              ,'each_domain.domain_name'
+              ,'valid_phone.number_type'
+              ,'leadusers.id')
+              ->groupBy('leads.registrant_email')
+              ->orderBy('leadusers.id','ASC')
+              ->get();
+        $exportArray = [];
+        foreach($result as $each) {
+          $temp['email_id'] = $each->registrant_email;
+          $temp['first_name'] = $each->registrant_fname;
+          $temp['last_name'] = $each->registrant_lname;
+          $temp['website'] = $each->domain_name;
+          $temp['phone'] = $each->registrant_phone;
+          $temp['number_type'] = $each->number_type;
+          $temp['created_at'] = $each->created_at;
+          $exportArray[] = $temp;
+        }
+      
+        return Excel::create('domainleads', function($excel) use ($exportArray) {
+          $excel->sheet('mySheet', function($sheet) use ($exportArray){
+            $sheet->fromArray($exportArray);
+          });
+        })->download('csv');
+    }
 }
+

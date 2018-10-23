@@ -1,0 +1,53 @@
+.notiPop{
+	position: fixed;
+	right: -100%;
+	top: 75px;
+	width: 360px;
+	min-height: 50px;
+	padding: 10px;
+	background: #fff;
+	border-radius: 5px;
+	box-shadow: 1px 2px 8px rgba(0,0,0,0.3);
+	opacity: 0.1;
+	transition: all 1s ease 0s;
+}
+.notiPop.active{
+	opacity: 1;
+	right: 30px;
+}
+.popupInner{
+	position: relative;
+	display: inline-block;
+	width: 100%;
+}
+.popupImg{
+	width: 40px;
+	height: 40px;
+	border-radius: 5px;
+	background: orange;
+	font-size: 24px;
+	text-align: center;
+	font-weight: bold;
+	float: left;
+	margin-right: 10px;
+	padding-top: 2px;
+}
+.popupBody{
+	width: 290px;
+	float: left;
+}
+.popupBody p{
+	font-size: 15px;
+	margin: 0 0 5px 0;
+	line-height: 16px;
+}
+.popupClose{
+	position: absolute;
+	top: 3px;
+	right: 5px;
+	color: #ccc;
+	cursor: pointer;
+}
+.popupClose:hover{
+	color: #999;
+}

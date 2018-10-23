@@ -1,7 +1,7 @@
 
 <table class="table table-hover table-bordered domainDAta">
     <tr>
-        <th>Check box</th>
+        <th>Unlock Lead</th>
         <th>Domain Name</th>
         <th>Registrant Name</th>
         <th>Registrant Email</th>
@@ -14,11 +14,19 @@
     @foreach($record as $key=>$each)
     <tr>
         <th>
-            @if(isset($users_array[$each['registrant_email']]))
+            {{-- @if(isset($users_array[$each['registrant_email']]))
                 <input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}" checked="true" disabled="true">
                 <input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="{{$each['id']}}">
             @else
                 <input type="checkbox" id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}">	
+                <input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="">
+            @endif --}}
+
+            @if(isset($users_array[$each['registrant_email']]))
+                <button id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}" disabled="true" class="btn btn-sm btn-success">Unlocked</button>
+                <input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="{{$each['id']}}">
+            @else
+                <button id="ch_{{$key}}" onclick="unlock('{{$each['registrant_email']}}' , '{{$key}}')" name="ch_{{$key}}" class="btn btn-sm btn-primary">Unlock</button>	
                 <input type="hidden" id="leads_id_{{$key}}"  class="leads_id" value="">
             @endif
         </th>
@@ -33,8 +41,7 @@
             <br>
             <small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
             <br>
-            <small > Total Domains : <a href="{{url('/')}}/lead/{{encrypt($each['registrant_email'])}}">{{$each['domains_count']}}</a></small> 
-            
+            <small> Total Domains : <a href="javascript:void(0)" onclick="clickLink(this, {{$key}})" id="linkClick_{{$key}}" data-ref = "{{route('viewDomainsOfUnlockedLeed', ['email' => encrypt($each['registrant_email']), 'request' => Session::has('oldReq') ? Session::get('oldReq') : null])}}">{{$each['domains_count']}}</a></small> 
         </th>
 
         <th>
@@ -43,7 +50,6 @@
             @else
                 <small id="registrant_name_{{$key}}">***</small>
             @endif
-
         </th>
 
         <th>

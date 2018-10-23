@@ -43,6 +43,7 @@ Route::get('/aaa',function(){
 });
 
 Route::get('/aaa',function(){
+    dd(strpos('zim','kazimierzbar.com'));
     dd(generateDateRange(null,null));
 });
 
@@ -79,15 +80,21 @@ Route::get('/aa',function(){
     
 	Route::post('/signme','AccountController@signme' );
 
-	Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains']);
+	Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains', 'as' => 'viewDomainsOfUnlockedLeed']);
 
     Route::post('/download_csv_single_page','SearchController@download_csv_single_page');
 
    	Route::group(['middleware' => 'auth'],function(){
 
-        Route::get('unlocked-domains', ['uses' => 'UserController@myUnlockedDominas', 'as' => 'myUnlockedDominas']);
 
-        Route::post('unlocked-domains', ['uses' => 'UserController@myUnlockedDominas', 'as' => 'myUnlockedDominasPost']);
+
+        Route::post('totalLeadsUnlockedToday', ['uses' => 'SearchController@totalLeadsUnlockedToday', 'as' => 'totalLeadsUnlockedToday']);
+
+        Route::post('download-unlocked-leads', ['uses' => 'UserController@downloadUnlockedLeads', 'as' => 'downloadUnlockedLeads']);
+        
+        Route::get('unlocked-leads', ['uses' => 'UserController@myUnlockedLeads', 'as' => 'myUnlockedLeads']);
+
+        Route::post('unlocked-leads', ['uses' => 'UserController@myUnlockedLeads', 'as' => 'myUnlockedLeadsPost']);
 
     	Route::get('importExport', 'ImportExport@importExport');
 

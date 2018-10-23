@@ -14,19 +14,19 @@
 
                   <div class="form-group">
                      <label>Domain Name : </label>
-                     <input type="text" value="{{ Input::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
+                     <input type="text" value="{{ Request::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
                   </div>
                   <div class="form-group">
                      <label>Registrant Country : </label>
-                     <input type="text" value="{{ Input::get('registrant_country') }}" name="registrant_country" id="registrant_country" class="form-control">
+                     <input type="text" value="{{ Request::get('registrant_country') }}" name="registrant_country" id="registrant_country" class="form-control">
                   </div>
                   <div class="form-group">
                      <label>Registrant State : </label>
-                     <input type="text" value="{{ Input::get('registrant_state') }}" name="registrant_state" id="registrant_state" class="form-control">
+                     <input type="text" value="{{ Request::get('registrant_state') }}" name="registrant_state" id="registrant_state" class="form-control">
                   </div>
                   <div>
                     <label>zip : </label>
-                    <input type="text" name="registrant_zip" value="{{Input::get('registrant_zip')}}">
+                    <input type="text" name="registrant_zip" value="{{Request::get('registrant_zip')}}">
                   </div>
                   <div class="form-group">
                      <label>Domains Create Date</label><br>
@@ -35,7 +35,7 @@
 
                      <div class="row">
                      <div class="col-sm-6">
-                     <input style="width: 150px" type="date" value="{{ Input::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control" placeholder="From Date">
+                     <input style="width: 150px" type="date" value="{{ Request::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control" placeholder="From Date">
                      </div>
                      <div class="col-sm-6">
                      <input style="width: 150px" type="date" value="{{ Input::get('domains_create_date2') }}" name="domains_create_date2" id="registered_date2" class="form-control" placeholder="To Date">

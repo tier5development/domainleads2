@@ -15,7 +15,7 @@
       
       @if(\Auth::user()->user_type == 1)
         <li>
-          <a href="{{route('myUnlockedDominas')}}">Unlocked Domains</a>
+          <a href="{{route('myUnlockedLeads')}}">Unlocked Leads</a>
         </li>
       @endif
       

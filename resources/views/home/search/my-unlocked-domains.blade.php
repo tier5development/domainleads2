@@ -12,7 +12,7 @@
     <p class="tableHeading">All leads unlocked </p>
 
     <u class="totalPage">Total count : {{$leads->total()}}</u>
-    <form class="" action="{{route('myUnlockedDominasPost')}}" method="POST">
+    <form class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
         <br>
             <p class="perPage">
                 Per Page 
@@ -26,7 +26,14 @@
             <button class="btn btn-sm btn-primary searchBtn" id="search">Apply</button>
             <input type="date" name="date" value="{{Request::has('date') ? Request::get('date') : null}}" class="dateInp">
             {{csrf_field()}}
-    </form>
+    </form><br><br>
+
+    @if(count($leads) > 0 )
+    <form method="POST" action="{{route('downloadUnlockedLeads')}}">
+        <button type="submit" class="btn btn-info btn-sm pull-left">Download CSV</button>
+        {{csrf_field()}}
+    </form><br>
+    @endif
     
     <div style="display: none" id="spinner" class="spinner"></div>
 

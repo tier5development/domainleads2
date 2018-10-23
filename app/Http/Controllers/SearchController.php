@@ -44,8 +44,63 @@ public $leads_id;
 
 public function downloadExcel2(Request $request)
 {
-  dd($request->all());
+  // dd($request->all());
+
+  
 }
+
+public function totalLeadsUnlockedToday() {
+  $user = \Auth::user();
+  $count = LeadUser::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
+  return response()->json([
+    'status' => true,
+    'leadsUnlocked' => $count
+  ]);
+}
+
+public function downloadExcel(Request $request) {
+  // dd($request->all());
+  $sql    = "SELECT leads,compression_level from search_metadata
+                where id = ".$request->meta_id;
+  $data   = DB::select(DB::raw($sql));
+  $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
+  $leadsArray = explode(',',$leads);
+
+  $result = DB::table('leads')->whereIn('leads.id', $leadsArray)
+      ->join('leadusers', 'leads.registrant_email', '=', 'leadusers.registrant_email')
+      ->join('each_domain', function($join) {
+        $join->on('each_domain.registrant_email', '=', 'leads.registrant_email');
+      })->join('domains_info', 'each_domain.domain_name', '=', 'domains_info.domain_name')
+      ->leftJoin('valid_phone', 'leads.registrant_email', '=', 'valid_phone.registrant_email')
+      ->select('leads.registrant_email', 'leads.registrant_fname', 'registrant_lname'
+        ,'leads.registrant_company', 'leads.registrant_phone' 
+        ,'domains_info.created_at'
+        ,'each_domain.domain_name'
+        ,'valid_phone.number_type'
+        ,'leadusers.id')
+        ->groupBy('leads.registrant_email')
+        ->orderBy('leadusers.id','ASC')
+        ->get();
+  $exportArray = [];
+  foreach($result as $each) {
+    $temp['email_id'] = $each->registrant_email;
+    $temp['first_name'] = $each->registrant_fname;
+    $temp['last_name'] = $each->registrant_lname;
+    $temp['website'] = $each->domain_name;
+    $temp['phone'] = $each->registrant_phone;
+    $temp['number_type'] = $each->number_type;
+    $temp['created_at'] = $each->created_at;
+    $exportArray[] = $temp;
+  }
+
+  return Excel::create('domainleads', function($excel) use ($exportArray) {
+    $excel->sheet('mySheet', function($sheet) use ($exportArray){
+      $sheet->fromArray($exportArray);
+    });
+  })->download('csv');
+}
+
+
 
 public function print_csv($leads,$type)
 {
@@ -237,13 +292,28 @@ public function download_csv_single_page(Request $request)
 
       Session::forget('emailID_list');
      }
-    public function lead_domains($email)
+    public function lead_domains($email, Request $request)
     {
-      $email = decrypt($email);
-      $alldomains = EachDomain::with('wordpress_env')->where('registrant_email',$email);
-      return view('home.lead_domains',['alldomain'=>$alldomains , 'email'=>$email]);
+      
+      $oldReq = $request->all();
+      $oldReq = isset($oldReq['request']) ? $oldReq['request'] : null;
+      $req = new Request($oldReq);
+      try {
+        $email = decrypt($email);
+        $lead = Lead::where('registrant_email', $email)->first();
+        if(!$lead) {
+          return redirect()->back()->with('error', 'This lead is deleted')->withInput($req->all());
+        }
+        $leadsUnlocked = LeadUser::where('registrant_email', $email)->where('user_id', \Auth::user()->id)->first();
+        if(!$leadsUnlocked && \Auth::user()->user_type == 1) {
+          return redirect()->back()->with('error', 'You don\'t have access of this data')->withInput($req->all());
+        }
+        $alldomains = EachDomain::with('wordpress_env')->where('registrant_email',$email);
+        return view('home.lead_domains',['alldomain'=>$alldomains , 'email'=>$email]);
+      } catch(\Exception $e) {
+        return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
+      }
     }
-
 
     //when a common user unlocks a user
     //fired with ajax
@@ -256,9 +326,10 @@ public function download_csv_single_page(Request $request)
         }
 
         $count = LeadUser::where('user_id', \Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
-        if($count > config('settings.LIMIT-PER-DAY')) {
+        if($count >= config('settings.LIMIT-PER-DAY')) {
           $array['status'] = false;
           $array['message'] = 'Per day limit exceeded';
+          $array['leadsUnlocked'] = $count;
           return \Response::json($array);
         }
 
@@ -271,8 +342,20 @@ public function download_csv_single_page(Request $request)
 
         if($lead->save() && $leaduser->save())
         {
-          $data = Lead::where('registrant_email',$request->registrant_email)->first();
+          $domainName = $request->has('domain_name') ? $request->domain_name : null;
+          $data = Lead::where('registrant_email',$request->registrant_email);
+          // if($domainName) {
+          //   $data = $data->with(['each_domain', function($q) use ($domainName) {
+          //     $q = $q->where('domain_name', 'LIKE', '%'.$domainName.'%');
+          //   }]);
+          // }
+          
+          $data = $data->first();
+          $domain = $data->each_domain->filter(function($each, $key) use($domainName) {
+            return strpos($each->domain_name, $domainName) !== false ? $each : null;
+          })->first();
           $array = array();
+          $array['leadsUnlocked'] = $count + 1;
           $array['status'] = true;
           $array['message'] = 'Success';
           $array['id']     = $data->id;
@@ -280,15 +363,16 @@ public function download_csv_single_page(Request $request)
           $array['registrant_name']     = $data->registrant_fname." ".$data->registrant_lname;
           $array['registrant_phone']    = $data->registrant_phone;
           $array['registrant_company']  = $data->registrant_company;
-          $array['domain_name']         = $data->each_domain->first()->domain_name;
-          $array['domains_create_date'] = $data->each_domain->first()->domains_info->first()->domains_create_date;
+          $array['domain_name']         = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name; 
+          $array['domains_create_date'] = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
+                                                              : $domain->domains_info->domains_create_date;
           $array['unlocked_num']        = $lead->unlocked_num;
           //$array['total_domain_count']  = $lead->each_domain;
           return \Response::json($array);
         }
-        return \Response::json(array('status'=>false,'message' => 'Cannot connect with db, try again later'));
+        return \Response::json(array('status'=>false,'message' => 'Cannot connect with db, try again later', 'leadsUnlocked' => $count));
       } catch(\Exception $e) {
-        return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage()));
+        return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()));
       }
     }
 
@@ -1409,6 +1493,7 @@ public function download_csv_single_page(Request $request)
         // $result['domain_list'] = isset($domain_list) ? $domain_list : null;
         $result['query_time'] = microtime(true)-$start;;
         $result['time'] =   microtime(true) - $start;
+        // $result['oldReq'] = Session::has('oldReq') ? Session::get('oldReq') : null;
 
         $user_id = \Auth::user()->id;
         $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
@@ -1530,6 +1615,7 @@ public function download_csv_single_page(Request $request)
         {
           $start  = microtime(true);
           $result = $this->search_algo($request);
+          // Session::put('oldReq', $request->all());
           $end    = microtime(true)-$start;
 
           $phone_type_array = array();
@@ -1559,7 +1645,7 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
-      // dd($request->all());
+      //dd($request->all());
       ini_set('max_execution_time', 346000);
       if(\Auth::check())
       {
@@ -1568,7 +1654,7 @@ public function download_csv_single_page(Request $request)
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
-
+          Session::put('oldReq', $request->all());
 
           if(\Auth::user()->user_type == 2)
           {
@@ -1584,6 +1670,7 @@ public function download_csv_single_page(Request $request)
         else
         {
           Session::forget('emailID_list');
+          Session::forget('oldReq');
           $allrecords = null;
           $leadArr = null;
           $totalDomains = null;

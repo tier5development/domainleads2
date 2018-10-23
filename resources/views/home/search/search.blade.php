@@ -12,8 +12,9 @@
   	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-      <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="{{url('/')}}/public/css/notifi-widget.css">
+    <script type="text/javascript" src="{{url('/')}}/theme/js/bootstrap.js"></script>
 
 <style type="text/css">
 .dropdown dd,
@@ -107,6 +108,12 @@ form{
     padding: 20px;
 }
 
+.overlay{background: rgba(0,0,0,0.7); width: 100%; height: 100%; position: fixed; top: 0;
+         z-index: 1111;
+         }
+         .loader-main{width: 100px; height: 100px; position: absolute; margin-left: -50px; margin-top: -50px; top: 50%; left: 50%;}
+         .loader-main img{max-width: 100%;}
+
 
 </style>
         
@@ -114,6 +121,19 @@ form{
 </head>
 
 <body>
+
+	<div class="notiPop">
+		<div class="popupInner">
+			<div class="popupImg">
+				D
+			</div>
+			<div class="popupBody">
+				<p>You have unlocked <span id="notipop-num"></span> leads today.</p>
+				<p>You can unlocked upto <span id="notipop-total-num">{{config('settings.LIMIT-PER-DAY')}}</span> leads per day.</p>
+			</div>
+		</div>
+		<div class="popupClose"><span id="notipopup-close" class="glyphicon glyphicon-remove"></span></div>
+	</div>
 
 	<div id="ajax-loader" style="display: none;">
 		<div class="overlay">
@@ -135,6 +155,15 @@ form{
 				<i class="fa fa-mobile" aria-hidden="true"></i>
 			</div>
 
+			<div>
+				@if(Session::has('error'))
+					<div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+						<strong>Error!</strong> {{Session::get('error')}}
+					</div>
+				@endif
+				@php Session::forget('error') @endphp
+			</div>
 
 			@include('layouts.search')
 
@@ -149,11 +178,8 @@ form{
 			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
 
 			<form class="col-md-12" style="margin-left: 10px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
-
-		         <input type="hidden" name="domains_for_export" id="domains_for_export_id" value="">
-		         <input type="hidden" id="leads_for_export" name="leads_for_export" value="">
-		         <input type="hidden" name="domains_for_export_allChecked" id="domains_for_export_id_allChecked" value="0">
-				 <button class="btn btn-primary" id="exportID">Export</button>
+				<input type="hidden" name="meta_id" value="{{$meta_id}}">
+				<button class="btn btn-primary" id="exportID">Export</button>
 			</form>
 
 			<div class="table-container">
@@ -206,6 +232,47 @@ form{
 		
 </body>
 	<script type="text/javascript">
+	var RECORD = parseInt("{{$record == null ? 0 : count($record)}}");
+
+	$(document).ready(function() {
+		if(RECORD > 0) {
+			$.ajax({
+				url : "{{route('totalLeadsUnlockedToday')}}",
+				type: "POST",
+				data: {_token : "{{csrf_token()}}"},
+				success: function(r) {
+					console.log(r);
+					if(r.status) {
+						$('.notiPop').removeClass('active').addClass('active');
+						$('#notipop-num').text(r.leadsUnlocked);
+					} else {
+						// do nothing
+					}
+				}, error : function(e) {
+					console.error(e);
+				}
+			});
+		}
+
+		$('#notipopup-close').on('click', function() {
+			$('.notiPop').removeClass('active');
+		});
+
+		// $('.linkClick').on('click', function(e) {
+		// 	alert(11);
+		// 	var ref = $(this).data('ref');
+		// 	alert(ref);
+		// });
+	});
+
+	function clickLink(t, key) {
+		if($('#domain_name_'+key).text() == '***') {
+			alert('You dont have access over this data');
+		} else {
+			window.open($(t).data('ref'));
+		}
+	}
+
 	@if(count($record) > 0)
 	var thisPage     = parseInt("{{$page}}");
     var totalPage    = parseInt("{{$totalPage}}");
@@ -457,7 +524,7 @@ form{
 			$.ajax({
 					type : 'POST',
 					url  : '/unlockleed',
-					data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id},
+					data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id, domain_name: "{{Request::get('domain_name')}}"},
 					success :function(response)
 					{
 							if(response.status) {
@@ -474,12 +541,16 @@ form{
 									else
 											leads_for_export += ","+response.id;
 									$('#phone_'+key).show();
-									$('#ch_'+key).prop('checked'    , true);
-									$('#ch_'+key).prop('disabled'   , true);
+									
+									// $('#ch_'+key).prop('checked'    , true);
+									// $('#ch_'+key).prop('disabled'   , true);
+									$('#ch_'+key).removeClass('btn-primary').addClass('btn-success').prop('checked',true).prop('disabled', true).text('Unlocked');
+									
 									$('#unlocked_num_'+key).text(response.unlocked_num);
 									$('#showCSV_'+key).show();
 									$('#hideCSV_'+key).hide();
-
+									$('.notiPop').removeClass('active').addClass('active');
+									$('#notipop-num').text(response.leadsUnlocked);
 									console.log(leads_for_export);
 							} else {
 									alert(response.message);
@@ -537,7 +608,6 @@ form{
 			page = window.location.hash.replace('#','');
 			getProducts(page);
 		});
-
 	});
 	</script>
 
