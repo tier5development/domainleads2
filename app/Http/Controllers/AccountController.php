@@ -13,52 +13,54 @@ use Mail;
 
 class AccountController extends Controller
 {
-	public function home()
-	{
-		return view('home');
+	public function loginPage() {
+		if(\Auth::check()) {
+			return redirect('search');
+		}
+		return view('login');
 	}
 
-    public function login(Request $request)
-    {
-    // Getting all post data
-    //$data = Input::all();
-    //$data = $request->request->toArray();
-    //dd($request->all());
-	  
-    // Applying validation rules.
-    $rules = array(
-		'email' => 'required|email',
-		'password' => 'required|min:6'
-	     );
-    $userdata = array(
-		    'email' => $request->email,
-		    'password' => $request->password
-		  );
-    //$validator = Validator::make($request->request, $rules);
+	public function home()
+	{
+		if(\Auth::check()) {
+			return redirect('search');
+		}
+		return redirect('login');
+		//return view('home');
+	}
 
-    $validator = Validator::make($userdata , $rules);
+    public function login(Request $request) {
+	try {
 
-    if ($validator->fails()){
-    return "error2";
-     // return Redirect::to('/login')->withInput(Input::except('password'))->withErrors($validator);
-    }
-    else 
-    {
-    //   $userdata = array(
-		  //   'email' => $request->email,
-		  //   'password' => $request->password
-		  // );
-      // doing login.
-      if (Auth::validate($userdata)) {
-        if (Auth::attempt($userdata)) {
-          return "success";
-        }
-      } 
-      else 
-      {
-        return "error1";
-      }
-    }
+		$rules = array(
+			'email' => 'required|email',
+			'password' => 'required|min:6'
+		);
+		$userdata = array(
+				'email' => $request->email,
+				'password' => $request->password
+		);
+		$validator = Validator::make($userdata , $rules);
+	
+		if ($validator->fails()){
+			return redirect()->back()->with('error', 'Invalid Login credentials!');
+		}
+		else 
+		{
+		  if (Auth::validate($userdata)) {
+			if (Auth::attempt($userdata)) {
+				return redirect('search');
+			} else {
+				return redirect()->back()->with('error', 'Cannot authenticate! Please try agin with valid credentials');
+			}
+		  } else {
+			return redirect()->back()->with('error', 'Cannot authenticate. Please try agin with valid credentials!');
+		  }
+		}
+
+	} catch(\Exception $e) {
+		return redirect()->back()->with('error', 'ERROR : '.$e->getMessage());
+	}
   }
   public function regredirect(){
 		

@@ -31,6 +31,8 @@
 
 // });
 
+Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
+
 Route::get('/update_metadata_today/{date}',['uses'=>'SearchController@update_metadata_today']);
 
 Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
@@ -127,7 +129,7 @@ Route::get('/aa',function(){
 Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'=>'search_paginated']);
 
 
-Route::post('login', 'AccountController@login');
+Route::post('login', ['uses' => 'AccountController@login', 'as' => 'loginPost']);
 Route::get('logout', 'AccountController@logout');
 
 Route::get('/404',['uses'=>'Maintainance@notfound_404','as'=>'404']);
