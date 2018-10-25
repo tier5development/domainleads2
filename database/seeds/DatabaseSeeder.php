@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AreaCodesTableSeeder::class);
         $this->call(DummyUser::class);
         $this->call(CurlErrorSeeder::class);
+        $this->call(LeadUserSyncSeeder::class);
     }
 }

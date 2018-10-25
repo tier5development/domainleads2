@@ -210,7 +210,7 @@
                   <tr id="row_{{$key}}">
                      <td>
                         <small>
-                        <input id="reg_email_{{$key}}" class="eachrow_download single_row" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
+                          <input id="reg_email_{{$key}}" class="eachrow_download single_row" type="checkbox" name="csv_leads[]" value="{{$each['registrant_email']}}">
                         </small>
                      </td>
 

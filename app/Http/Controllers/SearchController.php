@@ -58,47 +58,47 @@ public function totalLeadsUnlockedToday() {
   ]);
 }
 
-public function downloadExcel(Request $request) {
-  // dd($request->all());
-  $sql    = "SELECT leads,compression_level from search_metadata
-                where id = ".$request->meta_id;
-  $data   = DB::select(DB::raw($sql));
-  $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
-  $leadsArray = explode(',',$leads);
+// public function downloadExcel(Request $request) {
+//   // dd($request->all());
+//   $sql    = "SELECT leads,compression_level from search_metadata
+//                 where id = ".$request->meta_id;
+//   $data   = DB::select(DB::raw($sql));
+//   $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
+//   $leadsArray = explode(',',$leads);
 
-  $result = DB::table('leads')->whereIn('leads.id', $leadsArray)
-      ->join('leadusers', 'leads.registrant_email', '=', 'leadusers.registrant_email')
-      ->join('each_domain', function($join) {
-        $join->on('each_domain.registrant_email', '=', 'leads.registrant_email');
-      })->join('domains_info', 'each_domain.domain_name', '=', 'domains_info.domain_name')
-      ->leftJoin('valid_phone', 'leads.registrant_email', '=', 'valid_phone.registrant_email')
-      ->select('leads.registrant_email', 'leads.registrant_fname', 'registrant_lname'
-        ,'leads.registrant_company', 'leads.registrant_phone' 
-        ,'domains_info.created_at'
-        ,'each_domain.domain_name'
-        ,'valid_phone.number_type'
-        ,'leadusers.id')
-        ->groupBy('leads.registrant_email')
-        ->orderBy('leadusers.id','ASC')
-        ->get();
-  $exportArray = [];
-  foreach($result as $each) {
-    $temp['email_id'] = $each->registrant_email;
-    $temp['first_name'] = $each->registrant_fname;
-    $temp['last_name'] = $each->registrant_lname;
-    $temp['website'] = $each->domain_name;
-    $temp['phone'] = $each->registrant_phone;
-    $temp['number_type'] = $each->number_type;
-    $temp['created_at'] = $each->created_at;
-    $exportArray[] = $temp;
-  }
+//   $result = DB::table('leads')->whereIn('leads.id', $leadsArray)
+//       ->join('leadusers', 'leads.registrant_email', '=', 'leadusers.registrant_email')
+//       ->join('each_domain', function($join) {
+//         $join->on('each_domain.registrant_email', '=', 'leads.registrant_email');
+//       })->join('domains_info', 'each_domain.domain_name', '=', 'domains_info.domain_name')
+//       ->leftJoin('valid_phone', 'leads.registrant_email', '=', 'valid_phone.registrant_email')
+//       ->select('leads.registrant_email', 'leads.registrant_fname', 'registrant_lname'
+//         ,'leads.registrant_company', 'leads.registrant_phone' 
+//         ,'domains_info.created_at'
+//         ,'each_domain.domain_name'
+//         ,'valid_phone.number_type'
+//         ,'leadusers.id')
+//         ->groupBy('leads.registrant_email')
+//         ->orderBy('leadusers.id','ASC')
+//         ->get();
+//   $exportArray = [];
+//   foreach($result as $each) {
+//     $temp['email_id'] = $each->registrant_email;
+//     $temp['first_name'] = $each->registrant_fname;
+//     $temp['last_name'] = $each->registrant_lname;
+//     $temp['website'] = $each->domain_name;
+//     $temp['phone'] = $each->registrant_phone;
+//     $temp['number_type'] = $each->number_type;
+//     $temp['created_at'] = $each->created_at;
+//     $exportArray[] = $temp;
+//   }
 
-  return Excel::create('domainleads', function($excel) use ($exportArray) {
-    $excel->sheet('mySheet', function($sheet) use ($exportArray){
-      $sheet->fromArray($exportArray);
-    });
-  })->download('csv');
-}
+//   return Excel::create('domainleads', function($excel) use ($exportArray) {
+//     $excel->sheet('mySheet', function($sheet) use ($exportArray){
+//       $sheet->fromArray($exportArray);
+//     });
+//   })->download('csv');
+// }
 
 
 
@@ -294,10 +294,9 @@ public function download_csv_single_page(Request $request)
      }
     public function lead_domains($email, Request $request)
     {
-      
       $oldReq = $request->all();
-      $oldReq = isset($oldReq['request']) ? $oldReq['request'] : null;
-      $req = new Request($oldReq);
+      $oldReq = isset($oldReq['request']) ? $oldReq['request'] : [];
+      $req =  new Request($oldReq);
       try {
         $email = decrypt($email);
         $lead = Lead::where('registrant_email', $email)->first();
@@ -333,42 +332,44 @@ public function download_csv_single_page(Request $request)
           return \Response::json($array);
         }
 
+        $domainName = $request->has('domain_name') ? $request->domain_name : null;
+        $data = Lead::where('registrant_email',$request->registrant_email)->first();
+        $domain = $data->each_domain->filter(function($each, $key) use($domainName) {
+          return strpos($each->domain_name, $domainName) !== false ? $each : null;
+        })->first();
+
+
         $leaduser = new LeadUser();
         $leaduser->user_id = $request->user_id;
         $leaduser->registrant_email = $request->registrant_email;
+        
+        $leaduser->registrant_country = $data->registrant_country;
+        $leaduser->registrant_fname   = $data->registrant_fname;
+        $leaduser->registrant_lname   = $data->registrant_lname;
+        $leaduser->registrant_phone   = $data->registrant_phone;
+        $leaduser->number_type        = $data->valid_phone ? $data->valid_phone->number_type : null;
+        $leaduser->registrant_company = $data->registrant_company;
+        $leaduser->domain_name        = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name;
+        $leaduser->domains_create_date = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
+                                        : $domain->domains_info->domains_create_date;
 
-        $lead = Lead::where('registrant_email',$request->registrant_email)->first();
-        $lead->unlocked_num++;
 
-        if($lead->save() && $leaduser->save())
+        $data->unlocked_num++;
+        if($data->save() && $leaduser->save())
         {
-          $domainName = $request->has('domain_name') ? $request->domain_name : null;
-          $data = Lead::where('registrant_email',$request->registrant_email);
-          
-          // if($domainName) {
-          //   $data = $data->with(['each_domain', function($q) use ($domainName) {
-          //     $q = $q->where('domain_name', 'LIKE', '%'.$domainName.'%');
-          //   }]);
-          // }
-          
-          $data = $data->first();
-          $domain = $data->each_domain->filter(function($each, $key) use($domainName) {
-            return strpos($each->domain_name, $domainName) !== false ? $each : null;
-          })->first();
           $array = array();
           $array['leadsUnlocked'] = $count + 1;
           $array['status'] = true;
           $array['message'] = 'Success';
           $array['id']     = $data->id;
-          $array['registrant_email']    = $data->registrant_email;
-          $array['registrant_name']     = $data->registrant_fname." ".$data->registrant_lname;
-          $array['registrant_phone']    = $data->registrant_phone;
-          $array['registrant_company']  = $data->registrant_company;
-          $array['domain_name']         = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name; 
-          $array['domains_create_date'] = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
-                                                              : $domain->domains_info->domains_create_date;
-          $array['unlocked_num']        = $lead->unlocked_num;
-          $array['registrant_country']  = $lead->registrant_country;
+          $array['registrant_email']    = $leaduser->registrant_email;
+          $array['registrant_name']     = $leaduser->registrant_fname." ".$data->registrant_lname;
+          $array['registrant_phone']    = $leaduser->registrant_phone;
+          $array['registrant_company']  = $leaduser->registrant_company;
+          $array['domain_name']         = $leaduser->domain_name;
+          $array['domains_create_date'] = $leaduser->domains_create_date;
+          $array['unlocked_num']        = $data->unlocked_num;
+          $array['registrant_country']  = $leaduser->registrant_country;
           //$array['total_domain_count']  = $lead->each_domain;
           return \Response::json($array);
         }

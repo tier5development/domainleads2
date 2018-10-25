@@ -31,7 +31,7 @@
     @if(count($leads) > 0 )
     <form method="POST" action="{{route('downloadUnlockedLeads')}}">
         <input type="hidden" name="date" value="{{Request::has('date') ? Request::get('date') : null}}">
-        <button type="submit" class="btn btn-info btn-sm pull-left">Download CSV</button>
+        <button type="submit" class="btn btn-info btn-sm pull-right">Download CSV</button>
         {{csrf_field()}}
     </form><br>
     @endif
@@ -45,6 +45,9 @@
                 <tr>
                     <th>Sl no</th>
                     <th>Lead</th>
+                    <th>Country</th>
+                    <th>Registrant Name</th>
+                    <th>Domain Name</th>
                     <th>Phone</th>
                     <th>Date of unlock</th>
                     
@@ -54,7 +57,6 @@
                     @php $page = Request::has('page') ? Request::get('page') : 1  @endphp
                     <td>{{($i+1) + (($page-1)*$perpage)}}</td>
                     <td>
-                        
                         @if($eachLead->lead != null)
                             <span>{{$eachLead->registrant_email}}</span>
                             <br>
@@ -62,6 +64,15 @@
                         @else
                             <span style="color : red">{{$eachLead->registrant_email}}</span>
                         @endif
+                    </td>
+                    <td>
+                        <small>{{$eachLead->registrant_country}}</small>
+                    </td>
+                    <td>
+                        <small>{{$eachLead->registrant_fname}}&nbsp;{{$eachLead->registrant_lname}}</small>
+                    </td>
+                    <td>
+                        <small>{{$eachLead->domain_name}}</small>
                     </td>
                     <td>
                             
