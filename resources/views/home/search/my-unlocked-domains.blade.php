@@ -50,7 +50,6 @@
                     <th>Domain Name</th>
                     <th>Phone</th>
                     <th>Date of unlock</th>
-                    
                 </tr>
                 @foreach($leads as $i => $eachLead)
                 <tr>

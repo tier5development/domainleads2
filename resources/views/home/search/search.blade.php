@@ -77,6 +77,7 @@
   height: 160px;
   overflow: auto;
   font-size: 14px !important;
+  z-index: 9999;
 }
 
 .dropdown dd ul li{
@@ -521,10 +522,11 @@ form{
 			if(chk.checked == false) {
 					return;
 			}
+			domain_name = $('#domain_name_'+key).data('domainname');
 			$.ajax({
 					type : 'POST',
 					url  : '/unlockleed',
-					data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id, domain_name: "{{Request::get('domain_name')}}"},
+					data : {_token:'{{csrf_token()}}',registrant_email:reg_em ,user_id:id, domain_name: domain_name},
 					success :function(response)
 					{
 							if(response.status) {
@@ -609,10 +611,25 @@ form{
 			page = window.location.hash.replace('#','');
 			getProducts(page);
 		});
+
+		console.log('comming here');
+		fillMultiselectOptions();
 	});
 	</script>
 
 	<script type="text/javascript"> 
+
+		function fillMultiselectOptions() {
+			var title = '';
+			var t = $('.mutliSelect input[type="checkbox"]');
+			$(t).each(function(key, val) {
+				title += $(val).is(':checked') ? title.length > 0 ? ','+$(val).val() : $(val).val() : '';
+			});
+			var html = '<span title="' + title + '">' + title + '</span>';
+			$('.multiSel').empty();
+			$('.multiSel').append(html);
+			$(".hida").hide();
+		}
 	    $('.downloadcsv_all').click(function(event){
    
 	        $("#domains_for_export_id").val('');
@@ -682,24 +699,24 @@ form{
 		});
 
 		$('.mutliSelect input[type="checkbox"]').on('click', function(){
+			// var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val();
+			// title = $(this).val() + ",";
 
-		  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val();
-		    title = $(this).val() + ",";
+			// if ($(this).is(':checked'))
+			// {
+			// 	var html = '<span title="' + title + '">' + title + '</span>';
+			// 	$('.multiSel').append(html);
+			// 	$(".hida").hide();
+			// }
+			// else
+			// {
+			// 	$('span[title="' + title + '"]').remove();
+			// 	var ret = $(".hida");
+			// 	$('.dropdown dt a').append(ret);
 
-		  if ($(this).is(':checked')) 
-		  {
-		    var html = '<span title="' + title + '">' + title + '</span>';
-		    $('.multiSel').append(html);
-		    $(".hida").hide();
-		  } 
-		  else 
-		  {
-		    $('span[title="' + title + '"]').remove();
-		    var ret = $(".hida");
-		    $('.dropdown dt a').append(ret);
-
-		  }
-
+			// }
+			fillMultiselectOptions();
 		});
+		
 	</script>
 </html>

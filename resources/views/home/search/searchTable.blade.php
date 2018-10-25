@@ -35,9 +35,9 @@
         <th>
             @if(isset($users_array[$each['registrant_email']]))
                 <small>
-                 <b id="domain_name_{{$key}}">{{$each['domain_name']}}</b></small>
+                 <b data-domainname="{{$each['domain_name']}}" id="domain_name_{{$key}}">{{$each['domain_name']}}</b></small>
             @else
-                <small id="domain_name_{{$key}}">***</small>
+                <small data-domainname="{{$each['domain_name']}}" id="domain_name_{{$key}}">***</small>
             @endif
             <br>
             <small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>

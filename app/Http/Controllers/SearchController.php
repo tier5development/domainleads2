@@ -335,7 +335,7 @@ public function download_csv_single_page(Request $request)
         $domainName = $request->has('domain_name') ? $request->domain_name : null;
         $data = Lead::where('registrant_email',$request->registrant_email)->first();
         $domain = $data->each_domain->filter(function($each, $key) use($domainName) {
-          return strpos($each->domain_name, $domainName) !== false ? $each : null;
+          return $each->domain_name == $domainName ? $each : null;
         })->first();
 
 
@@ -1649,7 +1649,7 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
-      //dd($request->all());
+      // dd($request->all());
       ini_set('max_execution_time', 346000);
       if(\Auth::check())
       {
@@ -1658,6 +1658,7 @@ public function download_csv_single_page(Request $request)
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
+          Session::forget('oldReq');
           Session::put('oldReq', $request->all());
 
           if(\Auth::user()->user_type == 2)
@@ -1669,6 +1670,7 @@ public function download_csv_single_page(Request $request)
           $users_array = array_flip($users_array);
           $result['users_array'] = $users_array;
           // $result['obj_array'] = $obj_array;
+          // dd(Session::get('oldReq')['domain_ext']);
           return view('home.search.search',$result);
         }
         else

@@ -44,6 +44,7 @@
          width: 100%;
          color: #666 !important;
          font-size: 14px !important;
+         border: 1px solid #ccc;
          }
          .dropdown dt a span,
          .multiSel span {
@@ -64,6 +65,7 @@
          height: 160px;
          overflow: auto;
          font-size: 14px !important;
+         z-index: 9999;
          }
          .dropdown dd ul li{
          padding: 10px;
@@ -146,9 +148,9 @@
 
                ?>
          </div>
-         <div>
+         {{-- <div>
             <a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
-         </div>
+         </div> --}}
 
          @include('layouts.search')
 
@@ -296,6 +298,7 @@
       </div>
    </body>
    <script>
+
       var thisPage     = parseInt("{{$page}}");
       var totalPage    = parseInt("{{$totalPage}}");
       var URL          = "{{url('/')}}";
@@ -543,8 +546,7 @@
 
          });
 
-   </script>
-   <script type="text/javascript">
+  
       var options = [];
 
       $('.dropdown-menu a' ).on( 'click', function( event ) {
@@ -571,17 +573,28 @@
       });
 
 
+      function fillMultiselectOptions() {
+        var title = '';
+        var t = $('.mutliSelect input[type="checkbox"]');
+        $(t).each(function(key, val) {
+          title += $(val).is(':checked') ? title.length > 0 ? ','+$(val).val() : $(val).val() : '';
+        });
+        var html = '<span title="' + title + '">' + title + '</span>';
+        $('.multiSel').empty();
+        $('.multiSel').append(html);
+        $(".hida").hide();
+      }
 
       $(document).ready(function(){
 
-      $(window).on('hashchange',function(){
-      	page = window.location.hash.replace('#','');
-      	getProducts(page);
+        $(window).on('hashchange',function(){
+          page = window.location.hash.replace('#','');
+          getProducts(page);
+        });
+        console.log('comming here');
+        fillMultiselectOptions();
       });
-
-      });
-   </script>
-   <script type="text/javascript">
+   
       var _token='{{csrf_token()}}';
           $('.eachrow_download').click(function(event){
 
@@ -691,23 +704,26 @@
 
       	$('.mutliSelect input[type="checkbox"]').on('click', function(){
 
-      	  var title = $(this).closest('.mutliSelect').find('input[type="checkbox"]').val();
-      	    title = $(this).val() + ",";
-
-      	  if ($(this).is(':checked'))
-      	  {
-      	    var html = '<span title="' + title + '">' + title + '</span>';
-      	    $('.multiSel').append(html);
-      	    $(".hida").hide();
-      	  }
-      	  else
-      	  {
-      	    $('span[title="' + title + '"]').remove();
-      	    var ret = $(".hida");
-      	    $('.dropdown dt a').append(ret);
-
-      	  }
+      	  fillMultiselectOptions();
 
       	});
+        // function fillMultiselectOptions(t) {
+        //   var title = $(t).closest('.mutliSelect').find('input[type="checkbox"]').val();
+      	//     title = $(t).val() + ",";
+
+      	//   if ($(t).is(':checked'))
+      	//   {
+      	//     var html = '<span title="' + title + '">' + title + '</span>';
+      	//     $('.multiSel').append(html);
+      	//     $(".hida").hide();
+      	//   }
+      	//   else
+      	//   {
+      	//     $('span[title="' + title + '"]').remove();
+      	//     var ret = $(".hida");
+      	//     $('.dropdown dt a').append(ret);
+
+      	//   }
+        // }
    </script>
 </html>

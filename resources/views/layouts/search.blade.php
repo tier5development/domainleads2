@@ -59,25 +59,25 @@
                            <div class="mutliSelect">
                               <ul>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[0]" value="com" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][0]=='com') checked @endif/>com
+                                    <input type="checkbox" name="domain_ext[0]" value="com" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('com', Session::get('oldReq')['domain_ext'])) checked @endif/>com
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[1]" value="io" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][1]=='io') checked @endif />io
+                                    <input type="checkbox" name="domain_ext[1]" value="io" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('io', Session::get('oldReq')['domain_ext'])) checked @endif/>io
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[2]" value="net" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][2]=='net') checked @endif />net
+                                    <input type="checkbox" name="domain_ext[2]" value="net" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('net', Session::get('oldReq')['domain_ext'])) checked @endif/>net
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[3]" value="org" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][3]=='org') checked @endif />org
+                                    <input type="checkbox" name="domain_ext[3]" value="org" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('org', Session::get('oldReq')['domain_ext'])) checked @endif/>org
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[4]" value="gov" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][4]=='gov') checked @endif/>gov
+                                    <input type="checkbox" name="domain_ext[4]" value="gov" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('gov', Session::get('oldReq')['domain_ext'])) checked @endif/>gov
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[5]" value="edu" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][5]=='edu') checked @endif />edu
+                                    <input type="checkbox" name="domain_ext[5]" value="edu" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('edu', Session::get('oldReq')['domain_ext'])) checked @endif/>edu
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[6]" value="in" @if(isset($domainExtarray) && $domainExtarray['domain_ext'][6]=='in') checked @endif/>in
+                                    <input type="checkbox" name="domain_ext[6]" value="in" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('in', Session::get('oldReq')['domain_ext'])) checked @endif/>in
                                  </li>
                               </ul>
                            </div>
@@ -97,7 +97,7 @@
                      <option value="50" @if(Input::get('pagination')=='50') selected @endif>50</option>
                      <option value="100" @if(Input::get('pagination')=='100') selected @endif>100</option>
                      <option value="200" @if(Input::get('pagination')=='200') selected @endif>200</option>
-                     <option value="500" @if(Input::get('pagination')=='500') selected @endif>500</option>
+                     {{-- <option value="500" @if(Input::get('pagination')=='500') selected @endif>500</option> --}}
                      </select>
                   </div>
                   <div class="row">
