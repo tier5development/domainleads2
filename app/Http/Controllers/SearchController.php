@@ -109,30 +109,28 @@ public function print_csv($leads,$type)
             ->whereHas('leads',function($query) use($leads){
               $query->whereIn('registrant_email',$leads);
             })->get();
-
-
-      $reqData = array();
-      $key=0;
-      $hash = array();
-      foreach($ed as $each)
-      {
-        if(!isset($hash[$each->registrant_email]))
-        {
-          $hash[$each->registrant_email] = 1;
-          $reqData[$key]['first_name'] = $each->leads->registrant_fname;
-          $reqData[$key]['last_name']  = $each->leads->registrant_lname;
-          $reqData[$key]['website']    = $each->domain_name;
-          $reqData[$key]['phone']      = $each->leads->registrant_phone;
-          $reqData[$key++]['email_id'] = $each->registrant_email;
-        }
-      }
-      
-      return Excel::create('domainleads', function($excel) use ($reqData) {
-
-        $excel->sheet('mySheet', function($sheet) use ($reqData){
-          $sheet->fromArray($reqData);
-        });
-      })->download($type);
+  $reqData = array();
+  $key=0;
+  $hash = array();
+  foreach($ed as $each)
+  {
+    if(!isset($hash[$each->registrant_email]))
+    {
+      $hash[$each->registrant_email] = 1;
+      $reqData[$key]['first_name'] = $each->leads->registrant_fname;
+      $reqData[$key]['last_name']  = $each->leads->registrant_lname;
+      $reqData[$key]['country']    = $each->leads->registrant_country;
+      $reqData[$key]['website']    = $each->domain_name;
+      $reqData[$key]['phone']      = $each->leads->registrant_phone;
+      $reqData[$key++]['email_id'] = $each->registrant_email;
+    }
+  }
+  
+  return Excel::create('domainleads', function($excel) use ($reqData) {
+    $excel->sheet('mySheet', function($sheet) use ($reqData){
+      $sheet->fromArray($reqData);
+    });
+  })->download($type);
 }
 
 public function download_csv_single_page(Request $request)
@@ -145,6 +143,7 @@ public function download_csv_single_page(Request $request)
     if(isset($request->landline) && $request->landline != null)
       array_push($phone_type_array, 'Landline');
     $start = microtime(true);
+    
     $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id);
     return Excel::create('domainleads', function($excel) use ($reqData) {
       $excel->sheet('mySheet', function($sheet) use ($reqData){
@@ -217,10 +216,11 @@ public function download_csv_single_page(Request $request)
       $name = explode(' ',$val['registrant_name']);
       $reqData[$i]['first_name'] = isset($name[0]) ? $name[0] : '';
       $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
+      $reqData[$i]['country']    = $val['registrant_country'];
       $reqData[$i]['website']    = $val['domain_name'];
       $reqData[$i]['phone']      = $val['registrant_phone'];
       $reqData[$i]['email_id']   = $val['registrant_email'];
-      $reqData[$i]['company']   = $val['registrant_company'];
+      $reqData[$i]['company']    = $val['registrant_company'];
     }
 
     return $reqData;
@@ -344,6 +344,7 @@ public function download_csv_single_page(Request $request)
         {
           $domainName = $request->has('domain_name') ? $request->domain_name : null;
           $data = Lead::where('registrant_email',$request->registrant_email);
+          
           // if($domainName) {
           //   $data = $data->with(['each_domain', function($q) use ($domainName) {
           //     $q = $q->where('domain_name', 'LIKE', '%'.$domainName.'%');
@@ -367,6 +368,7 @@ public function download_csv_single_page(Request $request)
           $array['domains_create_date'] = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
                                                               : $domain->domains_info->domains_create_date;
           $array['unlocked_num']        = $lead->unlocked_num;
+          $array['registrant_country']  = $lead->registrant_country;
           //$array['total_domain_count']  = $lead->each_domain;
           return \Response::json($array);
         }
@@ -1553,8 +1555,9 @@ public function download_csv_single_page(Request $request)
                                               : null;
 
         $data[$key]['email_link']           = encrypt($data[$key]['registrant_email']);
-      }
 
+        $data[$key]['email_link']           = encrypt($data[$key]['registrant_country']);
+      }
       return $data;
     }
 

@@ -535,6 +535,7 @@ form{
 									$('#registrant_phone_'+key).text(response.registrant_phone);
 									$('#registrant_company_'+key).text(response.registrant_company);
 									$('#domains_create_date_'+key).text(response.domains_create_date);
+									$('#country_'+key).text(response.registrant_country);
 									$('#leads_id_'+key).val(response.id);
 									if(leads_for_export == '')
 											leads_for_export += response.id;

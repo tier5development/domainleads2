@@ -3,6 +3,7 @@
     <tr>
         <th>Unlock Lead</th>
         <th>Domain Name</th>
+        <th>Country</th>
         <th>Registrant Name</th>
         <th>Registrant Email</th>
         <th>Registrant Phone</th>
@@ -42,6 +43,14 @@
             <small> Unlocked Num : <span id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
             <br>
             <small> Total Domains : <a href="javascript:void(0)" onclick="clickLink(this, {{$key}})" id="linkClick_{{$key}}" data-ref = "{{route('viewDomainsOfUnlockedLeed', ['email' => encrypt($each['registrant_email']), 'request' => Session::has('oldReq') ? Session::get('oldReq') : null])}}">{{$each['domains_count']}}</a></small> 
+        </th>
+
+        <th>
+            @if(isset($users_array[$each['registrant_email']]))
+                <small id="country_{{$key}}">{{$each['registrant_country']}}</small>
+            @else
+                <small id="country_{{$key}}">***</small>
+            @endif
         </th>
 
         <th>

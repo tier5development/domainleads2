@@ -196,6 +196,7 @@
                   <tr>
                      <th style="width: 40px"><input type="checkbox"  value="1" class="downloadcsv_all" id=""> Select Leads</th>
                      <th>Domain Name</th>
+                     <th>Country</th>
                      <th>Zip Code</th>
                      <th>Registrant Name</th>
                      <th>Registrant Email</th>
@@ -205,7 +206,7 @@
                   </tr>
 
                   @foreach($record as $key=>$each)
-
+                  
                   <tr id="row_{{$key}}">
                      <td>
                         <small>
@@ -220,6 +221,9 @@
                         <br>
                         <small > Total Domains : <a class="domains_count" id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{$each['email_link']}}">{{$each['domains_count']}}</a></small>
                         <!-- leadArr[$each->registrant_email] -->
+                     </td>
+                     <td>
+                       <small id="country_{{$key}}">{{$each['registrant_country']}}</small>
                      </td>
                      <td>
                        <small id="registrant_zip_{{$key}}">{{$each['registrant_zip']}}</small>
@@ -396,8 +400,8 @@
       					$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
       					$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
       					$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
-      					$('#registrant_phone_'+i).text(response.data[i]['registrant_phone'])
-
+      					$('#registrant_phone_'+i).text(response.data[i]['registrant_phone']);
+                $('#country_'+i).text(response.data[i]['registrant_country']);
       					if(response.data[i]['number_type'] == 'Landline')
       						$('#phone_'+i).css('src',URL+'/images/landline.png');
       					else if(response.data[i]['number_type'] == 'Cell Number')
