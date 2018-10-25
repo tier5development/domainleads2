@@ -46,11 +46,7 @@
         </th>
 
         <th>
-            @if(isset($users_array[$each['registrant_email']]))
-                <small id="country_{{$key}}">{{$each['registrant_country']}}</small>
-            @else
-                <small id="country_{{$key}}">***</small>
-            @endif
+            <small id="country_{{$key}}">{{$each['registrant_country']}}</small>
         </th>
 
         <th>
