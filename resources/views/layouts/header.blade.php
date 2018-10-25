@@ -6,7 +6,7 @@
     </div>
     <ul class="nav navbar-nav">
       <li @if (Request::path() == '/') class="active" @endif><a href="{{ URL::to('/') }}">Home</a></li>
-      @if(\Auth::user()->user_type == 2)
+      @if(\Auth::user()->user_type == config('settings.ADMIN-NUM'))
       <li @if (Request::path() == 'UserList') class="active" @endif><a href="{{ URL::to('UserList') }}"> User`s List</a></li>
       <li @if (Request::path() == 'importExport') class="active" @endif><a href="{{ URL::to('importExport') }}"> Import CSV</a></li>
       @endif
@@ -31,7 +31,7 @@
       @endif
        <!--  <li class="pull-right"><a href="#">Notifications</a></li> -->
           --}}
-      @if(\Auth::user()->user_type == 2)
+      @if(\Auth::user()->user_type == config('settings.ADMIN-NUM'))
         <li ><a href="{{url('/')}}/manage">Manage</a></li>
       @endif
         {{-- <li class="pull-right"><a href="https://www.textinbulk.com/">Text In Bulk</a></li> --}}

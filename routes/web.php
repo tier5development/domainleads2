@@ -88,7 +88,7 @@ Route::get('/aa',function(){
 
    	Route::group(['middleware' => 'auth'],function(){
 
-
+        Route::post('suspendOrUnsuspendUser', ['uses' => 'AccountController@suspendOrUnsuspendUser', 'as' => 'suspendOrUnsuspendUser']);
 
         Route::post('totalLeadsUnlockedToday', ['uses' => 'SearchController@totalLeadsUnlockedToday', 'as' => 'totalLeadsUnlockedToday']);
 

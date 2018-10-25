@@ -167,8 +167,55 @@ class AccountController extends Controller
 	   
 	}
 
-	public function UserList(){
-		$User=User::where('user_type','!=',2)->get();
+	public function UserList() {
+		$User=User::where('user_type','!=',config('settings.ADMIN-NUM'))->withTrashed()->get();
 		return view('home.userList',compact('User'));
+	}
+
+	public function suspendOrUnsuspendUser(Request $request) {
+		try {
+			// dd($request->all());
+			if(!\Auth::check() && \Auth::user()->user_type == config('settings.ADMIN-NUM')) {
+				return response()->json([
+					'status' => false,
+					'message' => 'Session timeout. Please log in again!'
+				]);
+			}
+
+			$id = $request->id;
+			$action = $request->action;
+
+			$user = User::find($id);
+			if(!$user) {
+				return response()->json([
+					'status' => false,
+					'message' => 'This user may have been deleted!'
+				]);
+			}
+
+			if(strpos($user->email, '_suspended') === false) {
+				//$user->email = str_replace('_suspended', '', $user->email);
+				$user->email .= '_suspended';
+				$user->save();
+				return response()->json([
+					'status' => true,
+					'message' => 'User suspended successfully!',
+					'email' => $user->email
+				]);
+			} else {
+				$user->email = str_replace('_suspended', '', $user->email);
+				$user->save();
+				return response()->json([
+					'status' => true,
+					'message' => 'User unsuspended successfully!',
+					'email' => $user->email
+				]);
+			}
+		} catch(\Exception $e) {
+			return response()->json([
+				'status' => false,
+				'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
+			]);
+		}
 	}
 }
