@@ -177,10 +177,10 @@ form{
 			
 			<span class="pull-right"> Total Domains : {{$totalDomains}}</span>
 
-			<form class="col-md-12" style="margin-left: 10px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
+			{{-- <form class="col-md-12" style="margin-left: 10px;" action="{{ URL::to('downloadExcel') }}" class="form-horizontal" method="get" enctype="multipart/form-data">
 				<input type="hidden" name="meta_id" value="{{$meta_id}}">
 				<button class="btn btn-primary" id="exportID">Export</button>
-			</form>
+			</form> --}}
 
 			<div class="table-container">
 				@if(count($record) > 0)
