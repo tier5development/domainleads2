@@ -10,6 +10,7 @@ use Hash;
 use Auth;
 use Session;
 use Mail;
+use App\Helpers\UserHelper;
 
 class AccountController extends Controller
 {
@@ -167,55 +168,49 @@ class AccountController extends Controller
 	   
 	}
 
-	public function UserList() {
-		$User=User::where('user_type','!=',config('settings.ADMIN-NUM'))->withTrashed()->get();
-		return view('home.userList',compact('User'));
+	public function UserList(Request $request) {
+		try {
+			// dd($request->all());
+			$userTypes = ['Select Users', 'all-users', 'suspended-users'];
+			$search = $request->search;
+			if(strlen($search) > 0) {
+				$users = User::where('name', 'LIKE', '%'.$search.'%')->orWhere('email','LIKE','%'.$search.'%');
+			} else {
+				$users = User::where('user_type','!=',config('settings.ADMIN-NUM'));
+			}
+			if($request->has('usertype') && strlen($request->usertype) > 0) {
+				$usertype = $request->usertype;
+				if($request->usertype == $userTypes[2]) {
+					$users->where('email','LIKE','%_suspended');
+				}
+			}
+			$perpageset = ['per-page',20,50,100];
+			$perpage = $request->has('perpage') && is_numeric($request->perpage) ? $request->perpage : $perpageset[1];
+			
+			$request->perpage = !$request->perpage ? $request->perpage : $perpageset[1];
+			$users = $users->paginate($perpage);
+			return view('home.userList',compact('users','userTypes','perpageset'));
+		} catch(\Exception $e) {
+			return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
+		}
+	}
+
+	public function deleteUser(Request $request) {
+		return UserHelper::deleteUser($request);
 	}
 
 	public function suspendOrUnsuspendUser(Request $request) {
-		try {
-			// dd($request->all());
-			if(!\Auth::check() && \Auth::user()->user_type == config('settings.ADMIN-NUM')) {
-				return response()->json([
-					'status' => false,
-					'message' => 'Session timeout. Please log in again!'
-				]);
-			}
-
-			$id = $request->id;
-			$action = $request->action;
-
-			$user = User::find($id);
-			if(!$user) {
-				return response()->json([
-					'status' => false,
-					'message' => 'This user may have been deleted!'
-				]);
-			}
-
-			if(strpos($user->email, '_suspended') === false) {
-				//$user->email = str_replace('_suspended', '', $user->email);
-				$user->email .= '_suspended';
-				$user->save();
-				return response()->json([
-					'status' => true,
-					'message' => 'User suspended successfully!',
-					'email' => $user->email
-				]);
-			} else {
-				$user->email = str_replace('_suspended', '', $user->email);
-				$user->save();
-				return response()->json([
-					'status' => true,
-					'message' => 'User unsuspended successfully!',
-					'email' => $user->email
-				]);
-			}
-		} catch(\Exception $e) {
-			return response()->json([
-				'status' => false,
-				'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
-			]);
-		}
+		return UserHelper::suspendOrUnsuspendUser($request);
 	}
+
+	// public function searchUser(Request $request) {
+	// 	try {
+	// 		dd($request->all());
+	// 		$search = $request->search;
+	// 		$users = User::where('name', 'LIKE', '%'.$search.'%')->orWhere('email','LIKE','%'.$search.'%')->get();
+	// 		return view('home.userList',compact('users'));
+	// 	} catch(\Exception $e) {
+	// 		return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
+	// 	}
+	// }
 }

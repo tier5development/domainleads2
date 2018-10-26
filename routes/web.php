@@ -88,6 +88,10 @@ Route::get('/aa',function(){
 
    	Route::group(['middleware' => 'auth'],function(){
 
+        Route::any('userlist',['uses'=>'AccountController@UserList','as'=>'UserList']);
+
+        Route::post('delete-user', ['uses' => 'AccountController@deleteUser', 'as' => 'deleteUserPost']);
+
         Route::post('suspendOrUnsuspendUser', ['uses' => 'AccountController@suspendOrUnsuspendUser', 'as' => 'suspendOrUnsuspendUser']);
 
         Route::post('totalLeadsUnlockedToday', ['uses' => 'SearchController@totalLeadsUnlockedToday', 'as' => 'totalLeadsUnlockedToday']);
@@ -136,7 +140,7 @@ Route::get('/404',['uses'=>'Maintainance@notfound_404','as'=>'404']);
 Route::get('/500',['uses'=>'Maintainance@notfound_500','as'=>'500']);
 
 Route::any('regredirect',['uses'=>'AccountController@regredirect','as'=>'regredirect']);
-Route::any('UserList',['uses'=>'AccountController@UserList','as'=>'UserList']);
+
 //=============================new import===================================
 //importExcelNew
 Route::any('/import-excel', 'ImportExport@importExcelNew')->name('importExcelNew');

@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/search_api','SearchController@search_api');
 Route::post('/oldest_registration_date','SearchController@getOldestDate');
 
+
 Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function() {
     Route::any('create-user', ['uses' => 'UserManagementController@createUser', 'as' => 'createUser']);
     Route::any('delete-user', ['uses' => 'UserManagementController@deleteUser', 'as' => 'deleteUser']);

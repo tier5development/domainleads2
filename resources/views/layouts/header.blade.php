@@ -7,7 +7,7 @@
     <ul class="nav navbar-nav">
       <li @if (Request::path() == '/') class="active" @endif><a href="{{ URL::to('/') }}">Home</a></li>
       @if(\Auth::user()->user_type == config('settings.ADMIN-NUM'))
-      <li @if (Request::path() == 'UserList') class="active" @endif><a href="{{ URL::to('UserList') }}"> User`s List</a></li>
+      <li @if (Request::path() == 'UserList') class="active" @endif><a href="{{ route('UserList') }}"> User`s List</a></li>
       <li @if (Request::path() == 'importExport') class="active" @endif><a href="{{ URL::to('importExport') }}"> Import CSV</a></li>
       @endif
       <li @if (Request::path() == 'search') class="active" @endif>

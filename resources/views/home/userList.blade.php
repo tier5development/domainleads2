@@ -18,6 +18,21 @@
          }
          .loader-main{width: 100px; height: 100px; position: absolute; margin-left: -50px; margin-top: -50px; top: 50%; left: 50%;}
          .loader-main img{max-width: 100%;}
+         .applyBtn{
+           float: right;
+           margin-top: 2px;
+         }
+         .refreshBtn{
+           margin-top: 2px;
+         }
+         .perPage label{
+           float: left;
+           margin-top: 6px;
+         }
+         .perPage select{
+           width: calc(100% - 80px);
+           float: right;
+         }
   </style>
 
   <div id="ajax-loader" style="display: none;">
@@ -29,11 +44,54 @@
   </div>
 
 <div class="container">
+    <div>
+				@if(Session::has('error'))
+					<div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+						<strong>Error!</strong> {{Session::get('error')}}
+					</div>
+				@endif
+				@php Session::forget('error') @endphp
+		</div>
+  {{-- <div class="col-md-2">
+    
+  </div> --}}
+  
+  <form action="{{route('UserList')}}" method="GET">
+  <div class="col-md-2">
+      <select name="usertype" id="" class="form-control">
+        @foreach($userTypes as $key => $type)
+          <option {{\Request::get('usertype') == $type ? 'selected' : ''}} value="{{$key == 0 ? '' : $type}}">{{$type}}</option>
+        @endforeach
+      </select>
+    </div>
+    <div class="col-md-3 perPage">
+        <label>Per-Page : </label>
+        <select name="perpage" id="" class="form-control">
+          @foreach($perpageset as $key => $pagetotal)
+            <option {{\Request::get('perpage') == $pagetotal ? 'selected' : ''}} value="{{$key == 0 ? '' : $pagetotal}}">{{$pagetotal}}</option>
+          @endforeach
+        </select>
+      </div>
+  <div class="search form-group col-md-4 pull-right">    
+      <div class="row">
+        <div class="col-md-8">
+          <input value="{{Request::get('search')}}" name="search" class="form-control" placeholder="search">
+        </div>
+        {{csrf_field()}}
+        <div class="applyBtn">
+            <button type="submit" class="btn btn-sm btn-info float-right">Apply</button>
+        </div>
+        <a class="btn btn-sm btn-success refreshBtn" href="{{route('UserList')}}">Refresh</a>
+      </div>
+  </div>
+</form><br>
+
 <div class="col-md-12">
+<b class="pull-left"><h4>Users : {{$users->count()}}</h4></b><br>
 <table class="table table-hover table-bordered">
   <thead class="thead-inverse">
     <tr>
-      <th>#</th>
       <th>Name</th>
       <th>Email</th>
       <th>Suspend Status</th>
@@ -42,40 +100,79 @@
     </tr>
   </thead>
   <tbody>
-  @foreach($User as $key => $eachUser)
-    <tr style="background-color:{{$eachUser->deleted_at != null ? '#f47a42' :'mintcream'}}"  >
-      <th scope="row">{!! $eachUser->id!!}</th>
+  @foreach($users as $key => $eachUser)
+      <tr id="row_{{$eachUser->id}}" style="background-color:mintcream" >
+      {{-- <th scope="row">{!! $key + 1 !!}</th> --}}
       <td>{!! $eachUser->name!!}</td>
       <td id="email_{{$eachUser->id}}">{!! $eachUser->email!!}</td>
       <td>
-        @if($eachUser->deleted_at == null)
           @if(strpos($eachUser->email, '_suspended'))
             <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-warning">Unsuspend</button>
           @else
             <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-primary">Suspend</button>
           @endif
-        @endif
       </td>
       <td>
-          @if($eachUser->deleted_at != null)
-            <button class="btn btn-sm btn-success">Restore User</button>
-          @else
-            <button class="btn btn-sm btn-danger">Delete</button>
-          @endif
+        <button onclick="deleteUser('{{$eachUser->id}}', this)" class="btn btn-sm btn-danger">Delete</button>
       </td>
-      <td>{!! $eachUser->created_at!!}</td>
-      
+      <td>{!! date('F jS, Y', strtotime($eachUser->created_at))!!}</td>
     </tr>
   @endforeach
   </tbody>
 </table>
+
+
+<b class="pull-left" style="margin-top: 10px;"><h4>Total Users : {{$users->total()}}</h4></b>
+<div class="pull-right">
+    {{$users->appends([
+      'search' => \Request::has('search') ? \Request::get('search') : null,
+      'usertype' => \Request::has('usertype') ? \Request::get('usertype') : null,
+      'perpage' => \Request::has('perpage') ? \Request::get('perpage') : null
+    ])->links()}}
 </div>
+
+</div>
+
 </div>
 </body>
+<br><br>
 <script type="text/javascript">
   $(document).ready(function() {
     console.log('ready');
   });
+
+  function deleteUser(id , t) {
+    $.ajax({
+      url : "{{route('deleteUserPost')}}",
+      type : "POST",
+      data : {_token : "{{csrf_token()}}", id:id},
+      beforeSend: function() {
+
+      }, success : function(r) {
+        console.log(r);
+        if(r.status) {
+          swal({
+            title: "Successful",
+            text: r.message,
+            icon: "success",
+            button: "OK",
+          }).then(function() {
+            $('#row_'+id).remove();
+
+          });
+        } else {
+          swal({
+            title: "Oops! Something went wrong..",
+            text: r.message,
+            icon: "warning",
+            button: "OK",
+          })
+        }
+      }, error : function(e) {
+        console.info('delete', e);
+      }
+    });
+  }
 
   function suspend_api(id, t) {
     action = $(t).text();
