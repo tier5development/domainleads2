@@ -149,7 +149,7 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function suspendUser(Request $request) {
-        return UserHelper::suspendOrUnsuspendUser($request);
+        return UserHelper::suspendUser($request);
     }
 
     /**
@@ -158,7 +158,7 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function unsuspendUser(Request $request) {
-        return UserHelper::suspendOrUnsuspendUser($request);
+        return UserHelper::unsuspendUser($request);
     }
 
     /**

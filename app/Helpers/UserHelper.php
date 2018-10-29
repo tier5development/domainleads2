@@ -59,7 +59,77 @@ class UserHelper {
         }
     }
 
-    public static function suspendOrUnsuspendUser(Request $request) {
+    public static function suspendUser(Request $request) {
+        try {
+            
+            $email = $request->email;
+            $validator = Validator::make($request->all(), ['email' => 'email|max:255']);
+            if($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first('email')
+                ], 200);
+            }
+            $user = User::where('email', $email)->first();
+            if(!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No such user or user is already suspended!'
+                ], 200);
+            }
+
+            $user->email .= '_suspended';
+            $user->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'User suspended successfully!',
+                'email' => $user->email
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
+            ], 200);
+        }
+    }
+
+    public static function unsuspendUser(Request $request) {
+        try {
+            
+            $email = $request->email;
+            $validator = Validator::make($request->all(), ['email' => 'required|email|max:255']);
+            if($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first('email')
+                ], 200);
+            }
+            $user = User::where('email', $email.'_suspended')->first();
+            if(!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No such user or user is already unsuspended!'
+                ], 200);
+            }
+
+            $user->email = $email;
+            $user->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'User unsuspended successfully!',
+                'email' => $user->email
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
+            ], 200);
+        }
+    }
+
+    public static function suspendOrUnsuspendUser(Request $request, $strict = false) {
         try {
             if($request->has('id')) {
                 if(!\Auth::check()) {
