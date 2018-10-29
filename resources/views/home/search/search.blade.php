@@ -122,7 +122,8 @@ form{
 </head>
 
 <body>
-
+	
+	@if(isset($totalUnlockAbility))
 	<div class="notiPop">
 		<div class="popupInner">
 			<div class="popupImg">
@@ -130,11 +131,12 @@ form{
 			</div>
 			<div class="popupBody">
 				<p>You have unlocked <span id="notipop-num"></span> leads today.</p>
-				<p>You can unlocked upto <span id="notipop-total-num">{{config('settings.LIMIT-PER-DAY')}}</span> leads per day.</p>
+				<p>You can unlocked upto <span id="notipop-total-num">{{$totalUnlockAbility}}</span> leads per day.</p>
 			</div>
 		</div>
 		<div class="popupClose"><span id="notipopup-close" class="glyphicon glyphicon-remove"></span></div>
 	</div>
+	@endif
 
 	<div id="ajax-loader" style="display: none;">
 		<div class="overlay">

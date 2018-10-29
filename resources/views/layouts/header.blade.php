@@ -13,7 +13,7 @@
       <li @if (Request::path() == 'search') class="active" @endif>
       <a href="{{ URL::to('search') }}"> Search Domain</a></li>
       
-      @if(\Auth::user()->user_type == 1)
+      @if(\Auth::user()->user_type < 3)
         <li>
           <a href="{{route('myUnlockedLeads')}}">Unlocked Leads</a>
         </li>

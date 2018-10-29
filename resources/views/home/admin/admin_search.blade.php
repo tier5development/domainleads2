@@ -156,7 +156,7 @@
 
          <br><br>
          <div>
-
+          
             @if($record !== null)
             <hr>
             <br><br>
@@ -172,10 +172,11 @@
                <label>Search Time ::</label>
                <span id="search_time">  {{number_format($query_time,4)}} seconds</span>
                <br>
-
-               <!-- <div id="ajax-loader" style="display: none; padding-left: 450px;">
+                <input type="hidden" name="currentPage" id="currentPage" value="{{$page}}">
+                <input  type="hidden" name="totalPagination" id="totalPagination" value="{{Input::get('pagination')}}">
+               {{-- <div id="ajax-loader" style="display: none; padding-left: 450px;">
                   <img src="{{url('/')}}/images/ajax-loader.gif">
-                  </div> -->
+                  </div>  --}}
                <div class="table-responsive">
 
 
@@ -221,7 +222,7 @@
                         <br>
                         <small> Unlocked Num : <span class="unlocked_num" id="unlocked_num_{{$key}}">{{$each['unlocked_num']}}</span></small>
                         <br>
-                        <small > Total Domains : <a class="domains_count" id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{$each['email_link']}}">{{$each['domains_count']}}</a></small>
+                        <small > Total Domains : <a class="domains_count" id="domains_count_{{$key}}" href="{{url('/')}}/lead/{{$each['email_link']}}">{{$each['domains_count']}} </a></small>
                         <!-- leadArr[$each->registrant_email] -->
                      </td>
                      <td>
@@ -383,6 +384,7 @@
       					$('#row_'+i).hide();
       				});
       				thisPage = parseInt(page);
+              $('#currentPage').val(thisPage);
       				adjust();
       				$('#pg_'+thisPage).addClass('btn-info');
       				//setup_pages();

@@ -97,7 +97,7 @@
                      <option value="50" @if(Input::get('pagination')=='50') selected @endif>50</option>
                      <option value="100" @if(Input::get('pagination')=='100') selected @endif>100</option>
                      <option value="200" @if(Input::get('pagination')=='200') selected @endif>200</option>
-                     {{-- <option value="500" @if(Input::get('pagination')=='500') selected @endif>500</option> --}}
+                     
                      </select>
                   </div>
                   <div class="row">

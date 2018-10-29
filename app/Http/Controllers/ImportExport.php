@@ -106,6 +106,9 @@ class ImportExport extends Controller
         //dd('here');
         $start = microtime(true);
         $upload = $request->file('import_file');
+        if($upload == null) {
+          return redirect()->back()->with('error', 'Please select a csv file');
+        }
         $filepath = $upload->getRealPath();
         $original_file_name = $request->import_file->getClientOriginalName();
 

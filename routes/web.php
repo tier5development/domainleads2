@@ -11,25 +11,7 @@
 |
 */
 
-// Route::get('/aaaaa',function(){
-//     //dd(DB::select(DB::raw("SHOW KEYS FROM leads WHERE Key_name='leads_registrant_country_index'")));
-
-//     if(DB::select(DB::raw("SHOW KEYS FROM domains_info WHERE Key_name='domains_info_expiry_date_index'")) == null)
-//     dd(123);
-            
-// });
-
-// Route::get('/aaaa',function(){
-
-//    //$x = DB::select(DB::raw("select column_name, data_type, character_maximum_length from information_schema.columns where table_name = 'leads'"));
-
-//     $x = DB::select(DB::raw('Show INDEX FROM leads'));
-//     foreach ($x as $a => $b) {
-//         //dd($b);
-//     }
-//     dd($x);
-
-// });
+use App\LeadUser;
 
 Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
 
@@ -40,8 +22,14 @@ Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_pagi
 Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);
 
 Route::get('/aaa',function(){
-    $v = custom_curl_errors();
-    dd($v);
+    // $v = custom_curl_errors();
+    // dd($v);
+
+    // $x = LeadUser::updateOrCreate([
+    //         ['registrant_email' => 'support@dropcatch.comop', 'domain_name' => 'afinarte.com'],
+    //         ['registrant_fname' => 'adsj', 'registrant_country' => 'Some Country']
+    // ]);
+    // dd($x);
 });
 
 Route::get('/aaa',function(){
@@ -86,7 +74,10 @@ Route::get('/aa',function(){
 
     Route::post('/download_csv_single_page','SearchController@download_csv_single_page');
 
-   	Route::group(['middleware' => 'auth'],function(){
+       
+    Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
+    
+    Route::group(['middleware' => 'auth'],function(){
 
         Route::any('userlist',['uses'=>'AccountController@UserList','as'=>'UserList']);
 

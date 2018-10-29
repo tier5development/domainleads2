@@ -24,7 +24,7 @@ class DummyUser extends Seeder
             'name' => 'admin',
             'email' => 'work@tier5.us',
             'password' => bcrypt('123456'),
-            'user_type'=> 2,
+            'user_type'=> config('settings.ADMIN-NUM'),
             'membership_status' => 1,
         ]);
 
