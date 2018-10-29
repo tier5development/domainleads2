@@ -17,7 +17,7 @@ class UserManagementController extends Controller
      */
     public function createUser(Request $request) {
         try {
-            
+            //dd('here');
             $email = $request->email;
             $validator = Validator::make($request->all(), ['email' => 'email|max:255']);
             if($validator->fails()) {
@@ -35,10 +35,10 @@ class UserManagementController extends Controller
             
             $usertype = 1;
             if($request->has('user_type')) {
-                if(!is_numeric($request->user_type) || $request->user_type < 1 || $request->user_type > 2) {
+                if(!is_numeric($request->user_type) || $request->user_type < 1 || $request->user_type > 3) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Invalid user type provided, user types should be in between 1 and 2'
+                        'message' => 'Invalid user type provided, user types should be in between 1 and 3'
                     ], 200);
                 } else {
                     $usertype = (int)$request->user_type;
