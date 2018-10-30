@@ -48,6 +48,8 @@
                     <th>Country</th>
                     <th>Registrant Name</th>
                     <th>Domain Name</th>
+                    <th>Domains Create Date</th>
+                    <th>Expiry Date</th>
                     <th>Phone</th>
                     <th>Date of unlock</th>
                 </tr>
@@ -72,6 +74,12 @@
                     </td>
                     <td>
                         <small>{{$eachLead->domain_name}}</small>
+                    </td>
+                    <td>
+                        <small>{{$eachLead->domains_create_date}}</small>
+                    </td>
+                    <td>
+                        <small>{{$eachLead->expiry_date}}</small>
                     </td>
                     <td>
                             

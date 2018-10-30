@@ -112,6 +112,8 @@ class UserController extends Controller
           $temp['website'] = $each->domain_name;
           $temp['phone'] = $each->registrant_phone;
           $temp['number_type'] = $each->number_type;
+          $temp['domains_create_date'] = $each->domains_create_date == null ? '' : date('d/m/Y', strtotime($each->domains_create_date));
+          $temp['expiry_date'] = $each->expiry_date == null ? '' : date('d/m/Y', strtotime($each->expiry_date));
           $temp['created_at'] = $each->created_at;
           $exportArray[] = $temp;
         }

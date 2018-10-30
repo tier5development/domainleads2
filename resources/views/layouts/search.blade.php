@@ -5,13 +5,14 @@
             <div class="col-md-12">
                <form method="POST" action="{{Route('search')}}" class="col-md-6 search_form" id="postSearchDataForm">
                   <div class="form-group">
+                    {{Input::get('mode')}}
                      <label>Mode : </label>
                      <span> Newly Registered :</span>
-                     <input type="radio" checked name="mode" value="newly registered" @if(Input::get('newly_registered')) checked @endif>
-                     <span> To Be Expired (1 month) :</span>
-                     <input type="radio" name="mode" value="getting expired" @if(Input::get('getting_expired')) checked @endif>
+                     <input type="radio" checked name="mode" value="newly_registered" {{Input::get('mode') == 'newly_registered' ? 'checked' : '' }}>
+                     <span> To Be Expired :</span>
+                     <input type="radio" name="mode" value="getting_expired" {{Input::get('mode') == 'getting_expired' ? 'checked' : ''}}>
                   </div>
-
+                  
                   <div class="form-group">
                      <label>Domain Name : </label>
                      <input type="text" value="{{ Request::get('domain_name') }}" name="domain_name" id="domain_name" class="form-control">
@@ -28,24 +29,46 @@
                     <label>zip : </label>
                     <input type="text" name="registrant_zip" value="{{Request::get('registrant_zip')}}">
                   </div>
-                  <div class="form-group">
-                     <label>Domains Create Date</label><br>
-                     <div class="row">
-                     <div class="col-sm-6">
+                  <br>
+                  
+                  <div class="form-group" id="created_date_div" style="display: none">
+                    <label>Select Date or Date-Range</label><br>
+                    <div class="row">
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <div class="row">
+                        <div class="col-sm-5">
+                          <input style="width: 200px" type="date" value="{{ Request::get('domains_create_date') != null ? date('Y-m-d',strtotime(Request::get('domains_create_date'))) : '' }}" name="domains_create_date" id="registered_date" class="form-control" placeholder="Start Date">
+                        </div>
+                        <div class="col-md-2">
 
-                     <div class="row">
-                     <div class="col-sm-6">
-                     <input style="width: 150px" type="date" value="{{ Request::get('domains_create_date') }}" name="domains_create_date" id="registered_date" class="form-control" placeholder="From Date">
-                     </div>
-                     <div class="col-sm-6">
-                     <input style="width: 150px" type="date" value="{{ Input::get('domains_create_date2') }}" name="domains_create_date2" id="registered_date2" class="form-control" placeholder="To Date">
-                     </div>
-                     </div>
-
-                     </div>
-                     </div>
-
+                        </div>
+                        <div class="col-sm-5">
+                          <input style="width: 200px" type="date" value="{{ Request::get('domains_create_date2') != null ? date('Y-m-d',strtotime(Request::get('domains_create_date2'))) : '' }}" name="domains_create_date2" id="registered_date2" class="form-control" placeholder="End Date">
+                        </div>
+                      </div>
+                    </div>
+                    </div>
                   </div>
+
+                  <div class="form-group" id="expired_date_div" style="display: none">
+                    <label>Select Expired Date or Date-Range</label><br>
+                    <div class="row">
+                      <div class="col-sm-8 col-md-8 col-lg-8">
+                        <div class="row">
+                          <div class="col-sm-5">
+                            <input style="width: 200px" type="date" value="{{ Request::get('domains_expired_date') != null ? date('Y-m-d',strtotime(Request::get('domains_expired_date'))) : '' }}" name="domains_expired_date" id="domains_expired_date" class="form-control" placeholder="Start Date">
+                          </div>
+                          <div class="col-md-2">
+
+                          </div>
+                          <div class="col-sm-5">
+                            <input style="width: 200px" type="date" value="{{ Request::get('domains_expired_date2') != null ? date('Y-m-d',strtotime(Request::get('domains_expired_date2'))) : '' }}" name="domains_expired_date2" id="domains_expired_date2" class="form-control" placeholder="End Date">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="from-group">
                      <label>Select Domains Extensions</label>
                      <dl class="dropdown">
@@ -151,7 +174,6 @@
                      <div class="col-md-4 col-sm-3">  
                      <input class="form-control" type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
                      </div>
-
                  </div>  
                    
                  <br>
@@ -161,3 +183,31 @@
                </form>
             </div>
          </div>
+         <script type="text/javascript">
+          $(document).ready(function() {
+            var mode = $('#postSearchDataForm input[type=radio]:checked').val();
+            console.log('mode', mode);
+            if(mode == 'newly_registered') {
+              $('#created_date_div').show();
+              $('#expired_date_div').hide();
+            } else if(mode == 'getting_expired') {
+              $('#expired_date_div').show();
+              $('#created_date_div').hide();
+            }
+
+            $('#postSearchDataForm input[type=radio]').on('change', function() {
+              var mode = $(this).val();
+              if(mode == 'newly_registered') {
+                $('#created_date_div').show();
+                $('#expired_date_div').hide();
+                $('#domains_expired_date').val('');
+                $('#domains_expired_date2').val('');
+              } else if(mode == 'getting_expired') {
+                $('#expired_date_div').show();
+                $('#created_date_div').hide();
+                $('#registered_date').val('');
+                $('#registered_date2').val('');
+              }
+            });
+          });
+         </script>

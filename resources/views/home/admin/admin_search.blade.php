@@ -191,7 +191,10 @@
                   : '' }}">
                   <input type="hidden" name="domains_create_date" value="{{ Input::get('domains_create_date') }}">
                   <input type="hidden" name="domains_create_date2" value="{{ Input::get('domains_create_date2') }}">
-                  <input type="hidden" name="cell" value="{{Input::get('cell_number')}}" >
+                  <input type="hidden" name="mode" value="{{Input::get('mode')}}">
+                  <input type="hidden" name="domains_expiry_date" value="{{Request::get('domains_expired_date')}}">
+                  <input type="hidden" name="domains_expiry_date2" value="{{Request::get('domains_expired_date2')}}">
+                  <input type="hidden" name="cell" value="{{Input::get('cell_number')}}">
                   <input type="hidden" name="landline" value="{{Input::get('landline_number')}}">
                   <!-- <button><id="exportLeads" class="btn btn-primary">Export</button>
                      <button id="exportAllLeads" class="btn btn-info pull-right">Export All</button> -->
@@ -205,6 +208,7 @@
                      <th>Registrant Email</th>
                      <th>Registrant Phone</th>
                      <th>Domains Create Date</th>
+                     <th>Expiry Date</th>
                      <th>Registrant Company</th>
                   </tr>
 
@@ -254,6 +258,9 @@
                      </td>
                      <td>
                         <small class="create_date" id="domains_create_date_{{$key}}">{{$each['domains_create_date']}}</small>
+                     </td>
+                     <td>
+                        <small class="expiry_date" id="expiry_date_{{$key}}">{{$each['expiry_date']}}</small>
                      </td>
                      <td>
                         <small class="reg_company" id="registrant_company_{{$key}}">{{$each['registrant_company']}}</small>
@@ -342,6 +349,9 @@
       	$('#ajax-loader').show();
       	var reg_date = $('#registered_date').val();
       	var reg_date2 = $('#registered_date2').val();
+        var expiry_date = $('#domains_expired_date').val();
+        var expiry_date2 = $('#domains_expired_date2').val();
+        var mode = $('#postSearchDataForm input[type=radio]:checked').val();
       	var domain_name = $('#domain_name').val();
       	var domain_ext = $('#domain_ext').val();
       	var num_type = $('#number_type').val();
@@ -355,7 +365,8 @@
       		url  : URL+'/ajax_search_paginated',
       		type : 'post',
       		dataType: 'json',
-      		data : {_token : "{{csrf_token()}}" ,
+      		data : {
+              _token : "{{csrf_token()}}" ,
       				meta_id             : meta_id,
       				thisPage            : parseInt(page),
       				pagination          : per_page,
@@ -363,7 +374,10 @@
       				domain_ext          : domain_ext,
       				domain_name         : domain_name,
       				domains_create_date : reg_date,
-      				domains_create_date2: reg_date2
+      				domains_create_date2: reg_date2,
+              mode : mode,
+              domains_expired_date : expiry_date,
+              domains_expired_date2: expiry_date2
       			},
       			success:function(response)
       			{
@@ -402,6 +416,7 @@
       					$('#registrant_name_'+i).text(response.data[i]['registrant_name']);
       					$('#registrant_email_'+i).text(response.data[i]['registrant_email']);
       					$('#domains_create_date_'+i).text(response.data[i]['domains_create_date']);
+                $('#expiry_date_'+i).text(response.data[i]['expiry_date']);
       					$('#registrant_company_'+i).text(response.data[i]['registrant_company']);
       					$('#registrant_country_'+i).val(response.data[i]['registrant_company']);
       					$('#registrant_email_'+i).val(response.data[i]['registrant_email']);
@@ -539,14 +554,12 @@
       }
 
        	$(function(){
-       		$( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
-         	$( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+       		// $( "#registered_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+         	// $( "#registered_date2" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
        	});
        	$("#refine_searchID").click(function(){
-
       	    $("#postSearchDataForm").submit();
-
-         });
+        });
 
   
       var options = [];

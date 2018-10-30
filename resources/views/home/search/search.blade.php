@@ -423,6 +423,9 @@ form{
 		$('#ajax-loader').show();
 		var reg_date = $('#registered_date').val();
 		var reg_date2 = $('#registered_date2').val();
+		var expiry_date = $('#domains_expired_date').val();
+        var expiry_date2 = $('#domains_expired_date2').val();
+        var mode = $('#postSearchDataForm input[type=radio]:checked').val();
 		var domain_name = $('#domain_name').val();
 		var domain_ext = $('#domain_ext').val();
 		var num_type = $('#number_type').val();
@@ -444,7 +447,10 @@ form{
 				domain_ext          : domain_ext,
 				domain_name         : domain_name,
 				domains_create_date : reg_date,
-				domains_create_date2: reg_date2
+				domains_create_date2: reg_date2,
+				mode : mode,
+				domains_expiry_date : expiry_date,
+				domains_expiry_date2 : expiry_date2,
 			},
 			success:function(response)
 			{
@@ -539,6 +545,7 @@ form{
 									$('#registrant_phone_'+key).text(response.registrant_phone);
 									$('#registrant_company_'+key).text(response.registrant_company);
 									$('#domains_create_date_'+key).text(response.domains_create_date);
+									$('#domains_expiry_date_'+key).text(response.expiry_date);
 									$('#country_'+key).text(response.registrant_country);
 									$('#leads_id_'+key).val(response.id);
 									if(leads_for_export == '')
