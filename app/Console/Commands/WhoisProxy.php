@@ -4,28 +4,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-// use \App\Area;
-// use \App\AreaCode;
-
-// use \App\Lead;
-// use \App\EachDomain;
-// use \App\DomainInfo;
-// use \App\DomainNameServer;
-// use \App\DomainStatus;
-// use \App\DomainTechnical;
-// use \App\DomainFeedback;
-// use \App\DomainBilling;
-// use \App\DomainAdministrative;
-// use Exception;
-// use \App\LeadUser;
-// use \App\ValidatedPhone;
-// use \App\CSV;
-// use DB;
-// use Carbon\Carbon;
-// use Zipper;
-// use Excel;
-// use App\Jobs\ImportCsv;
-// use Session;
+use \App\Lead;
+use \App\EachDomain;
+use \App\CSV;
+use Zipper;
 
 use App\Helpers\ImportCsvHelper;
 
@@ -59,19 +41,6 @@ class WhoisProxy extends Command
      * Create a new command instance.
      */
     
-    public $Area_state = array();
-    public $Area_major_city = array();
-    public $Area_codes_primary_city = array();
-    public $Area_codes_county = array();
-    public $Area_codes_carrier_name = array();
-    public $Area_codes_number_type = array();
-    public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
-    public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
-    public $__leads = array();
-    public $__domains = array();
-
-  public $__clipboard = array(); // stores leads which needs to be altered in the table--on basis of domains count
-
     public function __construct()
     {
         parent::__construct();
@@ -133,7 +102,7 @@ class WhoisProxy extends Command
                                     'status'=>500));
           \Log::info('from :: Error :: '.$exception->getMessage());
         }
-      } catch (Exception $exception) {
+      } catch (\Exception $exception) {
         \Log::info('from :: Error :: '.$exception->getMessage());
       }
     }
