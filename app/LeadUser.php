@@ -19,8 +19,8 @@ class LeadUser extends Model
     {
     	return $this->hasMany('App\ValidatedPhone','registrant_email','registrant_email');
     }
-    // public function user()
-    // {
-    // 	return $this->hasMany('App\User' , 'user_id' , 'id');
-    // }
+
+    public function domains_info() {
+        return $this->hasOne('App\DomainInfo', 'domain_name', 'domain_name');
+    }
 }
