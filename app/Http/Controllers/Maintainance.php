@@ -32,28 +32,31 @@ class Maintainance extends Controller
   }
 
 
-  public function manage()
+  public function manage(Request $request)
   {
-    $data = CSV::select('file_name','query_time','leads_inserted','domains_inserted','status')->get();
-    $data_head = array('file_name','insert_time','total_leads','total_domains'
-                ,'status','link','delete');
-
-    $data_arr = array();
-    $i=0;
-    foreach ($data as $key => $value) 
-    {
-      $data_arr[$i]['file_name'] = $value->file_name;
-      $data_arr[$i]['insert_time']= gmdate("H:i:s", $value->query_time);
-      $data_arr[$i]['leads_inserted'] = $value->leads_inserted;
-      $data_arr[$i]['domains_inserted']= $value->domains_inserted;
-      $data_arr[$i]['status'] = $value->status;
-      $data_arr[$i]['link'] = 'some_link';
-      $data_arr[$i++]['delete'] = 'delete';
+    if(!\Auth::check()) {
+      return redirect()->back()->with('error', 'Session expired. Please Log In Again!');
     }
-    
-    return view('home.admin.manage.manage'
-            ,['data'=>$data_arr,'data_head'=>$data_head]);
-    //dd($csv);
+    if(\Auth::user()->user_type != 4) {
+      return redirect()->back()->with('error', 'Access denied.');
+    }
+    $search = $request->search;
+    $filetypeselected = $request->filetypeselected;
+    $data['data'] = CSV::select('file_name','query_time','leads_inserted','domains_inserted','status', 'created_at');
+    if($filetypeselected == 'Expiring Domains') {
+      $data['data'] = $data['data']->where('file_name', 'NOT LIKE', '%_whois-proxies-removed.csv');
+    } else if($filetypeselected == 'Whois Proxy Resolved') {
+      $data['data'] = $data['data']->where('file_name', 'LIKE', '%_whois-proxies-removed.csv');
+    } else {
+      // do nothing
+    }
+    if($search && strlen($search) > 0) {
+      $data['data'] = $data['data']->where('file_name', 'LIKE', '%'.$search.'%');
+    }
+    $data['data']         = $data['data']->orderBy('id', 'DESC')->paginate($request->perpage ? $request->perpage : 10);
+    $data['importTypes']  = ['','All data','Expiring Domains', 'Whois Proxy Resolved'];
+    $data['perpageset']   = ['', 10, 20, 50, 100];
+    return view('home.admin.manage.manage', $data);
   }
 
 

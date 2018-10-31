@@ -170,7 +170,13 @@ class AccountController extends Controller
 
 	public function UserList(Request $request) {
 		try {
-			// dd($request->all());
+			if(!\Auth::check()) {
+				return redirect()->back()->with('error', 'Session expired. Please Log In Again!');
+			}
+			if(\Auth::user()->user_type != 4) {
+				return redirect()->back()->with('error', 'Access denied.');
+			}
+
 			$userTypes = ['Select Users', 'all-users', 'suspended-users'];
 			$search = $request->search;
 			if(strlen($search) > 0) {
