@@ -32,7 +32,7 @@
                   <br>
                   
                   <div class="form-group" id="created_date_div" style="display: none">
-                    <label>Select Date or Date-Range</label><br>
+                    <label>Select Date or Date-Range (Domains Create Date)</label><br>
                     <div class="row">
                     <div class="col-sm-8 col-md-8 col-lg-8">
                       <div class="row">
@@ -51,7 +51,7 @@
                   </div>
 
                   <div class="form-group" id="expired_date_div" style="display: none">
-                    <label>Select Expired Date or Date-Range</label><br>
+                    <label>Select Date or Date-Range (Domains Expired Date)</label><br>
                     <div class="row">
                       <div class="col-sm-8 col-md-8 col-lg-8">
                         <div class="row">

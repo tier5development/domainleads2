@@ -159,12 +159,9 @@ public function download_csv_single_page(Request $request)
 }
 
   private function all_lead_domains_set(Request $request,$phone_type_array,$meta_id, $limit = null, $offset = null)
-
   {
     // dd($request->all());
-    $sql    = "SELECT leads,compression_level from search_metadata
-              where id = ".$meta_id;
-
+    $sql    = "SELECT leads,compression_level from search_metadata where id = ".$meta_id;
     $data   = DB::select(DB::raw($sql));
     $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
     $data   = null;
@@ -1701,7 +1698,7 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
-      // dd($request->all());
+      //dd($request->all());
       ini_set('max_execution_time', 346000);
       if(\Auth::check())
       {

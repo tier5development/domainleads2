@@ -181,19 +181,27 @@
 
 
                <table id="table" class="table table-hover table-bordered domainDAta">
-                  <input id="exportLeads" type="submit" name="exportLeads" value="Export">
-                  <input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
-                  <input type="hidden" name="meta_id" value="{{$meta_id}}">
-                  <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
-                  <input type="hidden" name="domain_name" value="{{ Input::get('domain_name') }}">
+                <input type="hidden" name="mode" value="{{Input::get('mode')}}">  
+                <input type="hidden" name="domain_name" value="{{Input::get('domain_name')}}">
+                <input type="hidden" name="registrant_country" value="{{Request::get('registrant_country')}}">
+                <input type="hidden" name="registrant_state" value="{{Request::get('registrant_country')}}">
+                <input type="hidden" name="registrant_zip" value="{{Request::get('registrant_zip')}}">
+                <input type="hidden" name="domains_create_date" value="{{ Input::get('domains_create_date') }}">
+                <input type="hidden" name="domains_create_date2" value="{{ Input::get('domains_create_date2') }}">
+                <input type="hidden" name="domains_expired_date" value="{{Request::get('domains_expired_date')}}">
+                <input type="hidden" name="domains_expired_date2" value="{{Request::get('domains_expired_date2')}}">
+                
+                <input id="exportLeads" type="submit" name="exportLeads" value="Export">
+                <input type="submit" class="pull-right" name="exportAllLeads" value="Export All Leads">
+                <input type="hidden" name="meta_id" value="{{$meta_id}}">
+                <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
+                  
                   <input type="hidden" name="domain_ext"  value="{{ null!==Input::get('domain_ext')
                   ? implode(',',Input::get('domain_ext'))
                   : '' }}">
-                  <input type="hidden" name="domains_create_date" value="{{ Input::get('domains_create_date') }}">
-                  <input type="hidden" name="domains_create_date2" value="{{ Input::get('domains_create_date2') }}">
-                  <input type="hidden" name="mode" value="{{Input::get('mode')}}">
-                  <input type="hidden" name="domains_expiry_date" value="{{Request::get('domains_expired_date')}}">
-                  <input type="hidden" name="domains_expiry_date2" value="{{Request::get('domains_expired_date2')}}">
+                  
+                  
+                  
                   <input type="hidden" name="cell" value="{{Input::get('cell_number')}}">
                   <input type="hidden" name="landline" value="{{Input::get('landline_number')}}">
                   <!-- <button><id="exportLeads" class="btn btn-primary">Export</button>
