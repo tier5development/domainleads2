@@ -33,6 +33,58 @@
            width: calc(100% - 80px);
            float: right;
          }
+
+         .createUserModal{
+           position: fixed;
+           width: 100%;
+           height: 100%;
+           background: rgba(0,0,0,0.7);
+           z-index: 999;
+           top: 0;
+           left: 0;
+         }
+         .modalContainer{
+           max-width: 400px;
+           margin: 0 auto;
+           box-sizing: border-box;
+           padding: 15px;
+           background: #fff;
+           border-radius: 5px;
+           position: relative;
+           top: 50%;
+           transform: translateY(-50%);
+           box-shadow: 0 0 15px rgba(0,0,0,1);
+         }
+         .clear{
+           clear: both;
+         }
+         .modalContainer h2{
+           background: #f2f2f2;
+           border-bottom: 1px solid #ccc;
+           box-sizing: border-box;
+           padding: 15px;
+           font-size: 18px;
+           margin: -15px -15px 20px -15px;
+           border-radius: 5px 5px 0 0;
+           text-align: center;
+         }
+         .modalContainer .close{
+           position: absolute;
+           top: -10px;
+           right: -10px;
+           width: 25px;
+           height: 25px;
+           border-radius: 15px;
+           background: #ff3b3b;
+           z-index: 999;
+           opacity: 1;
+           color: #fff;
+           text-shadow: none;
+           font-size: 14px;
+           text-align: center;
+           padding-top: 4px;
+           cursor: pointer;
+         }
   </style>
 
   <div id="ajax-loader" style="display: none;">
@@ -49,9 +101,15 @@
 					<div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">
 						<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
 						<strong>Error!</strong> {{Session::get('error')}}
-					</div>
-				@endif
-				@php Session::forget('error') @endphp
+          </div>
+          @php Session::forget('error') @endphp
+				@elseif(Session::has('success'))
+          <div class="alert alert-success fade in alert-dismissible" style="margin-top:18px;">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+						<strong>Success!</strong> {{Session::get('success')}}
+          </div>
+          @php Session::forget('success') @endphp
+        @endif
 		</div>
   {{-- <div class="col-md-2">
     
@@ -88,12 +146,17 @@
 </form><br>
 
 <div class="col-md-12">
-<b class="pull-left"><h4>Users : {{$users->count()}}</h4></b><br>
+  <div class="tabHeadRow">
+      <b class="pull-left"><h4>Users : {{$users->count()}}</h4></b>
+      <button class="btn btn-sm btn-info pull-right createUserButton">Create User</button>
+  </div>
+
 <table class="table table-hover table-bordered">
   <thead class="thead-inverse">
     <tr>
       <th>Name</th>
       <th>Email</th>
+      <th>User Type</th>
       <th>Suspend Status</th>
       <th>Delete</th>
       <th>Created</th>
@@ -105,6 +168,18 @@
       {{-- <th scope="row">{!! $key + 1 !!}</th> --}}
       <td>{!! $eachUser->name!!}</td>
       <td id="email_{{$eachUser->id}}">{!! $eachUser->email!!}</td>
+      <td id="user_type_{{$eachUser->id}}">
+        <form class="form-group" action="{{route('editUser')}}" method="POST">
+          {{csrf_field()}}
+          <input type="hidden" name="name" value="{{$eachUser->name}}">
+          <input type="hidden" name="email" value="{{$eachUser->email}}">
+          <select class="form-control" onchange="this.form.submit()" type="submit" name="user_type" style="width: 100%">
+            <option value="1" {{$eachUser->user_type == 1 ? 'selected' : ''}}>Level 1</option>
+            <option value="2" {{$eachUser->user_type == 2 ? 'selected' : ''}}>Level 2</option>
+            <option value="3" {{$eachUser->user_type == 3 ? 'selected' : ''}}>Level 3</option>
+          </select>
+        </form>
+      </td>
       <td>
           @if(strpos($eachUser->email, '_suspended'))
             <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-warning">Unsuspend</button>
@@ -134,11 +209,56 @@
 </div>
 
 </div>
+
+
+
+<div class="parentUserModal createUserModal" style="display: none">
+  <div class="modalContainer">
+    <div class="close">
+      <span class="glyphicon glyphicon-remove"></span>
+    </div>
+    <h2>Create User</h2>
+      <form method="POST" action="{{route('createUser')}}">
+      <div class="form-group">
+        <label for="">User Name:</label>
+        <input name="name" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="">User Email:</label>
+        <input required name="email" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="">User Role:</label>
+        <select required name="user_type" id="" class="form-control">
+          <option value="">Select</option>
+          <option value="1">Level 1</option>
+          <option value="2">Level 2</option>
+          <option value="3">Level 3</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-info pull-right createUserPost">Create</button>
+        <div class="clear"></div>
+      </div>
+      {{csrf_field()}}
+    </form>
+  </div>
+</div>
+
+
 </body>
 <br><br>
 <script type="text/javascript">
   $(document).ready(function() {
     console.log('ready');
+
+    $('.createUserButton').on('click', function() {
+      $('.parentUserModal').show();
+    });
+
+    $('.close').on('click', function() {
+      $('.parentUserModal').hide();
+    });
   });
 
   function deleteUser(id , t) {

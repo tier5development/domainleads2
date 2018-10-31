@@ -188,7 +188,7 @@ class AccountController extends Controller
 			$perpage = $request->has('perpage') && is_numeric($request->perpage) ? $request->perpage : $perpageset[1];
 			
 			$request->perpage = !$request->perpage ? $request->perpage : $perpageset[1];
-			$users = $users->paginate($perpage);
+			$users = $users->orderBy('id', 'DESC')->paginate($perpage);
 			return view('home.userList',compact('users','userTypes','perpageset'));
 		} catch(\Exception $e) {
 			return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
@@ -203,14 +203,21 @@ class AccountController extends Controller
 		return UserHelper::suspendOrUnsuspendUser($request);
 	}
 
-	// public function searchUser(Request $request) {
-	// 	try {
-	// 		dd($request->all());
-	// 		$search = $request->search;
-	// 		$users = User::where('name', 'LIKE', '%'.$search.'%')->orWhere('email','LIKE','%'.$search.'%')->get();
-	// 		return view('home.userList',compact('users'));
-	// 	} catch(\Exception $e) {
-	// 		return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
-	// 	}
-	// }
+	public function createUser(Request $request) {
+		$response = UserHelper::createUser($request);
+		$responseArray = json_decode($response->content(), true);
+		if($responseArray['status'] == false) {
+			return redirect()->back()->with('error', $responseArray['message']);
+		}
+		return redirect()->back()->with('success', $responseArray['message']);
+	}
+
+	public function editUser(Request $request) {
+		$response = UserHelper::editUser($request);
+		$responseArray = json_decode($response->content(), true);
+		if($responseArray['status'] == false) {
+			return redirect()->back()->with('error', $responseArray['message']);
+		}
+		return redirect()->back()->with('success', $responseArray['message']);
+	}
 }

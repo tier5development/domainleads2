@@ -78,6 +78,10 @@ Route::get('/aa',function(){
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
     Route::group(['middleware' => 'auth'],function(){
+        
+        Route::post('editUser', ['uses' => 'AccountController@editUser', 'as' => 'editUser']);
+
+        Route::post('createUser', ['uses' => 'AccountController@createUser', 'as' => 'createUser']);
 
         Route::any('userlist',['uses'=>'AccountController@UserList','as'=>'UserList']);
 
