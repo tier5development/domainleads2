@@ -66,15 +66,17 @@ private function create()
 
 private function destroy()
 {
-    $this->Area_state               = null;
-    $this->Area_major_city          = null;
-    $this->Area_codes_primary_city  = null;
-    $this->Area_codes_county        = null;
-    $this->Area_codes_carrier_name  = null;
-    $this->Area_codes_number_type   = null;
-    $this->__leads  = null;
-    $this->__leads  = null;
-    $this->__domains= null;
+  unset($this->Area_state);
+  unset($this->Area_major_city);
+  unset($this->Area_codes_primary_city);
+  unset($this->Area_codes_county);
+  unset($this->Area_codes_carrier_name);
+  unset($this->Area_codes_number_type);
+  unset($this->__leads);
+  unset($this->__domains);
+  unset($this->search);
+  unset($this->replace);
+  unset($this->__clipboard);
 }
 
   public function importExcel(Request $request)
@@ -315,7 +317,7 @@ private function destroy()
 
     try
     {
-        DB::statement(DB::raw('RESET QUERY CACHE;'));
+        // DB::statement(DB::raw('RESET QUERY CACHE;'));
         $q_leads    = "REPLACE `leads` ". $leads_head. " VALUES ".$LEADS;
 
         if($VALID_PHONE != '') {
@@ -337,45 +339,70 @@ private function destroy()
           $q_domains_nameserver = "REPLACE `domains_nameserver` ". $domains_nameserver_head. " VALUES ".$DOMIANS_NAMESERVER;
           $q_domains_status = "REPLACE `domains_status` ". $domains_status_head. " VALUES ".$DOMAINS_STATUS;
 
-
-          //dd($q_leads);
           $time_array = array();
 
           $t = microtime(true);
           DB::statement($q_leads);
           array_push($time_array, 'leads -> '.(microtime(true)-$t));
+          unset($leads_head);
+          unset($LEADS);
+          unset($q_leads);
 
           $t = microtime(true);
           if(isset($q_valid_phone)) DB::statement($q_valid_phone);
           array_push($time_array, 'valid_phone -> '.(microtime(true)-$t));
+          unset($valid_phone_head);
+          unset($VALID_PHONE);
+          unset($q_valid_phone);
 
           $t = microtime(true);
           DB::statement($q_each_domains);
           array_push($time_array, 'each_domain -> '.(microtime(true)-$t));
+          unset($each_domains_head);
+          unset($EACH_DOMAINS);
+          unset($q_each_domains);
 
           $t = microtime(true);
           DB::statement($q_domains_info);
           array_push($time_array, 'domains_info -> '.(microtime(true)-$t));
+          unset($domains_info_head);
+          unset($DOMAINS_INFO);
+          unset($q_domains_info);
 
           $t = microtime(true);
           DB::statement($q_domains_administrative);
           array_push($time_array, 'domains_info -> '.(microtime(true)-$t));
+          unset($domains_administrative_head);
+          unset($DOMAINS_ADMINISTRATIVE);
+          unset($q_domains_administrative);
 
           $t = microtime(true);
           DB::statement($q_domains_technical);
           array_push($time_array, 'domains_technical -> '.(microtime(true)-$t));
+          unset($domains_technical_head);
+          unset($DOMIANS_TECHNICAL);
+          unset($q_domains_technical);
 
           $t = microtime(true);
           DB::statement($q_domains_billing);
           array_push($time_array, 'domains_billing -> '.(microtime(true)-$t));
+          unset($domains_billing_head);
+          unset($DOMIANS_BILLING);
+          unset($q_domains_billing);
 
           $t = microtime(true);
           DB::statement($q_domains_nameserver);
           array_push($time_array, 'domains_nameserver -> '.(microtime(true)-$t));
+          unset($domains_nameserver_head);
+          unset($DOMIANS_NAMESERVER);
+          unset($q_domains_nameserver);
 
           $t = microtime(true);
           DB::statement($q_domains_status);
           array_push($time_array, 'domains_status -> '.(microtime(true)-$t));
+          unset($domains_status_head);
+          unset($DOMAINS_STATUS);
+          unset($q_domains_status);
 
           return $time_array;
     } catch(\Exception $e) {
@@ -414,123 +441,55 @@ private function destroy()
   //this clears out data with mismatches
   private function remove_atrocious_data()
   {
-    $registrant_email   = Lead::pluck('registrant_email')->toArray();
-    $registrant_email   = array_flip($registrant_email);
 
-    $domain_name        = EachDomain::pluck('domain_name')->toArray();
-    $domain_name        = array_flip($domain_name);
+    /**
+     * Checking orphan data in domains_info if found any delete
+     */
+    $table = 'domains_info';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
-    $ed_registrant_email= EachDomain::pluck('registrant_email')->toArray();
-    $ed_registrant_email= array_flip($ed_registrant_email);
+    /**
+     * Checking orphan data in domains_technical if found any delete
+     */
+    $table = 'domains_technical';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
-    $d_info             = DomainInfo::pluck('domain_name')->toArray();
-    $d_technical        = DomainTechnical::pluck('domain_name')->toArray();
-    $d_status           = DomainStatus::pluck('domain_name')->toArray();
-    $d_nameserver       = DomainNameServer::pluck('domain_name')->toArray();
-    $d_feedback         = DomainFeedback::pluck('domain_name')->toArray();
-    $d_billing          = DomainBilling::pluck('domain_name')->toArray();
-    $d_administrative   = DomainAdministrative::pluck('domain_name')->toArray();
+    /**
+     * Checking orphan data in domains_status if found any delete
+     */
+    $table = 'domains_status';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
-    $ed_delete               = array();
-    $d_info_delete           = array();
-    $d_technical_delete      = array();
-    $d_status_delete         = array();
-    $d_nameserver_delete     = array();
-    $d_feedback_delete       = array();
-    $d_billing_delete        = array();
-    $d_administrative_delete = array();
+    /**
+     * Checking orphan data in domains_nameserver if found any delete
+     */
+    $table = 'domains_nameserver';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
-    //checking anomalies in each_domain and leads table with respect to registrant_email column
-    foreach ($ed_registrant_email as $key => $value) {
-      if(!isset($registrant_email[$key]))
-        array_push($ed_delete, $key);
-    }
-    if(sizeof($ed_delete) > 0)
-    EachDomain::whereIn('registrant_email',$ed_delete)->delete();
+    /**
+     * Checking orphan data in domains_feedback if found any delete
+     */
+    $table = 'domains_feedback';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
+    /**
+     * Checking orphan data in domains_billing if found any delete
+     */
+    $table = 'domains_billing';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
-    /* checking anomalies with respect to domain_name */
-    //checking the domains_info
-    foreach ($d_info as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_info_delete, $value);
-    }
-    if(sizeof($d_info_delete) > 0)
-    DomainInfo::whereIn('domain_name',$d_info_delete)->delete();
-
-    //checking the domains_technical
-    foreach ($d_technical as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_technical_delete, $value);
-    }
-    if(sizeof($d_technical_delete) > 0)
-    DomainTechnical::whereIn('domain_name',$d_technical_delete)->delete();
-
-    //checking the domains_status
-    foreach ($d_status as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_status_delete, $value);
-    }
-    if(sizeof($d_status_delete) > 0)
-    DomainStatus::whereIn('domain_name',$d_status_delete)->delete();
-
-    //checking the domains_nameserver
-    foreach ($d_nameserver as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_nameserver_delete, $value);
-    }
-    if(sizeof($d_nameserver_delete) > 0)
-    DomainNameServer::whereIn('domain_name',$d_nameserver_delete)->delete();
-
-    //checking the domains_feedback
-    foreach ($d_feedback as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_feedback_delete, $value);
-    }
-    if(sizeof($d_feedback_delete) > 0)
-    DomainFeedback::whereIn('domain_name',$d_feedback_delete)->delete();
-
-    //checking the domains_billing
-    foreach ($d_billing as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_billing_delete, $value);
-    }
-    if(sizeof($d_billing_delete) > 0)
-    DomainBilling::whereIn('domain_name',$d_billing_delete)->delete();
-
-    //checking the domains_administrative
-    foreach ($d_administrative as $key => $value) {
-      if(!isset($domain_name[$value]))
-        array_push($d_administrative_delete, $value);
-    }
-    if(sizeof($d_administrative_delete) > 0)
-    DomainAdministrative::whereIn('domain_name',$d_administrative_delete)->delete();
-
-    //flushing out querry log and retrieve mysql occupying disk space
-    DB::statement(DB::raw('RESET QUERY CACHE'));
-
-
-    // unsetting all variables to free the allocated memory
-    // required as the data sizes are big
-    unset($registrant_email);
-    unset($domain_name);
-    unset($ed_registrant_email);
-    unset($d_info);
-    unset($d_technical);
-    unset($d_status);
-    unset($d_nameserver);
-    unset($d_feedback);
-    unset($d_billing);
-    unset($d_administrative);
-    unset($ed_delete);
-    unset($d_info_delete);
-    unset($d_technical_delete);
-    unset($d_status_delete);
-    unset($d_nameserver_delete);
-    unset($d_feedback_delete);
-    unset($d_billing_delete);
-    unset($d_administrative_delete);
-
+    /**
+     * Checking orphan data in domains_administrative if found any delete
+     */
+    $table = 'domains_administrative';
+    $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
+    DB::statement($deleteSQL);
   }
 
   private function validate_input($row)
@@ -628,7 +587,6 @@ private function destroy()
       while(true)
       {
           $row = fgetcsv($file);
-          
           $counter++ ;
           if($row)
           {
@@ -737,6 +695,26 @@ private function destroy()
     \Log::info('time ==>> ',$query_time_array);
     echo "<pre>";print_r($query_time_array);
     $this->destroy();
+
+    // DESTROY ALL MEORY ALLOCATIONS
+    unset($leads_head);
+    unset($LEADS);
+    unset($valid_phone_head);
+    unset($VALID_PHONE);
+    unset($each_domains_head);
+    unset($EACH_DOMAINS);
+    unset($domains_info_head);
+    unset($DOMAINS_INFO);
+    unset($domains_administrative_head);
+    unset($DOMAINS_ADMINISTRATIVE);
+    unset($domains_technical_head);
+    unset($DOMIANS_TECHNICAL);
+    unset($domains_billing_head);
+    unset($DOMIANS_BILLING);
+    unset($domains_nameserver_head);
+    unset($DOMIANS_NAMESERVER);
+    unset($domains_status_head);
+    unset($DOMAINS_STATUS);
     return $query_time_array;
   }
 
