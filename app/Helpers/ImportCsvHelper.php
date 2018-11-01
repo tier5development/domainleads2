@@ -855,8 +855,7 @@ private function destroy()
   }
 
   public function importExpiredDomainsZip($currentDate = null, $whoxyURLexpired = null) {
-    try 
-    {
+    try {
       
       if($currentDate == null || $whoxyURLexpired == null) {
         return \Response::json(['insertion_time' =>  'null', 'message' =>  'Improper arguments, function parameters cannot be null', 'status'  =>  500]);
@@ -882,6 +881,11 @@ private function destroy()
         /**
          * Calling system wide basic insert function
          */
+        $csvObj = new CSV();
+        $csvObj->file_name = $currentDate.".csv";
+        $csvObj->status = 1;
+        $csvObj->save();
+
         $this->insertion_Execl($getCSVFile);
         fclose($getCSVFile);
         
@@ -895,12 +899,10 @@ private function destroy()
         /**
          * Insert a new record in csv
          */
-        $csvObj = new CSV();
-        $csvObj->file_name          = $currentDate.".csv";
-        $csvObj->leads_inserted     = $leads_inserted;
-        $csvObj->domains_inserted   = $domains_inserted;
-        $csvObj->status             = 2;
-        $csvObj->query_time         = $endTime;
+        $csvObj->leads_inserted   = $leads_inserted;
+        $csvObj->domains_inserted = $domains_inserted;
+        $csvObj->status           = 2;
+        $csvObj->query_time       = $endTime;
         $csvObj->save();
 
         /**
@@ -919,13 +921,12 @@ private function destroy()
         return \Response::json(array('insertion_time'=>'null',
                                   'message'=>'This file is inserted already::'.$currentDate.".csv",
                                   'status'=>500));
-        \Log::info('from :: Error :: '.$exception->getMessage());
       }
     } catch (\Exception $e) {
       return \Response::json(['insertion_time'=>'null',
                                   'message'=>" ERROR : ".$e->getMessage().' LINE : '.$e->getLine(),
                                   'status'=>500]);
-      \Log::info('from :: Error :: '.$e->getMessage());
+      \Log::info('from :: Error ::: '.$e->getMessage());
     }
   }
 
