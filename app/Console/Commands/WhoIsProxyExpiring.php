@@ -55,6 +55,7 @@ class WhoIsProxyExpiring extends Command
     } else {
       for($i = 0 ; $i <= $days ; $i++) {
         $currentDate = date('Y-m-d',time()+(3600*24)*$i);
+        print_r('importing expiring database : '.$currentDate.' ');
         $whoxyURLexpired = "https://www.whoxy.com/expiring-domain-names/download.php?key=59341394fac3331&file=".$currentDate.".zip";
         $importHelper = new ImportCsvHelper();
         $importHelper->importExpiredDomainsZip($currentDate, $whoxyURLexpired);
