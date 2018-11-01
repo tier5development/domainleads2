@@ -854,6 +854,81 @@ private function destroy()
       }
   }
 
+  public function importExpiredDomainsZip($currentDate = null, $whoxyURLexpired = null) {
+    try 
+    {
+      
+      if($currentDate == null || $whoxyURLexpired == null) {
+        return \Response::json(['insertion_time' =>  'null', 'message' =>  'Improper arguments, function parameters cannot be null', 'status'  =>  500]);
+      }
+      
+      $startTime = microtime(true);  
+      $checkFileExist = CSV::where('file_name',$currentDate.".csv")->first();
+      if($checkFileExist == null) 
+      {
+        $downloadDir = public_path();
+        $getDownloadData = file_get_contents($whoxyURLexpired);
+        file_put_contents($downloadDir.'/zipFiles/'.$currentDate.'.zip',$getDownloadData);
+        
+        /**
+         * Unzipping and putting to a destination
+         */
+        Zipper::make($downloadDir.'/zipFiles/'.$currentDate.'.zip')->extractTo($downloadDir.'/unzipFiles/');
+        $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'.csv';
+        $getCSVFile  = fopen($csvFilePath , 'r');
+        $total_leads_before_insertion = Lead::count();
+        $total_domains_before_insertion = EachDomain::count();
+
+        /**
+         * Calling system wide basic insert function
+         */
+        $this->insertion_Execl($getCSVFile);
+        fclose($getCSVFile);
+        
+        /**
+         * Calculate how many leads and domains got effected by the insertion
+         */
+        $leads_inserted   = Lead::count() - $total_leads_before_insertion;
+        $domains_inserted = EachDomain::count() - $total_domains_before_insertion;
+        $endTime = microtime(true) - $startTime;
+
+        /**
+         * Insert a new record in csv
+         */
+        $csvObj = new CSV();
+        $csvObj->file_name          = $currentDate.".csv";
+        $csvObj->leads_inserted     = $leads_inserted;
+        $csvObj->domains_inserted   = $domains_inserted;
+        $csvObj->status             = 2;
+        $csvObj->query_time         = $endTime;
+        $csvObj->save();
+
+        /**
+         * Free up memory by deleting the files stored by unzipping
+         */
+        unlink($csvFilePath);
+        unlink($downloadDir.'/zipFiles/'.$currentDate.'.zip');
+        unset($import);
+        return \Response::json(array('TOTAL TIME TAKEN:'=>$endTime." seconds",
+                                    'leads_inserted'=>$leads_inserted,
+                                    'domains_inserted'=>$domains_inserted,
+                                    'status'=>200,
+                                    'message'=>'success',
+                                    'filename'=>$currentDate.".csv"));
+      } else {
+        return \Response::json(array('insertion_time'=>'null',
+                                  'message'=>'This file is inserted already::'.$currentDate.".csv",
+                                  'status'=>500));
+        \Log::info('from :: Error :: '.$exception->getMessage());
+      }
+    } catch (\Exception $e) {
+      return \Response::json(['insertion_time'=>'null',
+                                  'message'=>" ERROR : ".$e->getMessage().' LINE : '.$e->getLine(),
+                                  'status'=>500]);
+      \Log::info('from :: Error :: '.$e->getMessage());
+    }
+  }
+
 //   public function fill_csv_table_default()
 //   {
 //       // $dates_array = array();
