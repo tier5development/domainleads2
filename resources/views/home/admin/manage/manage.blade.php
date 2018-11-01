@@ -171,7 +171,7 @@
         <tr style="background-color:white" >
         {{-- <th scope="row">{!! $key + 1 !!}</th> --}}
         <td>{!! $eachData->file_name!!}</td>
-        <td>{!! $eachData->query_time!!}</td>
+        <td>{!! gmdate("H:i:s", $eachData->query_time)!!}</td>
         <td>{!! $eachData->leads_inserted !!}</td>
         <td>{!! $eachData->domains_inserted !!}</td>
         <td>{{$eachData->status == 0 ? 'Failed' : $eachData->status == 1 ? 'Ongoing' : 'Complete'}}</td>
