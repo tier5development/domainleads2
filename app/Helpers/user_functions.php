@@ -39,4 +39,15 @@ function generateDateRange($start_date,$end_date)
     }
 }
 
+function getQueryParamsCustom($arr) {
+    $str = '';
+    if(count($arr) == 0) {
+        return $str;
+    }
+    foreach($arr as $key => $each) {
+        $str .= strlen($str) > 0 ? '&'.$key.'='.$each : '?'.$key.'='.$each;
+    }
+    return $str;
+}
+    
 ?>

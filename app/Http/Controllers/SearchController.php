@@ -461,7 +461,8 @@ public function download_csv_single_page(Request $request)
         $number_type_str = "(".$number_type_str.")";
         //dd($number_type_str);
 
-
+        // TODO :: CHECK
+        
         $sql = "SELECT DISTINCT l.registrant_email
             , l.id
             , l.registrant_fname
@@ -628,6 +629,10 @@ public function download_csv_single_page(Request $request)
     */
     private function raw_leads($leads_str)
     {
+      if(strlen($leads_str) == 0) {
+        return [];
+      }
+      
       $sql = "SELECT DISTINCT l.registrant_email
       , l.id
       , l.registrant_fname
@@ -642,7 +647,6 @@ public function download_csv_single_page(Request $request)
       FROM leads as l
       WHERE l.id IN (".$leads_str.")
       ORDER BY FIELD(id,".$leads_str.")";
-      //dd($sql);
       $leads = DB::select(DB::raw($sql));
       return $leads;
     }
@@ -656,10 +660,10 @@ public function download_csv_single_page(Request $request)
     */
     private function leads_Search(Request $request)
     {
+      // TODO :: CHECK
       $date_flag = 0;
       $phone_type_array = $this->phone_type_array;
       $domain_ext_str   = $this->domain_ext_str;
-
       $sql = "SELECT DISTINCT l.registrant_email
             , l.id
             , l.registrant_fname
@@ -1553,10 +1557,14 @@ public function download_csv_single_page(Request $request)
     // Binding 2 tables - leads - each_domain -> dataset into 1 array
     private function domains_output_Search($data , $domains)
     {
+      if($domains == null || $data == null) {
+        return [];
+      }
+
       $domain_list = array();
 
       foreach($data as $k=>$v)  $domain_list[$v['registrant_email']]['checked'] = false;
-
+      
       foreach($domains as $k=>$v)
       {
         if(!($domain_list[$v->registrant_email]['checked']))
@@ -1569,6 +1577,7 @@ public function download_csv_single_page(Request $request)
           $domain_list[$v->registrant_email]['expiry_date']         = $v->expiry_date;
         }
       }
+      
       foreach ($data as $key => $value)
       {
         
@@ -1664,6 +1673,7 @@ public function download_csv_single_page(Request $request)
         $status = 'ok';
         $result = null;
         try {
+           
           //$request['pagination'] = 10;
           $start  = microtime(true);
           $offset = $request->offset;
@@ -1671,7 +1681,7 @@ public function download_csv_single_page(Request $request)
           $result = $this->search_algo($request);
           // Session::put('oldReq', $request->all());
           $end    = microtime(true)-$start;
-
+          
           $phone_type_array = array();
           if(isset($request->cell) && $request->cell != null)
             array_push($phone_type_array, 'Cell Number');
@@ -1679,17 +1689,26 @@ public function download_csv_single_page(Request $request)
           if(isset($request->landline) && $request->landline != null)
             array_push($phone_type_array, 'Landline');
 
-          if($this->meta_data == null) {
-            return response()->json(array('result' => null, 'status' => $status));
-          } 
+          if($this->meta_id == null) {
+            return response()->json(array('result' => null, 'status' => $status, 'nextUrl' => null));
+          }
           $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id, $limit, $offset);
-
         } catch(\Exception $e) {
           $status = $e->getMessage();
         }
         // dd(count($result));
         // return \Response::json(array('result'=>$result, 'total_data'=>$this->totalLeads, 'status'=>$status));
-        return response()->json(array('result' => $result, 'status' => $status));
+        // $limit = 
+        // $url =
+
+        if(count($result) < $limit) {
+          $url = null;
+        } else {
+          $newRequest = $request->all();
+          $newRequest['offset'] = $offset + 1;
+          $url = explode('?', \Request::url())[0].getQueryParamsCustom($newRequest);
+        }
+        return response()->json(array('result' => $result, 'status' => $status, 'nextUrl' => $url));
     }
 
     public function search(Request $request)
