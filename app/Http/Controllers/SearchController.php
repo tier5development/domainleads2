@@ -1663,10 +1663,11 @@ public function download_csv_single_page(Request $request)
         //dd($request->all());
         $status = 'ok';
         $result = null;
-        try
-        {
+        try {
           //$request['pagination'] = 10;
           $start  = microtime(true);
+          $offset = $request->offset;
+          $limit  = $request->limit;
           $result = $this->search_algo($request);
           // Session::put('oldReq', $request->all());
           $end    = microtime(true)-$start;
@@ -1678,22 +1679,17 @@ public function download_csv_single_page(Request $request)
           if(isset($request->landline) && $request->landline != null)
             array_push($phone_type_array, 'Landline');
 
-          if($this->meta_id != null)
-          {
-            $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id, null, null);
-          }
-          else
-          {
-            $total_data = 0;
-            return \Response::json(array('result'=>null,'total_data'=>$total_data,'status'=>$status));
-          }
-        }
-        catch(\Exception $e)
-        {
+          if($this->meta_data == null) {
+            return response()->json(array('result' => null, 'status' => $status));
+          } 
+          $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id, $limit, $offset);
+
+        } catch(\Exception $e) {
           $status = $e->getMessage();
         }
-        $total_data = sizeof($result);
-        return \Response::json(array('result'=>$result,'total_data'=>$total_data,'status'=>$status));
+        // dd(count($result));
+        // return \Response::json(array('result'=>$result, 'total_data'=>$this->totalLeads, 'status'=>$status));
+        return response()->json(array('result' => $result, 'status' => $status));
     }
 
     public function search(Request $request)
