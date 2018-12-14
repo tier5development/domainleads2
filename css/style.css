@@ -1,0 +1,10 @@
+body{
+	margin: 0px;
+	padding: 0px;
+}
+
+/*banner*/
+.banner{
+	background-image: url(../images/main_bg.png);
+	background-color: #40cebd;
+}
