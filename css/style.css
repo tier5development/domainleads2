@@ -1,10 +1,289 @@
 body{
 	margin: 0px;
 	padding: 0px;
+	color: #8b8b8b;
+	font-family: 'Avenir LT Std 55 Roman';
+	font-size: 15px;
+	background-image: url('../images/bg-main.jpg');
+	background-size: 100% auto;
+	background-color: #fff;
+	width: 100%;
+    background-repeat: no-repeat;
+    position: relative;
 }
-
+/*fonts*/
+@font-face {
+	font-family: 'Avenir LT Std 55 Roman';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 55 Roman'), url('../fonts/AvenirLTStd-Roman.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 55 Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 55 Oblique'), url('../fonts/AvenirLTStd-Oblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 35 Light';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 35 Light'), url('../fonts/AvenirLTStd-Light.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 35 Light Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 35 Light Oblique'), url('../fonts/AvenirLTStd-LightOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 45 Book';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 45 Book'), url('../fonts/AvenirLTStd-Book.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 45 Book Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 45 Book Oblique'), url('../fonts/AvenirLTStd-BookOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 65 Medium';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 65 Medium'), url('../fonts/AvenirLTStd-Medium.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 65 Medium Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 65 Medium Oblique'), url('../fonts/AvenirLTStd-MediumOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 85 Heavy'), url('../fonts/AvenirLTStd-Heavy.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 85 Heavy Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 85 Heavy Oblique'), url('../fonts/AvenirLTStd-HeavyOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 95 Black';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 95 Black'), url('../fonts/AvenirLTStd-Black.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 95 Black Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 95 Black Oblique'), url('../fonts/AvenirLTStd-BlackOblique.woff') format('woff');
+}
+ul{
+	margin: 0px;
+	padding: 0px;
+}
+ul li{
+	display: inline-block;
+	list-style: none;
+}
+a:hover{
+	text-decoration: none;
+}
 /*banner*/
+.createForm input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  text-transform: capitalize;
+  font-size: 15px;
+  color: #c9c9c9;
+  font-family: 'Avenir LT Std 55 Roman';
+}
+.createForm input::-moz-placeholder { /* Firefox 19+ */
+  text-transform: capitalize;
+  font-size: 15px;
+  color: #c9c9c9;
+  font-family: 'Avenir LT Std 55 Roman';
+}
+.createForm input:-ms-input-placeholder { /* IE 10+ */
+  text-transform: capitalize;
+  font-size: 15px;
+  color: #c9c9c9;
+  font-family: 'Avenir LT Std 55 Roman';
+}
+.createForm input:-moz-placeholder { /* Firefox 18- */
+  text-transform: capitalize;
+  font-size: 15px;
+  color: #c9c9c9;
+  font-family: 'Avenir LT Std 55 Roman';
+}
 .banner{
-	background-image: url(../images/main_bg.png);
-	background-color: #40cebd;
+	position: relative;
+    float: left;
+    width: 100%;
+}
+.header{
+	padding: 15px 0px;
+}
+.header nav ul li{
+	margin: 0px 20px;
+}
+.header nav ul .button{
+	margin-left: 28px;
+}
+.header nav ul, .header nav a{
+	float: right;
+}
+.header nav ul li a{
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-size: 11px;
+	text-transform: uppercase;
+	color: #fff;
+	padding: 14px 0;
+	transition: 0.5s;
+}
+.header nav ul li a:hover{
+	color: #e95311;
+	transition: 0.5s;
+}
+.button{
+	padding: 14px 20px;
+	border-radius:30px;
+	font-family: 'Avenir LT Std 65 Medium';
+	font-size: 11px;
+	text-transform: uppercase;
+	color: #fff;
+	cursor: pointer;
+	outline: none;
+/*	box-shadow: 7px 4px 11px 0px #616161;*/
+}
+.gradiant-orange{
+	background-image: linear-gradient(to bottom, #e96f11, #e96810, #e96210, #e95b10, #e95311);
+	line-height: 11px;
+	display: block;
+	border: 2px solid #e96f11;
+	transition: 0.5s;
+}
+.gradiant-orange:hover{
+	background-image: none;
+	border: 2px solid #e96f11;
+	color: #e96f11;
+	transition: 0.5s;
+	background: transparent;
+}
+.innerContentWrap{
+	background-color: #fff;
+    border-radius: 10px;
+    background-image: url(../images/bg_popup.png);
+    background-repeat: no-repeat;
+    background-position: 134% 0%;
+    box-shadow: 0px 18px 80px -13px #777777;
+    transform: translateX(69%);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 170px;
+}
+.createForm{
+	padding: 37px 25px;
+}
+.createForm form{
+	padding: 70px 28px 0px 28px;
+}
+.createForm h2{
+	color: #6c6c6c;
+	font-size: 25px;
+	margin: 0px;
+	text-align: center;
+}
+.createForm form .nameField input{
+	width: 46.3%;
+	display: inline-block;
+}
+.createForm form .nameField input:first-child{
+	margin-right: 19px;
+}
+.createForm form input{
+	height: 50px;
+	box-shadow: none;
+	padding: 10px 17px;
+}
+.createForm form button{
+	height: 50px;
+    line-height: 21px;
+    display: block;
+    width: 100%;
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin: 60px 0px 30px 0px;
+}
+.createForm form .form-group{
+	margin-bottom: 30px;
+}
+.createForm form span, .createForm form a{
+	display: block;
+	text-align: center;
+}
+.createForm form span{
+	font-size: 15px;
+	color: #6c6c6c;
+}
+.createForm form a{
+	color: #1fbec5;
+	text-decoration: underline;	
+	text-transform: capitalize;
+}
+/*stickyText*/
+.stickyBox{
+	position: fixed;
+	background-color: #fff;
+	box-shadow: 0px 0px 59px -17px #777777;
+	padding: 22px;
+	border-radius: 10px 0px 0px 10px;
+	bottom: 116px;
+	right: 0px;
+	width: 391px;
+}
+.stickyBox img{
+ 	margin-right: 20px;
+ 	vertical-align: top;
+}
+.stickyText{
+	display: inline-block;
+	width: calc(100% - 73px);
+}
+.stickyText p{    
+	margin-bottom: 10px;
+    line-height: 15px;
+    color: #6c6c6c;
+}
+.stickyText span{
+	color: #E9A111;
+}
+.stickyText p:last-child{
+	margin-bottom: 0px;
+}
+/*footer*/
+.footer span{
+	margin-right: 18px;
+}
+.footer a{
+	color: #1fbec5;
+    text-decoration: underline;
+    text-transform: capitalize;
+    padding: 0px 7px;
+    position: relative;
+}
+.footer a:after{
+	position: absolute;
+	right: -5px;
+	top: -2px;
+	content: '/';
+	color: #8b8b8b;
+}
+.footer a:last-child:after{
+	content: normal;
 }
