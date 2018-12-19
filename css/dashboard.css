@@ -1,0 +1,362 @@
+@font-face {
+	font-family: 'Avenir LT Std 55 Roman';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 55 Roman'), url('../fonts/AvenirLTStd-Roman.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 55 Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 55 Oblique'), url('../fonts/AvenirLTStd-Oblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 35 Light';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 35 Light'), url('../fonts/AvenirLTStd-Light.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 35 Light Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 35 Light Oblique'), url('../fonts/AvenirLTStd-LightOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 45 Book';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 45 Book'), url('../fonts/AvenirLTStd-Book.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 45 Book Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 45 Book Oblique'), url('../fonts/AvenirLTStd-BookOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 65 Medium';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 65 Medium'), url('../fonts/AvenirLTStd-Medium.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 65 Medium Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 65 Medium Oblique'), url('../fonts/AvenirLTStd-MediumOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 85 Heavy'), url('../fonts/AvenirLTStd-Heavy.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 85 Heavy Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 85 Heavy Oblique'), url('../fonts/AvenirLTStd-HeavyOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 95 Black';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 95 Black'), url('../fonts/AvenirLTStd-Black.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 95 Black Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 95 Black Oblique'), url('../fonts/AvenirLTStd-BlackOblique.woff') format('woff');
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Avenir LT Std 55 Roman';
+    font-weight: 400; 
+    background: #ffffff url("../images/bg_main.png") no-repeat;
+    background-position: top center;
+}
+table {
+    border-collapse: collapse;
+}
+th {
+    text-align: inherit;
+}
+a {
+    text-decoration: none;
+    -webkit-text-decoration-skip: objects;
+}
+ul{
+    list-style: none;
+}
+
+.clear {
+    clear: both;
+}
+
+
+.container {
+    max-width: 1560px;
+    margin: 0 auto;
+}
+
+.dashHeader {
+    padding-top: 12px;
+    padding-bottom: 10px;
+}
+.headerLeft {
+    float: left;
+    padding-top: 5px;
+}
+.headerRight {
+    float: right;
+    width: 600px;
+}
+.heaverNav ul {
+    margin-top: 12px;
+    float: left;
+}
+.heaverNav ul li {
+    float: left;
+    padding-right: 45px;
+}
+.heaverNav ul li:last-child {
+    padding-right: 0;
+}
+.heaverNav ul li a {
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 85 Heavy';
+}
+.userNameArea {
+    float: right;
+}
+.userName {
+    float: left;
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 85 Heavy';
+    margin: 15px 15px 0 0;
+}
+.userImg {
+    float: right;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.mainBody {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    float: left;
+    width: 100%;
+}
+
+.leftPanel {
+    width: 70%;
+    float: left;
+    padding: 0 45px;
+}
+.leftPanelHeader {
+    display: inline-block;
+    width: 100%;
+    margin: 100px 0 30px 0;
+}
+.leftPanelHeader .clientImg {
+    width: 33px;
+    height: 33px;
+    border-radius: 20px;
+    overflow: hidden;
+    text-align: center;
+    float: left;
+    margin-right: 22px;
+}
+.leftPanelHeader .clientInfo {
+    float: left;
+}
+.leftPanelHeader .clientInfo h1 {
+    font-size: 36px;
+    color: #1fbec5;
+    font-family: 'Avenir LT Std 95 Black';
+}
+.leftPanelHeader .clientInfo p {
+    font-family: 'Avenir LT Std 55 Roman';
+    padding-top: 15px;
+    font-size: 15px;
+    color: #6c6c6c;
+}
+.searchDomainForm {
+    background: #f6f6f6;
+    border: 1px solid #dbdbdb;
+    border-radius: 15px;
+    padding: 0 78px 45px 78px;
+    max-width: 846px;
+    margin: 0 auto;
+}
+.searchDomainForm .formRow {
+    margin-top: 45px;
+}
+.searchDomainForm .formRow .rowHeading {
+    color: #6c6c6c;
+    font-size: 15px;
+    padding-bottom: 20px;
+}
+.searchDomainForm .formRow label {
+    color: #6c6c6c;
+    font-size: 15px;
+    padding: 5px 0 0 10px;
+    display: inline-block;
+}
+.searchDomainForm .formRow .radioCol {
+    display: inline-block;
+    margin-right: 40px;
+}
+.radio {
+    float: left;
+    width: 22px;
+    height: 22px;
+    position: relative;
+}
+.radio input[type="radio"] {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    opacity: 0;
+    z-index: 10;
+}
+.radio p {
+    width: 22px;
+    height: 22px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #d4d4d4;
+    transition: all 0.5s ease 0s;
+}
+.radio p span {
+    display: block;
+    width: 0px;
+    height: 0px;
+    border-radius: 10px;
+    background: linear-gradient(to right, #1fbec5, #63e6b2);
+    transition: all 0.2s ease 0s;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+.radio p:after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 20px;
+    border: 0px solid #1fbec5;
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    opacity: 1;
+    transition: all 0.3s ease 0.1s, opacity 0.3s ease 0.15s;
+}
+.radio input[type="radio"]:checked + p {
+    border-color: #1fbec5; 
+}
+.radio input[type="radio"]:checked + p:after {
+    border: 6px solid #1fbec5;
+    width: 38px;
+    height: 38px;
+    left: -8px;
+    top: -8px;
+    opacity: 0;
+}
+.radio input[type="radio"]:checked + p span {
+    width: 14px;
+    height: 14px;
+    left: 4px;
+    top: 4px;
+}
+
+.dateRange {
+    border: 1px solid #dbdbdb;
+    background: #fff url("../images/dateIndicator.png") no-repeat center;
+    border-radius: 3px;
+    padding: 13px;
+    display: inline-block;
+    width: 100%;
+}
+.dateArea img {
+    float: left;
+}
+.dateArea .date {
+    float: left;
+}
+.dateArea.endDate {
+    float: right;
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    width: 32px;
+    background: #fff;
+    border: 0;
+    border-bottom: 1px solid #dbdbdb;
+    font-size: 14px;
+    padding-bottom: 5px;
+    text-align: center;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #8b8b8b;
+    margin-left: 24px;
+    outline: none;
+}
+.dateArea .date .year {
+    width: 44px;
+}
+.dateArea .date .day::placeholder, .dateArea .date .month::placeholder, .dateArea .date .year::placeholder {
+    color: #cfcfcf;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
