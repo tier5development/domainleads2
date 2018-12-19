@@ -230,11 +230,8 @@ a:hover{
     background-repeat: no-repeat;
     background-position: 134% 0%;
     box-shadow: 0px 18px 80px -13px #777777;
-    transform: translateX(69%);
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 170px;
+    min-width: 803px;
+    transform: translateX(65%);
 }
 .createForm{
 	padding: 37px 25px;
@@ -388,6 +385,9 @@ a:hover{
 	-webkit-transform: rotate(45deg);
 	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
+}
+.innerContent{
+	margin-top: 162px;
 }
 .innerContentWrap .forgot label {
 	display: inline-block;
