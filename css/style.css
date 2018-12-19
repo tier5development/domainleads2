@@ -280,6 +280,8 @@ a:hover{
 .createForm form span{
 	font-size: 15px;
 	color: #6c6c6c;
+	margin-bottom: 7px;
+    line-height: 15px;
 }
 .createForm form a{
 	color: #1fbec5;
@@ -321,7 +323,7 @@ a:hover{
 .forgotText {
   display: block;
   position: relative;
-  padding-left: 35px;
+  padding-left: 30px;
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
@@ -352,13 +354,15 @@ a:hover{
 }
 
 /* On mouse-over, add a grey background color */
-.forgotText:hover input ~ .checkmark {
-  background-color: #ccc;
+.forgotText input ~ .checkmark {
+    background-color: transparent;
+    border: 1px solid #dbdbdb;
 }
 
 /* When the checkbox is checked, add a blue background */
 .forgotText input:checked ~ .checkmark {
   background-color: #e96f11;
+  border-color: #e96f11;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -375,8 +379,8 @@ a:hover{
 
 /* Style the checkmark/indicator */
 .forgotText .checkmark:after {
-	left: 8px;
-	top: 3px;
+	left: 6px;
+	top: 2px;
 	width: 6px;
 	height: 12px;
 	border: solid white;
@@ -389,16 +393,41 @@ a:hover{
 	display: inline-block;
 	margin-bottom: 0px;
     text-transform: capitalize;
-    font-size: 16px;
+    font-size: 13px;
     color: #6c6c6c;
     font-weight: 100;
-    font-family: 'Avenir LT Std 55 Roman';
+    line-height: 21px;
 }
 .innerContentWrap .forgot a{
 	display: inline-block !important;
 	float: right;
+	font-size: 13px;
+}
+.loginForm form button{
+	margin: 20px 0px 30px 0px;
+}
+.loginForm form .form-group:last-child{
+	margin-bottom: 10px !important;
 }
 
+/*logout page*/
+.logout .innerContentWrap{
+	background-image: none;
+} 
+.logout .innerContentWrap .createForm{
+	text-align: center;
+	padding: 105px 0;
+}
+.logout .innerContentWrap .createForm img{
+	margin-bottom: 30px;
+}
+.logout .innerContentWrap .createForm h2{
+	margin-bottom: 12px;
+}
+.logout .innerContentWrap .createForm button{
+	margin: 0px auto;
+	margin-top: 25px;
+}
 /*footer*/
 .footer span{
 	margin-right: 18px;
