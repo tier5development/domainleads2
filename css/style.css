@@ -128,6 +128,9 @@ a:hover{
 .header{
 	padding: 15px 0px;
 }
+.header .logo{
+	padding: 8px 0px;
+}
 .header nav ul li{
 	margin: 0px 20px;
 }
@@ -174,6 +177,52 @@ a:hover{
 	transition: 0.5s;
 	background: transparent;
 }
+.searchBox{
+	border-bottom: 1px solid #dbdbdb;	
+	width: 131px;
+}
+.searchBox form{
+	width: 147px;
+}
+.searchBox input{
+	border: none;
+    background: transparent;
+    padding: 10px;
+    outline: none;
+    color: #e96f11;
+    width: 118px;
+} 
+.searchBox img{
+	width: 8%;
+}
+.searchBox input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+	text-transform: uppercase;
+	font-size: 12px;
+	color: #fff;
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-size: 11px;
+}
+.searchBox input::-moz-placeholder { /* Firefox 19+ */
+	text-transform: uppercase;
+	font-size: 12px;
+	color: #fff;
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-size: 11px;
+}
+.searchBox input:-ms-input-placeholder { /* IE 10+ */
+	text-transform: uppercase;
+	font-size: 12px;
+	color: #fff;
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-size: 11px;
+}
+.searchBox input:-moz-placeholder { /* Firefox 18- */
+	text-transform: uppercase;
+	font-size: 12px;
+	color: #fff;
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-size: 11px;
+}
 .innerContentWrap{
 	background-color: #fff;
     border-radius: 10px;
@@ -197,7 +246,7 @@ a:hover{
 	color: #6c6c6c;
 	font-size: 25px;
 	margin: 0px;
-	text-align: center;
+/*	text-align: center;*/
 }
 .createForm form .nameField input{
 	width: 46.3%;
@@ -210,6 +259,7 @@ a:hover{
 	height: 50px;
 	box-shadow: none;
 	padding: 10px 17px;
+	border-color: #dbdbdb;
 }
 .createForm form button{
 	height: 50px;
@@ -266,6 +316,88 @@ a:hover{
 .stickyText p:last-child{
 	margin-bottom: 0px;
 }
+/*login page*/
+/*custom checkbox*/
+.forgotText {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.forgotText input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.forgotText:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.forgotText input:checked ~ .checkmark {
+  background-color: #e96f11;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.forgotText input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.forgotText .checkmark:after {
+	left: 8px;
+	top: 3px;
+	width: 6px;
+	height: 12px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+.innerContentWrap .forgot label {
+	display: inline-block;
+	margin-bottom: 0;
+    text-transform: capitalize;
+    font-size: 16px;
+    color: #6c6c6c;
+    font-family: 'Avenir LT Std 55 Roman';
+}
+.innerContentWrap .forgot a{
+	display: inline-block !important;
+	float: right;
+}
+
 /*footer*/
 .footer span{
 	margin-right: 18px;
@@ -287,3 +419,4 @@ a:hover{
 .footer a:last-child:after{
 	content: normal;
 }
+

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>|| Sign up ||Domain Leads</title>
+    <title>|| Login ||Domain Leads</title>
     <link rel="shortcut icon" type="text/css" href="images/favicon-dl.ico">
 
     <!-- Bootstrap -->
@@ -28,11 +28,12 @@
             </div>
             <div class="col-xs-9">
               <nav class="menu clearfix">
-                <ul>
-                  <a class="button gradiant-orange">login</a>
-                  <li><a href="#">lead conversion</a></li>
-                  <li><a href="#">pricing</a></li>
-                </ul>
+                <div class="searchBox pull-right">
+                  <form class="form-search" method="get" id="s" action="/">
+                    <img src="images/search.png">
+                    <input type="text" class="input-medium search-query" name="s" placeholder="Search domain" value="">
+                  </form>
+                </div>
               </nav>
             </div>
           </div>
@@ -43,18 +44,24 @@
           <div class="innerContentWrap clearfix">
             <div class="col-md-7">
                 <div class="createForm">
-                  <h2>Get an account to unlock leads</h2>
+                  <h2>Login</h2>
                   <form>
-                    <div class="form-group nameField">
-                      <input type="text" class="form-control" id="" placeholder="first name">
-                      <input type="text" class="form-control" id="" placeholder="last name">
-                    </div>
                     <div class="form-group">
                       <input type="email" class="form-control" id="" placeholder="email">
                     </div>
-                    <button type="submit" class="btn button gradiant-orange">get an account</button>
-                    <span>have an account?</span>
-                    <a href="#">login now!</a>
+                    <div class="form-group">
+                      <input type="password" class="form-control" id="" placeholder="*********">
+                    </div>
+                    <div class="forgot clearfix">
+                      <label class="forgotText">remember me
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                      </label>
+                      <a href="#">forgot?</a>
+                    </div>
+                    <button type="submit" class="btn button gradiant-orange">login</button>
+                    <span>Don't have an account?</span>
+                    <a href="#">register now!</a>
                 </form>
               </div>
             </div>
@@ -87,6 +94,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/custom.js"></script>
+    <script src="js/custom.js"></script> 
   </body>
 </html>
