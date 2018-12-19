@@ -387,10 +387,11 @@ a:hover{
 }
 .innerContentWrap .forgot label {
 	display: inline-block;
-	margin-bottom: 0;
+	margin-bottom: 0px;
     text-transform: capitalize;
     font-size: 16px;
     color: #6c6c6c;
+    font-weight: 100;
     font-family: 'Avenir LT Std 55 Roman';
 }
 .innerContentWrap .forgot a{
