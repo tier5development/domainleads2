@@ -1,14 +1,12 @@
 body{
-	margin: 0px;
+	margin: 0px auto;
 	padding: 0px;
 	color: #8b8b8b;
 	font-family: 'Avenir LT Std 55 Roman';
 	font-size: 15px;
-	background-image: url('../images/bg-main.jpg');
-	background-size: 100% auto;
-	background-color: #fff;
+	background: url('../images/bg-main.jpg') #fff no-repeat;
+	background-position: top center;
 	width: 100%;
-    background-repeat: no-repeat;
     position: relative;
 }
 /*fonts*/
@@ -124,6 +122,7 @@ a:hover{
 	position: relative;
     float: left;
     width: 100%;
+    height: auto;
 }
 .header{
 	padding: 15px 0px;
@@ -147,9 +146,22 @@ a:hover{
 	color: #fff;
 	padding: 14px 0;
 	transition: 0.5s;
+	position: relative;
 }
-.header nav ul li a:hover{
-	color: #e95311;
+.header nav ul li a:before{
+	position: absolute;
+	content: '';
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: 0px auto;
+	height: 1px;
+	width: 0%;
+	transition: 0.5s;
+	background-color: #e95311;
+}
+.header nav ul li:hover a:before, .header nav ul li.active a:before{
+	width: 100%;
 	transition: 0.5s;
 }
 .button{
@@ -223,6 +235,14 @@ a:hover{
 	font-family: 'Avenir LT Std 85 Heavy';
 	font-size: 11px;
 }
+.innerContent{
+	margin: 162px 0;
+	display: flex;
+    justify-content: center;
+}
+/*.customCont{
+	max-width: 760px;
+}*/
 .innerContentWrap{
 	background-color: #fff;
     border-radius: 10px;
@@ -230,28 +250,23 @@ a:hover{
     background-repeat: no-repeat;
     background-position: 134% 0%;
     box-shadow: 0px 18px 80px -13px #777777;
-    min-width: 803px;
-    transform: translateX(65%);
+    float: none;
+    height: 100%;
+    margin: 0px auto;
+/*    max-width: 803px;*/
 }
 .createForm{
-	padding: 37px 25px;
+	padding: 37px 15px;
 }
 .createForm form{
-	padding: 70px 28px 0px 28px;
+	padding: 70px 20px 0px 20px;
 }
 .createForm h2{
 	color: #6c6c6c;
 	font-size: 25px;
 	margin: 0px;
-/*	text-align: center;*/
 }
-.createForm form .nameField input{
-	width: 46.3%;
-	display: inline-block;
-}
-.createForm form .nameField input:first-child{
-	margin-right: 19px;
-}
+
 .createForm form input{
 	height: 50px;
 	box-shadow: none;
@@ -269,6 +284,19 @@ a:hover{
 }
 .createForm form .form-group{
 	margin-bottom: 30px;
+}
+.createForm form .form-group.nameField{
+	padding-right: 10px;
+    padding-left: 10px;
+}
+.createForm form .form-group.nameField input{
+	width: 50%;
+	display: inline-block;
+	margin-right: -10px;
+	margin-left: -10px;
+}
+.createForm form .form-group.nameField input:first-child{
+	margin-right: 25px;
 }
 .createForm form span, .createForm form a{
 	display: block;
@@ -329,7 +357,6 @@ a:hover{
   -ms-user-select: none;
   user-select: none;
 }
-
 /* Hide the browser's default checkbox */
 .forgotText input {
   position: absolute;
@@ -338,7 +365,6 @@ a:hover{
   height: 0;
   width: 0;
 }
-
 /* Create a custom checkbox */
 .checkmark {
   position: absolute;
@@ -349,31 +375,26 @@ a:hover{
   background-color: #eee;
   border-radius: 50%;
 }
-
 /* On mouse-over, add a grey background color */
 .forgotText input ~ .checkmark {
     background-color: transparent;
     border: 1px solid #dbdbdb;
 }
-
 /* When the checkbox is checked, add a blue background */
 .forgotText input:checked ~ .checkmark {
   background-color: #e96f11;
   border-color: #e96f11;
 }
-
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
-
 /* Show the checkmark when checked */
 .forgotText input:checked ~ .checkmark:after {
   display: block;
 }
-
 /* Style the checkmark/indicator */
 .forgotText .checkmark:after {
 	left: 6px;
@@ -386,9 +407,8 @@ a:hover{
 	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
 }
-.innerContent{
-	margin-top: 162px;
-}
+
+
 .innerContentWrap .forgot label {
 	display: inline-block;
 	margin-bottom: 0px;
@@ -403,12 +423,13 @@ a:hover{
 	float: right;
 	font-size: 13px;
 }
-.loginForm form button{
+.login .createForm form button{
 	margin: 20px 0px 30px 0px;
 }
-.loginForm form .form-group:last-child{
+.login .createForm form .form-group:last-child{
 	margin-bottom: 10px !important;
 }
+
 
 /*logout page*/
 .logout .innerContentWrap{
@@ -449,4 +470,194 @@ a:hover{
 .footer a:last-child:after{
 	content: normal;
 }
+
+/*responsive*/
+@media only screen and (min-width : 1200px) and (max-width : 1645px) {
+	.innerContent{
+	   margin: 122px 0;
+	}
+	.stickyBox{
+		bottom: 56px;
+	}
+}
+
+/* Large Devices, Wide Screens(md) */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {
+	.innerContentWrap{
+		background-position: 206% 0%;
+	}
+	.stickyBox{
+		bottom: 56px;
+	}
+	.innerContent{
+	   margin: 122px 0;
+	}
+	.innerContentWrap .forgot label{
+		float: left;
+	}
+	.createForm form .form-group.nameField input{
+		width: 100%;
+		margin: 0px;
+	}
+	.createForm form .form-group.nameField input:first-child {
+    	margin-right: 0px;
+    	margin-bottom: 20px;
+	}
+	.createForm form .form-group {
+    	margin-bottom: 20px;
+	}
+	.createForm form .form-group.nameField{
+		padding: 0px;
+	}
+	.createForm h2{
+		font-size: 22px;
+	}
+	.stickyBox{
+		bottom: 37px;
+	}
+}
+/* Medium Devices, Desktops(sm) */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+	.innerContentWrap{
+		background-position: 224px 0%;
+		text-align: center;
+	}
+
+	.innerContent.logout{
+		margin: 150px 0;
+	}
+	.stickyBox{
+		bottom: 56px;
+	}
+	.innerContentWrap .forgot label{
+		float: left;
+	}
+	.createForm form .form-group.nameField input{
+		width: 100%;
+		margin: 0px;
+	}
+	.createForm form .form-group.nameField input:first-child {
+    	margin-right: 0px;
+    	margin-bottom: 20px;
+	}
+	.createForm form .form-group {
+    	margin-bottom: 20px;
+	}
+	.createForm form .form-group.nameField{
+		padding: 0px;
+	}
+	.innerContent{
+		   margin: 28px 0 150px 0px;
+		}
+	.createForm form button{
+		font-size: 12px;
+	}
+	.login{
+		margin: 118px 0 150px 0px;
+	}
+	
+}
+/* Small Devices, Tablets (xs)*/
+@media only screen and (min-width : 480px) and (max-width : 767px) {
+	.innerContent{
+		margin: 28px 0 150px 0px;
+	}
+	.innerContent.logout{
+		margin: 100px 0;
+	}
+	.createForm form .form-group.nameField input{
+		width: 100%;
+		margin: 0px;
+	}
+	.createForm form .form-group.nameField input:first-child {
+    	margin-right: 0px;
+    	margin-bottom: 20px;
+	}
+	.createForm form .form-group.nameField{
+		padding: 0px;
+	}
+	.innerContentWrap{
+		background-position: 291px 0%;
+		text-align: center;
+		min-width: 420px;
+	}
+	.stickyBox{
+		bottom: 50px;
+	}
+	.innerContentWrap .forgot label{
+		float: left;
+	}
+	.login{
+		margin: 118px 0 150px 0px;
+	}
+}
+@media only screen and (min-width : 320px) and (max-width : 479px) {
+	.innerContent{
+		   margin: 28px 0 150px 0px;
+		}
+	.createForm form .form-group.nameField input{
+		width: 100%;
+		margin: 0px;
+	}
+	.logout .innerContentWrap{
+		min-width: 300px;
+	}
+	.createForm form .form-group.nameField input:first-child {
+    	margin-right: 0px;
+    	margin-bottom: 30px;
+	}
+	.createForm form .form-group.nameField{
+		padding: 0px;
+	}
+	.innerContentWrap{
+		background-position: -90% 0%;
+		text-align: center;
+	}
+	.stickyBox{
+		bottom: 50px;
+	}
+	.createForm form {
+    padding: 40px 20px 0px 20px;
+	}
+	.createForm form .form-group, .createForm form .form-group.nameField input:first-child{
+		margin-bottom: 20px;
+	}
+	.createForm form button{
+		margin-top: 30px;
+		font-size: 11px;
+		line-height: 5px;
+	}
+	.createForm form span, .stickyText p{
+		font-size: 13px;
+	}
+	.stickyBox {
+	    bottom: 20px;
+	    padding: 13px;
+	    width: 90%;
+	}
+	.footer{
+		text-align: center;
+	}
+	.footer span{
+		font-size: 10px;
+		display: block;
+		float: none;
+		margin: 0px;
+	}
+	.footer a{
+		font-size: 10px;
+	}
+	.footer .pull-left{
+		float: none !important;
+	}
+	.innerContentWrap .forgot label{
+		float: left;
+	}
+}
+
+
+
+
+
+
 

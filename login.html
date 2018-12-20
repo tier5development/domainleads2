@@ -14,61 +14,73 @@
 
   </head>
   <body>
+
   <!-- banner -->
-    <section class="banner">
-      <header class="header">
-        <div class="container">
-          <div class="row">
-            <div class="col-xs-3">
-              <div class="logo">
-                <a href="index.html">
-                  <img src="images/logo.png" alt="logo">
-                </a>
-              </div>
-            </div>
-            <div class="col-xs-9">
-              <nav class="menu clearfix">
-                <div class="searchBox pull-right">
-                  <form class="form-search" method="get" id="s" action="/">
-                    <img src="images/search.png">
-                    <input type="text" class="input-medium search-query" name="s" placeholder="Search domain" value="">
-                  </form>
-                </div>
-              </nav>
+  <section class="banner">
+    <!-- header -->
+    <header class="header">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-3">
+            <div class="logo">
+              <a href="index.html">
+                <img src="images/logo.png" alt="logo">
+              </a>
             </div>
           </div>
-        </div>
-      </header>
-      <div class="innerContent clearfix">
-        <div class="col-md-5">
-          <div class="innerContentWrap clearfix">
-            <div class="col-md-7">
-                <div class="createForm">
-                  <h2>Login</h2>
-                  <form>
-                    <div class="form-group">
-                      <input type="email" class="form-control" id="" placeholder="email">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control" id="" placeholder="*********">
-                    </div>
-                    <div class="forgot clearfix">
-                      <label class="forgotText">remember me
-                        <input type="checkbox" checked="checked">
-                        <span class="checkmark"></span>
-                      </label>
-                      <a href="#">forgot?</a>
-                    </div>
-                    <button type="submit" class="btn button gradiant-orange">login</button>
-                    <span>Don't have an account?</span>
-                    <a href="#">register now!</a>
+          <div class="col-xs-9">
+            <nav class="menu clearfix">
+              <div class="searchBox pull-right">
+                <form class="form-search" method="get" id="s" action="/">
+                  <img src="images/search.png">
+                  <input type="text" class="input-medium search-query" name="s" placeholder="Search domain" value="">
                 </form>
               </div>
-            </div>
+            </nav>
           </div>
         </div>
       </div>
-    </section>
+    </header>
+    <!-- inner content -->
+    <div class="innerContent login clearfix">
+      <div class="container customCont">
+        <div class="col-sm-8 col-xs-12 innerContentWrap">
+          <div class="col-md-6 col-sm-7 createForm">
+              <h2>Login</h2>
+              <form>
+                <div class="form-group">
+                  <input type="email" class="form-control" id="" placeholder="email">
+                </div>
+                <div class="form-group">
+                  <input type="password" class="form-control" id="" placeholder="*********">
+                </div>
+                <div class="forgot clearfix">
+                  <label class="forgotText">remember me
+                    <input type="checkbox" checked="checked">
+                    <span class="checkmark"></span>
+                  </label>
+                  <a href="#">forgot?</a>
+                </div>
+                <button type="submit" class="btn button gradiant-orange">login</button>
+                <span>Don't have an account?</span>
+                <a href="#">register now!</a>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
+    <div class="footer clearfix">
+      <div class="container">
+        <div class="col-md-12 pull-left">
+          <span>&copy; 2017 Powered by Tier5</span>
+          <a href="#">privacy policy</a>
+          <a href="#">terms of use</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
   <!-- sticky text -->
   <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
     <div id="popup">
@@ -79,16 +91,7 @@
       </div>
     </div>
   </div> 
-   <!-- footer -->
-<!--   <footer class="footer clearboth">
-    <div class="container">
-      <div class="col-md-12 pull-left">
-        <span>&copy; 2017 Powered by Tier5</span>
-        <a href="#">privacy policy</a>
-        <a href="#">terms of use</a>
-      </div>
-    </div>
-  </footer> -->
+
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
