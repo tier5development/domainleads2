@@ -103,10 +103,138 @@ a {
 ul{
     list-style: none;
 }
+input, select, textarea, button {
+    outline: none;
+}
 
 .clear {
     clear: both;
 }
+
+
+/* CSS for custom select dropdown -start */
+.selectNumberArea {
+    border-bottom: 1px solid #d9d9d9;
+    padding: 0 20px 30px 20px;
+    margin: 0 -27px;
+}
+.selectNumberArea label {
+    color: #21395e;
+    font-size: 14px;
+    float: left;
+    margin-top: 8px;
+    margin-right: 15px;
+}
+
+.select-hidden {
+    display: none;
+    visibility: hidden;
+}
+.select {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 36px;
+    width: 100%;
+    text-align: left;
+}
+.select-styled {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    color: #6c6c6c;
+    transition: all 0.2s ease-in;
+    float: left;
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 3px;
+    line-height: 24px;
+    height: 50px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.select-styled:after {
+    content: "";
+    width: 8px;
+    height: 2px;
+    background: #818181;
+    position: absolute;
+    top: 24px;
+    right: 13px;
+    transform: rotate(-135deg);
+    transition: all 0.3s ease 0s;
+}
+.select-styled:before {
+    content: "";
+    width: 8px;
+    height: 2px;
+    background: #818181;
+    position: absolute;
+    top: 24px;
+    right: 8px;
+    transform: rotate(135deg);
+    transition: all 0.3s ease 0s;
+}
+.select-styled.active:after {
+    transform: rotate(-45deg);
+}
+.select-styled.active:before {
+    transform: rotate(45deg);
+}
+
+
+.select-options {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    left: 0;
+    z-index: 999;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: margin 0.2s ease-in;
+}
+.select-options li {
+    margin: 0;
+    padding: 9px 0 10px;
+    text-indent: 15px;
+    -moz-transition: all 0.3s ease-in;
+    -o-transition: all 0.3s ease-in;
+    -webkit-transition: all 0.3s ease-in;
+    transition: all 0.3s ease-in;
+    font-size: 14px;
+    color: #6c6c6c;
+}
+.select-options li:hover {
+    background: #f5f5f5;
+}
+/* .select-options li:first-child {
+    border-top: 0;
+    color: #888;
+} */
+.select-options li[rel="hide"] {
+    display: none;
+}
+.select-styled.active + ul.select-options{
+    margin-top: 1px;
+}
+
+.selectNumberArea .select {
+    width: 310px;
+    float: left;
+}
+
+/* CSS for custom select dropdown -end */
+
 
 
 .container {
@@ -168,6 +296,7 @@ ul{
     padding: 30px;
     float: left;
     width: 100%;
+    position: relative;
 }
 
 .leftPanel {
@@ -212,12 +341,12 @@ ul{
     margin: 0 auto;
 }
 .searchDomainForm .formRow {
-    margin-top: 45px;
+    margin-top: 40px;
 }
 .searchDomainForm .formRow .rowHeading {
     color: #6c6c6c;
     font-size: 15px;
-    padding-bottom: 20px;
+    padding-bottom: 17px;
 }
 .searchDomainForm .formRow label {
     color: #6c6c6c;
@@ -317,41 +446,359 @@ ul{
     padding-bottom: 5px;
     text-align: center;
     font-family: 'Avenir LT Std 65 Medium';
-    color: #8b8b8b;
+    color: #6c6c6c;
     margin-left: 24px;
     outline: none;
 }
 .dateArea .date .year {
     width: 44px;
 }
-.dateArea .date .day::placeholder, .dateArea .date .month::placeholder, .dateArea .date .year::placeholder {
+.dateArea .date .day::placeholder, 
+.dateArea .date .month::placeholder, 
+.dateArea .date .year::placeholder, 
+.domainName input[type="text"]::placeholder {
     color: #cfcfcf;
+}
+.domainName input[type="text"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    display: inline-block;
+    width: calc(100% - 117px);
+    height: 50px;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+}
+.domainName .selectBox {
+    width: 92px;
+    float: right;
+}
+.formRow.address {
+    width: 100%;
+    display: inline-block;
+}
+.address .formCol {
+    width: 35%;
+    float: left;
+    padding-right: 25px;
+}
+.address .formCol:last-child {
+    padding-right: 0;
+    width: 30%;
+}
+.address .formCol label {
+    padding: 0 0 17px 0;
+}
+.address .formCol input[type="text"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    height: 50px;
+    width: 100%;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+}
+
+.orangeBtn {
+    background: linear-gradient(#e96e10, #e95310);
+    border: none;
+    color: #fff;
+    font-family: 'Avenir LT Std 65 Medium';
+    font-size: 16px;
+    text-align: center;
+    height: 50px;
+    padding: 0 50px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.formRow.submit {
+    position: relative;
+    margin-top: 20px;
+}
+.formRow.submit .orangeBtn {
+    position: absolute;
+    left: 50%;
+    top: 21px;
+    transform: translateX(-50%);
+}
+
+.rightPanel {
+    width: 28%;
+    float: right;
+    margin: 30px 0;
+    padding: 0 15px 0 45px;
+    position: relative;
+}
+.rightPanel h2 {
+    color: #c6c6c6;
+    font-size: 11px;
+    font-family: 'Avenir LT Std 85 Heavy';
+    letter-spacing: 2px;
+}
+.leftLine {
+    position: absolute;
+    top: 0;
+    left: -2px;
+    height: 100%;
+    width: 9px;
+}
+.leftLine span {
+    width: 9px;
+    height: 9px;
+    border: 2px solid #c9c9c9;
+    background: #fff;
+    border-radius: 8px;
+    position: absolute;
+    top: 0;
+    z-index: 5;
+}
+.leftLine span:last-child {
+    top: unset;
+    bottom: 0;
+}
+.leftLine p {
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background: #c9c9c9;
+    left: 4px;
+}
+.rightPanel h3 {
+    color: #000;
+    font-size: 20px;
+    font-family: 'Avenir LT Std 85 Heavy';
+    margin: 50px 0 0;
+    position: relative;
+}
+.rightPanel h3:before {
+    content: "";
+    width: 25px;
+    height: 25px;
+    background: url("../images/Multi_circle_bullet.png") no-repeat;
+    position: absolute;
+    left: -55px;
+}
+.todayContent p, .tilldateContent p {
+    color: #6e6e6e;
+    font-size: 15px;
+    padding-top: 10px;
+    text-align: center;
+    line-height: 23px;
+}
+.tilldateContent {
+    margin-top: 90px;
+    margin-bottom: 150px;
+}
+.tilldateContent p {
+    text-align: left;
+    padding-top: 5px;
+}
+.todayContent p span.green, .tilldateContent p span.green {
+    color: #41c8cd;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.todayContent p span.yellow {
+    color: #e9a112;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.todayContent .chart {
+    text-align: center;
+    margin-top: 55px;
+}
+.todayContent .orangeBtn {
+    padding: 0 32px;
+    margin-top: 25px;
+}
+
+.footer {
+    color: #c6c6c6;
+    font-size: 14px;
+    font-family: 'Avenir LT Std 65 Medium';
+    margin-top: 120px;
+    margin-bottom: 30px;
+    display: inline-block;
+    width: 100%;
+    padding: 0 50px;
+}
+.footer a {
+    display: inline-block;
+    text-decoration: underline;
+    color: #3cbec1;
+    margin: 0 5px;
+}
+.footer a:first-child {
+    margin-left: 20px;
 }
 
 
+.leftPanel.leadUnlock {
+    padding: 0 20px;
+}
+.unlockInfo {
+    color: #6c6c6c;
+    font-size: 15px;
+    float: left;
+    margin-top: 10px;
+}
+.unlockInfo strong {
+    font-family: 'Avenir LT Std 95 Black';
+}
+.dataTableHeader {
+    display: inline-block;
+    width: 100%;
+}
+.dataTableHeaderRight {
+    float: right;
+}
+.dataTableHeaderRight .dateArea {
+    float: left;
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 12px 12px 7px 12px;
+    margin-right: 10px;
+}
+.dataTableHeaderRight .orangeBtn {
+    height: 45px;
+    padding: 0 25px;
+    padding-top: 2px;
+}
+.dataTableHeaderRight .greenBtn {
+    background: linear-gradient(to right, #3cbec1, #48e4b3);
+    height: 45px;
+    padding: 0 15px;
+    color: #fff;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Avenir LT Std 65 Medium';
+    font-size: 15px;
+    padding-top: 3px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.pageViewControl {
+    float: right;
+    margin-left: 47px;
+}
+.pageViewControl label {
+    font-family: 'Avenir LT Std 85 Heavy';
+    color: #c6c6c6;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+.pageViewControl .selectBox {
+    float: right;
+    width: 96px;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+.pageViewControl .select-styled {
+    border:0;
+    border-bottom: 1px solid #6c6c6c;
+    border-radius: 0;
+    padding: 0;
+    height: 26px;
+    text-align: center;
+}
+.pageViewControl .select-styled:before {
+    top: 12px;
+    right: -20px;
+}
+.pageViewControl .select-styled:after {
+    top: 12px;
+    right: -15px;
+}
+.pageViewControl .select-options {
+    top: 24px;
+    border-color: #6c6c6c;
+    border-radius: 0;
+}
+.pageViewControl .select-options li {
+    text-indent: 0;
+    text-align: center;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.datatable {
+    padding-top: 25px;
+}
+.datatable table {
+    width: 100%;
+}
+.datatable table thead {
+    border-top: 1px solid #ececeb;
+    border-bottom: 1px solid #ececeb;
+}
+.datatable table thead th {
+    color: #c6c6c6;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 30px 10px;
+}
+.datatable table thead th:first-child {
+    padding-left: 0;
+}
+.datatable table thead th:last-child {
+    padding-right: 0;
+}
+.datatable table tbody td {
+    padding: 30px 10px;
+    vertical-align: top;
+    border-bottom: 1px solid #c9c9c9;
+}
+.datatable table tbody td:first-child {
+    padding-left: 0;
+}
+.datatable table tbody td:last-child {
+    padding-right: 0;
+}
+.datatable table tbody td p {
+    font-size: 14px;
+    color: #6c6c6c;
+    padding-bottom: 7px;
+}
+.datatable table tbody td p span {
+    float: left;
+    margin-top: 3px;
+}
+.datatable table tbody td p.domains img {
+    float: left;
+    margin-right: 10px;
+}
+.datatable table tbody td p.domains a {
+    float: left;
+    margin-top: 3px;
+    text-decoration: underline;
+    color: #3dc1c6;
+}
+.datatable table tbody td p.email a {
+    text-decoration: underline;
+    color: #3cbec4;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.datatable table tbody td p.country {
+    margin-top: 5px;
+}
+.datatable table tbody td p.country img {
+    float: left;
+    margin-right: 10px;
+}
+.datatable table tbody td p.country span {
+    float: left;
+    margin-top: 2px;
+    font-size: 12px;
+    color: #a5a5a5;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.datatable table tbody td p.phone img {
+    float: left;
+    margin-right: 10px;
+}
 
 
 
