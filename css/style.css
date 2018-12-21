@@ -7,7 +7,7 @@ body{
 	background: url('../images/bg-main.jpg') #fff no-repeat;
 	background-position: top center;
 	width: 100%;
-    position: relative;
+    position: relative;		
 }
 /*fonts*/
 @font-face {
@@ -93,6 +93,10 @@ ul li{
 a:hover{
 	text-decoration: none;
 }
+h1, h2, h3, h4, h5, h6, p{
+	margin: 0px;
+	padding: 0px;
+}
 /*banner*/
 .createForm input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   text-transform: capitalize;
@@ -118,17 +122,14 @@ a:hover{
   color: #c9c9c9;
   font-family: 'Avenir LT Std 55 Roman';
 }
-.banner{
-	position: relative;
-    float: left;
-    width: 100%;
-    height: auto;
-}
 .header{
-	padding: 15px 0px;
+	padding: 20px 0px;
 }
-.header .logo{
-	padding: 8px 0px;
+.header .bottomRight{
+	padding: 5px 0px;
+}
+.header nav{
+	float: right;
 }
 .header nav ul li{
 	margin: 0px 20px;
@@ -136,9 +137,9 @@ a:hover{
 .header nav ul .button{
 	margin-left: 28px;
 }
-.header nav ul, .header nav a{
+/*.header nav ul, .header nav a{
 	float: right;
-}
+}*/
 .header nav ul li a{
 	font-family: 'Avenir LT Std 85 Heavy';
 	font-size: 11px;
@@ -164,6 +165,10 @@ a:hover{
 	width: 100%;
 	transition: 0.5s;
 }
+
+.header .bottomRight .menuClose, .header .menu-button {
+	display: none;
+}
 .button{
 	padding: 14px 20px;
 	border-radius:30px;
@@ -178,7 +183,6 @@ a:hover{
 .gradiant-orange{
 	background-image: linear-gradient(to bottom, #e96f11, #e96810, #e96210, #e95b10, #e95311);
 	line-height: 11px;
-	display: block;
 	border: 2px solid #e96f11;
 	transition: 0.5s;
 }
@@ -240,9 +244,9 @@ a:hover{
 	display: flex;
     justify-content: center;
 }
-/*.customCont{
-	max-width: 760px;
-}*/
+.customCont{
+	max-width: 803px;
+}
 .innerContentWrap{
 	background-color: #fff;
     border-radius: 10px;
@@ -253,7 +257,7 @@ a:hover{
     float: none;
     height: 100%;
     margin: 0px auto;
-/*    max-width: 803px;*/
+    width: 100%;
 }
 .createForm{
 	padding: 37px 15px;
@@ -323,6 +327,7 @@ a:hover{
 	bottom: 116px;
 	right: 0px;
 	width: 391px;
+	z-index: 999;
 }
 .stickyBox img{
  	margin-right: 20px;
@@ -423,14 +428,20 @@ a:hover{
 	float: right;
 	font-size: 13px;
 }
-.login .createForm form button{
+<<<<<<< HEAD
+/*.login .createForm form button{
 	margin: 20px 0px 30px 0px;
 }
 .login .createForm form .form-group:last-child{
 	margin-bottom: 10px !important;
+}*/
+
+.loginForm form button{
+	margin: 20px 0px 30px 0px;
 }
-
-
+.loginForm form .form-group:last-child{
+	margin-bottom: 10px !important;
+}
 /*logout page*/
 .logout .innerContentWrap{
 	background-image: none;
@@ -448,6 +459,7 @@ a:hover{
 .logout .innerContentWrap .createForm button{
 	margin: 0px auto;
 	margin-top: 25px;
+	display: block;
 }
 /*footer*/
 .footer span{
@@ -471,6 +483,95 @@ a:hover{
 	content: normal;
 }
 
+/*landing page*/
+/*bannercaption section*/
+.bannerCaption{
+	text-align: center;
+	padding: 50px 0;
+	color: #fff;
+	max-width: 818px;
+	margin: 0px auto;
+}
+.bannerCaption h2{
+	font-family: 'Avenir LT Std 95 Black';
+	font-size: 30px;
+	margin-bottom: 5px;
+}
+.bannerCaption h3{
+	font-family: 'Avenir LT Std 65 Medium';
+	font-size: 30px;
+	margin-bottom: 30px;
+}
+.bannerCaption p{
+	font-family: 'Avenir LT Std 65 Medium';
+	font-size: 16px;
+	margin-bottom: 57px;
+	color: #f6f6f6;
+	line-height: 28px;
+}
+.bannerCaption a{
+	font-family: 'Avenir LT Std 65 Medium';
+	font-size: 15px;
+	text-transform: capitalize;
+	padding: 14px 35px;
+	margin-bottom: 40px;
+	display: inline-block;
+}
+/*mejor benefits*/
+.genSection{
+	padding: 180px 0px 84px 0px;
+}
+.majorBenefits .benefits {
+	background: url('../images/major_banefit_img.png') no-repeat;
+	height: 400px;
+    background-position: top center;
+	}
+.sideText h4{
+	color: #1fbec5;
+	text-transform: uppercase;
+	margin-bottom: 14px;
+	font-size: 13px;
+	font-family: 'Avenir LT Std 85 Heavy';
+	letter-spacing: 1px;
+}
+.sideText h2{
+	color: #3a3a3a;
+	font-size: 30px;
+	margin-bottom: 43px;
+	font-family: 'Avenir LT Std 95 Black';
+}
+.sideText p{
+	font-family: 'Avenir LT Std 65 Medium';
+	margin-bottom: 75px;
+}
+.sideText a{
+	text-transform: capitalize;
+	color: #1fbec5;
+	font-family: 'Avenir LT Std 95 Black';
+	
+}
+.sideText a i{
+	color: #1fbec5;
+	margin-left: 18px;
+	font-size: 20px;
+    vertical-align: middle;
+    transition: all 0.3s;
+}
+.sideText a:hover i{
+	padding-left: 10px;
+	transition: all 0.3s;
+}
+
+/*take a look*/
+.takeLook{
+	background: url('../images/take_a_look_banner.png') no-repeat;
+	background-position: top center;
+	background-size: contain;
+}
+.takeLook h4{
+	color: #e96f11;
+}
+
 /*responsive*/
 @media only screen and (min-width : 1200px) and (max-width : 1645px) {
 	.innerContent{
@@ -480,12 +581,8 @@ a:hover{
 		bottom: 56px;
 	}
 }
-
 /* Large Devices, Wide Screens(md) */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
-	.innerContentWrap{
-		background-position: 206% 0%;
-	}
 	.stickyBox{
 		bottom: 56px;
 	}
@@ -509,9 +606,6 @@ a:hover{
 	.createForm form .form-group.nameField{
 		padding: 0px;
 	}
-	.createForm h2{
-		font-size: 22px;
-	}
 	.stickyBox{
 		bottom: 37px;
 	}
@@ -519,7 +613,7 @@ a:hover{
 /* Medium Devices, Desktops(sm) */
 @media only screen and (min-width : 768px) and (max-width : 991px) {
 	.innerContentWrap{
-		background-position: 224px 0%;
+		background-position: 374px 0%;
 		text-align: center;
 	}
 
@@ -546,21 +640,17 @@ a:hover{
 	.createForm form .form-group.nameField{
 		padding: 0px;
 	}
-	.innerContent{
-		   margin: 28px 0 150px 0px;
-		}
 	.createForm form button{
 		font-size: 12px;
 	}
 	.login{
 		margin: 118px 0 150px 0px;
 	}
-	
 }
 /* Small Devices, Tablets (xs)*/
 @media only screen and (min-width : 480px) and (max-width : 767px) {
 	.innerContent{
-		margin: 28px 0 150px 0px;
+		margin: 12px 0 140px 0;
 	}
 	.innerContent.logout{
 		margin: 100px 0;
@@ -587,14 +677,17 @@ a:hover{
 	.innerContentWrap .forgot label{
 		float: left;
 	}
-	.login{
-		margin: 118px 0 150px 0px;
+	.header .bottomRight{
+		width: 50% !important;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 479px) {
 	.innerContent{
-		   margin: 28px 0 150px 0px;
+		margin: 78px 0 150px 0px;
 		}
+	.login{
+		margin: 0 0 150px 0px;
+	}
 	.createForm form .form-group.nameField input{
 		width: 100%;
 		margin: 0px;
@@ -610,14 +703,14 @@ a:hover{
 		padding: 0px;
 	}
 	.innerContentWrap{
-		background-position: -90% 0%;
+		background-position: 169px 0%;
 		text-align: center;
 	}
 	.stickyBox{
 		bottom: 50px;
 	}
 	.createForm form {
-    padding: 40px 20px 0px 20px;
+    	padding: 40px 20px 0px 20px;
 	}
 	.createForm form .form-group, .createForm form .form-group.nameField input:first-child{
 		margin-bottom: 20px;
@@ -631,7 +724,6 @@ a:hover{
 		font-size: 13px;
 	}
 	.stickyBox {
-	    bottom: 20px;
 	    padding: 13px;
 	    width: 90%;
 	}
@@ -654,10 +746,72 @@ a:hover{
 		float: left;
 	}
 }
-
-
-
-
-
+@media only screen and (min-width : 320px) and (max-width : 767px) {
+	.header .menu-button{
+		float: right;
+		position: absolute;
+		top: 23px;
+		right: 16px;
+		border: none;
+		background-color: transparent;
+		font-size: 30px;
+		color: #fff;
+		display: block;
+		font-size: 27px;
+	}
+	.header .bottomRight{
+		-webkit-transition: 0.3s;
+		-moz-transition: 0.3s;
+		-o-transition: 0.3s;
+		transition: 0.3s;
+		position: fixed;
+		z-index: 5;
+		right: 0;
+		top: 0;
+		width: 70%;
+		height: 100%;
+		background-image: linear-gradient(to right top, #1fbec5, #23c9c4, #34d3c0, #4addba, #63e6b2);
+		border: none;
+		display: block;
+		transform: translateX(100%);
+		box-shadow: 0px 18px 80px -13px #777777;
+	}
+	.header .bottomRight.pull{
+		transform: translateX(0);
+		padding: 0 50px;
+	}
+	.header .bottomRight .menuClose, .header .menu-button {
+		display: inline-block;
+	    font-size: 20px;
+	    color: #fff;
+	}
+	.header nav ul .button{
+		display: inline-block;
+		margin-left: 0px;
+	}
+	.header nav ul li{
+		display: block;
+		margin: 20px 0;
+	}
+	.header nav{
+		float: none;
+		padding: 45px 0px;
+	}
+	.customWidth{
+		width: 100%;
+	}
+	.searchBox form {
+    	width: 100%;
+	}
+	.searchBox{
+		width: 100%;
+	}
+	.searchBox input{
+		width: calc(100% - 8%);
+	}
+	.searchBox img {
+     	width: auto; 
+	}
+}
 
 

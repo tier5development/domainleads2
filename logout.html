@@ -12,6 +12,9 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
+    <!-- fonts -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
   </head>
   <body>
 
@@ -28,12 +31,17 @@
               </a>
             </div>
           </div>
-          <div class="col-xs-9">
+          <a href="javascript:void(0);" class="menu-button"><i class="fa fa-bars"></i></a>
+
+          <div class="col-xs-9 bottomRight">
             <nav class="menu clearfix">
+              <a href="javascript:void(0);" class="menuClose"><i class="fas fa-arrow-right"></i></a>
+
               <ul>
-                <a class="button gradiant-orange">login</a>
+                
                 <li><a href="#">lead conversion</a></li>
                 <li><a href="#">pricing</a></li>
+                <a class="button gradiant-orange">login</a>
               </ul>
             </nav>
           </div>
@@ -53,18 +61,8 @@
         </div>
       </div>
     </div>
-    <!-- footer -->
-    <div class="footer clearfix">
-      <div class="container">
-        <div class="col-md-12 pull-left">
-          <span>&copy; 2017 Powered by Tier5</span>
-          <a href="#">privacy policy</a>
-          <a href="#">terms of use</a>
-        </div>
-      </div>
-    </div>
   </section>
-  
+
   <!-- sticky text -->
   <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
     <div id="popup">
@@ -75,7 +73,16 @@
       </div>
     </div>
   </div> 
-   
+   <!-- footer -->
+  <footer class="footer clearboth">
+    <div class="container">
+      <div class="col-md-12 pull-left">
+        <span>&copy; 2017 Powered by Tier5</span>
+        <a href="#">privacy policy</a>
+        <a href="#">terms of use</a>
+      </div>
+    </div>
+  </footer>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
