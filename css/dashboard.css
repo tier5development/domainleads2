@@ -684,6 +684,7 @@ input, select, textarea, button {
 .pageViewControl {
     float: right;
     margin-left: 47px;
+    margin-top: 10px;
 }
 .pageViewControl label {
     font-family: 'Avenir LT Std 85 Heavy';
@@ -799,6 +800,21 @@ input, select, textarea, button {
     float: left;
     margin-right: 10px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
