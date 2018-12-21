@@ -668,7 +668,7 @@ input, select, textarea, button {
     padding: 0 25px;
     padding-top: 2px;
 }
-.dataTableHeaderRight .greenBtn {
+.greenBtn {
     background: linear-gradient(to right, #3cbec1, #48e4b3);
     height: 45px;
     padding: 0 15px;
@@ -800,20 +800,80 @@ input, select, textarea, button {
     float: left;
     margin-right: 10px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.encapsulate {
+    width: 120px;
+    margin-top: 9px;
+    display: inline-block;
+}
+.encapsulate span {
+    float: left;
+    width: 100%;
+    background: #c8eef0;
+    height: 3px;
+    margin-bottom: 7px;
+}
+.encapsulate span:nth-child(2n) {
+    background: #d9f8ec;
+    width: 50%;
+}
+.encapsulate span:nth-child(3n) {
+    width: 80%;
+}
+.greenBtn.unlockBtn {
+    height: 36px;
+    font-size: 14px;
+}
+.datatable table tbody td p.locked img {
+    float: left;
+    margin-right: 10px;
+}
+.datatable table tbody td p.locked span {
+    float: left;
+    margin-top: 5px;
+}
+.datatable table tbody td .leadStatus p {
+    float: left;
+}
+.datatable table tbody td .leadStatus p.domains {
+    margin: 0 0 0 30px;
+}
+.refineSearch, .filterResult {
+    background: #f5f5f5;
+    border: 1px solid #c9c9c9;
+    height: 46px;
+    border-radius: 30px;
+    float: left;
+    padding: 10px;
+}
+.refineSearch {
+    margin-right: 10px;
+}
+.refineSearch .icon, .filterResult .icon {
+    width: 36px;
+    float: left;
+    border-right: 1px solid #c4c4c4;
+    padding-top: 3px;
+}
+.filterResult .icon {
+    padding-left: 5px;
+}
+.refineSearch input, .filterResult input {
+    height: 26px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #6c6c6c;
+    padding: 5px;
+    width: 130px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.filterResult input {
+    width: 95px;
+    padding: 5px 10px;
+}
+.refineSearch input::placeholder, .filterResult input::placeholder {
+    color: #bebebe;
+}
 
 
 
