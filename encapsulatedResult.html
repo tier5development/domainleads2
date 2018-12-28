@@ -29,6 +29,22 @@
                     <div class="userImg">
                         <img src="images/Profile_circle.png" alt="">
                     </div>
+                    <div class="profileMenu">
+                        <div class="closeMenu"></div>
+                        <div class="profilePic">
+                            <img src="images/profilePic.png" alt="">
+                        </div>
+                        <div class="profileMenuBody">
+                            <div class="profileName">
+                                <p>JOHN VAUGHN</p>
+                                <span>john.doe@tier5.us</span>
+                            </div>
+                            <ul>
+                                <li><a href="">Profile</a></li>
+                                <li><a href="">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="clear"></div>
@@ -36,6 +52,66 @@
         
         <section class="mainBody">
             <div class="leftPanel leadUnlock">
+                <div class="filterPopup">
+                    <div class="closeFilterPopup"></div>
+                    <div class="filterPopupInner">
+                        <div class="popupLeft">
+                            <div class="filterFormRow">
+                                <label for="">Domain Count</label>
+                                <div class="fieldArea">
+                                    <div class="smallSelectBox">
+                                        <select class="select">
+                                            <option value="">Greater then</option>
+                                        </select>
+                                    </div>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="filterFormRow">
+                                <label for="">Domain Unlocked</label>
+                                <div class="fieldArea">
+                                    <div class="smallSelectBox">
+                                        <select class="select">
+                                            <option value="">Greater then</option>
+                                        </select>
+                                    </div>
+                                    <input type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="popupRight">
+                            <div class="filterFormRow">
+                                <label for="">Sort by</label>
+                                <div class="fieldArea">
+                                    <div class="largeSelectBox">
+                                        <select class="select">
+                                            <option value="">Domain Count more to less</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="filterFormRow">
+                                <label for="">Phone number type</label>
+                                <div class="fieldArea">
+                                    <div class="radio">
+                                        <input type="radio" name="PhoneNumberType">
+                                        <p><span></span></p>
+                                    </div>
+                                    <span class="label">Mobile</span>
+                                    <div class="radio">
+                                        <input type="radio" name="PhoneNumberType">
+                                        <p><span></span></p>
+                                    </div>
+                                    <span class="label">Landline</span>
+                                </div>
+                            </div>
+                            <div class="filterFormRow">
+                                <button type="button" class="orangeBtn">Apply Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="dataTableArea">
                     <div class="dataTableHeader">
                         <div class="unlockInfo">
@@ -273,6 +349,20 @@
             &copy; 2017 Powered by Tier5 <a href="">Privacy Policy</a> / <a href="">Terms of Use</a>
         </footer>
     </div>
+
+
+    <div class="alert">
+        <div class="alertLeft">
+            <img src="images/Logo_symbol_green.png" alt="">
+        </div>
+        <div class="alertRight">
+            <p>You have unlocked 4 leads today.
+                <br>
+                You can unlocked upto <span>50</span> leads per day.
+            </p>
+        </div>
+    </div>
+
 
     <script src="js/custom2.js"></script>
 <script>
