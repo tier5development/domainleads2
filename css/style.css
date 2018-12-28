@@ -526,6 +526,9 @@ h1, h2, h3, h4, h5, h6, p{
 	height: 400px;
     background-position: top center;
 	}
+.sideText{
+	margin-top: 70px;
+}
 .sideText h4{
 	color: #1fbec5;
 	text-transform: uppercase;
@@ -568,10 +571,159 @@ h1, h2, h3, h4, h5, h6, p{
 	background-position: top center;
 	background-size: contain;
 }
+.takeLook a img{
+	width: 100%;
+}
+.takeLook a{
+	position: relative;
+}
+.takeLook a:before{
+	position: absolute;
+    top: -40px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0px auto;
+    content: '';
+    background: url('../images/play.png') no-repeat;
+    height: 128px;
+    width: 128px;
+}
 .takeLook h4{
 	color: #e96f11;
 }
 
+/*leadConversaion*/
+.leadConversion .sideText h2{
+	text-transform: capitalize;
+}
+.leadConversion a{
+	font-size: 15px;
+    padding: 14px 35px;
+    color: #fff;
+   	font-family: 'Avenir LT Std 45 Book';	
+}
+.leadConversion .sideText p{
+	margin-bottom: 62px;
+}
+.leadConversion .sideText span{
+	color: #1fbec5;
+	font-size: 60px;
+	font-family: 'Avenir LT Std 95 Black';
+}
+.leadConversion .lead_conversion_imgWrap{
+	position: relative;
+}
+.leadConversion .lead_conversion_imgWrap:before{
+	content: '';
+	position: absolute;
+	background: url('../images/lead_conversion_bg.png') top center;
+    top: -62px;
+    left: -125px;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+}
+/*userSay*/
+.comSection{
+	padding: 100px 0;
+}
+.userSay{
+	background-color: #edf6f7;
+/*	opacity: 0.4;*/
+	text-align: center;
+	height: 724px;
+}
+.userSay .sideText{
+	margin-top: 0px;
+}
+.userSay .sideText h2 span{
+	color: #2868d7;
+}
+.userSay .userImages {
+	position: relative;
+}
+.userSay .userImages .round img{
+	border-radius: 50%;	
+}
+.userSay .userImages .userImg1 img{
+	position: absolute;
+	top: 0;
+	left: 70px;
+	box-shadow: 0px 0px 50px 0px #84ccd0;
+}
+.userSay .userImages .userImg2 img{
+	position: absolute;
+	top: -40px;
+	left: 220px;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
+}
+.userSay .userImages .userImg3 img{
+	position: absolute;
+	top: 160px;
+	left: 0px;
+	box-shadow: 0px 0px 50px 0px #777571;
+}
+.userSay .userImages .userImg4 img{ 
+	position: absolute;
+	top: 270px;
+    left: 140px;
+	box-shadow: 0px 0px 50px 0px #84ccd0;
+}
+.userSay .userImages .userImg5 img{
+	position: absolute;
+	top: 160px;
+    left: 430px;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
+}
+.userSay .userImages .userImg6 img{
+	position: absolute;
+	top: 50px;
+    left: 590px;
+	box-shadow: 0px 0px 50px 0px #777571;
+}
+.userSay .userImages .userImg7 img{
+	position: absolute;
+	top: 300px;
+    left: 670px;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
+}
+.userSay .userImages .userImg8 img{
+	position: absolute;
+	top: 190px;
+    left: 870px;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
+}
+.userSay .userImages .userImg9 img{
+	position: absolute;
+	top: -79px;
+    right: 40px;
+	box-shadow: 0px 0px 50px 0px #84ccd0;
+}
+.userSay .userImages .userImg10 img{
+	position: absolute;
+	top: -20px;
+    right: 210px;
+	box-shadow: 0px 0px 50px 0px #777571;
+}
+.userSay .userImages .userImg11 img{
+	position: absolute;
+	top: -110px;
+    right: 0;
+	box-shadow: 0px 0px 50px 0px #84ccd0;
+}
+.userSay .userImages .userImg12 img{
+	position: absolute;
+	top: 262px;
+    right: 90px;
+	box-shadow: 0px 0px 50px 0px #777571;
+}
+.userSay .userImages .userImg13 img{
+	position: absolute;
+	top: 202px;
+    right: 0;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
+}
 /*responsive*/
 @media only screen and (min-width : 1200px) and (max-width : 1645px) {
 	.innerContent{

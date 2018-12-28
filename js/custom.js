@@ -7,6 +7,9 @@ $(document).ready(function(){
   $('.menuClose').click(function(){
     $('.bottomRight').removeClass('pull');
   });
+
+  $('.fancybox').fancybox();
+  
  });
 
 
@@ -22,3 +25,5 @@ function PopUp(hideOrshow) {
               PopUp('show' , '1000');
           }, 2000);
       }
+
+
