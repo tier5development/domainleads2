@@ -314,6 +314,23 @@ input, select, textarea, button {
     height: 100%;
     background: rgba(64, 204, 188, 0.4);
 }
+.profilePic img {
+    transition: all 0.5s ease 0s;
+}
+.profilePic .changePic {
+    position: absolute;
+    z-index: 10;
+    bottom: 10px;
+    left: 14px;
+    opacity: 0;
+    transition: all 0.5s ease 0s;
+}
+.profilePic:hover .changePic {
+    opacity: 1;
+}
+.profilePic .changePic:hover + img {
+    filter: grayscale(1);
+}
 .profileMenuBody {
     background: linear-gradient(#40cdbc, #62e5b3);
     text-align: center;
@@ -1117,14 +1134,74 @@ input, select, textarea, button {
     transform: rotate(180deg);
 }
 
+.editProfileHeading {
+    font-size: 24px;
+    color: #6c6c6c;
+    font-family: 'Avenir LT Std 65 Medium';
+    margin-top: 20px;
+}
+.profileTip {
+    float: right;
+    width: 182px;
+    height: 169px;
+    background: url("../images/bg_tip_note.png") no-repeat;
+    text-align: center;
+    margin: -10px 70px 0 0;
+}
+.profileTip figure {
+    padding-top: 35px;
+}
+.profileTip p {
+    font-size: 12px;
+    color: #585858;
+    padding: 20px 15px 0;
+}
 
-
-
-
-
-
-
-
+.profileFormArea {
+    max-width: 630px;
+    margin-top: 30px;
+    float: left;
+}
+.profileFormArea .formHeading {
+    margin-top: 55px;
+    font-size: 15px;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+}
+.profileFormArea .formRow {
+    display: inline-block;
+    width: 100%;
+    margin-top: 25px;
+}
+.profileFormArea input[type="text"], 
+.profileFormArea input[type="password"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    height: 50px;
+    width: 100%;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+}
+.profileFormArea input[type="text"]::placeholder, 
+.profileFormArea input[type="password"]::placeholder {
+    color: #c8c8c8;
+}
+.profileFormArea input.small {
+    width: 48%;
+    float: left;
+}
+.profileFormArea input.small:last-child {
+    float: right;
+}
+.profileFormArea button.orangeBtn {
+    font-size: 14px;
+    letter-spacing: 2px;
+    padding: 0 74px;
+    margin-top: 30px;
+}
 
 
 
