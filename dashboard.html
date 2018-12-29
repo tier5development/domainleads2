@@ -18,13 +18,23 @@
             <div class="headerRight">
                 <div class="heaverNav">
                     <ul>
-                        <li><a href="">SEARCH DOMAIN</a></li>
-                        <li><a href="">UNLOCKED LEADS</a></li>
+                        <li>
+                            <a href="">
+                                <span class="desktopOnly">SEARCH DOMAIN</span>
+                                <img src="images/search.png" alt="SEARCH DOMAIN" class="mobileOnly">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="desktopOnly">UNLOCKED LEADS</span>
+                                <img src="images/icon_unlocked_leads_mobile.png" alt="UNLOCKED LEADS" class="mobileOnly">
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="userNameArea">
                     <div class="userName">
-                        JOHN VAUGHN
+                        <span class="desktopOnly">JOHN VAUGHN</span>
                     </div>
                     <div class="userImg">
                         <img src="images/Profile_circle.png" alt="">
@@ -35,6 +45,34 @@
         </header>
         
         <section class="mainBody">
+            <div class="rightPanel">
+                <div class="leftLine">
+                    <span></span>
+                    <p></p>
+                    <span></span>
+                </div>
+                <h2>YOUR DOMAIN UNLOCKING HISTORY</h2>
+                <div class="todayContent">
+                    <h3>Today</h3>
+                    <div class="chart">
+                        <canvas id="crart" width="132" height="132"></canvas>
+                    </div>
+                    <p>
+                        You have unlocked <span class="green">40 /</span> <span class="yellow">50</span> domains today
+                    </p>
+                    <p>
+                        Upgrade your membership<br> to unlock more of your daily limit.
+                    </p>
+                    <p>
+                        <button type="button" class="orangeBtn">Upgrade Now</button>
+                    </p>
+                </div>
+                <div class="tilldateContent">
+                    <h3>Till Date</h3>
+                    <p>You have unlocked <span class="green">359</span> domails till date</p>
+                </div>
+            </div>
+
             <div class="leftPanel">
                 <div class="leftPanelHeader">
                     <div class="clientImg">
@@ -121,35 +159,9 @@
                     
                 </div>
             </div>
-
-            <div class="rightPanel">
-                <div class="leftLine">
-                    <span></span>
-                    <p></p>
-                    <span></span>
-                </div>
-                <h2>YOUR DOMAIN UNLOCKING HISTORY</h2>
-                <div class="todayContent">
-                    <h3>Today</h3>
-                    <div class="chart">
-                        <canvas id="crart" width="132" height="132"></canvas>
-                    </div>
-                    <p>
-                        You have unlocked <span class="green">40 /</span> <span class="yellow">50</span> domains today
-                    </p>
-                    <p>
-                        Upgrade your membership<br> to unlock more of your daily limit.
-                    </p>
-                    <p>
-                        <button type="button" class="orangeBtn">Upgrade Now</button>
-                    </p>
-                </div>
-                <div class="tilldateContent">
-                    <h3>Till Date</h3>
-                    <p>You have unlocked <span class="green">359</span> domails till date</p>
-                </div>
-
-            </div>
+            <footer class="footer mobileOnly">
+                &copy; 2017 Powered by Tier5 <span><a href="">Privacy Policy</a> / <a href="">Terms of Use</a></span>
+            </footer>
         </section>
 
         <footer class="footer">

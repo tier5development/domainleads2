@@ -1203,6 +1203,237 @@ input, select, textarea, button {
     margin-top: 30px;
 }
 
+.mobileOnly {
+    display: none;
+}
+
+
+  /* ============================================================================ */
+ /* ============================== Responsive CSS ============================== */
+/* ============================================================================ */
+
+@media screen and (max-width: 1600px) {
+.container {
+    margin: 0 20px;
+}
+}
+
+@media screen and (max-width: 1200px) {
+.headerRight {
+    width: 480px;
+}
+.heaverNav ul li {
+    padding-right: 30px;
+}
+.searchDomainForm {
+    padding: 0 20px 45px 20px;
+}
+.leftPanel {
+    padding: 0;
+}
+}
+
+@media screen and (max-width: 900px) {
+.mainBody {
+    padding: 20px;
+}
+.leftPanel {
+    width: 65%;
+}
+.rightPanel {
+    width: 33%;
+    padding: 0 0 0 25px;
+}
+.rightPanel h3:before {
+    left: -35px;
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    margin-left: 0;
+    float: left;
+}
+.dateArea .date {
+    margin-left: 10px;
+}
+.searchDomainForm .formRow .radioCol {
+    display: block;
+    margin-right: 0;
+}
+.searchDomainForm .formRow .radioCol:first-child {
+    margin-bottom: 10px;
+}
+.address .formCol {
+    width: 53%;
+}
+.address .formCol:last-child {
+    width: 47%;
+}
+.address .formCol:first-child {
+    width: 100%;
+    padding-right: 0;
+    margin-bottom: 22px;
+}
+.searchDomainForm .formRow {
+    margin-top: 22px;
+}
+.address .formCol label {
+    padding: 0 0 10px 0;
+}
+.searchDomainForm .formRow .rowHeading {
+    padding-bottom: 10px;
+}
+}
+
+@media screen and (max-width: 840px) {
+.headerRight {
+    width: 440px;
+}
+}
+
+@media screen and (max-width: 768px) {
+.mainBody {
+    margin-top: 10px;
+}
+.desktopOnly {
+    display: none;
+}
+.mobileOnly {
+    display: initial;
+}
+.headerRight {
+    width: 135px;
+}
+.rightPanel {
+    width: 100%;
+    padding: 0;
+    margin: 10px 0 0 0;
+    text-align: center;
+}
+.rightPanel h3:before {
+    display: none;
+}
+.leftLine {
+    display: none;
+}
+.tilldateContent p {
+    text-align: center;
+    padding-top: 15px;
+}
+.todayContent .chart {
+    margin-top: 20px;
+}
+.tilldateContent {
+    margin-top: 0;
+}
+.todayContent .orangeBtn {
+    margin-top: 15px;
+}
+.leftPanelHeader {
+    display: none;
+}
+.leftPanel {
+    width: 100%;
+}
+.footer.mobileOnly {
+    display: none;
+}
+}
+
+@media screen and (max-width: 560px) {
+html {
+    height: 100%;
+}
+body {
+    background: linear-gradient(#3bbcc1, #62e5b3);
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.mainBody {
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    position: fixed;
+    width: calc(100% - 30px);
+    height: calc(100% - 80px);
+    left: 15px;
+    top: 56px;
+    overflow: scroll;
+}
+.searchDomainForm {
+    padding: 10px 20px 0;
+    border: none;
+    border-radius: 0;
+    margin: 0 0 0 -20px;
+    display: inline-block;
+    width: calc(100% + 40px);
+}
+.formRow.submit .orangeBtn {
+    position: relative;
+    left: 50%;
+    top: unset;
+    margin-bottom: 35px;
+    transform: translateX(-50%);
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    width: 26px;
+}
+.dateArea .date .year {
+    width: 36px;
+}
+.footer.mobileOnly {
+    display: inline-block;
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+}
+}
+
+@media screen and (max-width: 480px) {
+.footer.mobileOnly span {
+    display: block;
+    margin-top: 10px;
+}
+}
+
+@media screen and (max-width: 410px) {
+.headerLeft {
+    width: 40px;
+    overflow: hidden;
+}
+.dateRange {
+    background: #fff;
+    padding-bottom: 5px;
+}
+.dateRange .dateArea {
+    display: block;
+    width: 146px;
+    float: none;
+    margin: 0 auto;
+}
+.dateRange .dateArea.endDate {
+    display: inline-block;
+    margin-top: 15px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    width: 34px;
+}
+.dateArea .date .year {
+    width: 46px;
+}
+.tilldateContent {
+    margin-bottom: 100px;
+}
+}
+
+
+
+
+
+
+
+
+
 
 
 
