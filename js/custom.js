@@ -10,6 +10,10 @@ $(document).ready(function(){
 
   $('.fancybox').fancybox();
   
+
+  $('#bannercaptionWrap').scroll(function() { 
+    $('#banner_img_left').animate({top:$(this).scrollTop()},100,"linear");
+})
  });
 
 

@@ -327,7 +327,7 @@ h1, h2, h3, h4, h5, h6, p{
 	bottom: 116px;
 	right: 0px;
 	width: 391px;
-	z-index: 999;
+	z-index: 9999;
 }
 .stickyBox img{
  	margin-right: 20px;
@@ -412,8 +412,6 @@ h1, h2, h3, h4, h5, h6, p{
 	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
 }
-
-
 .innerContentWrap .forgot label {
 	display: inline-block;
 	margin-bottom: 0px;
@@ -428,14 +426,6 @@ h1, h2, h3, h4, h5, h6, p{
 	float: right;
 	font-size: 13px;
 }
-<<<<<<< HEAD
-/*.login .createForm form button{
-	margin: 20px 0px 30px 0px;
-}
-.login .createForm form .form-group:last-child{
-	margin-bottom: 10px !important;
-}*/
-
 .loginForm form button{
 	margin: 20px 0px 30px 0px;
 }
@@ -517,6 +507,16 @@ h1, h2, h3, h4, h5, h6, p{
 	margin-bottom: 40px;
 	display: inline-block;
 }
+.bannerCaption #banner_img_left{
+    position: fixed;
+    top: 20px;
+    left: 211px;
+}
+.bannerCaption #banner_img_right{
+    position: fixed;
+    top: 20px;
+    right: 370px;
+}
 /*mejor benefits*/
 .genSection{
 	padding: 180px 0px 84px 0px;
@@ -537,13 +537,13 @@ h1, h2, h3, h4, h5, h6, p{
 	font-family: 'Avenir LT Std 85 Heavy';
 	letter-spacing: 1px;
 }
-.sideText h2{
+.heading{
 	color: #3a3a3a;
 	font-size: 30px;
 	margin-bottom: 43px;
 	font-family: 'Avenir LT Std 95 Black';
 }
-.sideText p{
+.headingInfo{
 	font-family: 'Avenir LT Std 65 Medium';
 	margin-bottom: 75px;
 }
@@ -643,86 +643,284 @@ h1, h2, h3, h4, h5, h6, p{
 .userSay .userImages {
 	position: relative;
 }
-.userSay .userImages .round img{
+.userSay .userImages .round{
 	border-radius: 50%;	
 }
-.userSay .userImages .userImg1 img{
+.userSay .userImages .userImg1{
 	position: absolute;
 	top: 0;
 	left: 70px;
 	box-shadow: 0px 0px 50px 0px #84ccd0;
 }
-.userSay .userImages .userImg2 img{
+.userSay .userImages .userImg2{
 	position: absolute;
 	top: -40px;
 	left: 220px;
 	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
-.userSay .userImages .userImg3 img{
+.userSay .userImages .userImg3{
 	position: absolute;
 	top: 160px;
 	left: 0px;
 	box-shadow: 0px 0px 50px 0px #777571;
 }
-.userSay .userImages .userImg4 img{ 
+.userSay .userImages .userImg4{ 
 	position: absolute;
 	top: 270px;
     left: 140px;
 	box-shadow: 0px 0px 50px 0px #84ccd0;
 }
-.userSay .userImages .userImg5 img{
+.userSay .userImages .userImg5{
 	position: absolute;
 	top: 160px;
     left: 430px;
 	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
-.userSay .userImages .userImg6 img{
+.userSay .userImages .userImg6{
 	position: absolute;
 	top: 50px;
     left: 590px;
 	box-shadow: 0px 0px 50px 0px #777571;
 }
-.userSay .userImages .userImg7 img{
+.userSay .userImages .userImg7{
 	position: absolute;
 	top: 300px;
     left: 670px;
 	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
-.userSay .userImages .userImg8 img{
+.userSay .userImages .userImg8{
 	position: absolute;
 	top: 190px;
     left: 870px;
 	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
-.userSay .userImages .userImg9 img{
+.userSay .userImages .userImg9{
 	position: absolute;
 	top: -79px;
     right: 40px;
 	box-shadow: 0px 0px 50px 0px #84ccd0;
 }
-.userSay .userImages .userImg10 img{
+.userSay .userImages .userImg10{
 	position: absolute;
 	top: -20px;
     right: 210px;
 	box-shadow: 0px 0px 50px 0px #777571;
 }
-.userSay .userImages .userImg11 img{
+.userSay .userImages .userImg11{
 	position: absolute;
 	top: -110px;
     right: 0;
 	box-shadow: 0px 0px 50px 0px #84ccd0;
 }
-.userSay .userImages .userImg12 img{
+.userSay .userImages .userImg12{
 	position: absolute;
 	top: 262px;
     right: 90px;
 	box-shadow: 0px 0px 50px 0px #777571;
 }
-.userSay .userImages .userImg13 img{
+.userSay .userImages .userImg13{
 	position: absolute;
 	top: 202px;
     right: 0;
 	box-shadow: 0px 0px 50px 0px #ffe2b8;
+}
+/*tooltip*/
+.tooltip {
+	position: relative;	
+	opacity: 1;
+	z-index: initial;
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 425px;
+	background-color: #fff;
+	color: #fff;
+	text-align: center;
+	border-radius: 20px;
+	padding: 20px;
+	position: absolute;
+	z-index: 9999;
+}
+.userImg1.tooltip .tooltiptext {
+	top: -296px;
+    left: -19px;
+}
+.userImg2.tooltip .tooltiptext {
+    top: -295px;
+    left: -19px;
+}
+.userImg3.tooltip .tooltiptext {
+    top: -295px;
+    left: -19px;
+}
+.userImg4.tooltip .tooltiptext {
+    top: -296px;
+    left: -19px;
+}
+.userImg5.tooltip .tooltiptext {
+    top: -296px;
+    left: -19px;
+}
+.userImg6.tooltip .tooltiptext {
+	top: -295px;
+    left: -19px;
+}
+.userImg7.tooltip .tooltiptext {
+    top: -296px;
+    left: -19px;
+}
+.userImg8.tooltip .tooltiptext {
+ 	top: -295px;
+    right: -406px;
+}
+.userImg9.tooltip .tooltiptext {
+    top: -296px;
+    right: -406px;
+}
+.userImg10.tooltip .tooltiptext {
+	top: -296px;
+    right: -406px;
+}
+.userImg11.tooltip .tooltiptext {
+    top: -297px;
+    right: -370px;
+}
+.userImg12.tooltip .tooltiptext {
+    top: -296px;
+    right: -406px;
+}
+.userImg13.tooltip .tooltiptext {
+    top: -297px;
+    right: -377px;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	padding: 30px;
+}
+.tooltip:hover .arrow-left{
+	border-color: transparent transparent transparent #fff;
+}
+.tooltip .tooltiptext p{
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #8b8b8b;
+    font-size: 15px;
+    margin-bottom: 38px;
+    line-height: 26px;
+}
+.tooltip .tooltiptext h3{
+	font-family: 'Avenir LT Std 95 Black';
+	color: #3a3a3a;
+	font-size: 15px;
+	margin-bottom: 13px;
+	text-transform: capitalize;
+}
+.tooltip .tooltiptext h6{
+	font-family: 'Avenir LT Std 65 Medium';
+	color: #1fbec5;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+.arrow-left { 
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 16px 0 16px 19px;
+	border-color: transparent transparent transparent transparent;
+	position: absolute;
+    left: 21px;
+    top: -40px;
+}
+/*plans*/
+.spaceSection{
+	padding: 138px 0px;
+}
+.plans{
+	text-align: center;
+}
+.plans .heading{
+	margin-bottom: 20px;
+}
+.plans .eachPlan{
+	padding: 33px;
+	border: 1px solid transparent;
+	transition: 0.3s;
+	height: 645px;
+}
+.plans .eachPlan:hover{
+	border: 1px solid #DBE6E9;
+	background-color: #FBFEFF;
+	border-radius: 10px;
+	transition: 0.3s;
+}
+.plans .eachPlan:hover .button{
+	display: inline-block;
+} 
+.plans .eachPlan img{
+	margin-bottom: 30px;
+}
+.plans .eachPlan h4{
+	margin-bottom: 61px;
+	text-transform: uppercase;
+    color: #1fbec5;
+    font-family: 'Avenir LT Std 95 Black';
+    font-size: 15px;
+}
+.plans .eachPlan ul li{
+	margin-bottom: 26px;
+	display: block;
+	line-height: 15px;	
+}
+.plans .eachPlan ul li:last-child{
+	margin-bottom: 61px;
+}
+.plans .eachPlan h3{
+	color: #1fbec5;
+    font-family: 'Avenir LT Std 95 Black';
+    font-size: 38px;
+}
+.plans .eachPlan span{
+    font-size: 13px;
+    color: #c9c9c9;
+}
+.plans .eachPlan .button{
+	display: inline-block;
+    font-size: 15px;
+    text-transform: capitalize;
+    padding: 17px 28px;
+    margin-top: 52px;
+    display: none;
+}
+/*footer*/
+.mainFooter{
+	background-image: url('../images/footer_bg.png');
+	text-align: center;
+	padding: 56px 0px;
+}
+.mainFooter img{
+	display: block;
+	margin: 0px auto;
+	margin-bottom: 54px;
+}
+.mainFooter span, .mainFooter a{
+	color: #fff;
+}
+.mainFooter span{
+	margin-right: 15px;
+}
+.mainFooter a{
+	text-transform: capitalize;
+	text-decoration: underline;
+	padding: 0 10px;
+	position: relative;
+}
+.mainFooter a:before{
+	content: '/';
+	position: absolute;
+	top: -1px;
+    right: -5px;
+}
+.mainFooter a:last-child:before{
+	content: normal;
 }
 /*responsive*/
 @media only screen and (min-width : 1200px) and (max-width : 1645px) {
