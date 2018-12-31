@@ -475,6 +475,9 @@ h1, h2, h3, h4, h5, h6, p{
 
 /*landing page*/
 /*bannercaption section*/
+.customHeadWidth{
+	width: 1560px;
+}
 .bannerCaption{
 	text-align: center;
 	padding: 50px 0;
@@ -613,16 +616,8 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .leadConversion .lead_conversion_imgWrap{
 	position: relative;
-}
-.leadConversion .lead_conversion_imgWrap:before{
-	content: '';
-	position: absolute;
-	background: url('../images/lead_conversion_bg.png') top center;
-    top: -62px;
-    left: -125px;
-    height: 100%;
-    width: 100%;
-    background-size: cover;
+	background: url(../images/lead_conversion_bg.png);
+    background-size: contain;
 }
 /*userSay*/
 .comSection{
@@ -767,31 +762,31 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .userImg7.tooltip .tooltiptext {
     top: -296px;
-    left: -19px;
+    left: -329px;
 }
 .userImg8.tooltip .tooltiptext {
  	top: -295px;
-    right: -406px;
+    right: -206px;
 }
 .userImg9.tooltip .tooltiptext {
     top: -296px;
-    right: -406px;
+    right: -26px;
 }
 .userImg10.tooltip .tooltiptext {
 	top: -296px;
-    right: -406px;
+    right: -240px;
 }
 .userImg11.tooltip .tooltiptext {
-    top: -297px;
-    right: -370px;
+    top: -292px;
+    right: -7px;
 }
 .userImg12.tooltip .tooltiptext {
     top: -296px;
-    right: -406px;
+    right: -86px;
 }
 .userImg13.tooltip .tooltiptext {
     top: -297px;
-    right: -377px;
+    right: -17px;
 }
 .tooltip:hover .tooltiptext {
 	visibility: visible;
@@ -930,6 +925,9 @@ h1, h2, h3, h4, h5, h6, p{
 	.stickyBox{
 		bottom: 56px;
 	}
+	.customHeadWidth{
+		width: initial;	
+	}
 }
 /* Large Devices, Wide Screens(md) */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
@@ -958,6 +956,19 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.stickyBox{
 		bottom: 37px;
+	}
+	.customHeadWidth{
+		width: initial;	
+	}
+	.userImg6.tooltip .tooltiptext{
+		left: -209px;
+	}
+	.userSay .userImages .userImg8{
+		top: 120px;
+	}
+	.userImg8.tooltip .tooltiptext {
+	    top: -293px;
+	    right: -6px;
 	}
 }
 /* Medium Devices, Desktops(sm) */
@@ -995,6 +1006,31 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.login{
 		margin: 118px 0 150px 0px;
+	}
+	.customHeadWidth{
+		width: initial;	
+	}
+	.userImg6.tooltip .tooltiptext{
+		left: -349px;
+	}
+	.userImg5.tooltip .tooltiptext{
+		left: -219px;
+	}
+	.userImg7.tooltip .tooltiptext {
+	    top: -292px;
+	    left: -419px;
+	}
+	.userSay .userImages .userImg8{
+		left: 240px;
+	}
+	.bannerCaption img{
+		width: 100%;
+	}
+	.genSection {
+    	padding: 80px 0px;
+	}
+	.spaceSection {
+    	padding: 90px 0px;
 	}
 }
 /* Small Devices, Tablets (xs)*/
@@ -1075,7 +1111,7 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.stickyBox {
 	    padding: 13px;
-	    width: 90%;
+	    width: auto;
 	}
 	.footer{
 		text-align: center;
@@ -1094,6 +1130,36 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.innerContentWrap .forgot label{
 		float: left;
+	}
+	.tooltip .tooltiptext{
+		width: 286px;
+	}
+	.userImg4.tooltip .tooltiptext{
+		left: -39px;
+	}
+	.userImg6.tooltip .tooltiptext{
+		left: -39px;
+	}
+	.userSay .userImages .userImg8{
+		top: 90px;
+	}
+	.userImg8.tooltip .tooltiptext{
+		right: -126px;
+	}
+	.userImg9.tooltip .tooltiptext{
+		right: -56px;
+	}
+	.userImg10.tooltip .tooltiptext{
+		right: -260px;
+	}
+	.userImg2.tooltip .tooltiptext{
+		left: -44px;
+	}
+	.userSay .userImages .userImg8{
+    	left: 110px;
+	}
+	.lead_conversion_imgWrap img{
+		width: 100%;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 767px) {
@@ -1161,6 +1227,56 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.searchBox img {
      	width: auto; 
+	}
+		.userSay .userImages .userImg5{
+		left: 140px;
+	}
+	.userSay .userImages .userImg1{
+		left: -10px;
+	}
+	.userSay .userImages .userImg2{
+	    top: 60px;
+		left: -10px;
+	}
+	.userSay .userImages .userImg4{
+		left: -10px;
+	}
+	.userSay .userImages .userImg11{
+		top: 50px;
+	}
+	.userSay .userImages .userImg8{
+	    left: 110px;
+    	top: 90px;
+	}
+	.userSay .userImages .userImg7{
+		left: 250px;
+	}
+	.userSay .userImages .userImg6{
+		top: 210px;
+		left: -9px;
+	}
+	.userImg5.tooltip .tooltiptext{
+		left: -182px;
+	}
+	.bannerCaption img{
+		width: 100%;
+	}
+	.genSection {
+	    text-align: center;
+	    padding: 100px 0px;
+	}
+	.genSection{
+		text-align: center;
+		padding: 100px 0px;
+	}
+	.spaceSection {
+    	padding: 100px 0px;
+	}
+	.customHeadWidth {
+     	width: initial; 
+	}
+	.userImg7.tooltip .tooltiptext {
+    	left: -289px;
 	}
 }
 
