@@ -1218,6 +1218,15 @@ input, select, textarea, button {
 }
 }
 
+@media screen and (max-width: 1420px) {
+.profileTip {
+    margin-right: -20px;
+}
+.profileFormArea {
+    max-width: calc(100% - 175px);
+}
+}
+
 @media screen and (max-width: 1200px) {
 .headerRight {
     width: 480px;
@@ -1281,6 +1290,12 @@ input, select, textarea, button {
 .searchDomainForm .formRow .rowHeading {
     padding-bottom: 10px;
 }
+.profileTip {
+    display: none;
+}
+.profileFormArea {
+    max-width: 100%;
+}
 }
 
 @media screen and (max-width: 840px) {
@@ -1335,6 +1350,14 @@ input, select, textarea, button {
 }
 .footer.mobileOnly {
     display: none;
+}
+.profileFormArea {
+    margin-bottom: 70px;
+}
+.profileFormArea button.orangeBtn {
+    width: 214px;
+    display: block;
+    margin: 20px auto 0;
 }
 }
 
@@ -1391,6 +1414,18 @@ body {
 .footer.mobileOnly span {
     display: block;
     margin-top: 10px;
+}
+}
+
+@media screen and (max-width: 420px) {
+.profileFormArea {
+    margin-top: 0;
+}
+.profileFormArea input.small {
+    width: 100%;
+}
+.profileFormArea input.small:last-child {
+    margin-top: 30px;
 }
 }
 
