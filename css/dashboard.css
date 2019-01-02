@@ -1074,7 +1074,7 @@ input, select, textarea, button {
     font-family: 'Avenir LT Std 65 Medium';
     color: #6c6c6c;
     font-size: 14px;
-    margin-left: 20px;
+    margin-left: 18px;
 }
 .popupRight {
     width: 50%;
@@ -1211,10 +1211,29 @@ input, select, textarea, button {
   /* ============================================================================ */
  /* ============================== Responsive CSS ============================== */
 /* ============================================================================ */
+@media screen and (max-width: 1640px) {
+.profileMenu {
+    left: inherit;
+    right: 0;
+}
+}
 
 @media screen and (max-width: 1600px) {
 .container {
     margin: 0 20px;
+}
+}
+
+@media screen and (max-width: 1500px) {
+.filterPopup {
+    padding: 20px;
+}
+.filterPopup .popupLeft {
+    width: 400px;
+}
+.popupRight {
+    width: 44%;
+    margin-right: 20px;
 }
 }
 
@@ -1224,6 +1243,46 @@ input, select, textarea, button {
 }
 .profileFormArea {
     max-width: calc(100% - 175px);
+}
+.popupRight {
+    width: 370px;
+}
+.leftPanel.leadUnlock {
+    padding: 0;
+}
+.pageViewControl {
+    margin-left: 14px;
+}
+}
+
+@media screen and (max-width: 1350px) {
+.datatable {
+    overflow-x: scroll;
+}
+.datatable table {
+    width: 875px;
+}
+.dataTableHeader .unlockInfo {
+    width: 100%;
+    margin: 0 0 20px 0;
+}
+.dataTableHeaderRight {
+    width: 100%;
+}
+}
+
+@media screen and (max-width: 1300px) {
+.filterPopup .popupLeft {
+    width: 100%;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: calc(100% - 120px);
+}
+.popupRight {
+    width: 97%;
+    padding: 20px 0 0 0;
+    margin: 0;
+    float: left;
 }
 }
 
@@ -1296,6 +1355,18 @@ input, select, textarea, button {
 .profileFormArea {
     max-width: 100%;
 }
+.pageViewControl {
+    float: left;
+    margin: 20px 0 0 0;
+    width: 100%;
+}
+.pageViewControl label {
+    float: left;
+    margin-top: 7px;
+}
+.pageViewControl .selectBox {
+    float: left;
+}
 }
 
 @media screen and (max-width: 840px) {
@@ -1359,6 +1430,9 @@ input, select, textarea, button {
     display: block;
     margin: 20px auto 0;
 }
+.leftPanel.leadUnlock + .rightPanel {
+    display: none;
+}
 }
 
 @media screen and (max-width: 560px) {
@@ -1371,6 +1445,9 @@ body {
     margin: 0;
     background-repeat: no-repeat;
     background-attachment: fixed;
+}
+.container {
+    margin: 0 15px;
 }
 .mainBody {
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
@@ -1410,6 +1487,30 @@ body {
 }
 }
 
+@media screen and (max-width: 500px) {
+.filterPopup .filterFormRow label {
+    width: 100%;
+    margin: 0 0 5px 0;
+    text-align: left;
+}
+.filterPopup .popupLeft .fieldArea {
+    width: 100%;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: calc(100% - 100px);
+}
+.filterPopup .popupRight .largeSelectBox {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.popupRight {
+    width: 100%;
+}
+.filterPopup .popupRight .orangeBtn {
+    margin-left: 0;
+}
+}
+
 @media screen and (max-width: 480px) {
 .footer.mobileOnly span {
     display: block;
@@ -1426,6 +1527,25 @@ body {
 }
 .profileFormArea input.small:last-child {
     margin-top: 30px;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: calc(100% - 86px);
+}
+.filterPopup .popupLeft input[type="text"] {
+    margin-left: 0;
+    float: right;
+    width: 70px;
+}
+.refineSearch {
+    margin-right: 0;
+    width: 100%;
+}
+.refineSearch input, .filterResult input {
+    width: calc(100% - 40px);
+}
+.filterResult {
+    width: 100%;
+    margin-top: 10px;
 }
 }
 
@@ -1458,6 +1578,9 @@ body {
 }
 .tilldateContent {
     margin-bottom: 100px;
+}
+.filterPopup .popupRight .radio {
+    margin-left: 10px;
 }
 }
 
