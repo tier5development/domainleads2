@@ -48,20 +48,34 @@ private function create()
     $this->Area_codes_county        = AreaCode::pluck('county','prefix')->toArray();
     $this->Area_codes_carrier_name  = AreaCode::pluck('company','prefix')->toArray();
     $this->Area_codes_number_type   = AreaCode::pluck('usage','prefix')->toArray();
-    $this->__leads  = Lead::pluck('registrant_email')->toArray();
-    $this->__leads  = array_flip($this->__leads);
-    $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
-
-    foreach($this->__leads as $key=>$val)  $this->__leads[$key] = 0;
     
-    foreach($this->__domains as $key=>$val) {
-      try {
-          $this->__leads[$val]++;
-      } catch(\Exception $e) {
-        echo($key.' previous did not happen correctly  '.$val.'<br>');
-        dd($e);
-      }
+    try {
+      $this->prepareLeadsArray();
+      $this->prepareDomainsArray();
+    } catch(\Exception $e) {
+      $this->remove_atrocious_data();
+      $this->prepareLeadsArray();
+      $this->prepareDomainsArray();
     }
+}
+
+private function prepareLeadsArray() {
+  $this->__leads  = Lead::pluck('registrant_email')->toArray();
+  $this->__leads  = array_flip($this->__leads);
+  foreach($this->__leads as $key=>$val)  $this->__leads[$key] = 0;
+  return;
+}
+
+private function prepareDomainsArray() {
+  $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
+  foreach($this->__domains as $key=>$val) {
+    try {
+        $this->__leads[$val]++;
+    } catch(\Exception $e) {
+      echo($key.' previous did not happen correctly  '.$val.'<br>');
+      dd($e);
+    }
+  }
 }
 
 private function destroy()
@@ -518,7 +532,7 @@ private function destroy()
       ignore_user_abort(true);
 
       $st = microtime(true);
-      $this->remove_atrocious_data(); //:: UCOMMENT THIS
+      // $this->remove_atrocious_data(); //:: NOT NEEDED
       $ed = microtime(true)-$st;
       array_push($query_time_array,'database_cleanup',$ed);
 
