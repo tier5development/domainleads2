@@ -69,12 +69,7 @@ private function prepareLeadsArray() {
 private function prepareDomainsArray() {
   $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
   foreach($this->__domains as $key=>$val) {
-    try {
-        $this->__leads[$val]++;
-    } catch(\Exception $e) {
-      echo($key.' previous did not happen correctly  '.$val.'<br>');
-      dd($e);
-    }
+    $this->__leads[$val]++;
   }
 }
 
