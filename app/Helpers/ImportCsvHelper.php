@@ -450,6 +450,18 @@ private function destroy()
   //this clears out data with mismatches
   private function remove_atrocious_data()
   {
+    /**
+     * Checking bad leads with bad email
+     */
+    $deleteSQL = "DELETE FROM leads WHERE LOWER(registrant_email) NOT REGEXP '^.+@.+$';";
+    DB::statement($deleteSQL);
+
+    /**
+     * Checking orphan data in each_domain
+     */
+    $table = 'each_domain';
+    $deleteSQL = "DELETE `each_domain` FROM `each_domain` LEFT JOIN `leads` on `each_domain`.`registrant_email` = `leads`.`registrant_email` WHERE `leads`.`id` is NULL;";
+    DB::statement($deleteSQL);
 
     /**
      * Checking orphan data in domains_info if found any delete
@@ -511,6 +523,11 @@ private function destroy()
     if(strlen($email)>110 || strlen($domain)>100 || strlen($ext)>30 || strlen($zip)>15)
       return false;
     return true;
+  }
+
+  private function validateEmail($email) {
+    // This is standard laravel rule for email validation
+    return preg_match('/^.+@.+$/i', $email);
   }
 
   public function insertion_Execl($file)
@@ -602,6 +619,11 @@ private function destroy()
               //dd($row);
               $created_at = str_replace($this->search, $this->replace, Carbon::now());
               $updated_at = str_replace($this->search, $this->replace, Carbon::now());
+              // dd($this->validateEmail($row[17]));
+              if(!$this->validateEmail($row[17])) {
+                continue;
+              }
+              
               $return_val = $this->make_query(1 , 1 , $row,$created_at,$updated_at,null);
               if($return_val == -1) continue;
 
@@ -658,6 +680,7 @@ private function destroy()
               $DOMAINS_STATUS         .= '('.$domains_status .')';
 
               if($counter%$BATCH == 0) {
+                // dd('over');
                 $ed = $this->execute_batch_query($leads_head    ,$LEADS
                         ,$valid_phone_head            ,$VALID_PHONE
                         ,$each_domains_head           ,$EACH_DOMAINS
