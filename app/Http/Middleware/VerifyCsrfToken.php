@@ -14,6 +14,7 @@ class VerifyCsrfToken extends BaseVerifier
     protected $except = [
         //
     'ajax_search_paginated',
-    'search'
+    'search',
+    'upload-old-leads'
     ];
 }

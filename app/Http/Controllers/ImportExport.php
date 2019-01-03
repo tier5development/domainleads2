@@ -25,11 +25,16 @@ use Illuminate\Http\Request;
 // use App\Jobs\ImportCsv;
 // use Session;
 use App\Helpers\ImportCsvHelper;
-
+use Log;
 class ImportExport extends Controller
 {
-  public function importExport()
-  {
+
+  public function uploadOldLeads(Request $request) {
+    $arr = $this->importExcel($request);
+    return response()->json(['status' => 200]);
+  }
+
+  public function importExport() {
     try {
       if(\Auth::check()) return view('importExport');  
       return redirect('/home');
