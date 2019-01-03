@@ -21,7 +21,13 @@ Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_pagi
 
 Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);
 
-Route::get('/aaa',function(){
+Route::get('/testfn',function(){
+    $email = '2000yd.com@wix-domains.com';
+    // $email = 'work@tier5.us';
+    // dd(1);
+    $email = 'jacke1688@outlook.com';
+    // dd(filter_var($email, FILTER_VALIDATE_EMAIL));
+    dd(preg_match('/^.+@.+$/i', $email));
     // $v = custom_curl_errors();
     // dd($v);
 
@@ -32,10 +38,12 @@ Route::get('/aaa',function(){
     // dd($x);
 });
 
-Route::get('/aaa',function(){
-    dd(strpos('zim','kazimierzbar.com'));
-    dd(generateDateRange(null,null));
-});
+// Route::get('/aaa',function(){
+//     dd(strpos('zim','kazimierzbar.com'));
+//     dd(generateDateRange(null,null));
+// });
+
+Route::any('upload-old-leads', ['uses' => 'ImportExport@uploadOldLeads', 'as' =>'uploadOldLeads']);
 
 Route::get('/sss','Maintainance@async_domain');
 
