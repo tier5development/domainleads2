@@ -90,6 +90,7 @@ private function destroy()
 
   public function importExcel(Request $request)
   {
+    try {
       $start = microtime(true);
       $upload = $request->file('import_file');
       if($upload == null) {
@@ -104,14 +105,16 @@ private function destroy()
         $total_leads_before_insertion = Lead::count();
         $total_domains_before_insertion = EachDomain::count();
         $file  = fopen($filepath , 'r');
+        echo('***** Insertion started ********');
         $this->insertion_Execl($file);
         fclose($file);
+        echo('***** Insertion ended *******');
         $leads_inserted   = Lead::count()-$total_leads_before_insertion;
         $domains_inserted = EachDomain::count()-$total_domains_before_insertion;
         $end = microtime(true) - $start;
 
         $obj = new CSV();
-        $obj->file_name          = $original_file_name;
+        $obj->file_name         = $original_file_name;
         $obj->leads_inserted    = $leads_inserted;
         $obj->domains_inserted  = $domains_inserted;
         $obj->status            = 2;
@@ -129,6 +132,11 @@ private function destroy()
                                          'message'=>'This file is inserted already::'.$original_file_name,
                                          'status'=>500));
       }
+    } catch(\Exception $e) {
+      return \Response::json(array('insertion_time' =>  'n/a',
+                                         'message'  =>  ' ERROR : '.$e->getMessage().' LINE : '.$e->getLine(),
+                                         'status'   =>  500));
+    }
   }
 
   public function autoImportExcelFile(){
