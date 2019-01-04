@@ -351,6 +351,52 @@
             </div>
           </div>
         </div>
+
+
+
+
+
+
+        <div class="reviewSlider">
+          <ul class="review">
+            <li class="">
+              <div class="reviewTxt">
+                <p>
+                  I always go for the old leads, skybound only does SEO and digital marketing.with domain leads I can quickly filter by leads that already have a website, I love this feature because that is my target audience for our service. DomainLeads gives me the tools I need to terget leads and make sales.
+                </p>
+                <span class="userName">brandon shavers</span>
+                <span class="userInfo">founder - skybound digital</span>
+              </div>
+            </li>
+            <li class="">
+                <div class="reviewTxt">
+                  <p>
+                    I always go for the old leads, skybound only does SEO and digital marketing.with domain leads I can quickly filter by leads that already have a website, I love this feature because that is my target audience for our service. DomainLeads gives me the tools I need to terget leads and make sales.
+                  </p>
+                  <span class="userName">brandon shavers</span>
+                  <span class="userInfo">founder - skybound digital</span>
+                </div>
+              </li>
+          </ul>
+          <ul class="profileImg">
+            <li class="">
+              <div class="profileImgBox">
+                <img src="images/Profile_circle@2x.png" alt="brandon shavers">
+              </div>
+            </li>
+            <li>
+              <div class="profileImgBox">
+                <img src="images/atomix_user31.png" alt="brandon shavers">
+              </div>
+            </li>
+          </ul>
+        </div>
+
+
+
+
+
+
       </div>
     </div>
   </section>
@@ -494,18 +540,47 @@
 
         // $(".userImages .tooltip")
 
-          if($(window).width() <= 767){
-            var reviewLoop = 0;
-            setInterval(function(){
-              $(".userImages .tooltip.userImg1").css("margin-top",reviewLoop+"px");
+          // if($(window).width() <= 767){
+          //   var reviewLoop = 0;
+          //   setInterval(function(){
+          //     $(".userImages .tooltip.userImg1").css("margin-top",reviewLoop+"px");
               
-              reviewLoop = reviewLoop-206;
-              if(reviewLoop == -2472){
-                reviewLoop = 0;
-              }
-            },2000);
-          }
-        
+          //     reviewLoop = reviewLoop-206;
+          //     if(reviewLoop == -2472){
+          //       reviewLoop = 0;
+          //     }
+          //   },2000);
+          // }
+          
+          var countReview = 0;
+          var counterSlid = 0;
+          $(".reviewSlider .review li").each(function(index){
+            $(this).addClass("slid"+index);
+            countReview = index;
+          });
+          $(".reviewSlider .profileImg li").each(function(index){
+            $(this).addClass("thumb"+index);
+          });
+          console.log(countReview);
+
+          setInterval(function(){
+            $(".reviewSlider .review li").removeClass("active");
+            $(".reviewSlider .profileImg li").removeClass("active");
+            $(".thumb"+counterSlid).addClass("active");
+            $(".thumb"+counterSlid).addClass("change");
+            setTimeout(function(){
+              $(".slid"+counterSlid).addClass("active");
+              $(".reviewSlider .profileImg li").removeClass("change");
+            },600);
+            
+
+
+
+            counterSlid = counterSlid + 1;
+            if(counterSlid > countReview){
+              counterSlid = 0;
+            }
+          },3000);
 
         });
 

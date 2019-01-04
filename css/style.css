@@ -819,6 +819,10 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 }
 
+.reviewSlider {
+	display: none;
+}
+
 /*tooltip*/
 .tooltip {
 	position: relative;	
@@ -1432,7 +1436,10 @@ h1, h2, h3, h4, h5, h6, p{
 .majorBenefits .benefits {
 	height: 295px;
 }
-.userSay {
+.headingInfo {
+	margin-bottom: 15px;
+}
+/* .userSay {
 	height: auto;
 }
 .userSay .userImages {
@@ -1490,6 +1497,147 @@ h1, h2, h3, h4, h5, h6, p{
     left: 20px;
 	top: 20px;
 	position: relative;
+} */
+.userSay.comSection {
+	padding-bottom: 30px;
+}
+.userSay {
+	height: auto;
+}
+.userImages {
+	display: none;
+}
+.reviewSlider {
+	display: block;
+	height: 500px;
+	overflow: hidden;
+}
+.reviewSlider .review {
+	height: 390px;
+	position: relative;
+}
+.reviewSlider .review li {
+	overflow: hidden;
+    padding: 0;
+    width: 0;
+	height: 0px;
+	transition: all 0.5s ease 0s;
+	top: 100%;
+	left: 50%;
+	position: absolute;
+	opacity: 0;
+	transform: translateX(-50%);
+}
+.reviewSlider .review li.active {
+	padding: 20px;
+    width: 350px;
+	height: 400px;
+	top: 0;
+	opacity: 1;
+}
+.reviewSlider .review .reviewTxt {
+	background: #fff;
+	box-sizing: border-box;
+	padding: 20px;
+	text-align: center;
+	border-radius: 10px;
+	max-width: 400px;
+	position: relative;
+	box-shadow: 0 0 30px rgba(0,0,0,0.1);
+}
+.reviewSlider .review .reviewTxt:after {
+	content: "";
+	position: absolute;
+	bottom: -18px;
+	left: 50%;
+	transform: translateX(-50%);
+	border-top: 20px solid #fff;
+	border-left: 15px solid rgba(0,0,0,0);
+	border-right: 15px solid rgba(0,0,0,0);
+}
+.reviewSlider .review .reviewTxt p {
+	font-family: 'Avenir LT Std 65 Medium';
+    color: #8b8b8b;
+    font-size: 15px;
+	line-height: 26px;
+	margin-bottom: 20px;
+}
+.reviewSlider .review .reviewTxt .userName {
+	font-family: 'Avenir LT Std 95 Black';
+    color: #3a3a3a;
+    font-size: 15px;
+    margin-bottom: 5px;
+	text-transform: capitalize;
+	display: inline-block;
+	width: 100%;
+}
+.reviewSlider .review .reviewTxt .userInfo {
+	font-family: 'Avenir LT Std 65 Medium';
+    color: #1fbec5;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+.reviewSlider .profileImg {
+	width: 80px;
+	height: 80px;
+	border-radius: 80px;
+	border: 3px solid #fff;
+	margin: 0 auto;
+	
+}
+.reviewSlider .profileImg .profileImgBox {
+	width: 74px;
+	height: 74px;
+	border-radius: 80px;
+	/* box-shadow: 0 0 30px rgba(233, 83, 17, 0.5); */
+	position: relative;
+}
+.reviewSlider .profileImg .profileImgBox:before {
+	content: "";
+	width: 100%;
+	height: 100%;
+	margin-left: -3px;
+    margin-top: -3px;
+	border-radius: 80px;
+	border: 2px solid #ff9700;
+	opacity: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	box-sizing: border-box;
+	animation-name: wave;
+	animation-delay: 0.2s;
+	animation-duration: 1.5s;
+	animation-iteration-count: infinite;
+}
+.reviewSlider .profileImg .profileImgBox img {
+	border-radius: 80px;
+	width: 100%;
+	height: auto;
+	position: relative;
+}
+.reviewSlider .profileImg li {
+	display: none;
+}
+.reviewSlider .profileImg li.active {
+	display: block;
+}
+.reviewSlider .profileImg li .profileImgBox:after {
+	content: "";
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-radius: 80px;
+	background: #fff;
+	left: 40px;
+	top: 40px;
+	transition: all 0.3s ease 0s;
+}
+.reviewSlider .profileImg li.change .profileImgBox:after {
+	width: 80px;
+	height: 80px;
+	left: -2px;
+	top: -2px;
 }
 
 }
