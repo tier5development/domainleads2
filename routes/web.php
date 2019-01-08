@@ -14,6 +14,9 @@
 use App\LeadUser;
 
 Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
+Route::get('/signup', ['uses' => 'AccountController@signupPage', 'as' => 'signupPage']);
+Route::post('/signup', ['uses' => 'AccountController@signupPost', 'as' => 'signupPost']);
+
 
 Route::get('/update_metadata_today/{date}',['uses'=>'SearchController@update_metadata_today']);
 

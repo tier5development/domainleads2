@@ -183,18 +183,109 @@ class AccountController extends Controller
 		return view('login');
 	}
 
+	public function signupPage() {
+		if(\Auth::check()) {
+			return redirect('search');
+		}
+		return view('signup');
+	}
+
+	public function signupPost(Request $request) {
+		// dd('here');
+	  //print_r($request->all()); dd();
+	  // dd($request->all());
+	  $first_name=$request->first_name;
+	  $last_name=$request->last_name;
+	  $email=$request->email;
+	  $password=$request->password;
+	  $remember_token=$request->_token;
+	  $date=date('Y-m-d H:i:s');
+	  
+	  $validator=Validator::make(
+	   $request->all(),
+	   array(
+	   'first_name'=>'required',
+		'last_name'=>'required',
+		 'email'=>'required|email',
+		  'password'=>'required',
+		   'c_password'=>'required | same:password'
+	   ), [
+		   'c_password.required' => 'Confirm password is required.',
+		   'c_password.same' => 'Confirm password should be same as password.'
+	   ]
+	  );
+	  
+	  if($validator->fails()) {
+		  return redirect()->back()->withErrors($validator)->withInput();
+	  } 
+	  else {
+		  
+		  $id_email = DB::table('users')->select('email')->where('email',$email)->get();
+		  if(count($id_email) ==0)
+		  {
+ 
+			  $u = new User();
+			  $u->name = $first_name." ".$last_name;
+			  $u->email = $email;
+			  $u->password = Hash::make($password);
+			  $u->remember_token = $remember_token;
+			  $u->user_type = 1;
+			  
+			  
+			  if($u->save()) {
+				//   \Session::put('emailset',$email);
+				//   \Session::put('passset',$password);
+				//   $admin_users_email="work@tier5.us";
+				//   $user_name=$u->name;
+				//   $title="Thanks for sign up with DomainLeads";
+				//  $subject="DomainLeads Signup";
+				//  $content="Thanks for sign up with DomainLeads";
+				//  \Mail::send('emails.thankyou', ['title' => $title, 'content' => $content,'user_name'=>$user_name], function ($message)use ($admin_users_email,$email,$user_name,$subject)
+				//  {
+				// 	 $message->from($admin_users_email);
+				// 	 $message->to($email,$user_name);
+				// 	 $message->subject($subject);
+				//  });
+				//  \Mail::send('emails.accback', ['title' => $title, 'content' => $content,'user_name'=>$user_name,'email'=>$email], function ($message)use ($admin_users_email,$email,$user_name,$subject)
+				//  {
+				// 	 $message->from($email,$user_name);
+				// 	 $message->to($admin_users_email);
+				// 	 $message->subject($subject);
+				//  });
+				$userdata = ['email' => $email, 'password' => $password];
+				if (Auth::validate($userdata)) {
+					if (Auth::attempt($userdata)) {
+						return redirect('search');
+					} else {
+						return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
+					}
+				  } else {
+					return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
+				  }
+				return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
+			  }
+			  else {
+				 return \Response::json(array("msg"=>"error2" , "user_id"=>null));
+			 }
+		  }   
+		  return \Response::json(array("msg"=>"error3" , "user_id"=>null));
+		  
+	  }
+	}
+
 	public function home()
 	{
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		return redirect('login');
-		//return view('home');
+		// return redirect('login');
+		// return view('new-version/home');
+		return view('home');
 	}
 
     public function login(Request $request) {
 	try {
-
+		
 		$rules = array(
 			'email' => 'required|email',
 			'password' => 'required|min:6'
@@ -205,22 +296,22 @@ class AccountController extends Controller
 		);
 		$validator = Validator::make($userdata , $rules);
 	
-		if ($validator->fails()){
-			return redirect()->back()->with('error', 'Invalid Login credentials!');
+		if($validator->fails()) {
+			return redirect()->back()->with('error', 'INVALID LOGIN CREDENTIALS PROVIDED! ');
 		}
+
 		else 
 		{
 		  if (Auth::validate($userdata)) {
 			if (Auth::attempt($userdata)) {
 				return redirect('search');
 			} else {
-				return redirect()->back()->with('error', 'Cannot authenticate! Please try agin with valid credentials');
+				return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
 			}
 		  } else {
-			return redirect()->back()->with('error', 'Cannot authenticate. Please try agin with valid credentials!');
+			return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
 		  }
 		}
-
 	} catch(\Exception $e) {
 		return redirect()->back()->with('error', 'ERROR : '.$e->getMessage());
 	}

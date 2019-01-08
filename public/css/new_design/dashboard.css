@@ -1,0 +1,1585 @@
+@font-face {
+	font-family: 'Avenir LT Std 55 Roman';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 55 Roman'), url('../fonts/AvenirLTStd-Roman.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 55 Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 55 Oblique'), url('../fonts/AvenirLTStd-Oblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 35 Light';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 35 Light'), url('../fonts/AvenirLTStd-Light.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 35 Light Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 35 Light Oblique'), url('../fonts/AvenirLTStd-LightOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 45 Book';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 45 Book'), url('../fonts/AvenirLTStd-Book.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 45 Book Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 45 Book Oblique'), url('../fonts/AvenirLTStd-BookOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 65 Medium';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 65 Medium'), url('../fonts/AvenirLTStd-Medium.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 65 Medium Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 65 Medium Oblique'), url('../fonts/AvenirLTStd-MediumOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 85 Heavy'), url('../fonts/AvenirLTStd-Heavy.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 85 Heavy Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 85 Heavy Oblique'), url('../fonts/AvenirLTStd-HeavyOblique.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 95 Black';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 95 Black'), url('../fonts/AvenirLTStd-Black.woff') format('woff');
+}
+@font-face {
+	font-family: 'Avenir LT Std 95 Black Oblique';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Avenir LT Std 95 Black Oblique'), url('../fonts/AvenirLTStd-BlackOblique.woff') format('woff');
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Avenir LT Std 55 Roman';
+    font-weight: 400; 
+    background: #ffffff url("../images/bg_main.png") no-repeat;
+    background-position: top center;
+}
+table {
+    border-collapse: collapse;
+}
+th {
+    text-align: inherit;
+}
+a {
+    text-decoration: none;
+    -webkit-text-decoration-skip: objects;
+}
+ul{
+    list-style: none;
+}
+input, select, textarea, button {
+    outline: none;
+}
+
+.clear {
+    clear: both;
+}
+
+
+/* CSS for custom select dropdown -start */
+.selectNumberArea {
+    border-bottom: 1px solid #d9d9d9;
+    padding: 0 20px 30px 20px;
+    margin: 0 -27px;
+}
+.selectNumberArea label {
+    color: #21395e;
+    font-size: 14px;
+    float: left;
+    margin-top: 8px;
+    margin-right: 15px;
+}
+
+.select-hidden {
+    display: none;
+    visibility: hidden;
+}
+.select {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 36px;
+    width: 100%;
+    text-align: left;
+}
+.select-styled {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    color: #6c6c6c;
+    transition: all 0.2s ease-in;
+    float: left;
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 3px;
+    line-height: 24px;
+    height: 50px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.select-styled:after {
+    content: "";
+    width: 8px;
+    height: 2px;
+    background: #818181;
+    position: absolute;
+    top: 24px;
+    right: 13px;
+    transform: rotate(-135deg);
+    transition: all 0.3s ease 0s;
+}
+.select-styled:before {
+    content: "";
+    width: 8px;
+    height: 2px;
+    background: #818181;
+    position: absolute;
+    top: 24px;
+    right: 8px;
+    transform: rotate(135deg);
+    transition: all 0.3s ease 0s;
+}
+.select-styled.active:after {
+    transform: rotate(-45deg);
+}
+.select-styled.active:before {
+    transform: rotate(45deg);
+}
+
+
+.select-options {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    left: 0;
+    z-index: 999;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: margin 0.2s ease-in;
+}
+.select-options li {
+    margin: 0;
+    padding: 9px 0 10px;
+    text-indent: 15px;
+    -moz-transition: all 0.3s ease-in;
+    -o-transition: all 0.3s ease-in;
+    -webkit-transition: all 0.3s ease-in;
+    transition: all 0.3s ease-in;
+    font-size: 14px;
+    color: #6c6c6c;
+}
+.select-options li:hover {
+    background: #f5f5f5;
+}
+/* .select-options li:first-child {
+    border-top: 0;
+    color: #888;
+} */
+.select-options li[rel="hide"] {
+    display: none;
+}
+.select-styled.active + ul.select-options{
+    margin-top: 1px;
+}
+
+.selectNumberArea .select {
+    width: 310px;
+    float: left;
+}
+
+/* CSS for custom select dropdown -end */
+
+
+
+.container {
+    max-width: 1560px;
+    margin: 0 auto;
+}
+
+.dashHeader {
+    padding-top: 12px;
+    padding-bottom: 10px;
+}
+.headerLeft {
+    float: left;
+    padding-top: 5px;
+}
+.headerRight {
+    float: right;
+    width: 600px;
+}
+.heaverNav ul {
+    margin-top: 12px;
+    float: left;
+}
+.heaverNav ul li {
+    float: left;
+    padding-right: 45px;
+}
+.heaverNav ul li:last-child {
+    padding-right: 0;
+}
+.heaverNav ul li a {
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 85 Heavy';
+}
+.userNameArea {
+    float: right;
+    position: relative;
+}
+.userName {
+    float: left;
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 85 Heavy';
+    margin: 15px 15px 0 0;
+}
+.userImg {
+    float: right;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+.profileMenu {
+    position: absolute;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 185px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.25);
+}
+.profilePic {
+    position: relative;
+    height: 123px;
+    overflow: hidden;
+}
+.profilePic:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(64, 204, 188, 0.4);
+}
+.profilePic img {
+    transition: all 0.5s ease 0s;
+}
+.profilePic .changePic {
+    position: absolute;
+    z-index: 10;
+    bottom: 10px;
+    left: 14px;
+    opacity: 0;
+    transition: all 0.5s ease 0s;
+}
+.profilePic:hover .changePic {
+    opacity: 1;
+}
+.profilePic .changePic:hover + img {
+    filter: grayscale(1);
+}
+.profileMenuBody {
+    background: linear-gradient(#40cdbc, #62e5b3);
+    text-align: center;
+}
+.profileMenu .profileName {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.profileMenu .profileName p {
+    color: #e7faf7;
+    font-family: 'Avenir LT Std 85 Heavy';
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding-bottom: 5px;
+}
+.profileMenu .profileName span {
+    color: #bbf7e5;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 85 Heavy';
+}
+.profileMenu ul li a {
+    font-family: 'Avenir LT Std 85 Heavy';
+    color: #fff;
+    font-size: 15px;
+    padding: 20px 0;
+    display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+.profileMenu ul li a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.5s ease 0s;
+}
+.profileMenu ul li a:hover:after {
+    width: 100%;
+}
+
+.profileMenu ul li:last-child a {
+    border-bottom: 0;
+}
+.closeMenu {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 99;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    transition: all 0.5s ease 0s;
+}
+.closeMenu:before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 0;
+    width: 2px;
+    height: 15px;
+    background: #fff;
+    z-index: 999;
+    transform: rotate(45deg);
+}
+.closeMenu:after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 0;
+    width: 2px;
+    height: 15px;
+    background: #fff;
+    z-index: 999;
+    transform: rotate(-45deg);
+}
+.closeMenu:hover {
+    transform: rotate(180deg);
+}
+
+.mainBody {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    float: left;
+    width: 100%;
+    position: relative;
+}
+
+.leftPanel {
+    width: 70%;
+    float: left;
+    padding: 0 45px;
+}
+.leftPanelHeader {
+    display: inline-block;
+    width: 100%;
+    margin: 100px 0 30px 0;
+}
+.leftPanelHeader .clientImg {
+    width: 33px;
+    height: 33px;
+    border-radius: 20px;
+    overflow: hidden;
+    text-align: center;
+    float: left;
+    margin-right: 22px;
+}
+.leftPanelHeader .clientInfo {
+    float: left;
+}
+.leftPanelHeader .clientInfo h1 {
+    font-size: 36px;
+    color: #1fbec5;
+    font-family: 'Avenir LT Std 95 Black';
+}
+.leftPanelHeader .clientInfo p {
+    font-family: 'Avenir LT Std 55 Roman';
+    padding-top: 15px;
+    font-size: 15px;
+    color: #6c6c6c;
+}
+.searchDomainForm {
+    background: #f6f6f6;
+    border: 1px solid #dbdbdb;
+    border-radius: 15px;
+    padding: 0 78px 45px 78px;
+    max-width: 846px;
+    margin: 0 auto;
+}
+.searchDomainForm .formRow {
+    margin-top: 40px;
+}
+.searchDomainForm .formRow .rowHeading {
+    color: #6c6c6c;
+    font-size: 15px;
+    padding-bottom: 17px;
+}
+.searchDomainForm .formRow label {
+    color: #6c6c6c;
+    font-size: 15px;
+    padding: 5px 0 0 10px;
+    display: inline-block;
+}
+.searchDomainForm .formRow .radioCol {
+    display: inline-block;
+    margin-right: 40px;
+}
+.radio {
+    float: left;
+    width: 22px;
+    height: 22px;
+    position: relative;
+}
+.radio input[type="radio"] {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    opacity: 0;
+    z-index: 10;
+}
+.radio p {
+    width: 22px;
+    height: 22px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #d4d4d4;
+    transition: all 0.5s ease 0s;
+}
+.radio p span {
+    display: block;
+    width: 0px;
+    height: 0px;
+    border-radius: 10px;
+    background: linear-gradient(to right, #1fbec5, #63e6b2);
+    transition: all 0.2s ease 0s;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+.radio p:after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 20px;
+    border: 0px solid #1fbec5;
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    opacity: 1;
+    transition: all 0.3s ease 0.1s, opacity 0.3s ease 0.15s;
+}
+.radio input[type="radio"]:checked + p {
+    border-color: #1fbec5; 
+}
+.radio input[type="radio"]:checked + p:after {
+    border: 6px solid #1fbec5;
+    width: 38px;
+    height: 38px;
+    left: -8px;
+    top: -8px;
+    opacity: 0;
+}
+.radio input[type="radio"]:checked + p span {
+    width: 14px;
+    height: 14px;
+    left: 4px;
+    top: 4px;
+}
+
+.dateRange {
+    border: 1px solid #dbdbdb;
+    background: #fff url("../images/dateIndicator.png") no-repeat center;
+    border-radius: 3px;
+    padding: 13px;
+    display: inline-block;
+    width: 100%;
+}
+.dateArea img {
+    float: left;
+}
+.dateArea .date {
+    float: left;
+}
+.dateArea.endDate {
+    float: right;
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    width: 32px;
+    background: #fff;
+    border: 0;
+    border-bottom: 1px solid #dbdbdb;
+    font-size: 14px;
+    padding-bottom: 5px;
+    text-align: center;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    margin-left: 24px;
+    outline: none;
+}
+.dateArea .date .year {
+    width: 44px;
+}
+.dateArea .date .day::placeholder, 
+.dateArea .date .month::placeholder, 
+.dateArea .date .year::placeholder, 
+.domainName input[type="text"]::placeholder {
+    color: #cfcfcf;
+}
+.domainName input[type="text"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    display: inline-block;
+    width: calc(100% - 117px);
+    height: 50px;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+}
+.domainName .selectBox {
+    width: 92px;
+    float: right;
+}
+.formRow.address {
+    width: 100%;
+    display: inline-block;
+}
+.address .formCol {
+    width: 35%;
+    float: left;
+    padding-right: 25px;
+}
+.address .formCol:last-child {
+    padding-right: 0;
+    width: 30%;
+}
+.address .formCol label {
+    padding: 0 0 17px 0;
+}
+.address .formCol input[type="text"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    height: 50px;
+    width: 100%;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+}
+
+.orangeBtn {
+    background: linear-gradient(#e96e10, #e95310);
+    border: none;
+    color: #fff;
+    font-family: 'Avenir LT Std 65 Medium';
+    font-size: 16px;
+    text-align: center;
+    height: 50px;
+    padding: 0 50px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.formRow.submit {
+    position: relative;
+    margin-top: 20px;
+}
+.formRow.submit .orangeBtn {
+    position: absolute;
+    left: 50%;
+    top: 21px;
+    transform: translateX(-50%);
+}
+
+.rightPanel {
+    width: 28%;
+    float: right;
+    margin: 30px 0;
+    padding: 0 15px 0 45px;
+    position: relative;
+}
+.rightPanel h2 {
+    color: #c6c6c6;
+    font-size: 11px;
+    font-family: 'Avenir LT Std 85 Heavy';
+    letter-spacing: 2px;
+}
+.leftLine {
+    position: absolute;
+    top: 0;
+    left: -2px;
+    height: 100%;
+    width: 9px;
+}
+.leftLine span {
+    width: 9px;
+    height: 9px;
+    border: 2px solid #c9c9c9;
+    background: #fff;
+    border-radius: 8px;
+    position: absolute;
+    top: 0;
+    z-index: 5;
+}
+.leftLine span:last-child {
+    top: unset;
+    bottom: 0;
+}
+.leftLine p {
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background: #c9c9c9;
+    left: 4px;
+}
+.rightPanel h3 {
+    color: #000;
+    font-size: 20px;
+    font-family: 'Avenir LT Std 85 Heavy';
+    margin: 50px 0 0;
+    position: relative;
+}
+.rightPanel h3:before {
+    content: "";
+    width: 25px;
+    height: 25px;
+    background: url("../images/Multi_circle_bullet.png") no-repeat;
+    position: absolute;
+    left: -55px;
+}
+.todayContent p, .tilldateContent p {
+    color: #6e6e6e;
+    font-size: 15px;
+    padding-top: 10px;
+    text-align: center;
+    line-height: 23px;
+}
+.tilldateContent {
+    margin-top: 90px;
+    margin-bottom: 150px;
+}
+.tilldateContent p {
+    text-align: left;
+    padding-top: 5px;
+}
+.todayContent p span.green, .tilldateContent p span.green {
+    color: #41c8cd;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.todayContent p span.yellow {
+    color: #e9a112;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.todayContent .chart {
+    text-align: center;
+    margin-top: 55px;
+}
+.todayContent .orangeBtn {
+    padding: 0 32px;
+    margin-top: 25px;
+}
+
+.footer {
+    color: #c6c6c6;
+    font-size: 14px;
+    font-family: 'Avenir LT Std 65 Medium';
+    margin-top: 50px;
+    margin-bottom: 30px;
+    display: inline-block;
+    width: 100%;
+    padding: 0 50px;
+}
+.footer a {
+    display: inline-block;
+    text-decoration: underline;
+    color: #3cbec1;
+    margin: 0 5px;
+}
+.footer a:first-child {
+    margin-left: 20px;
+}
+
+
+.leftPanel.leadUnlock {
+    padding: 0 20px;
+    position: relative;
+}
+.unlockInfo {
+    color: #6c6c6c;
+    font-size: 15px;
+    float: left;
+    margin-top: 10px;
+}
+.unlockInfo strong {
+    font-family: 'Avenir LT Std 95 Black';
+}
+.dataTableHeader {
+    display: inline-block;
+    width: 100%;
+}
+.dataTableHeaderRight {
+    float: right;
+}
+.dataTableHeaderRight .dateArea {
+    float: left;
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 12px 12px 7px 12px;
+    margin-right: 10px;
+}
+.dataTableHeaderRight .orangeBtn {
+    height: 45px;
+    padding: 0 25px;
+    padding-top: 2px;
+}
+.greenBtn {
+    background: linear-gradient(to right, #3cbec1, #48e4b3);
+    height: 45px;
+    padding: 0 15px;
+    color: #fff;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Avenir LT Std 65 Medium';
+    font-size: 15px;
+    padding-top: 3px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.pageViewControl {
+    float: right;
+    margin-left: 47px;
+    margin-top: 10px;
+}
+.pageViewControl label {
+    font-family: 'Avenir LT Std 85 Heavy';
+    color: #c6c6c6;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+.pageViewControl .selectBox {
+    float: right;
+    width: 96px;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+.pageViewControl .select-styled {
+    border:0;
+    border-bottom: 1px solid #6c6c6c;
+    border-radius: 0;
+    padding: 0;
+    height: 26px;
+    text-align: center;
+}
+.pageViewControl .select-styled:before {
+    top: 12px;
+    right: -20px;
+}
+.pageViewControl .select-styled:after {
+    top: 12px;
+    right: -15px;
+}
+.pageViewControl .select-options {
+    top: 24px;
+    border-color: #6c6c6c;
+    border-radius: 0;
+}
+.pageViewControl .select-options li {
+    text-indent: 0;
+    text-align: center;
+}
+
+.datatable {
+    padding-top: 25px;
+}
+.datatable table {
+    width: 100%;
+}
+.datatable table thead {
+    border-top: 1px solid #ececeb;
+    border-bottom: 1px solid #ececeb;
+}
+.datatable table thead th {
+    color: #c6c6c6;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 30px 10px;
+}
+.datatable table thead th:first-child {
+    padding-left: 0;
+}
+.datatable table thead th:last-child {
+    padding-right: 0;
+}
+.datatable table tbody td {
+    padding: 30px 10px;
+    vertical-align: top;
+    border-bottom: 1px solid #c9c9c9;
+}
+.datatable table tbody td:first-child {
+    padding-left: 0;
+}
+.datatable table tbody td:last-child {
+    padding-right: 0;
+}
+.datatable table tbody td p {
+    font-size: 14px;
+    color: #6c6c6c;
+    padding-bottom: 7px;
+}
+.datatable table tbody td p span {
+    float: left;
+    margin-top: 3px;
+}
+.datatable table tbody td p.domains img {
+    float: left;
+    margin-right: 10px;
+}
+.datatable table tbody td p.domains a {
+    float: left;
+    margin-top: 3px;
+    text-decoration: underline;
+    color: #3dc1c6;
+}
+.datatable table tbody td p.email a {
+    text-decoration: underline;
+    color: #3cbec4;
+    font-size: 12px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.datatable table tbody td p.country {
+    margin-top: 5px;
+}
+.datatable table tbody td p.country img {
+    float: left;
+    margin-right: 10px;
+}
+.datatable table tbody td p.country span {
+    float: left;
+    margin-top: 2px;
+    font-size: 12px;
+    color: #a5a5a5;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.datatable table tbody td p.phone img {
+    float: left;
+    margin-right: 10px;
+}
+.encapsulate {
+    width: 120px;
+    margin-top: 9px;
+    display: inline-block;
+}
+.encapsulate span {
+    float: left;
+    width: 100%;
+    background: #c8eef0;
+    height: 3px;
+    margin-bottom: 7px;
+}
+.encapsulate span:nth-child(2n) {
+    background: #d9f8ec;
+    width: 50%;
+}
+.encapsulate span:nth-child(3n) {
+    width: 80%;
+}
+.greenBtn.unlockBtn {
+    height: 36px;
+    font-size: 14px;
+}
+.datatable table tbody td p.locked img {
+    float: left;
+    margin-right: 10px;
+}
+.datatable table tbody td p.locked span {
+    float: left;
+    margin-top: 5px;
+}
+.datatable table tbody td .leadStatus p {
+    float: left;
+}
+.datatable table tbody td .leadStatus p.domains {
+    margin: 0 0 0 30px;
+}
+.refineSearch, .filterResult {
+    background: #f5f5f5;
+    border: 1px solid #c9c9c9;
+    height: 46px;
+    border-radius: 30px;
+    float: left;
+    padding: 10px;
+}
+.refineSearch {
+    margin-right: 10px;
+}
+.refineSearch .icon, .filterResult .icon {
+    width: 36px;
+    float: left;
+    border-right: 1px solid #c4c4c4;
+    padding-top: 3px;
+}
+.filterResult .icon {
+    padding-left: 5px;
+}
+.refineSearch input, .filterResult input {
+    height: 26px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #6c6c6c;
+    padding: 5px;
+    width: 130px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.filterResult input {
+    width: 95px;
+    padding: 5px 10px;
+}
+.refineSearch input::placeholder, .filterResult input::placeholder {
+    color: #bebebe;
+}
+
+
+.alert {
+    width: 380px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px 0 0 10px;
+    position: fixed;
+    right: 0;
+    bottom: 120px;
+    z-index: 999;
+    box-shadow: 0 0 40px rgba(0,0,0,0.2);
+}
+.alert .alertLeft {
+    float: left;
+
+}
+.alert .alertRight {
+    float: left;
+}
+.alert .alertRight p {
+    font-size: 14px;
+    color: #6c6c6c;
+    padding-left: 20px;
+    line-height: 22px;
+    font-family: 'Avenir LT Std 65 Medium';
+}
+.alert .alertRight p span {
+    color: #e9a112;
+}
+
+.filterPopup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #f6f6f6;
+    border: 1px solid #dbdbdb;
+    width: 100%;
+    padding: 20px 60px 20px 30px;
+    z-index: 99;
+}
+.filterPopup .popupLeft {
+    width: 45%;
+    float: left;
+}
+.filterPopup .filterFormRow {
+    width: 100%;
+    display: inline-block;
+    margin-top: 15px;
+}
+.filterPopup .filterFormRow label {
+    width: 130px;
+    float: left;
+    font-size: 14px;
+    color: #6c6c6c;
+    margin-top: 17px;
+    text-align: right;
+}
+.filterPopup .popupLeft .fieldArea {
+    width: calc(100% - 150px);
+    float: right;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: 150px;
+    float: left;
+}
+.filterPopup .popupLeft input[type="text"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    height: 50px;
+    width: 80px;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+    margin-left: 18px;
+}
+.popupRight {
+    width: 50%;
+    float: right;
+}
+.filterPopup .popupRight .largeSelectBox {
+    width: calc(100% - 150px);
+    float: right;
+}
+.filterPopup .popupRight .label {
+    font-size: 15px;
+    color: #6c6c6c;
+    font-family: 'Avenir LT Std 65 Medium';
+    float: left;
+    margin: 19px 10px 0 7px;
+}
+.filterPopup .popupRight .radio {
+    margin: 15px 0 0 20px;
+}
+.filterPopup .popupRight .orangeBtn {
+    margin: 20px 0 0 150px;
+    padding: 0 30px;
+}
+.filterPopup .closeFilterPopup {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 99;
+    cursor: pointer;
+    width: 14px;
+    height: 16px;
+    transition: all 0.5s ease 0s;
+}
+.filterPopup .closeFilterPopup:after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 0;
+    width: 1px;
+    height: 18px;
+    background: #6f6f71;
+    z-index: 999;
+    transform: rotate(-45deg);
+}
+.filterPopup .closeFilterPopup:before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 0;
+    width: 1px;
+    height: 18px;
+    background: #6f6f71;
+    z-index: 999;
+    transform: rotate(45deg);
+}
+.filterPopup .closeFilterPopup:hover {
+    transform: rotate(180deg);
+}
+
+.editProfileHeading {
+    font-size: 24px;
+    color: #6c6c6c;
+    font-family: 'Avenir LT Std 65 Medium';
+    margin-top: 20px;
+}
+.profileTip {
+    float: right;
+    width: 182px;
+    height: 169px;
+    background: url("../images/bg_tip_note.png") no-repeat;
+    text-align: center;
+    margin: -10px 70px 0 0;
+}
+.profileTip figure {
+    padding-top: 35px;
+}
+.profileTip p {
+    font-size: 12px;
+    color: #585858;
+    padding: 20px 15px 0;
+}
+
+.profileFormArea {
+    max-width: 630px;
+    margin-top: 30px;
+    float: left;
+}
+.profileFormArea .formHeading {
+    margin-top: 55px;
+    font-size: 15px;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+}
+.profileFormArea .formRow {
+    display: inline-block;
+    width: 100%;
+    margin-top: 25px;
+}
+.profileFormArea input[type="text"], 
+.profileFormArea input[type="password"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    height: 50px;
+    width: 100%;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+    font-size: 14px;
+}
+.profileFormArea input[type="text"]::placeholder, 
+.profileFormArea input[type="password"]::placeholder {
+    color: #c8c8c8;
+}
+.profileFormArea input.small {
+    width: 48%;
+    float: left;
+}
+.profileFormArea input.small:last-child {
+    float: right;
+}
+.profileFormArea button.orangeBtn {
+    font-size: 14px;
+    letter-spacing: 2px;
+    padding: 0 74px;
+    margin-top: 30px;
+}
+
+.mobileOnly {
+    display: none;
+}
+
+
+  /* ============================================================================ */
+ /* ============================== Responsive CSS ============================== */
+/* ============================================================================ */
+@media screen and (max-width: 1640px) {
+.profileMenu {
+    left: inherit;
+    right: 0;
+}
+}
+
+@media screen and (max-width: 1600px) {
+.container {
+    margin: 0 20px;
+}
+}
+
+@media screen and (max-width: 1500px) {
+.filterPopup {
+    padding: 20px;
+}
+.filterPopup .popupLeft {
+    width: 400px;
+}
+.popupRight {
+    width: 44%;
+    margin-right: 20px;
+}
+}
+
+@media screen and (max-width: 1420px) {
+.profileTip {
+    margin-right: -20px;
+}
+.profileFormArea {
+    max-width: calc(100% - 175px);
+}
+.popupRight {
+    width: 370px;
+}
+.leftPanel.leadUnlock {
+    padding: 0;
+}
+.pageViewControl {
+    margin-left: 14px;
+}
+}
+
+@media screen and (max-width: 1350px) {
+.datatable {
+    overflow-x: scroll;
+}
+.datatable table {
+    width: 875px;
+}
+.dataTableHeader .unlockInfo {
+    width: 100%;
+    margin: 0 0 20px 0;
+}
+.dataTableHeaderRight {
+    width: 100%;
+}
+}
+
+@media screen and (max-width: 1300px) {
+.filterPopup .popupLeft {
+    width: 100%;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: calc(100% - 120px);
+}
+.popupRight {
+    width: 97%;
+    padding: 20px 0 0 0;
+    margin: 0;
+    float: left;
+}
+}
+
+@media screen and (max-width: 1200px) {
+.headerRight {
+    width: 480px;
+}
+.heaverNav ul li {
+    padding-right: 30px;
+}
+.searchDomainForm {
+    padding: 0 20px 45px 20px;
+}
+.leftPanel {
+    padding: 0;
+}
+}
+
+@media screen and (max-width: 900px) {
+.mainBody {
+    padding: 20px;
+}
+.leftPanel {
+    width: 65%;
+}
+.rightPanel {
+    width: 33%;
+    padding: 0 0 0 25px;
+}
+.rightPanel h3:before {
+    left: -35px;
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    margin-left: 0;
+    float: left;
+}
+.dateArea .date {
+    margin-left: 10px;
+}
+.searchDomainForm .formRow .radioCol {
+    display: block;
+    margin-right: 0;
+}
+.searchDomainForm .formRow .radioCol:first-child {
+    margin-bottom: 10px;
+}
+.address .formCol {
+    width: 53%;
+}
+.address .formCol:last-child {
+    width: 47%;
+}
+.address .formCol:first-child {
+    width: 100%;
+    padding-right: 0;
+    margin-bottom: 22px;
+}
+.searchDomainForm .formRow {
+    margin-top: 22px;
+}
+.address .formCol label {
+    padding: 0 0 10px 0;
+}
+.searchDomainForm .formRow .rowHeading {
+    padding-bottom: 10px;
+}
+.profileTip {
+    display: none;
+}
+.profileFormArea {
+    max-width: 100%;
+}
+.pageViewControl {
+    float: left;
+    margin: 20px 0 0 0;
+    width: 100%;
+}
+.pageViewControl label {
+    float: left;
+    margin-top: 7px;
+}
+.pageViewControl .selectBox {
+    float: left;
+}
+}
+
+@media screen and (max-width: 840px) {
+.headerRight {
+    width: 440px;
+}
+}
+
+@media screen and (max-width: 768px) {
+.mainBody {
+    margin-top: 10px;
+}
+.desktopOnly {
+    display: none;
+}
+.mobileOnly {
+    display: initial;
+}
+.headerRight {
+    width: 135px;
+}
+.rightPanel {
+    width: 100%;
+    padding: 0;
+    margin: 10px 0 0 0;
+    text-align: center;
+}
+.rightPanel h3:before {
+    display: none;
+}
+.leftLine {
+    display: none;
+}
+.tilldateContent p {
+    text-align: center;
+    padding-top: 15px;
+}
+.todayContent .chart {
+    margin-top: 20px;
+}
+.tilldateContent {
+    margin-top: 0;
+}
+.todayContent .orangeBtn {
+    margin-top: 15px;
+}
+.leftPanelHeader {
+    display: none;
+}
+.leftPanel {
+    width: 100%;
+}
+.footer.mobileOnly {
+    display: none;
+}
+.profileFormArea {
+    margin-bottom: 70px;
+}
+.profileFormArea button.orangeBtn {
+    width: 214px;
+    display: block;
+    margin: 20px auto 0;
+}
+.leftPanel.leadUnlock + .rightPanel {
+    display: none;
+}
+}
+
+@media screen and (max-width: 560px) {
+html {
+    height: 100%;
+}
+body {
+    background: linear-gradient(#3bbcc1, #62e5b3);
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.container {
+    margin: 0 15px;
+}
+.mainBody {
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    position: fixed;
+    width: calc(100% - 30px);
+    height: calc(100% - 80px);
+    left: 15px;
+    top: 56px;
+    overflow: scroll;
+}
+.searchDomainForm {
+    padding: 10px 20px 0;
+    border: none;
+    border-radius: 0;
+    margin: 0 0 0 -20px;
+    display: inline-block;
+    width: calc(100% + 40px);
+}
+.formRow.submit .orangeBtn {
+    position: relative;
+    left: 50%;
+    top: unset;
+    margin-bottom: 35px;
+    transform: translateX(-50%);
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    width: 26px;
+}
+.dateArea .date .year {
+    width: 36px;
+}
+.footer.mobileOnly {
+    display: inline-block;
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+}
+}
+
+@media screen and (max-width: 500px) {
+.filterPopup .filterFormRow label {
+    width: 100%;
+    margin: 0 0 5px 0;
+    text-align: left;
+}
+.filterPopup .popupLeft .fieldArea {
+    width: 100%;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: calc(100% - 100px);
+}
+.filterPopup .popupRight .largeSelectBox {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.popupRight {
+    width: 100%;
+}
+.filterPopup .popupRight .orangeBtn {
+    margin-left: 0;
+}
+}
+
+@media screen and (max-width: 480px) {
+.footer.mobileOnly span {
+    display: block;
+    margin-top: 10px;
+}
+}
+
+@media screen and (max-width: 420px) {
+.profileFormArea {
+    margin-top: 0;
+}
+.profileFormArea input.small {
+    width: 100%;
+}
+.profileFormArea input.small:last-child {
+    margin-top: 30px;
+}
+.filterPopup .popupLeft .smallSelectBox {
+    width: calc(100% - 86px);
+}
+.filterPopup .popupLeft input[type="text"] {
+    margin-left: 0;
+    float: right;
+    width: 70px;
+}
+.refineSearch {
+    margin-right: 0;
+    width: 100%;
+}
+.refineSearch input, .filterResult input {
+    width: calc(100% - 40px);
+}
+.filterResult {
+    width: 100%;
+    margin-top: 10px;
+}
+}
+
+@media screen and (max-width: 410px) {
+.headerLeft {
+    width: 40px;
+    overflow: hidden;
+}
+.dateRange {
+    background: #fff;
+    padding-bottom: 5px;
+}
+.dateRange .dateArea {
+    display: block;
+    width: 146px;
+    float: none;
+    margin: 0 auto;
+}
+.dateRange .dateArea.endDate {
+    display: inline-block;
+    margin-top: 15px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+.dateArea .date .day, .dateArea .date .month, .dateArea .date .year {
+    width: 34px;
+}
+.dateArea .date .year {
+    width: 46px;
+}
+.tilldateContent {
+    margin-bottom: 100px;
+}
+.filterPopup .popupRight .radio {
+    margin-left: 10px;
+}
+}
