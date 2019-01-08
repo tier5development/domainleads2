@@ -62,10 +62,7 @@ ga('send', 'pageview');
 
 </script>
     </head>
-    
     <body>
-   
-        
 
         <div class="navbar">
             <div class="navbar-inner">
@@ -133,16 +130,10 @@ ga('send', 'pageview');
                                 </div>
                                  <P>Remember Me</P>  
                             </div>
-                            
-                            
-                            <!-- /.col -->
-                            
                             <div class="submitBtnArea">
                                 <button type="submit" class="btn btn-primary btn-block btn-flat loginBtn">Sign In</button>
                             </div>
                             <br>
-                            
-                            
                             <!-- /.col -->
                         </div>
                         <br>
