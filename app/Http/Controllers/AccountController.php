@@ -190,6 +190,11 @@ class AccountController extends Controller
 		return view('signup');
 	}
 
+	public function profile() {
+		$user = Auth::user();
+		return view('profile', compact('user'));
+	}
+
 	public function signupPost(Request $request) {
 		// dd('here');
 	  //print_r($request->all()); dd();
