@@ -2,73 +2,73 @@
 	font-family: 'Avenir LT Std 55 Roman';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 55 Roman'), url('../fonts/AvenirLTStd-Roman.woff') format('woff');
+	src: local('Avenir LT Std 55 Roman'), url('/public/fonts/AvenirLTStd-Roman.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 55 Oblique';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 55 Oblique'), url('../fonts/AvenirLTStd-Oblique.woff') format('woff');
+	src: local('Avenir LT Std 55 Oblique'), url('/public/fonts/AvenirLTStd-Oblique.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 35 Light';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 35 Light'), url('../fonts/AvenirLTStd-Light.woff') format('woff');
+	src: local('Avenir LT Std 35 Light'), url('/public/fonts/AvenirLTStd-Light.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 35 Light Oblique';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 35 Light Oblique'), url('../fonts/AvenirLTStd-LightOblique.woff') format('woff');
+	src: local('Avenir LT Std 35 Light Oblique'), url('/public/fonts/AvenirLTStd-LightOblique.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 45 Book';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 45 Book'), url('../fonts/AvenirLTStd-Book.woff') format('woff');
+	src: local('Avenir LT Std 45 Book'), url('/public/fonts/AvenirLTStd-Book.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 45 Book Oblique';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 45 Book Oblique'), url('../fonts/AvenirLTStd-BookOblique.woff') format('woff');
+	src: local('Avenir LT Std 45 Book Oblique'), url('/public/fonts/AvenirLTStd-BookOblique.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 65 Medium';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 65 Medium'), url('../fonts/AvenirLTStd-Medium.woff') format('woff');
+	src: local('Avenir LT Std 65 Medium'), url('/public/fonts/AvenirLTStd-Medium.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 65 Medium Oblique';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 65 Medium Oblique'), url('../fonts/AvenirLTStd-MediumOblique.woff') format('woff');
+	src: local('Avenir LT Std 65 Medium Oblique'), url('/public/fonts/AvenirLTStd-MediumOblique.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 85 Heavy';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 85 Heavy'), url('../fonts/AvenirLTStd-Heavy.woff') format('woff');
+	src: local('Avenir LT Std 85 Heavy'), url('/public/fonts/AvenirLTStd-Heavy.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 85 Heavy Oblique';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 85 Heavy Oblique'), url('../fonts/AvenirLTStd-HeavyOblique.woff') format('woff');
+	src: local('Avenir LT Std 85 Heavy Oblique'), url('/public/fonts/AvenirLTStd-HeavyOblique.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 95 Black';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 95 Black'), url('../fonts/AvenirLTStd-Black.woff') format('woff');
+	src: local('Avenir LT Std 95 Black'), url('/public/fonts/AvenirLTStd-Black.woff') format('woff');
 }
 @font-face {
 	font-family: 'Avenir LT Std 95 Black Oblique';
 	font-style: normal;
 	font-weight: normal;
-	src: local('Avenir LT Std 95 Black Oblique'), url('../fonts/AvenirLTStd-BlackOblique.woff') format('woff');
+	src: local('Avenir LT Std 95 Black Oblique'), url('/public/fonts/AvenirLTStd-BlackOblique.woff') format('woff');
 }
 
 
@@ -87,7 +87,7 @@ body {
     padding: 0;
     font-family: 'Avenir LT Std 55 Roman';
     font-weight: 400; 
-    background: #ffffff url("../images/bg_main.png") no-repeat;
+    background: #ffffff url("/public/images/bg_main.png") no-repeat;
     background-position: top center;
 }
 table {
@@ -545,7 +545,7 @@ input, select, textarea, button {
 
 .dateRange {
     border: 1px solid #dbdbdb;
-    background: #fff url("../images/dateIndicator.png") no-repeat center;
+    background: #fff url("/public/images/dateIndicator.png") no-repeat center;
     border-radius: 3px;
     padding: 13px;
     display: inline-block;
@@ -702,7 +702,7 @@ input, select, textarea, button {
     content: "";
     width: 25px;
     height: 25px;
-    background: url("../images/Multi_circle_bullet.png") no-repeat;
+    background: url("/public/images/Multi_circle_bullet.png") no-repeat;
     position: absolute;
     left: -55px;
 }
@@ -1144,7 +1144,7 @@ input, select, textarea, button {
     float: right;
     width: 182px;
     height: 169px;
-    background: url("../images/bg_tip_note.png") no-repeat;
+    background: url("/public/images/bg_tip_note.png") no-repeat;
     text-align: center;
     margin: -10px 70px 0 0;
 }
@@ -1206,7 +1206,9 @@ input, select, textarea, button {
 .mobileOnly {
     display: none;
 }
-
+.profileTag {
+    cursor: pointer;
+}
 
   /* ============================================================================ */
  /* ============================== Responsive CSS ============================== */

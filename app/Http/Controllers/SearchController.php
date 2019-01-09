@@ -1750,7 +1750,10 @@ public function download_csv_single_page(Request $request)
           $allrecords = null;
           $leadArr = null;
           $totalDomains = null;
-          return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
+          $user = \Auth::user();
+          
+          // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
+          return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
         }
       } else {
         return redirect('home');

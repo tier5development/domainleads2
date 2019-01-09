@@ -102,6 +102,8 @@ Route::get('/aa',function(){
 
         Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
         
+        Route::get('profile', ['uses' => 'AccountController@profile', 'as' => 'profile']);
+
         Route::post('editUser', ['uses' => 'AccountController@editUser', 'as' => 'editUser']);
 
         Route::post('createUser', ['uses' => 'AccountController@createUser', 'as' => 'createUser']);
@@ -152,7 +154,7 @@ Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'
 
 
 Route::post('login', ['uses' => 'AccountController@login', 'as' => 'loginPost']);
-Route::get('logout', 'AccountController@logout');
+Route::get('logout', ['uses' => 'AccountController@logout', 'as' => 'logout']);
 
 Route::get('/404',['uses'=>'Maintainance@notfound_404','as'=>'404']);
 Route::get('/500',['uses'=>'Maintainance@notfound_500','as'=>'500']);
