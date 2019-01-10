@@ -1719,6 +1719,7 @@ public function download_csv_single_page(Request $request)
       {
         if($request->all())
         {
+          // dd($request->all());
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
@@ -1727,6 +1728,7 @@ public function download_csv_single_page(Request $request)
 
           if(\Auth::user()->user_type == 4 || \Auth::user()->user_type == 3)
           {
+            // return view('new_version.dashboard.search-results-encapsulated',$result);
             return view('home.admin.admin_search',$result);
           }
           $return['totalUnlockAbility']  = 'unlimited';
@@ -1737,7 +1739,9 @@ public function download_csv_single_page(Request $request)
           $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
           $users_array = array_flip($users_array);
           $result['users_array'] = $users_array;
-          return view('home.search.search',$result);
+
+          // return view('home.search.search',$result);
+          return view('new_version.dashboard.search-results-encapsulated',$result);
         } else {
           Session::forget('emailID_list');
           Session::forget('oldReq');
@@ -1747,12 +1751,17 @@ public function download_csv_single_page(Request $request)
           $user = \Auth::user();
           
           // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
-          return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
+          // return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
+          return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
         }
       } else {
         return redirect('home');
       }
     }
+
+    // private function showSearchLandingPage() {
+      
+    // }
 
     public function getOldestDate() {
       //$data = DomainInfo::select('domains_create_date')->get();
