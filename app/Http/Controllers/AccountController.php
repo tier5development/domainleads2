@@ -106,9 +106,10 @@ class AccountController extends Controller
 	public function resetPasswordExternalPage($e_token) {
 		
 		$errMsg = '';
+		$user = $resetPass = null;
 		$resetPass = PasswordReset::where('token', $e_token)->first();
 		if(!$resetPass) {
-			$errMsg = 'This link has expired.';
+			$errMsg = 'Oops! This link does not exist. Reset password links are valid for only '.config('settings.RESET-PASSWORD-LIFE').' hours!';
 		}
 
 		if($resetPass) {
@@ -121,10 +122,11 @@ class AccountController extends Controller
 		$now = Carbon::now();
 		if($resetPass && $user) {
 			if($now->diffInDays($resetPass->created_at) > 3) {
-				$errMsg = 'This link has expired. Link was valid for 72 hours only!';
+				$errMsg = 'Oops! This link has expired. Link was valid for '.config('settings.RESET-PASSWORD-LIFE').' hours only!';
 			}
 		}
-		return view('reset-password-external', compact('errMsg', 'resetPass', 'user', 'e_token'));
+		return view('new_version.auth.reset-password-external', compact('errMsg', 'resetPass', 'user', 'e_token'));
+		// return view('reset-password-external', compact('errMsg', 'resetPass', 'user', 'e_token'));
 	}
 
 	public function forgotPasswordPost(Request $request) {
@@ -173,14 +175,16 @@ class AccountController extends Controller
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		return view('forgot-password');
+		return view('new_version.auth.forgot-password');
+		// return view('forgot-password');
 	}
 
 	public function loginPage() {
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		return view('login');
+		return view('new_version.auth.login');
+		// return view('login');
 	}
 
 	public function signupPage() {
@@ -302,7 +306,7 @@ class AccountController extends Controller
 		$validator = Validator::make($userdata , $rules);
 	
 		if($validator->fails()) {
-			return redirect()->back()->with('error', 'INVALID LOGIN CREDENTIALS PROVIDED! ');
+			return redirect()->back()->with('error', 'Invalid login credentials provided! ');
 		}
 
 		else 
@@ -311,10 +315,10 @@ class AccountController extends Controller
 			if (Auth::attempt($userdata)) {
 				return redirect('search');
 			} else {
-				return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
+				return redirect()->back()->with('error', 'Please check your email and password!');
 			}
 		  } else {
-			return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
+			return redirect()->back()->with('error', 'Please check your email and password!');
 		  }
 		}
 	} catch(\Exception $e) {
