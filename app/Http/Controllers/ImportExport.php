@@ -30,6 +30,9 @@ class ImportExport extends Controller
 {
 
   public function uploadOldLeads(Request $request) {
+    sleep(5);
+    Log::info('ajkd');
+    return response()->json(['status' => 200]);
     $arr = $this->importExcel($request);
     return response()->json(['status' => 200]);
   }

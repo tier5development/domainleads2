@@ -9,11 +9,119 @@ use DB;
 use Hash;
 use Auth;
 use Session;
-use Mail;
+use Mail, Log;
 use App\Helpers\UserHelper;
+use App\PasswordReset;
+use \Carbon\Carbon;
 
 class AccountController extends Controller
 {
+
+	public function resetPasswordExternalPost($e_token, Request $request) {
+		$pass = $request->password;
+		$c_pass = $request->c_password;
+		$email = $request->email;
+
+		if(strlen($pass) < 6 || strlen($c_pass) < 6) {
+			return redirect()->back()->with('error', 'Password and confirm password should be min 6 characters.');
+		}
+		
+		if($pass !== $c_pass) { 
+			return redirect()->back()->with('error', 'Password and confirm password should be same.');
+		}
+
+		$resetPass = PasswordReset::where('token', $e_token)->first();
+		if(!$resetPass) {
+			return redirect()->back()->with('error', 'Token provided is invalid.');
+		}
+		
+		$user = User::where('email', $email)->first();
+		if($user) {
+			$user->password = bcrypt($pass);
+			if($user->save()) {
+				$resetPass->delete();
+				return redirect()->route('loginPage')->with('success', 'Password updated successfully.');
+			} else {
+				return redirect()->back()->with('error', 'Cannot save record. Database connectivity issue.');	
+			}
+		} else {
+			return redirect()->back()->with('error', 'This user does not exists.');
+		}
+	}
+
+	public function resetPasswordExternalPage($e_token) {
+		
+		$errMsg = '';
+		$resetPass = PasswordReset::where('token', $e_token)->first();
+		if(!$resetPass) {
+			$errMsg = 'This link has expired.';
+		}
+
+		if($resetPass) {
+			$user = User::where('email', $resetPass->email)->first();
+			if(!$user) {
+				$errMsg = 'User not found';
+			}
+		}
+
+		$now = Carbon::now();
+		if($resetPass && $user) {
+			if($now->diffInDays($resetPass->created_at) > 3) {
+				$errMsg = 'This link has expired. Link was valid for 72 hours only!';
+			}
+		}
+		return view('reset-password-external', compact('errMsg', 'resetPass', 'user', 'e_token'));
+	}
+
+	public function forgotPasswordPost(Request $request) {
+		// dd($request->all());
+		$email = $request->email;
+		if(Auth::check()) {
+			return redirect()->back()->with('error', 'You are already logged in. You can change your password from change password panel in dashboard!');
+		}
+		$user = User::where('email', $email)->first();
+		if(!$user) {
+			return redirect()->back()->with('error', 'Please recheck your email and try again.');
+		}
+		
+		PasswordReset::where('email', $email)->delete();
+
+		$passwordReset = new PasswordReset();
+		$passwordReset->email = $email;
+		$passwordReset->token = str_random(20).time().uniqid();
+		$passwordReset->save();
+
+
+		$admin_users_email="work@tier5.us";
+		$user_name=$user->name;
+		$title="Password reset link from DOMAINLEADS.";
+		$subject="DomainLeads Password Reset";
+		$content="Please reset your password.";
+		$link = config('settings.APPLICATION-DOMAIN').'/reset-password'.'/'.$passwordReset->token;
+		Mail::send('emails.forgot-password', ['title' => $title, 'content' => $content, 'user_name'=> $user_name, 'link' => $link], 
+		function ($message) use ($admin_users_email,$email,$user_name,$subject)
+		{
+			$message->from($admin_users_email);
+			$message->to($email,$user_name);
+			$message->subject($subject);
+		});
+		if (Mail::failures()) {
+			return redirect()->back()->with('error', 'Mail is not sent.');
+			Log::info('Mail not sent successfully');
+		} else {
+			Log::info('Mail sent successfully');
+		}
+		
+		return redirect()->back()->with('success', 'Email has been sent successfully');
+	}
+
+	public function forgotPassword() {
+		if(\Auth::check()) {
+			return redirect('search');
+		}
+		return view('forgot-password');
+	}
+
 	public function loginPage() {
 		if(\Auth::check()) {
 			return redirect('search');

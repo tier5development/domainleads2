@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => 'smtp',
+    'driver' => env('MAIL_DRIVER', 'mail'),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,11 +25,12 @@ return [
     |
     | Here you may provide the host address of the SMTP server used by your
     | applications. A default option is provided that is compatible with
-    | the Postmark mail service, which will provide reliable delivery.
+    | the Mailgun mail service which will provide reliable deliveries.
     |
     */
 
-    'host' => 'smtp.gmail.com',
+    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+
     /*
     |--------------------------------------------------------------------------
     | SMTP Host Port
@@ -41,7 +42,7 @@ return [
     |
     */
 
-    'port' => 587,
+    'port' => env('MAIL_PORT', 587),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,10 +55,7 @@ return [
     |
     */
 
-    'from' => [
-        'address' => 'hello@example.com',
-        'name' => 'Example',
-    ],
+    'from' => ['address' => 'work@tier5.us', 'name' => "DOMAINLEADS"],
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +68,7 @@ return [
     |
     */
 
-    'encryption' => 'tls',
+    'encryption' => env('MAIL_ENCRYPTION', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +81,7 @@ return [
     |
     */
 
-    'username' => 'work@tier5.us',
+    'username' => env('MAIL_USERNAME','work@tier5.us'),
 
     /*
     |--------------------------------------------------------------------------
@@ -96,7 +94,7 @@ return [
     |
     */
 
-    'password' => '!Aworker2#4',
+    'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------

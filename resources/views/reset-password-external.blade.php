@@ -78,78 +78,67 @@ ga('send', 'pageview');
                     </a>
                     <!-- Navigation button, visible on small resolution -->
                     
-                    <!-- Main navigation -->
-                    <div class="headerNav">
-                        <ul class="nav" id="top-navigation">
-                            <li> <a href="{{config('settings.LANDING-DOMAIN')}}">SignUp</a></li>
-                        </ul>
-                    </div>
-                    <!-- End main navigation -->
                 </div>
             </div>
         </div>
         <div class="triangle" style="border-left: 585px outset transparent; border-right: 585px outset transparent;"></div>
 
 
-        <div class="errorMsg">
+            <div class="errorMsg">
                 @if(Session::has('error'))
                     <div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                         <strong>Error!</strong> {{Session::get('error')}}
                     </div>
-                    @php Session::forget('error') @endphp
                 @elseif(Session::has('success'))
                     <div class="alert alert-success fade in alert-dismissible" style="margin-top:18px;">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                         <strong>Success!</strong> {{Session::get('success')}}
                     </div>
-                    @php Session::forget('success') @endphp
                 @endif
+                @php Session::forget('error') @endphp
             </div>
+            
             <div class="container lgform">
-                    <div class="frm-heading">
-                        <strong><h4>DOMAINLEADS</h4></strong>
-                    </div>
-                    
+                <div class="frm-heading">
+                    <strong><h4>DOMAINLEADS</h4></strong>
+                </div>
+                
+                @if(strlen($errMsg) > 0)
+                    <p class="centered" style="color : red">{{$errMsg}}</p>
+                    <center><a style="width: 30%; align: centered" class="btn btn-primary btn-block btn-flat loginBtn" href="{{route('loginPage')}}">Back to Login</a></center>
+                @elseif(isset($resetPass) && isset($user))
                     <div class="login-box-body">
-                    <p class="login-box-msg">Sign in to start your session</p>
-        
-                    <form action="{{route('loginPost')}}" method="post">
-                        <div class="form-group has-feedback">
-                            <input type="email" name="email" class="form-control" placeholder="Email">
-                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                        </div>
-                        
-                        <div class="form-group has-feedback">
-                            <input type="password" name="password" class="form-control" placeholder="Password">
-                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                        </div>
-
-                        <div class="">
-                            <div class="remember">
-                                <div class="checkBox">
-                                    <input type="checkbox" class="rememberCheck">
-                                    <span></span>
-                                </div>
-                                 <P>Remember Me</P>  
+                        <form action="{{route('resetPasswordExternalPost', ['e_token' => $e_token])}}" method="post">
+                            {{csrf_field()}}
+                            <p></p>
+                            <div class="form-group has-feedback">
+                                <input type="email" value="{{$user->email}}" name="email" readonly class="form-control">
+                                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                             </div>
-                            
-                            
-                            <!-- /.col -->
-                            
-                            <div class="submitBtnArea">
-                                <button type="submit" class="btn btn-primary btn-block btn-flat loginBtn">Sign In</button>
+
+                            <div class="form-group has-feedback">
+                                <input type="password" name="password" class="form-control" placeholder="password">
+                                <span class="glyphicon glyphicon-cog form-control-feedback"></span>
+                            </div>
+        
+                            <div class="form-group has-feedback">
+                                <input type="password" name="c_password" class="form-control" placeholder="password">
+                                <span class="glyphicon glyphicon-cog form-control-feedback"></span>
+                            </div>
+                            <div class="">
+                                <!-- /.col -->
+                                <div class="submitBtnArea">
+                                    <button type="submit" class="btn btn-block btn-flat loginBtn">Reset</button>
+                                </div>
+                                <br>
+                                <!-- /.col -->
                             </div>
                             <br>
-                            
-                            
-                            <!-- /.col -->
-                        </div>
-                        <br>
-                        <a class="pull-left" href="{{route('forgotPassword')}}">Forgot Password?</a>
-                        {{csrf_field()}}
-                    </form>
+                        </form>
                     </div>
+                @endif
+                
             </div>
         
 

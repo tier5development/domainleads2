@@ -78,78 +78,57 @@ ga('send', 'pageview');
                     </a>
                     <!-- Navigation button, visible on small resolution -->
                     
-                    <!-- Main navigation -->
-                    <div class="headerNav">
-                        <ul class="nav" id="top-navigation">
-                            <li> <a href="{{config('settings.LANDING-DOMAIN')}}">SignUp</a></li>
-                        </ul>
-                    </div>
-                    <!-- End main navigation -->
                 </div>
             </div>
         </div>
         <div class="triangle" style="border-left: 585px outset transparent; border-right: 585px outset transparent;"></div>
 
 
-        <div class="errorMsg">
+            <div class="errorMsg">
                 @if(Session::has('error'))
                     <div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                         <strong>Error!</strong> {{Session::get('error')}}
                     </div>
-                    @php Session::forget('error') @endphp
                 @elseif(Session::has('success'))
                     <div class="alert alert-success fade in alert-dismissible" style="margin-top:18px;">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                         <strong>Success!</strong> {{Session::get('success')}}
                     </div>
-                    @php Session::forget('success') @endphp
                 @endif
+                @php Session::forget('error') @endphp
             </div>
+            
             <div class="container lgform">
-                    <div class="frm-heading">
-                        <strong><h4>DOMAINLEADS</h4></strong>
+                <div class="frm-heading">
+                    <strong><h4>DOMAINLEADS</h4></strong>
+                </div>
+                
+                <div class="login-box-body">
+                <p class="login-box-msg">Please provide your registered email.</p>
+    
+                <form action="{{route('forgotPasswordPost')}}" method="post">
+                        {{csrf_field()}}
+                    <div class="form-group has-feedback">
+                        <input type="email" name="email" class="form-control" placeholder="Email">
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                     </div>
-                    
-                    <div class="login-box-body">
-                    <p class="login-box-msg">Sign in to start your session</p>
-        
-                    <form action="{{route('loginPost')}}" method="post">
-                        <div class="form-group has-feedback">
-                            <input type="email" name="email" class="form-control" placeholder="Email">
-                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+
+                    <div class="">
+                        <div class="remember"> 
+                            <a class="pull-left" href="{{route('loginPage')}}">Login Instead?</a>
                         </div>
                         
-                        <div class="form-group has-feedback">
-                            <input type="password" name="password" class="form-control" placeholder="Password">
-                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                        </div>
-
-                        <div class="">
-                            <div class="remember">
-                                <div class="checkBox">
-                                    <input type="checkbox" class="rememberCheck">
-                                    <span></span>
-                                </div>
-                                 <P>Remember Me</P>  
-                            </div>
-                            
-                            
-                            <!-- /.col -->
-                            
-                            <div class="submitBtnArea">
-                                <button type="submit" class="btn btn-primary btn-block btn-flat loginBtn">Sign In</button>
-                            </div>
-                            <br>
-                            
-                            
-                            <!-- /.col -->
+                        <!-- /.col -->
+                        <div class="submitBtnArea">
+                            <button type="submit" class="btn btn-block btn-flat loginBtn">Send Email</button>
                         </div>
                         <br>
-                        <a class="pull-left" href="{{route('forgotPassword')}}">Forgot Password?</a>
-                        {{csrf_field()}}
-                    </form>
+                        <!-- /.col -->
                     </div>
+                    <br>
+                </form>
+                </div>
             </div>
         
 

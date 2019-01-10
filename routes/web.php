@@ -21,6 +21,14 @@ Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_pagi
 
 Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);
 
+Route::get('/forgot-password', ['uses' => 'AccountController@forgotPassword', 'as' => 'forgotPassword']);
+
+Route::post('forgot-password', ['uses' => 'AccountController@forgotPasswordPost', 'as' => 'forgotPasswordPost']);
+
+Route::get('/reset-password/{e_token}', ['uses' => 'AccountController@resetPasswordExternalPage', 'as' => 'resetPasswordExternalPage']);
+
+Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPasswordExternalPost', 'as' => 'resetPasswordExternalPost']);
+
 Route::get('/testfn',function(){
     $email = '2000yd.com@wix-domains.com';
     // $email = 'work@tier5.us';
@@ -85,7 +93,9 @@ Route::get('/aa',function(){
        
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
-    Route::group(['middleware' => 'auth'],function(){
+    Route::group(['middleware' => 'auth'],function() {
+
+        
         
         Route::post('editUser', ['uses' => 'AccountController@editUser', 'as' => 'editUser']);
 
