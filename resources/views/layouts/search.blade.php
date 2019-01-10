@@ -37,13 +37,25 @@
                     <div class="col-sm-8 col-md-8 col-lg-8">
                       <div class="row">
                         <div class="col-sm-5">
-                          <input style="width: 200px" type="date" value="{{ Request::get('domains_create_date') != null ? date('Y-m-d',strtotime(Request::get('domains_create_date'))) : '' }}" name="domains_create_date" id="registered_date" class="form-control" placeholder="Start Date">
+                          <input style="width: 200px" 
+                          type="date" 
+                          value="{{ Request::get('domains_create_date') != null ? date('Y-m-d',strtotime(Request::get('domains_create_date'))) : '' }}" 
+                          name="domains_create_date" 
+                          id="registered_date" 
+                          class="form-control" 
+                          placeholder="Start Date">
                         </div>
                         <div class="col-md-2">
 
                         </div>
                         <div class="col-sm-5">
-                          <input style="width: 200px" type="date" value="{{ Request::get('domains_create_date2') != null ? date('Y-m-d',strtotime(Request::get('domains_create_date2'))) : '' }}" name="domains_create_date2" id="registered_date2" class="form-control" placeholder="End Date">
+                          <input style="width: 200px" 
+                          type="date" 
+                          value="{{ Request::get('domains_create_date2') != null ? date('Y-m-d',strtotime(Request::get('domains_create_date2'))) : '' }}" 
+                          name="domains_create_date2" 
+                          id="registered_date2" 
+                          class="form-control" 
+                          placeholder="End Date">
                         </div>
                       </div>
                     </div>
@@ -83,19 +95,38 @@
                            <div class="mutliSelect">
                               <ul>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[0]" value="com" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('com', Session::get('oldReq')['domain_ext'])) checked @endif/>com
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[0]" 
+                                    value="com" 
+                                    @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('com', Session::get('oldReq')['domain_ext'])) checked @endif/>com
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[1]" value="io" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('io', Session::get('oldReq')['domain_ext'])) checked @endif/>io
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[1]" 
+                                    value="io" 
+                                    @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('io', Session::get('oldReq')['domain_ext'])) checked @endif/>io
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[2]" value="net" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('net', Session::get('oldReq')['domain_ext'])) checked @endif/>net
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[2]" 
+                                    value="net" 
+                                    @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('net', Session::get('oldReq')['domain_ext'])) checked @endif/>net
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[3]" value="org" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('org', Session::get('oldReq')['domain_ext'])) checked @endif/>org
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[3]" 
+                                    value="org" 
+                                    @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('org', Session::get('oldReq')['domain_ext'])) checked @endif/>org
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[4]" value="gov" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('gov', Session::get('oldReq')['domain_ext'])) checked @endif/>gov
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[4]" 
+                                    value="gov" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('gov', Session::get('oldReq')['domain_ext'])) checked @endif/>gov
                                  </li>
                                  <li>
                                     <input type="checkbox" name="domain_ext[5]" value="edu" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('edu', Session::get('oldReq')['domain_ext'])) checked @endif/>edu
