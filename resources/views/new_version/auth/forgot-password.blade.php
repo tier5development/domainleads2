@@ -57,7 +57,7 @@
   <!-- sticky text -->
   {{-- <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
     <div id="popup">
-      <img src="{{config('settings.LANDING-DOMAIN')}}/public/images/sticky_Logo.png">
+      <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/sticky_Logo.png">
       <div class="stickyText">
         <p>You have unlocked 4 leads today.</p>
         <p>You can unlocked upto <span>50</span> leads per day.</p>
@@ -69,7 +69,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{{config('settings.LANDING-DOMAIN')}}/public/js/bootstrap.min.js"></script>
-    <script src="{{config('settings.LANDING-DOMAIN')}}/public/js/custom.js"></script> 
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/bootstrap.min.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom.js"></script> 
   </body>
 </html>
