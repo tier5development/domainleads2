@@ -9,13 +9,67 @@ use DB;
 use Hash;
 use Auth;
 use Session;
-use Mail, Log;
+use Mail, Log, Exception;
 use App\Helpers\UserHelper;
 use App\PasswordReset;
 use \Carbon\Carbon;
 
 class AccountController extends Controller
 {
+
+	public function changePassword() {
+		if(Auth::check()) {
+			$user = Auth::user();
+			return view('change-password', compact('user'));
+		}
+		return redirect('home');
+	}
+
+	public function changePasswordPost(Request $request) {
+		try {
+			
+			if(!Auth::check()) {
+				return redirect()->back()->with('fail', 'Session expired. Please log in again.');	
+			}
+
+			$user = Auth::user();
+			$email 	= $request->email;
+			$opass 	= $request->o_pass;
+			$pass 	= $request->pass;
+			$cpass 	= $request->c_pass;
+
+			$oldPass  = $user->password;
+			
+			if($email !== $user->email) {
+				return redirect()->back()->with('fail', 'Please enter your own email correctly!');
+			}
+
+			if (!Hash::check($opass, $oldPass)) {
+				return redirect()->back()->with('fail', 'Sorry your old password did not match!');
+			}
+			
+			if($pass !== $cpass) {
+				return redirect()->back()->with('fail', 'New password and confirm password should match!');
+			}
+
+			if($pass === $opass) {
+				return redirect()->back()->with('fail', 'Current Password and Old Password should not match!');
+			}
+			
+			if(strlen($pass) < 6) {
+				return redirect()->back()->with('fail', 'Password should have minimum 6 characters.');
+			}
+
+			// Ready to update password
+			$user->password = bcrypt($pass);
+			$user->save();
+			return redirect()->back()->with('success', 'Password updated successfully!');
+
+		} catch(Exception $e) {
+			return redirect()->back()->with('fail', 'ERROR : '.$e->getMessages().' LINE : '.$e->getLine());
+		}
+	}
+
 
 	public function resetPasswordExternalPost($e_token, Request $request) {
 		$pass = $request->password;

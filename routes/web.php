@@ -95,7 +95,9 @@ Route::get('/aa',function(){
     
     Route::group(['middleware' => 'auth'],function() {
 
-        
+        Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
+
+        Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
         
         Route::post('editUser', ['uses' => 'AccountController@editUser', 'as' => 'editUser']);
 

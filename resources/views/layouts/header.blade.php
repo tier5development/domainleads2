@@ -34,6 +34,11 @@
       @if(\Auth::user()->user_type == config('settings.ADMIN-NUM'))
         <li ><a href="{{url('/')}}/manage">Manage</a></li>
       @endif
+
+      @if(\Auth::user())
+        <li ><a href="{{route('changePassword')}}">Profile</a></li>
+      @endif
+
         {{-- <li class="pull-right"><a href="https://www.textinbulk.com/">Text In Bulk</a></li> --}}
       <li class="pull-right"> <a href="{{ URL::to('logout') }}">Logout</a></li>
     </ul>
