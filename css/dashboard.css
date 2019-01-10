@@ -557,6 +557,11 @@ input, select, textarea, button {
 .dateArea .date {
     float: left;
 }
+.dateArea .date .dateHidden {
+    width: 0;
+    height: 0;
+    display: none;
+}
 .dateArea.endDate {
     float: right;
 }
@@ -588,15 +593,116 @@ input, select, textarea, button {
     border-radius: 3px;
     padding: 13px;
     display: inline-block;
-    width: calc(100% - 117px);
+    width: calc(100% - 275px);
     height: 50px;
     font-family: 'Avenir LT Std 65 Medium';
     color: #6c6c6c;
     font-size: 14px;
 }
+
+
+
+
+
+.ui-widget.ui-widget-content {
+    border: 1px solid #dddddd;
+}
+.ui-widget-header {
+    background: #f8f8f8;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 5px;
+}
+.ui-widget-header a, .ui-widget-header {
+    color: #535353;
+    font-weight: 400;
+}
+.ui-widget-header a:hover {
+    border: 0;
+    background: none;
+}
+.ui-datepicker-prev-hover {
+    left: 2px !important;
+    top: 2px !important;
+}
+.ui-datepicker-next-hover {
+    right: 2px !important;
+    top: 2px !important;
+}
+.ui-widget-header {
+    font-size: 14px;
+}
+.ui-datepicker-calendar thead {
+    border: 1px solid #dddddd;
+}
+.ui-datepicker-calendar thead th {
+    font-weight: 400;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+.ui-datepicker td {
+    border: 1px solid #dddddd;
+    font-size: 12px;
+}
+.ui-datepicker td.ui-datepicker-today {
+    background: #e8fff7;
+}
+.ui-datepicker td.ui-datepicker-today a {
+    color: #238b8d;
+    font-weight: 700;
+}
+.ui-datepicker td.ui-datepicker-current-day {
+    background: linear-gradient(#40cdbc, #62e5b3);
+}
+.ui-datepicker td.ui-datepicker-current-day a {
+    color: #fff;
+    font-weight: 700;
+}
+.ui-datepicker td a.ui-state-default {
+    background: none;
+    border: 0;
+    padding: 5px;
+}
+
+
+
+
+
+
+
 .domainName .selectBox {
-    width: 92px;
+    width: 250px;
     float: right;
+}
+.domainName .selectBox .select-styled p {
+    float: left;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    padding: 0 3px;
+    margin-left: 3px;
+    cursor: default;
+}
+.domainName .selectBox .select-styled p span {
+    display: inline-block;
+    font-size: 12px;
+    padding-left: 5px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    height: 12px;
+    width: 12px;
+    line-height: 12px;
+    text-indent: -2px;
+    margin-left: 4px;
+}
+.domainName .selectBox .select-styled p span:hover {
+    background: #999;
+    color: #fff;
+}
+.domainName .selectBox .select-styled p:first-child {
+    margin-left: 0;
 }
 .formRow.address {
     width: 100%;
@@ -971,6 +1077,8 @@ input, select, textarea, button {
 }
 .refineSearch {
     margin-right: 10px;
+    width: 200px;
+    cursor: pointer;
 }
 .refineSearch .icon, .filterResult .icon {
     width: 36px;
@@ -981,23 +1089,24 @@ input, select, textarea, button {
 .filterResult .icon {
     padding-left: 5px;
 }
-.refineSearch input, .filterResult input {
+.refineSearch p, .filterResult input {
     height: 26px;
     background: none;
     border: none;
     font-size: 14px;
-    color: #6c6c6c;
+    color: #bebebe;
     padding: 5px;
     width: 130px;
     font-family: 'Avenir LT Std 65 Medium';
+    float: right;
 }
 .filterResult input {
     width: 95px;
     padding: 5px 10px;
 }
-.refineSearch input::placeholder, .filterResult input::placeholder {
-    color: #bebebe;
-}
+/* .refineSearch input::placeholder, .filterResult input::placeholder {
+    
+} */
 
 
 .alert {
@@ -1130,9 +1239,9 @@ input, select, textarea, button {
     z-index: 999;
     transform: rotate(45deg);
 }
-.filterPopup .closeFilterPopup:hover {
+/* .filterPopup .closeFilterPopup:hover {
     transform: rotate(180deg);
-}
+} */
 
 .editProfileHeading {
     font-size: 24px;

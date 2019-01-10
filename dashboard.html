@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -125,19 +127,19 @@
                             <div class="rowHeading">Registered date range</div>
                             <div class="formRowInner dateRange">
                                 <div class="dateArea">
-                                    <img src="images/icon_calendar.png" alt="">
                                     <div class="date">
-                                        <input type="text" class="day" placeholder="dd">
-                                        <input type="text" class="month" placeholder="mm">
-                                        <input type="text" class="year" placeholder="yyyy">
+                                        <input type="text" id="datepicker" class="dateHidden">
+                                        <input type="text" class="day" placeholder="dd" readonly>
+                                        <input type="text" class="month" placeholder="mm" readonly>
+                                        <input type="text" class="year" placeholder="yyyy" readonly>
                                     </div>
                                 </div>
                                 <div class="dateArea endDate">
-                                    <img src="images/icon_calendar.png" alt="">
                                     <div class="date">
-                                        <input type="text" class="day" placeholder="dd">
-                                        <input type="text" class="month" placeholder="mm">
-                                        <input type="text" class="year" placeholder="yyyy">
+                                        <input type="text" id="datepicker2" class="dateHidden">
+                                        <input type="text" class="day" placeholder="dd" readonly>
+                                        <input type="text" class="month" placeholder="mm" readonly>
+                                        <input type="text" class="year" placeholder="yyyy" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +149,7 @@
                             <div class="formRowInner domainName">
                                 <input type="text" placeholder="ex: money">
                                 <div class="selectBox">
-                                    <select class="select">
+                                    <select class="selectOption">
                                         <option value=".com">.com</option>
                                         <option value=".org">.org</option>
                                         <option value=".us">.us</option>
@@ -255,6 +257,98 @@ function progressBar(){
 
 var bar = setInterval(progressBar, 10);
 
+</script>
+
+
+<script>
+$(document).ready(function(){
+
+    $('.selectOption').each(function(){
+        var thisVar = $(this), numberOfOptions = $(this).children('option').length;
+
+        thisVar.addClass('select-hidden'); 
+        thisVar.wrap('<div class="select"></div>');
+        thisVar.after('<div class="select-styled"></div>');
+
+        var styledSelect = thisVar.next('div.select-styled');
+        //styledSelect.text(thisVar.children('option').eq(0).text());
+
+        var $list = $('<ul />', {
+            'class': 'select-options'
+        }).insertAfter(styledSelect);
+
+        for (var i = 0; i < numberOfOptions; i++) {
+            $('<li />', {
+                text: thisVar.children('option').eq(i).text(),
+                rel: thisVar.children('option').eq(i).val()
+            }).appendTo($list);
+        }
+
+        var $listItems = $list.children('li');
+
+        styledSelect.click(function(e) {
+            console.log('here1');
+            e.stopPropagation();
+            $('div.select-styled.active').not(this).each(function(){
+                $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+            });
+            $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+        });
+
+        $listItems.click(function(e) {
+            // e.stopPropagation();
+            console.log('here2');
+            //styledSelect.text($(this).text()).removeClass('active');
+            styledSelect.append("<p>" + $(this).text() + "<span class='cl'>x</span></p>");
+            $(this).hide();
+            thisVar.val($(this).attr('rel'));
+            $list.fadeOut(200);
+            //console.log(thisVar.val());
+        });
+        $(document).click(function(e) {
+            console.log('here3', e);
+            styledSelect.removeClass('active');
+            $list.fadeOut(200);
+        });
+    });
+
+    var cross = $(".selectBox .select-styled p span");
+
+    // $(".select-styled p span").click(function(event){
+    //     console.log(event);
+    //     event.stopPropagation();
+    //      $(this).closest("p").css("background","#000");
+    // });
+    $(".cl").click(function(event){
+        event.stopPropagation();
+        console.log(event);
+        event.stopPropagation();
+        $(this).closest("p").css("background","#000");
+    });
+
+
+
+    $( "#datepicker" ).datepicker({
+        dateFormat: "dd mm yy",
+        showOn: "button",
+        buttonImage: "images/icon_calendar.png",
+        buttonImageOnly: true,
+    });
+
+    $( "#datepicker2" ).datepicker({
+        dateFormat: "dd mm yy",
+        showOn: "button",
+        buttonImage: "images/icon_calendar.png",
+        buttonImageOnly: true,
+    });
+
+    $(".dateHidden").change(function(){
+        var dateSelect = $(this).val().split(" ");
+        $(this).nextAll(".day").val(dateSelect[0]);
+        $(this).nextAll(".month").val(dateSelect[1]);
+        $(this).nextAll(".year").val(dateSelect[2]);
+    });
+});
 </script>
 
 </body>

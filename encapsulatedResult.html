@@ -129,14 +129,14 @@
                             <strong>25924</strong> domains found against your search
                         </div>
                         <div class="dataTableHeaderRight">
-                            <div class="refineSearch">
+                            <button class="refineSearch">
                                 <div class="icon"><img src="images/Icon_refine_search.png" alt=""></div>
-                                <input type="text" placeholder="Refine your search">
-                            </div>
-                            <div class="filterResult">
+                                <p>Refine your search</p>
+                            </button>
+                            <!-- <div class="filterResult">
                                 <div class="icon"><img src="images/icon_filter.png" alt=""></div>
                                 <input type="text" placeholder="Filter result">
-                            </div>
+                            </div> -->
                             <div class="pageViewControl">
                                 <label for="">SHOW:</label>
                                 <div class="selectBox">
@@ -446,6 +446,18 @@ function progressBar(){
 
 var bar = setInterval(progressBar, 10);
 
+</script>
+
+<script>
+$(document).ready(function(){
+    $(".refineSearch").click(function(){
+        $(".filterPopup").fadeIn();
+    });
+    $(".closeFilterPopup").click(function(){
+        $(".filterPopup").fadeOut();
+    });
+
+});
 </script>
 
 </body>
