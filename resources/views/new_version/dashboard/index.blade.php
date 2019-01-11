@@ -43,7 +43,9 @@
                         <p>Welcome to Domain Leads. Start your domain search right here.</p>
                     </div>
                 </div>
-                @include('new_version.shared.search')
+
+                {{-- Search form lies here --}}
+                @include('new_version.search.search-form')
             </div>
             <footer class="footer mobileOnly">
                 &copy; 2017 Powered by Tier5 <span><a href="">Privacy Policy</a> / <a href="">Terms of Use</a></span>
@@ -67,6 +69,21 @@
 //     canvas : document.getElementById('crart1'),
 //     context : document.getElementById('crart1').getContext('2d')
 // }
+
+var tdlExtensions = {};
+
+var pushExtension = function(ext) {
+    console.log(typeof tdlExtensions.ext, tdlExtensions.ext === undefined, tdlExtensions.ext === null, tdlExtensions.ext === undefined || tdlExtensions.ext === null);
+    if(tdlExtensions.ext === undefined || tdlExtensions.ext === null) {
+        tdlExtensions[ext] = 1;
+    }
+}
+
+var popExtension = function(ext) {
+    if(typeof tdlExtensions.ext !== undefined && typeof tdlExtensions.ext !== null) {
+        delete tdlExtensions[ext];
+    }
+}
 
 var canvas = document.getElementById('crart');
 
@@ -120,6 +137,108 @@ function progressBar(){
         
 }
 
+$('#postSearchDataForm input[type=radio]').on('change', function() {
+    var mode = $(this).val();
+    if(mode == 'newly_registered') {
+        $('#created_date_div').show();
+        $('#expired_date_div').hide();
+        $('#domains_expired_date').val('');
+        $('#domains_expired_date2').val('');
+    } else if(mode == 'getting_expired') {
+        $('#expired_date_div').show();
+        $('#created_date_div').hide();
+        $('#registered_date').val('');
+        $('#registered_date2').val('');
+    }
+});
+
+$('.selectOption').each(function(){
+    var thisVar = $(this); 
+    var numberOfOptions = $(this).children('option').length;
+
+    thisVar.addClass('select-hidden'); 
+    thisVar.wrap('<div class="select"></div>');
+    thisVar.after('<div class="select-styled"><div class="tglBtn"></div></div>');
+
+    var styledSelect = thisVar.next('div.select-styled');
+    //styledSelect.text(thisVar.children('option').eq(0).text());
+
+    var list = $('<ul />', {
+        'class': 'select-options'
+    }).insertAfter(styledSelect);
+
+    for (var i = 0; i < numberOfOptions; i++) {
+        $('<li />', {
+            text: thisVar.children('option').eq(i).text(),
+            rel: thisVar.children('option').eq(i).val()
+        }).appendTo(list);
+    }
+
+    var listItems = list.children('li');
+
+    styledSelect.click(function(e) {
+        e.stopPropagation();
+        //console.log('here1');
+        $('div.select-styled.active').not(this).each(function() {
+            $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+        });
+        $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+    });
+
+    listItems.click(function(e) {
+        e.stopPropagation();
+        console.log('here2');
+        //styledSelect.text($(this).text()).removeClass('active');
+        styledSelect.append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
+        $(this).hide();
+        thisVar.val($(this).attr('rel'));
+        list.fadeOut(200);
+        pushExtension($(this).text());
+        console.log($(this).text(), tdlExtensions);
+        //console.log(thisVar.val());
+        $(".select-styled p .cl").click(function(e){
+            e.stopPropagation();
+            var a = $(this).prev(".tagTxt").text();
+            
+            popExtension(a);
+            console.log('here4', a, tdlExtensions);
+
+            $(this).parent("p").remove();
+            $('ul.select-options li').each(function(){
+                if($(this).text() == a){
+                    $(this).show();
+                }
+            });
+        });
+    });
+    $(document).click(function(e) {
+        console.log('here3', e);
+        styledSelect.removeClass('active');
+        list.fadeOut(200);
+    });
+});
+
+$('#searchDomains').click(function(e) {
+    e.preventDefault();
+
+    var tldOptionsStr = '';
+    Object.keys(tdlExtensions).map(function(key, index) {
+        if(tldOptionsStr != '') {
+            tldOptionsStr += ','+key;
+        } else {
+            tldOptionsStr += key;
+        }
+    });
+    console.log(tldOptionsStr);
+    $('#domain_ext').val(tldOptionsStr);
+    $('#postSearchDataForm').submit();
+    // console.log(tdlExtensions.toString());
+    // var x = tdlExtensions.map(() => function(a, b) {
+    //     console.log(a, b);
+    // });
+    // console.log('x = ', x);
+})
+
 var bar = setInterval(progressBar, 10);
 
 </script>
@@ -140,7 +259,7 @@ $(document).ready(function(){
         var styledSelect = thisVar.next('div.select-styled');
         //styledSelect.text(thisVar.children('option').eq(0).text());
 
-        var $list = $('<ul />', {
+        var list = $('<ul />', {
             'class': 'select-options'
         }).insertAfter(styledSelect);
 
@@ -148,10 +267,10 @@ $(document).ready(function(){
             $('<li />', {
                 text: thisVar.children('option').eq(i).text(),
                 rel: thisVar.children('option').eq(i).val()
-            }).appendTo($list);
+            }).appendTo(list);
         }
 
-        var $listItems = $list.children('li');
+        var listItems = list.children('li');
 
         styledSelect.click(function(e) {
             console.log('here1');
@@ -162,20 +281,20 @@ $(document).ready(function(){
             $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
         });
 
-        $listItems.click(function(e) {
+        listItems.click(function(e) {
             // e.stopPropagation();
             console.log('here2');
             //styledSelect.text($(this).text()).removeClass('active');
             styledSelect.append("<p>" + $(this).text() + "<span class='cl'>x</span></p>");
             $(this).hide();
             thisVar.val($(this).attr('rel'));
-            $list.fadeOut(200);
+            list.fadeOut(200);
             //console.log(thisVar.val());
         });
         $(document).click(function(e) {
             console.log('here3', e);
             styledSelect.removeClass('active');
-            $list.fadeOut(200);
+            list.fadeOut(200);
         });
     });
 
