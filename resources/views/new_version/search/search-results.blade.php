@@ -8,7 +8,6 @@
 @include('section.user_panel_head', ['title' => 'Domainleads | Search Results'])
 
 <body>
-
     {{-- Loader icon in the platform --}}
     @include('new_version.shared.loader')
 
@@ -377,6 +376,7 @@
 
             setTimeout(() => {
                 $('#loader-icon').hide();
+                console.log('I am executing');
             }, 2000);
         });
     </script>

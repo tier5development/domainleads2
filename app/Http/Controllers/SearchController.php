@@ -542,7 +542,7 @@ public function download_csv_single_page(Request $request)
             {
                 $sql .= " and ed.domain_name LIKE '%".$req."%' ";
             }
-            else if($key == 'domain_ext' && $req != null)
+            else if($key == 'domain_ext' && $req != null && $domain_ext_str != '()')
             {
                 //dd($req);
                 $sql .= " and ed.domain_ext IN ".$domain_ext_str." ";
@@ -735,7 +735,7 @@ public function download_csv_single_page(Request $request)
                 {
                     $sql .= " and ed.domain_name LIKE '%".$req."%' ";
                 }
-                else if($key == 'domain_ext')
+                else if($key == 'domain_ext' && $domain_ext_str != '()')
                 {
                     $sql .= " and ed.domain_ext IN ".$domain_ext_str." ";
                 }
@@ -1498,7 +1498,7 @@ public function download_csv_single_page(Request $request)
           else
             $this->domain_ext_str .= ",'".$v."'";
         }
-        $this->domain_ext_str = '('.$this->domain_ext_str.')';
+        $this->domain_ext_str = '('.trim($this->domain_ext_str).')';
       }
     }
 
@@ -1553,6 +1553,7 @@ public function download_csv_single_page(Request $request)
           return \Response::json(['status' => false, 'message' => 'Session expired' ,'view' => null]);  
         }
         $start = microtime(true);
+        $request['domain_ext'] = $this->tldExtToArray($request->domain_ext);
         $data = $this->ajax_paginated_search_algo($request);
         $result['record'] = $data;
         $result['page']   = $request->thisPage;
@@ -1756,6 +1757,14 @@ public function download_csv_single_page(Request $request)
         return response()->json(array('result' => $result, 'status' => $status, 'nextUrl' => $url));
     }
 
+    private function tldExtToArray($tldStr) {
+      if(gettype($tldStr) == 'Array') {
+        return $tldStr;
+      }
+      $arr = array_filter(explode(',', $tldStr));
+      return $arr;
+    }
+
     public function search(Request $request)
     {
       //dd($request->all());
@@ -1764,47 +1773,52 @@ public function download_csv_single_page(Request $request)
       {
         if($request->all())
         {
+          
+          $request->domain_ext = $this->tldExtToArray($request->domain_ext);
+          // $request->domain_ext = [];
           // dd($request->all());
-          // $request['pagination'] = 1;
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
           Session::forget('oldReq');
           Session::put('oldReq', $request->all());
 
-          if(\Auth::user()->user_type == 4 || \Auth::user()->user_type == 3)
+          if(Auth::user()->user_type == 4 || Auth::user()->user_type == 3)
           {
             $result['user'] = Auth::user();
             $result['restricted'] = false;
-            //dd($result);
+            $request->domain_ext = count($request->domain_ext) == 0 ? '' : implode(',', $request->domain_ext);
             return view('new_version.search.search-results',$result);
-            return view('home.admin.admin_search',$result);
+            // return view('home.admin.admin_search',$result);
           }
 
           $return['totalUnlockAbility']  = 'unlimited';
           // user type 1 can unlock 50 leads
           // user type 2 can unlock 50 leads
           $result['totalUnlockAbility']  = config('settings.LEVEL'.\Auth::user()->user_type.'-USER');
-          $user_id = \Auth::user()->id;
+          $user_id = Auth::user()->id;
           $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
           $users_array = array_flip($users_array);
           $result['users_array'] = $users_array;
           $result['restricted'] = true;
           $result['user'] = Auth::user();
-          // dd($result);
+          
+          $request->domain_ext = count($request->domain_ext) == 0 ? '' : implode(',', $request->domain_ext);
           // return view('home.search.search',$result);
           return view('new_version.search.search-results',$result);
+        
         } else {
+          
           Session::forget('emailID_list');
           Session::forget('oldReq');
           $allrecords = null;
           $leadArr = null;
           $totalDomains = null;
           $user = \Auth::user();
-          
+          $allExtensions = ['com', 'org', 'us', 'io', 'net', 'gov', 'edu', 'in', 'onion'];
           // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
           // return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
-          return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
+          return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user, 'allExtensions' => $allExtensions]);
         }
       } else {
         return redirect('home');
