@@ -32,7 +32,14 @@ Route::get('/reset-password/{e_token}', ['uses' => 'AccountController@resetPassw
 
 Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPasswordExternalPost', 'as' => 'resetPasswordExternalPost']);
 
-Route::get('/testfn',function(){
+Route::get('/testfn',function() {
+
+    // $x = true;
+    // dd(isset($x));
+
+    $x = 'abcde.io.aksdf.com';
+    dd(customMaskDomain($x));
+
     $email = '2000yd.com@wix-domains.com';
     // $email = 'work@tier5.us';
     // dd(1);

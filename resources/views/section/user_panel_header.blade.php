@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div id="profileMenu" class="profileMenu" style="display: none">
-                <div class="closeMenu"></div>
+                <div class="closeMenu profileMenuCloseBtn"></div>
                 <div class="profilePic">
                     <a href="" class="changePic"><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_camera_green.png" alt="change picture"></a>
                     <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/profilePic.png" alt="">

@@ -39,6 +39,11 @@ function generateDateRange($start_date,$end_date)
     }
 }
 
+function customMaskDomain($domain) {
+    $revDomains = array_reverse(explode('.', $domain));
+    return '************.'.$revDomains[0];
+}
+
 function getQueryParamsCustom($arr) {
     $str = '';
     if(count($arr) == 0) {
