@@ -20,7 +20,7 @@ use \App\CSV;
 use \App\SearchMetadata;
 use DB;
 use Hash;
-use Auth, View;
+use Auth, View, Response;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
@@ -310,6 +310,7 @@ public function download_csv_single_page(Request $request)
     {
       try {
 
+        $key = $request->key;
         if(!\Auth::check()) {
           return \Response::json(array('status'=>false , 'message' => 'Please login once again!'));
         }
@@ -363,16 +364,40 @@ public function download_csv_single_page(Request $request)
           $array['registrant_phone']    = $leaduser->registrant_phone;
           $array['registrant_company']  = $leaduser->registrant_company;
           $array['domain_name']         = $leaduser->domain_name;
+          $array['domain_name_masked']    = customMaskDomain($leaduser->domain_name);
           $array['domains_create_date'] = date('d/m/Y', strtotime($leaduser->domains_create_date));
           $array['expiry_date']         = date('d/m/Y', strtotime($leaduser->expiry_date));
           $array['unlocked_num']        = $data->unlocked_num;
           $array['registrant_country']  = $leaduser->registrant_country;
+          $array['domains_count']       = $data->domains_count;
+          $array['restricted']          = false;
           //$array['total_domain_count']  = $lead->each_domain;
-          return \Response::json($array);
+
+          // previous
+          // return \Response::json($array);
+          
+          // Compose a view to render the html
+          $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key])->render();
+          return Response::json([
+            'view'    =>  $view,
+            'status'  =>  true,
+            'message' =>  'success'
+          ]);
         }
-        return \Response::json(array('status'=>false,'message' => 'Cannot connect with db, try again later', 'leadsUnlocked' => $count));
+        // Previous
+        // return \Response::json(array('status'=>false,'message' => 'Cannot connect with db, try again later', 'leadsUnlocked' => $count));
+        Response::json([
+          'view'    =>  null,
+          'status'  =>  false,
+          'message' =>  'Cannot connect with db, try again later',
+          ]);
       } catch(\Exception $e) {
-        return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()));
+        // Previous
+        // return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()));
+        return Response::json([
+          'view'    =>  null,
+          'status'  =>  false,
+          'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()]);
       }
     }
 
@@ -1538,14 +1563,24 @@ public function download_csv_single_page(Request $request)
         // $result['domain_list'] = isset($domain_list) ? $domain_list : null;
         $result['query_time'] = microtime(true) - $start;
         $result['time'] = microtime(true) - $start;
+
+        $result['restricted'] = true;
+        $user = Auth::user();
+        if($user->user_type == 4 || $user->user_type == 3) {
+          $result['restricted'] = false;
+        }
         // $result['oldReq'] = Session::has('oldReq') ? Session::get('oldReq') : null;
 
-        $user_id = \Auth::user()->id;
+        $user_id = $user->id;
         $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
         $users_array = array_flip($users_array);
         $result['users_array'] = $users_array;
+        $result['user'] = $user;
+        // Previous data
+        // $view = View::make('home.search.searchTable', $result)->render();
+        // return \Response::json(['status' => true, 'message' => 'Success' ,'view' => $view]);
 
-        $view = View::make('home.search.searchTable', $result)->render();
+        $view = View::make('new_version.shared.search-results-table', $result)->render();
         return \Response::json(['status' => true, 'message' => 'Success' ,'view' => $view]);
 
       } catch(\Exception $e) {
@@ -1592,6 +1627,10 @@ public function download_csv_single_page(Request $request)
         $data[$key]['domain_name']          = isset($domain_list[$value['registrant_email']]['domain_name'])
                                               ? $domain_list[$value['registrant_email']]['domain_name']
                                               : null;
+
+        $data[$key]['domain_name_masked']   = customMaskDomain($data[$key]['domain_name']);
+
+
         $data[$key]['domain_ext']           = isset($domain_list[$value['registrant_email']]['domain_ext'])
                                               ? $domain_list[$value['registrant_email']]['domain_ext']
                                               : null;
@@ -1726,6 +1765,7 @@ public function download_csv_single_page(Request $request)
         if($request->all())
         {
           // dd($request->all());
+          // $request['pagination'] = 1;
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
@@ -1734,9 +1774,13 @@ public function download_csv_single_page(Request $request)
 
           if(\Auth::user()->user_type == 4 || \Auth::user()->user_type == 3)
           {
-            // return view('new_version.dashboard.search-results-encapsulated',$result);
+            $result['user'] = Auth::user();
+            $result['restricted'] = false;
+            //dd($result);
+            return view('new_version.search.search-results',$result);
             return view('home.admin.admin_search',$result);
           }
+
           $return['totalUnlockAbility']  = 'unlimited';
           // user type 1 can unlock 50 leads
           // user type 2 can unlock 50 leads
@@ -1745,9 +1789,11 @@ public function download_csv_single_page(Request $request)
           $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
           $users_array = array_flip($users_array);
           $result['users_array'] = $users_array;
-
+          $result['restricted'] = true;
+          $result['user'] = Auth::user();
+          // dd($result);
           // return view('home.search.search',$result);
-          return view('new_version.dashboard.search-results-encapsulated',$result);
+          return view('new_version.search.search-results',$result);
         } else {
           Session::forget('emailID_list');
           Session::forget('oldReq');

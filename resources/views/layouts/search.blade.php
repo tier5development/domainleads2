@@ -129,10 +129,15 @@
                                     value="gov" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('gov', Session::get('oldReq')['domain_ext'])) checked @endif/>gov
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[5]" value="edu" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('edu', Session::get('oldReq')['domain_ext'])) checked @endif/>edu
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[5]" 
+                                    value="edu" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('edu', Session::get('oldReq')['domain_ext'])) checked @endif/>edu
                                  </li>
                                  <li>
-                                    <input type="checkbox" name="domain_ext[6]" value="in" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('in', Session::get('oldReq')['domain_ext'])) checked @endif/>in
+                                    <input 
+                                    type="checkbox" 
+                                    name="domain_ext[6]" value="in" @if(Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) && in_array('in', Session::get('oldReq')['domain_ext'])) checked @endif/>in
                                  </li>
                               </ul>
                            </div>
@@ -140,6 +145,7 @@
                         <!-- <button>Filter</button> -->
                      </dl>
                   </div>
+
                   <div class="form-group">
                      <label>cell number</label>
                      <input type="checkbox" name="cell_number" value="cell number" @if(Input::get('cell_number')) checked @endif >

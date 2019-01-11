@@ -845,11 +845,40 @@ input, select, textarea, button {
     margin-top: 25px;
 }
 
+.pagination-parent {
+    width: 70%;
+    margin-bottom: 20px;
+    float: left;
+}
+.pagination-cl {
+    float: left;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+button.pg_btn {
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background: #fff;
+    color: #d1d1d1;
+    min-width: 24px;
+    min-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: all 0.5s ease 0s;
+}
+button.pg_btn:hover, button.pg_btn.btn-info {
+    border: 1px solid #6f6f6f;
+    color: #6f6f6f;
+}
+
+
 .footer {
     color: #c6c6c6;
     font-size: 14px;
     font-family: 'Avenir LT Std 65 Medium';
-    margin-top: 50px;
+    margin-top: 20px;
     margin-bottom: 30px;
     display: inline-block;
     width: 100%;
@@ -1488,6 +1517,7 @@ input, select, textarea, button {
 @media screen and (max-width: 768px) {
 .mainBody {
     margin-top: 10px;
+    padding-bottom: 60px;
 }
 .desktopOnly {
     display: none;
@@ -1543,6 +1573,10 @@ input, select, textarea, button {
 .leftPanel.leadUnlock + .rightPanel {
     display: none;
 }
+.pagination-parent {
+    width: 100%;
+    margin: -40px 0 0 0;
+}
 }
 
 @media screen and (max-width: 560px) {
@@ -1594,6 +1628,15 @@ body {
     width: 100%;
     padding: 0 10px;
     text-align: center;
+}
+.pagination-parent {
+    margin: 0;
+    position: absolute;
+    bottom: 44px;
+    width: 94%;
+}
+.pagination-cl {
+    overflow: hidden;
 }
 }
 

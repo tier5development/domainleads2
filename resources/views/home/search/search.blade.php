@@ -267,6 +267,7 @@ form{
 		// 	alert(ref);
 		// });
 	});
+	
 
 	function clickLink(t, key) {
 		if($('#domain_name_'+key).text() == '***') {
