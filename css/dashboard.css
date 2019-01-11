@@ -156,7 +156,15 @@ input, select, textarea, button {
     height: 50px;
     font-family: 'Avenir LT Std 65 Medium';
 }
-.select-styled:after {
+.tglBtn {
+    position: relative;
+    float: right;
+    width: 20px;
+    height: 48px;
+    top: -12px;
+    right: -10px;
+}
+.tglBtn:after {
     content: "";
     width: 8px;
     height: 2px;
@@ -167,7 +175,7 @@ input, select, textarea, button {
     transform: rotate(-135deg);
     transition: all 0.3s ease 0s;
 }
-.select-styled:before {
+.tglBtn:before {
     content: "";
     width: 8px;
     height: 2px;
@@ -178,10 +186,10 @@ input, select, textarea, button {
     transform: rotate(135deg);
     transition: all 0.3s ease 0s;
 }
-.select-styled.active:after {
+.tglBtn.active:after {
     transform: rotate(-45deg);
 }
-.select-styled.active:before {
+.tglBtn.active:before {
     transform: rotate(45deg);
 }
 
@@ -685,7 +693,7 @@ input, select, textarea, button {
     margin-left: 3px;
     cursor: default;
 }
-.domainName .selectBox .select-styled p span {
+.domainName .selectBox .select-styled p span.cl {
     display: inline-block;
     font-size: 12px;
     padding-left: 5px;
@@ -697,7 +705,7 @@ input, select, textarea, button {
     text-indent: -2px;
     margin-left: 4px;
 }
-.domainName .selectBox .select-styled p span:hover {
+.domainName .selectBox .select-styled p span.cl:hover {
     background: #999;
     color: #fff;
 }
@@ -1316,6 +1324,235 @@ input, select, textarea, button {
     display: none;
 }
 
+
+.loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.9);
+    top: 0;
+    left: 0;
+}
+ .loaderContainer {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+ .loaderContainer span {
+     display: block;
+     width: 0;
+     height: 0;
+     box-shadow: 0 0 10px #28adaf;
+     border-radius: 80px;
+     position: absolute;
+
+ }
+  .loaderContainer span:first-child {
+    animation: waveLoader 2.2s infinite;
+  }
+  .loaderContainer span:nth-child(2) {
+    animation: waveLoader 2.2s infinite 0.4s;
+  }
+  .loaderContainer span:nth-child(3) {
+    animation: waveLoader 2.2s infinite 0.8s;
+  }
+
+@keyframes waveLoader {
+    0%{
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        opacity: 1;
+        box-shadow: 0 0 10px #28adaf;
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{
+        top: 0;
+        left: 0;
+        width: 120px;
+        height: 120px;
+        opacity: 0;
+        box-shadow: 0 0 20px #02ff84;
+    }
+}
+
+/*.loaderContainer span{
+    display: block;
+    background: transparent;
+}
+.loaderContainer span.c0 {
+    width: 26px;
+    height: 26px;
+    border-radius: 20px;
+    margin: 6px 0 0 6px;
+    position: relative;
+}
+.loaderContainer span.c0::after {
+    content: "";
+    position: absolute;
+    top: 13px;
+    left: 13px;
+    width: 0;
+    height: 0;
+    border-radius: 20px;
+    background: #3cbec1;
+    animation: loader 2s infinite ;
+}
+.loaderContainer span.c1 {
+    width: 46px;
+    height: 46px;
+    border-radius: 50px;
+    border: 4px solid transparent;
+    margin: 7px 0 0 7px;
+    animation: loader1 2s infinite ;
+}
+.loaderContainer span.c2 {
+    width: 66px;
+    height: 66px;
+    border-radius: 50px;
+    border: 3px solid transparent;
+    margin: 8px 0 0 8px;
+    animation: loader2 2s infinite ;
+}
+.loaderContainer span.c3 {
+    width: 86px;
+    height: 86px;
+    border-radius: 50px;
+    border: 2px solid #3cbec1;
+    margin: 11px 0 0 11px;
+    animation: loader3 2s infinite ;
+}
+.loaderContainer span.c4 {
+    width: 110px;
+    height: 110px;
+    border-radius: 60px;
+    border: 1px solid #3cbec1;
+    animation: loader4 2s infinite ;
+}
+
+@keyframes loader {
+    0% {
+        width: 0;
+        height: 0;
+        left: 13px;
+        top: 13px;
+        opacity: 0;
+    }
+    10% {
+        width: 26px;
+        height: 26px;
+        left: 0;
+        top: 0;
+    }
+    30% {
+        width: 26px;
+        height: 26px;
+        left: 0;
+        top: 0;
+        opacity: 1;
+    }
+    40% {
+        width: 26px;
+        height: 26px;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
+    100% {
+        width: 0;
+        height: 0;
+        left: 13px;
+        top: 13px;
+        opacity: 0;
+    }
+}
+@keyframes loader1 {
+    0%{
+        border-color: rgba(0,0,0,0);
+    }
+    10%{
+        border-color: rgba(0,0,0,0);
+    }
+    11%{
+        border-color: #3cbec1;
+    }
+    20%{
+        border-color: #3cbec1;
+    }
+    40%{
+        border-color: rgba(0,0,0,0);
+    }
+    100%{
+        border-color: rgba(0,0,0,0);
+    }
+}
+@keyframes loader2 {
+    0%{
+        border-color: rgba(0,0,0,0);
+    }
+    20%{
+        border-color: rgba(0,0,0,0);
+    }
+    31%{
+        border-color: #3cbec1;
+    }
+    40%{
+        border-color: #3cbec1;
+    }
+    50%{
+        border-color: rgba(0,0,0,0);
+    }
+    100%{
+        border-color: rgba(0,0,0,0);
+    }
+}
+@keyframes loader3 {
+    0%{
+        border-color: rgba(0,0,0,0);
+    }
+    35%{
+        border-color: rgba(0,0,0,0);
+    }
+    45%{
+        border-color: #3cbec1;
+    }
+    55%{
+        border-color: #3cbec1;
+    }
+    70%{
+        border-color: rgba(0,0,0,0);
+    }
+    100%{
+        border-color: rgba(0,0,0,0);
+    }
+}
+@keyframes loader4 {
+    0%{
+        border-color: rgba(0,0,0,0);
+    }
+    50%{
+        border-color: rgba(0,0,0,0);
+    }
+    60%{
+        border-color: #3cbec1;
+    }
+    75%{
+        border-color: #3cbec1;
+    }
+    85%{
+        border-color: rgba(0,0,0,0);
+    }
+    100%{
+        border-color: rgba(0,0,0,0);
+    }
+} */
 
   /* ============================================================================ */
  /* ============================== Responsive CSS ============================== */

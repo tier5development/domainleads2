@@ -188,6 +188,30 @@
         </footer>
     </div>
 
+
+    <!-- <div class="loader" style="display: none;">
+        <div class="loaderContainer">
+            <span class="c4">
+                <span class="c3">
+                    <span class="c2">
+                        <span class="c1">
+                            <span class="c0"></span>
+                        </span>
+                    </span>
+                </span>
+            </span>
+        </div>
+    </div> -->
+
+    <div class="loader">
+        <div class="loaderContainer">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+
     <script src="js/custom2.js"></script>
 <script>
 // Activity circle chart 1 --------------------------------------
@@ -268,7 +292,7 @@ $(document).ready(function(){
 
         thisVar.addClass('select-hidden'); 
         thisVar.wrap('<div class="select"></div>');
-        thisVar.after('<div class="select-styled"></div>');
+        thisVar.after('<div class="select-styled"><div class="tglBtn"></div></div>');
 
         var styledSelect = thisVar.next('div.select-styled');
         //styledSelect.text(thisVar.children('option').eq(0).text());
@@ -287,8 +311,8 @@ $(document).ready(function(){
         var $listItems = $list.children('li');
 
         styledSelect.click(function(e) {
-            console.log('here1');
             e.stopPropagation();
+            //console.log('here1');
             $('div.select-styled.active').not(this).each(function(){
                 $(this).removeClass('active').next('ul.select-options').fadeOut(200);
             });
@@ -296,35 +320,33 @@ $(document).ready(function(){
         });
 
         $listItems.click(function(e) {
-            // e.stopPropagation();
+            e.stopPropagation();
             console.log('here2');
             //styledSelect.text($(this).text()).removeClass('active');
-            styledSelect.append("<p>" + $(this).text() + "<span class='cl'>x</span></p>");
+            styledSelect.append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
             $(this).hide();
             thisVar.val($(this).attr('rel'));
             $list.fadeOut(200);
             //console.log(thisVar.val());
+            $(".select-styled p .cl").click(function(e){
+                e.stopPropagation();
+                var a = $(this).prev(".tagTxt").text();
+                $(this).parent("p").remove();
+                $('ul.select-options li').each(function(){
+                    if($(this).text() == a){
+                        $(this).show();
+                    }
+                });
+            });
         });
         $(document).click(function(e) {
             console.log('here3', e);
             styledSelect.removeClass('active');
             $list.fadeOut(200);
         });
+        
     });
 
-    var cross = $(".selectBox .select-styled p span");
-
-    // $(".select-styled p span").click(function(event){
-    //     console.log(event);
-    //     event.stopPropagation();
-    //      $(this).closest("p").css("background","#000");
-    // });
-    $(".cl").click(function(event){
-        event.stopPropagation();
-        console.log(event);
-        event.stopPropagation();
-        $(this).closest("p").css("background","#000");
-    });
 
 
 
