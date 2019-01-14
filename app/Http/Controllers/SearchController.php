@@ -311,21 +311,21 @@ public function download_csv_single_page(Request $request)
       try {
 
         $key = $request->key;
-        if(!\Auth::check()) {
-          return \Response::json(array('status'=>false , 'message' => 'Please login once again!'));
+        if(!Auth::check()) {
+          return Response::json(array('status'=>false , 'message' => 'Please login once again!'));
         }
-        $count = LeadUser::where('user_id', \Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
+        $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $limit = 0;
-        if(\Auth::user()->user_type == 1) {
+        if(Auth::user()->user_type == 1) {
           $limit = config('settings.LEVEL1-USER');
-        } else if(\Auth::user()->user_type == 2) {
+        } else if(Auth::user()->user_type == 2) {
           $limit = config('settings.LEVEL2-USER');
         }
         if($count >= $limit && $limit > 0) {
           $array['status'] = false;
           $array['message'] = 'Per day limit exceeded';
           $array['leadsUnlocked'] = $count;
-          return \Response::json($array);
+          return Response::json($array);
         }
 
         $domainName = $request->has('domain_name') ? $request->domain_name : null;
@@ -375,9 +375,9 @@ public function download_csv_single_page(Request $request)
 
           // previous
           // return \Response::json($array);
-          
+
           // Compose a view to render the html
-          $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key])->render();
+          $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key, 'restricted' => false])->render();
           return Response::json([
             'view'    =>  $view,
             'status'  =>  true,
@@ -1752,44 +1752,52 @@ public function download_csv_single_page(Request $request)
     }
 
     private function tldExtToArray($tldStr) {
-      if(gettype($tldStr) == 'Array') {
+      if(strtolower(gettype($tldStr)) == 'array') {
         return $tldStr;
       }
       $arr = array_filter(explode(',', $tldStr));
       return $arr;
     }
 
+    private function tldArrayToExt($tldArr) {
+      if(strtolower(gettype($tldArr)) == 'string') {
+        return $tldArr;
+      }
+      $ext = trim(implode(',', $tldArr));
+      return $ext;
+    }
+
     public function search(Request $request)
     {
-      //dd($request->all());
       ini_set('max_execution_time', 346000);
       if(\Auth::check())
       {
         if($request->all())
         {
           
-          $request->domain_ext = $this->tldExtToArray($request->domain_ext);
-          // $request->domain_ext = [];
+          $request['pagination']  = $request->has('pagination') ? $request->pagination : 10;
+          $request['domain_ext']  = $this->tldExtToArray($request->domain_ext);
           // dd($request->all());
+          // $request->domain_ext = [];
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
-          Session::forget('oldReq');
-          Session::put('oldReq', $request->all());
 
           if(Auth::user()->user_type == 4 || Auth::user()->user_type == 3)
           {
             $result['user'] = Auth::user();
             $result['restricted'] = false;
-            $request->domain_ext = count($request->domain_ext) == 0 ? '' : implode(',', $request->domain_ext);
-            return view('new_version.search.search-results',$result);
+            $request['domain_ext'] = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
+            Session::forget('oldReq');
+            Session::put('oldReq', $request->all());
+            return view('new_version.search.search-results', $result);
             // return view('home.admin.admin_search',$result);
           }
 
           $return['totalUnlockAbility']  = 'unlimited';
           // user type 1 can unlock 50 leads
           // user type 2 can unlock 50 leads
-          $result['totalUnlockAbility']  = config('settings.LEVEL'.\Auth::user()->user_type.'-USER');
+          $result['totalUnlockAbility']  = config('settings.LEVEL'.Auth::user()->user_type.'-USER');
           $user_id = Auth::user()->id;
           $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
           $users_array = array_flip($users_array);
@@ -1797,7 +1805,9 @@ public function download_csv_single_page(Request $request)
           $result['restricted'] = true;
           $result['user'] = Auth::user();
           
-          $request->domain_ext = count($request->domain_ext) == 0 ? '' : implode(',', $request->domain_ext);
+          $request['domain_ext'] = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
+          Session::forget('oldReq');
+          Session::put('oldReq', $request->all());
           // return view('home.search.search',$result);
           return view('new_version.search.search-results',$result);
         
@@ -1808,7 +1818,7 @@ public function download_csv_single_page(Request $request)
           $allrecords = null;
           $leadArr = null;
           $totalDomains = null;
-          $user = \Auth::user();
+          $user = Auth::user();
           $allExtensions = ['com', 'org', 'us', 'io', 'net', 'gov', 'edu', 'in', 'onion'];
           // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
           // return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);

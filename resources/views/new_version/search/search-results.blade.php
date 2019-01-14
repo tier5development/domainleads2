@@ -8,8 +8,9 @@
 @include('section.user_panel_head', ['title' => 'Domainleads | Search Results'])
 
 <body>
+
     {{-- Loader icon in the platform --}}
-    @include('new_version.shared.loader')
+    @include('new_version.shared.loader')`
 
     <div class="container">
 
@@ -36,12 +37,13 @@
                                 <p>Refine your search</p>
                             </button>
                             <div class="pageViewControl">
-                                <label for="">SHOW:</label>
+                            <label for="">SHOW : </label>
                                 <div class="selectBox">
-                                    <select class="select">
-                                        <option value="20">20 per page</option>
-                                        <option value="20">50 per page</option>
-                                        <option value="20">100 per page</option>
+                                    <select id="slect-pagination-box" class="selectpage">
+                                        <option {{Request::has('pagination') && Request::get('pagination') == 10 ? 'selected' : ''}} value="10">10 per page</option>
+                                        <option {{Request::has('pagination') && Request::get('pagination') == 20 ? 'selected' : ''}} value="20">20 per page</option>
+                                        <option {{Request::has('pagination') && Request::get('pagination') == 50 ? 'selected' : ''}} value="50">50 per page</option>
+                                        <option {{Request::has('pagination') && Request::get('pagination') == 100 ? 'selected' : ''}} value="100">100 per page</option>
                                     </select>
                                 </div>
                             </div>
@@ -96,6 +98,81 @@
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
     <script>
+
+        var req_pagination = "{{Request::has('pagination') ? Request::get('pagination') : 10}}";
+        
+        var submitFormCustom = function() {
+            $('#loader-icon').show();
+            $('#postSearchDataForm').submit();
+        }
+        
+        $(document).ready(function(){
+            $(".refineSearch").click(function(){
+                $(".filterPopup").fadeIn();
+            });
+            $(".closeFilterPopup").click(function(){
+                $(".filterPopup").fadeOut();
+            });
+
+            setTimeout(() => {
+                $('#loader-icon').hide();
+                console.log('I am executing');
+            }, 300);
+
+            $('#slect-pagination-box').change(function(e) {
+                console.log(e);
+                alert($(this).val());
+            });
+        });
+
+        $('.selectpage').each(function(){
+            var thisVal = $(this), numberOfOptions = $(this).children('option').length;
+
+            thisVal.addClass('select-hidden'); 
+            thisVal.wrap('<div class="select"></div>');
+            thisVal.after('<div class="select-styled"></div>');
+
+            var styledSelect = thisVal.next('div.select-styled');
+            // styledSelect.text(thisVal.children('option').eq(0).text());
+            styledSelect.text(thisVal.children('option:selected').text());
+
+            var list = $('<ul />', {
+                'class': 'select-options'
+            }).insertAfter(styledSelect);
+
+            for (var i = 0; i < numberOfOptions; i++) {
+                $('<li />', {
+                    text: thisVal.children('option').eq(i).text(),
+                    rel: thisVal.children('option').eq(i).val()
+                }).appendTo(list);
+            }
+
+            var listItems = list.children('li');
+            styledSelect.click(function(e) {
+                e.stopPropagation();
+                $('div.select-styled.active').not(this).each(function(){
+                    $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+                });
+                $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+            });
+
+            listItems.click(function(e) {
+                e.stopPropagation();
+                console.log('clicked');
+                styledSelect.text($(this).text()).removeClass('active');
+                thisVal.val($(this).attr('rel'));
+                list.fadeOut(200);
+                req_pagination = thisVal.val();
+                $('#pagination').val(thisVal.val());
+                submitFormCustom();
+            });
+
+            $(document).click(function() {
+                styledSelect.removeClass('active');
+                list.fadeOut(200);
+            });
+        });
+
         @if(count($record) > 0)
         var thisPage     = parseInt("{{$page}}");
         var totalPage    = parseInt("{{$totalPage}}");
@@ -251,7 +328,7 @@
                     domains_expiry_date : expiry_date,
                     domains_expiry_date2 : expiry_date2,
                 }, beforeSend: function() {
-
+                    $('#loader-icon').show();
                 }, success:function(response) {
                     console.log(response);
                     if(response.status == true) {
@@ -272,6 +349,8 @@
                     // $('#ajax-loader').hide();
                 }, error : function(er) {
                     console.log(er);
+                }, complete: function() {
+                    $('#loader-icon').hide();
                 }
             });
         }
@@ -363,22 +442,6 @@
                 
         }
         var bar = setInterval(progressBar, 10);
-    </script>
-
-    <script>
-        $(document).ready(function(){
-            $(".refineSearch").click(function(){
-                $(".filterPopup").fadeIn();
-            });
-            $(".closeFilterPopup").click(function(){
-                $(".filterPopup").fadeOut();
-            });
-
-            setTimeout(() => {
-                $('#loader-icon').hide();
-                console.log('I am executing');
-            }, 2000);
-        });
     </script>
 </body>
 </html>

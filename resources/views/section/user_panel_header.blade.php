@@ -6,17 +6,19 @@
         <div class="heaverNav">
             <ul>
                 <li>
-                    <a href="">
+                    <a href="{{route('search')}}">
                         <span class="desktopOnly">SEARCH DOMAIN</span>
                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/search.png" alt="SEARCH DOMAIN" class="mobileOnly">
                     </a>
                 </li>
+                @if($user->user_type <= 3)
                 <li>
-                    <a href="">
+                    <a href="{{route('myUnlockedLeads')}}">
                         <span class="desktopOnly">UNLOCKED LEADS</span>
                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_unlocked_leads_mobile.png" alt="UNLOCKED LEADS" class="mobileOnly">
                     </a>
                 </li>
+                @endif
             </ul>
         </div>
         <div class="userNameArea">

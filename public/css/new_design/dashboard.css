@@ -686,7 +686,7 @@ input, select, textarea, button {
     margin-left: 3px;
     cursor: default;
 }
-.domainName .selectBox .select-styled p span {
+.domainName .selectBox .select-styled p span.cl {
     display: inline-block;
     font-size: 12px;
     padding-left: 5px;
@@ -698,7 +698,7 @@ input, select, textarea, button {
     text-indent: -2px;
     margin-left: 4px;
 }
-.domainName .selectBox .select-styled p span:hover {
+.domainName .selectBox .select-styled p span.cl:hover {
     background: #999;
     color: #fff;
 }
