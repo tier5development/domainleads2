@@ -19,7 +19,7 @@
         <tbody>
             @foreach ($record as $key=>$each)
                 <tr id="tr_{{$key}}">
-                    @include('new_version.shared.search-row-component', ['each' => $each, 'key' => $key])
+                    @include('new_version.shared.search-row-component', ['each' => $each, 'key' => $key, 'restricted' => $restricted])
                 </tr>
             @endforeach
         </tbody>

@@ -45,7 +45,9 @@ class UserController extends Controller
             }
             $data['leads'] = $data['leads']->orderBy('id', 'ASC')->paginate($data['perpage']);
             $data['title'] = 'Unlocked leads | Domainleads';
-            return view('home.search.my-unlocked-domains', $data);
+            $data['user'] = Auth::user();
+            // return view('home.search.my-unlocked-domains', $data);
+            return view('new_version.leads.my-unlocked-leads', $data);
         } else {
             return redirect('search');
         }

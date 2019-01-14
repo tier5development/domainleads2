@@ -38,8 +38,8 @@
                                 placeholder="Start Date"
                                 style="disply: none;">
     
-                            <input type="text" class="day" placeholder="dd" readonly>
                             <input type="text" class="month" placeholder="mm" readonly>
+                            <input type="text" class="day" placeholder="dd" readonly>
                             <input type="text" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
@@ -55,8 +55,8 @@
                                 placeholder="End Date"
                                 style="display: none">
     
-                            <input type="text" class="day" placeholder="dd" readonly>
                             <input type="text" class="month" placeholder="mm" readonly>
+                            <input type="text" class="day" placeholder="dd" readonly>
                             <input type="text" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
@@ -80,9 +80,9 @@
                                     class="dateHidden"
                                     placeholder="Start Date"
                                     style="disply: none;">
-        
-                                <input type="text" class="day" placeholder="dd" readonly>
+                                
                                 <input type="text" class="month" placeholder="mm" readonly>
+                                <input type="text" class="day" placeholder="dd" readonly>
                                 <input type="text" class="year" placeholder="yyyy" readonly>
                             </div>
                         </div>
@@ -98,8 +98,8 @@
                                     placeholder="End Date"
                                     style="display: none">
         
-                                <input type="text" class="day" placeholder="dd" readonly>
                                 <input type="text" class="month" placeholder="mm" readonly>
+                                <input type="text" class="day" placeholder="dd" readonly>
                                 <input type="text" class="year" placeholder="yyyy" readonly>
                             </div>
                         </div>

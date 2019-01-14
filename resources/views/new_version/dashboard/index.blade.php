@@ -314,19 +314,19 @@ $(document).ready(function(){
 
 
 
-    $( "#registered_date").datepicker({
+    $( "#registered_date, #registered_date2, #expired_date, #expired_date2").datepicker({
         dateFormat: "yy-mm-dd",
         showOn: "button",
         buttonImage: "/public/images/icon_calendar.png",
         buttonImageOnly: true,
     });
 
-    $( "#registered_date2").datepicker({
-        dateFormat: "yy-mm-dd",
-        showOn: "button",
-        buttonImage: "/public/images/icon_calendar.png",
-        buttonImageOnly: true,
-    });
+    // $( "#registered_date2").datepicker({
+    //     dateFormat: "yy-mm-dd",
+    //     showOn: "button",
+    //     buttonImage: "/public/images/icon_calendar.png",
+    //     buttonImageOnly: true,
+    // });
 
     $(".dateHidden").change(function(){
         var dateSelect = $(this).val().split("-");
