@@ -110,7 +110,10 @@ input, select, textarea, button {
 .clear {
     clear: both;
 }
-
+body.onScroll {
+    overflow: hidden;
+    padding-right: 15px;
+}
 
 /* CSS for custom select dropdown -start */
 .selectNumberArea {
@@ -601,7 +604,7 @@ input, select, textarea, button {
     border-radius: 3px;
     padding: 13px;
     display: inline-block;
-    width: calc(100% - 275px);
+    width: 32%;
     height: 50px;
     font-family: 'Avenir LT Std 65 Medium';
     color: #6c6c6c;
@@ -676,13 +679,8 @@ input, select, textarea, button {
 }
 
 
-
-
-
-
-
 .domainName .selectBox {
-    width: 250px;
+    width: 64%;
     float: right;
 }
 .domainName .selectBox .select-styled p {
@@ -711,6 +709,17 @@ input, select, textarea, button {
 }
 .domainName .selectBox .select-styled p:first-child {
     margin-left: 0;
+}
+.tagArea {
+    display: inline-block;
+    width: calc(100% - 20px);
+    height: 39px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.tagAreaInner{
+    width: 700px;
+    height: 30px;
 }
 .formRow.address {
     width: 100%;

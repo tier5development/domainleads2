@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -153,6 +155,15 @@
                                         <option value=".com">.com</option>
                                         <option value=".org">.org</option>
                                         <option value=".us">.us</option>
+                                        <option value=".co.in">.co.in</option>
+                                        <option value=".tv">.tv</option>
+                                        <option value=".uk">.uk</option>
+                                        <option value=".in">.in</option>
+                                        <option value=".co">.co</option>
+                                        <option value=".co.uk">.co.uk</option>
+                                        <option value=".net">.net</option>
+                                        <option value=".io">.io</option>
+                                        <option value=".me">.me</option>
                                     </select>
                                 </div>
                             </div>
@@ -203,7 +214,7 @@
         </div>
     </div> -->
 
-    <div class="loader">
+    <div class="loader" style="display: none;">
         <div class="loaderContainer">
             <span></span>
             <span></span>
@@ -287,12 +298,14 @@ var bar = setInterval(progressBar, 10);
 <script>
 $(document).ready(function(){
 
+var optionScrollWidth;
+
     $('.selectOption').each(function(){
         var thisVar = $(this), numberOfOptions = $(this).children('option').length;
 
         thisVar.addClass('select-hidden'); 
         thisVar.wrap('<div class="select"></div>');
-        thisVar.after('<div class="select-styled"><div class="tglBtn"></div></div>');
+        thisVar.after('<div class="select-styled"><div class="tagArea"><div class="tagAreaInner"></div></div><div class="tglBtn"></div></div>');
 
         var styledSelect = thisVar.next('div.select-styled');
         //styledSelect.text(thisVar.children('option').eq(0).text());
@@ -323,11 +336,17 @@ $(document).ready(function(){
             e.stopPropagation();
             console.log('here2');
             //styledSelect.text($(this).text()).removeClass('active');
-            styledSelect.append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
+            $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
             $(this).hide();
             thisVar.val($(this).attr('rel'));
             $list.fadeOut(200);
             //console.log(thisVar.val());
+            var tagAreaWidth = 0;
+            $(".tagAreaInner p").each(function(){
+                tagAreaWidth += $(this).outerWidth()+3;
+            });
+            $(".tagAreaInner").css("width", tagAreaWidth + "px");
+            
             $(".select-styled p .cl").click(function(e){
                 e.stopPropagation();
                 var a = $(this).prev(".tagTxt").text();
@@ -338,15 +357,54 @@ $(document).ready(function(){
                     }
                 });
             });
+
+            
         });
         $(document).click(function(e) {
             console.log('here3', e);
             styledSelect.removeClass('active');
             $list.fadeOut(200);
         });
-        
+
+    var sc = 0;
+
+    // $('.tagArea').scroll(function(){
+    //     $(window).sc
+    // });
+
+    $('.tagAreaInner').mouseenter(function(){
+        $("body").addClass("onScroll");
+    });
+    $('.tagAreaInner').mouseleave(function(){
+        $("body").removeClass("onScroll");
     });
 
+    $('.tagAreaInner').on('mousewheel', function(event) {
+        
+        console.log(event.deltaX, event.deltaY, event.deltaFactor);
+        optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
+        if(event.deltaY == -1){
+            if(sc > optionScrollWidth){
+            sc = optionScrollWidth;
+        }
+            sc += 10;
+        } 
+        else if(event.deltaY == 1){
+            if(sc < 0){
+            sc = 0;
+        }
+            sc -= 10;
+        }
+        
+        
+        $(".tagArea").scrollLeft(sc);
+        console.log(sc, optionScrollWidth);
+        
+    });
+    
+
+        
+    });
 
 
 
