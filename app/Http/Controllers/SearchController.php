@@ -42,22 +42,39 @@ public $totalPage;
 public $meta_id;
 public $leads_id;
 
-public function downloadExcel2(Request $request)
-{
+public function downloadExcel2(Request $request) {
   // dd($request->all());
-
-  
 }
 
 public function totalLeadsUnlockedToday() {
-  $user = \Auth::user();
-  $count = LeadUser::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
-  return response()->json([
-    'status' => true,
-    'leadsUnlocked' => $count
-  ]);
+  try {
+    $user = Auth::user();
+    $domainsUnlockedToday = LeadUser::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
+    $domainsUnlocked = LeadUser::where('user_id', $user->id)->count();
+    if($user->user_type == 1) {
+      $limit = config('settings.LEVEL1-USER');
+    } else if($user->user_type == 2) {
+      $limit = config('settings.LEVEL2-USER');
+    } else {
+      $limit = -1;
+    }
+    return response()->json([
+      'status' => true,
+      'leadsUnlocked' => $domainsUnlockedToday,
+      'allLeadsUnlocked' => $domainsUnlocked,
+      'limit' => $limit,
+      'message' => 'Success'
+    ]);
+  } catch(\Exception $e) {
+      return response()->json([
+        'status' => false,
+        'leadsUnlocked' => null,
+        'allLeadsUnlocked' => null,
+        'limit' => null,
+        'message' => 'Error : '.$e->getMesage().' Line : '.$e->getLine()
+      ]);
+  }
 }
-
 // public function downloadExcel(Request $request) {
 //   // dd($request->all());
 //   $sql    = "SELECT leads,compression_level from search_metadata

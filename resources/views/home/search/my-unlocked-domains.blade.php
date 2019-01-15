@@ -10,7 +10,6 @@
 
 
     <p class="tableHeading">All leads unlocked </p>
-
     <u class="totalPage">Total count : {{$leads->total()}}</u>
     <form class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
         <br>
