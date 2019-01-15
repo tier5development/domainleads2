@@ -305,7 +305,7 @@ var optionScrollWidth;
 
         thisVar.addClass('select-hidden'); 
         thisVar.wrap('<div class="select"></div>');
-        thisVar.after('<div class="select-styled"><div class="tagArea"><div class="tagAreaInner"></div></div><div class="tglBtn"></div></div>');
+        thisVar.after('<div class="select-styled"><div class="tagContainer"><div class="tagArea"><div class="tagAreaInner"></div></div></div><div class="tglBtn"></div></div>');
 
         var styledSelect = thisVar.next('div.select-styled');
         //styledSelect.text(thisVar.children('option').eq(0).text());
@@ -334,7 +334,6 @@ var optionScrollWidth;
 
         $listItems.click(function(e) {
             e.stopPropagation();
-            console.log('here2');
             //styledSelect.text($(this).text()).removeClass('active');
             $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
             $(this).hide();
@@ -361,27 +360,21 @@ var optionScrollWidth;
             
         });
         $(document).click(function(e) {
-            console.log('here3', e);
             styledSelect.removeClass('active');
             $list.fadeOut(200);
         });
 
     var sc = 0;
 
-    // $('.tagArea').scroll(function(){
-    //     $(window).sc
-    // });
-
-    $('.tagAreaInner').mouseenter(function(){
-        $("body").addClass("onScroll");
-    });
-    $('.tagAreaInner').mouseleave(function(){
-        $("body").removeClass("onScroll");
+    $('body').on('mousewheel', function(e) {
+        if($(e.target).closest(".select-styled").hasClass("select-styled")){
+            return false;
+        // e.preventDefault();
+        // e.stopPropagation();
+        }
     });
 
     $('.tagAreaInner').on('mousewheel', function(event) {
-        
-        console.log(event.deltaX, event.deltaY, event.deltaFactor);
         optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
         if(event.deltaY == -1){
             if(sc > optionScrollWidth){
@@ -395,11 +388,8 @@ var optionScrollWidth;
         }
             sc -= 10;
         }
-        
-        
-        $(".tagArea").scrollLeft(sc);
-        console.log(sc, optionScrollWidth);
-        
+             
+        $(".tagArea").scrollLeft(sc);        
     });
     
 

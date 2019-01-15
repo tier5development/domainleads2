@@ -110,10 +110,10 @@ input, select, textarea, button {
 .clear {
     clear: both;
 }
-body.onScroll {
+/* body.onScroll {
     overflow: hidden;
     padding-right: 15px;
-}
+} */
 
 /* CSS for custom select dropdown -start */
 .selectNumberArea {
@@ -710,10 +710,13 @@ body.onScroll {
 .domainName .selectBox .select-styled p:first-child {
     margin-left: 0;
 }
-.tagArea {
+.tagContainer {
+    height: 29px;
+    overflow: hidden;
     display: inline-block;
     width: calc(100% - 20px);
-    height: 39px;
+}
+.tagArea {
     overflow-x: scroll;
     overflow-y: hidden;
 }
