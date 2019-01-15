@@ -26,11 +26,7 @@
     </div>
 </div>
  <script type="text/javascript">
- $(document).ready(function() {
-    // var leadsUnlockedGlobal = null;
-    // var limitGlobal = null;
-    // var allLeadsUnlockedGlobal = null;
-    // var 
+ var getUsageGlobal = function() {
     $.ajax({
             url : "{{route('totalLeadsUnlockedToday')}}",
             type: "POST",
@@ -49,6 +45,9 @@
                 console.error(e);
             }
     });
+ }
+ $(document).ready(function() {
+    getUsageGlobal();
  });
         
  </script>

@@ -28,6 +28,7 @@ use Excel;
 use Input;
 use Illuminate\Pagination\Paginator;
 use \Carbon\Carbon as Carbon;
+use App\Helpers\UserHelper;
 
 class SearchController extends Controller
 {
@@ -47,33 +48,7 @@ public function downloadExcel2(Request $request) {
 }
 
 public function totalLeadsUnlockedToday() {
-  try {
-    $user = Auth::user();
-    $domainsUnlockedToday = LeadUser::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
-    $domainsUnlocked = LeadUser::where('user_id', $user->id)->count();
-    if($user->user_type == 1) {
-      $limit = config('settings.LEVEL1-USER');
-    } else if($user->user_type == 2) {
-      $limit = config('settings.LEVEL2-USER');
-    } else {
-      $limit = -1;
-    }
-    return response()->json([
-      'status' => true,
-      'leadsUnlocked' => $domainsUnlockedToday,
-      'allLeadsUnlocked' => $domainsUnlocked,
-      'limit' => $limit,
-      'message' => 'Success'
-    ]);
-  } catch(\Exception $e) {
-      return response()->json([
-        'status' => false,
-        'leadsUnlocked' => null,
-        'allLeadsUnlocked' => null,
-        'limit' => null,
-        'message' => 'Error : '.$e->getMesage().' Line : '.$e->getLine()
-      ]);
-  }
+  return response()->json(UserHelper::geUsageMatrix());
 }
 // public function downloadExcel(Request $request) {
 //   // dd($request->all());
@@ -394,11 +369,13 @@ public function download_csv_single_page(Request $request)
           // return \Response::json($array);
 
           // Compose a view to render the html
+          $usageMatrix = UserHelper::geUsageMatrix();
           $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key, 'restricted' => false])->render();
           return Response::json([
             'view'    =>  $view,
             'status'  =>  true,
-            'message' =>  'success'
+            'message' =>  'success',
+            'usageMatrix' => $usageMatrix
           ]);
         }
         // Previous
@@ -407,14 +384,17 @@ public function download_csv_single_page(Request $request)
           'view'    =>  null,
           'status'  =>  false,
           'message' =>  'Cannot connect with db, try again later',
-          ]);
+          'usageMatrix' => isset($usageMatrix) ? $usageMatrix : null
+        ]);
       } catch(\Exception $e) {
         // Previous
         // return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()));
         return Response::json([
           'view'    =>  null,
           'status'  =>  false,
-          'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()]);
+          'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine(),
+          'usageMatrix' => isset($usageMatrix) ? $usageMatrix : null
+        ]);
       }
     }
 

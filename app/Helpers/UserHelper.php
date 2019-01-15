@@ -4,9 +4,56 @@ namespace App\Helpers;
 use Illuminate\Http\Request;
 // use App\Http\Controllers\Controller;
 use App\User;
-use \Carbon\Carbon, Hash, Validator;
+use App\LeadUser;
+use \Carbon\Carbon, Hash, Validator, Auth;
 use App\Helpers\UserHelper;
 class UserHelper {
+
+    /**
+     * Function called in to get usage matrix data
+     */
+    public static function geUsageMatrix() {
+        try {
+            if(Auth::check()) {
+                $user = Auth::user();
+                $domainsUnlockedToday = LeadUser::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
+                $domainsUnlocked = LeadUser::where('user_id', $user->id)->count();
+                if($user->user_type == 1) {
+                    $limit = config('settings.LEVEL1-USER');
+                } else if($user->user_type == 2) {
+                    $limit = config('settings.LEVEL2-USER');
+                } else {
+                    $limit = -1;
+                }
+                return ([
+                    'status' => true,
+                    'leadsUnlocked' => $domainsUnlockedToday,
+                    'allLeadsUnlocked' => $domainsUnlocked,
+                    'limit' => $limit,
+                    'session' => true,
+                    'message' => 'Success'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'leadsUnlocked' => null,
+                    'allLeadsUnlocked' => null,
+                    'limit' => null,
+                    'session' =>false,
+                    'message' => 'Error : '.$e->getMesage().' Line : '.$e->getLine()
+                ]);
+            }
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'leadsUnlocked' => null,
+                'allLeadsUnlocked' => null,
+                'limit' => null,
+                'session' => null,
+                'message' => 'Error : '.$e->getMesage().' Line : '.$e->getLine()
+            ]);
+        }
+    }
 
     public static function editUser(Request $request) {
         try {
