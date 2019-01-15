@@ -56,6 +56,7 @@
         </footer>
     </div>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
 <script>
 // Activity circle chart 1 --------------------------------------
 

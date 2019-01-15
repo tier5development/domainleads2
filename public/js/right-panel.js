@@ -26,9 +26,9 @@ var canvasObj = {
         this.diff = 0;
     
     }, setCurve : function(current, target) {
-        
+        console.log('current : '. current, 'target : ', target);
         this.targetVal = target;
-        this.currentVal = current;
+        this.currentVal = current == undefined ? 0 : current;
         this.radius = 60;
         this.chartRatio = (this.currentVal / this.targetVal) * 100;
 

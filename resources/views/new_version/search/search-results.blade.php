@@ -97,6 +97,7 @@
 
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
     <script>
 
         var req_pagination = "{{Request::has('pagination') ? Request::get('pagination') : 10}}";
@@ -381,6 +382,15 @@
                     }, success :function(response) {
                         if(response.status) {
                             $('#tr_'+key).empty().append(response.view);
+                            r = response.usageMatrix;
+                            if(r !== null && r !== undefined) {
+                                canvasObj.setCanvas();
+                                canvasObj.setCurve(r.leadsUnlocked, r.limit);
+                                canvasObj.drawProgressBar(10);
+                                $('#currentUnlockedCount').text(r.leadsUnlocked);
+                                $('#perDayLimitCount').text(r.limit);
+                                $('#tillDateCount').text(r.allLeadsUnlocked);
+                            }
                         } else {
                             alert(response.message);
                         }
@@ -390,58 +400,6 @@
             });
         }
         @endif
-
-        var canvas = document.getElementById('crart');
-        var context = canvas.getContext('2d');
-        var al=0;
-        var av = 0;
-        var start=4.72;
-        var cw=context.canvas.width/2;
-        var ch=context.canvas.height/2;
-        var diff;
-
-        var targetVal = 50;
-        var currentVal = 40;
-
-        var radius = 60;
-        var chartVal = (currentVal / targetVal) * 100;
-
-        var gradient = context.createLinearGradient(0, 0, 0, 140);
-            gradient.addColorStop(0, '#48e4b3');
-            gradient.addColorStop(0.5, '#3cbec1');
-            gradient.addColorStop(1, '#48e4b3');
-
-        function progressBar(){
-            diff=(al/100)*Math.PI*2;
-            context.clearRect(0,0,400,400);
-            context.beginPath();
-            context.arc(cw,ch,radius,0,2*Math.PI,false);
-            context.fillStyle='#FFF';
-            context.fill();
-            context.strokeStyle='#f6f6f6';
-            context.stroke();
-            context.fillStyle='#000';
-            context.strokeStyle= gradient;
-            context.textAlign='center';
-            context.lineWidth=10;
-            context.font = '21px "Avenir LT Std 95 Black"';
-            context.fillStyle = '#333';
-            context.beginPath();
-            context.arc(cw,ch,radius,start,diff+start,false);
-            context.stroke();
-            context.lineCap = 'round';
-            context.fillText(av+"/50" ,65, 75 );
-            if(al>=chartVal){
-                clearTimeout(bar);
-            }
-                al++;
-                av++;
-            if(av>=currentVal){
-                av = currentVal;
-            }
-                
-        }
-        var bar = setInterval(progressBar, 10);
     </script>
 </body>
 </html>
