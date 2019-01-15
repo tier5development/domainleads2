@@ -1,0 +1,65 @@
+/* #downloadCsvForm {
+    float: left;
+}
+#unlockedLeadsForm {
+    float: left;
+}
+#search {
+    float: right;
+}
+.pageViewControl label {
+    float: left;
+}
+.pageViewControl .selectBox {
+    float: left;
+} */
+
+
+.pagination {
+    float: left;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 20px;
+}
+.pagination li {
+    float: left;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background: #fff;
+    color: #c5c5c5;
+    min-width: 26px;
+    min-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: all 0.5s ease 0s;
+}
+.pagination li a {
+    color: #c5c5c5;
+    display: inline-block;
+    padding-top: 5px;
+}
+.pagination li span {
+    display: inline-block;
+    padding-top: 5px;
+}
+.pagination li:hover, .pagination li.active {
+    border: 1px solid #6f6f6f;
+    color: #6f6f6f;
+}
+.pagination li.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.datatable {
+    min-height: 720px;
+}
+
+@media screen and (max-width: 768px) {
+    .datatable {
+        min-height: auto;
+    }
+}
+

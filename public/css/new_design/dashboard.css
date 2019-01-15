@@ -678,6 +678,7 @@ input, select, textarea, button {
     width: 250px;
     float: right;
 }
+
 .domainName .selectBox .select-styled p {
     float: left;
     border: 1px solid #e5e5e5;

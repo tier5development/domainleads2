@@ -6,7 +6,7 @@
     * Brings in css and js files
     --}}
 @include('section.user_panel_head', ['title' => 'Domainleads | Unlocked Leads'])
-
+<link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/laravel-pagination.css">
 <body>
 
     {{-- Loader icon in the platform --}}
@@ -25,21 +25,65 @@
                 <div class="dataTableArea">
                     <div class="dataTableHeader">
                         <div class="unlockInfo">
-                            <strong>{{isset($totalDomains) ? $totalDomains : 0}}</strong> domains found against your search
+                            <strong>{{isset($leads) ? $leads->total() : 0}}</strong> domains found against your search
                         </div>
-                        <div class="dataTableHeaderRight">
-                            {{-- <button class="refineSearch">
-                                <div class="icon"><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Icon_refine_search.png" alt=""></div>
-                                <p>Refine your search</p>
-                            </button> --}}
+                        {{-- <div class="dataTableHeaderRight">
+                            
+
+                            <form method="POST" action = "{{route('downloadUnlockedLeads')}}" id="downloadCsvForm">
+                                <input type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}">
+                                <button type="submit" class="greenBtn">Download CSV</button>
+                                {{csrf_field()}}
+                            </form>
+
                             <div class="pageViewControl">
-                            <label for="">SHOW : </label>
+                                <form id="unlockedLeadsForm" class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
+                                    <label for="">SHOW : </label>
+                                    <div class="selectBox">
+                                        <select id="slect-pagination-box" class="selectpage" name="perpage">
+                                            <option {{Request::has('pagination') && Request::get('pagination') == 10 ? 'selected' : ''}} value="10">10 per page</option>
+                                            <option {{Request::has('pagination') && Request::get('pagination') == 20 ? 'selected' : ''}} value="20">20 per page</option>
+                                            <option {{Request::has('pagination') && Request::get('pagination') == 50 ? 'selected' : ''}} value="50">50 per page</option>
+                                            <option {{Request::has('pagination') && Request::get('pagination') == 100 ? 'selected' : ''}} value="100">100 per page</option>
+                                        </select>
+                                    </div>
+                                   
+                                    <input type="date" name="date" value="{{Request::has('date') ? Request::get('date') : null}}" class="dateInp">
+                                    <button class="orangeBtn" id="search">Apply</button>
+                                    {{csrf_field()}}
+                                </form>
+                            </div>
+
+                        </div> --}}
+
+                        <div class="dataTableHeaderRight">
+                            <form id="unlockedLeadsForm" class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
+                                <div class="dateArea">
+                                    <div class="date">
+                                        <input id="filterDate" class="dateHiddenField" type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}" style="display:none;">
+                                        <input type="text" class="month" placeholder="mm">
+                                        <input type="text" class="day" placeholder="dd">
+                                        <input type="text" class="year" placeholder="yyyy">
+                                    </div>
+                                </div>
+                                <button type="submit" class="orangeBtn">Filter</button>
+                                {{csrf_field()}}
+                            </form>
+                            
+                            <form method="POST" action = "{{route('downloadUnlockedLeads')}}" id="downloadCsvForm">
+                                <button type="submit" class="greenBtn">Download CSV</button>
+                                <input type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}">
+                                {{csrf_field()}}
+                            </form>
+                            
+                            <div class="pageViewControl">
+                                <label for="">SHOW:</label>
                                 <div class="selectBox">
-                                    <select id="slect-pagination-box" class="selectpage">
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 10 ? 'selected' : ''}} value="10">10 per page</option>
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 20 ? 'selected' : ''}} value="20">20 per page</option>
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 50 ? 'selected' : ''}} value="50">50 per page</option>
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 100 ? 'selected' : ''}} value="100">100 per page</option>
+                                    <select class="selectpage">
+                                        <option value="10">10 per page</option>
+                                        <option value="20">20 per page</option>
+                                        <option value="50">50 per page</option>
+                                        <option value="100">100 per page</option>
                                     </select>
                                 </div>
                             </div>
@@ -54,10 +98,10 @@
                                     <th>DOMAIN<br>NAME</th>
                                     <th>REGISTRANT<br>NAME, EMAIL</th>
                                     <th>REGISTRANT<br>PHONE</th>
-                                    <th>CREATED<br>DATE</th>
-                                    <th>EXPIRY<br>DATE</th>
+                                    <th>CREATED<br>DATE<br><small>(M-D-Y)</small></th>
+                                    <th>EXPIRY<br>DATE<br><small>(M-D-Y)</small></th>
                                     <th>REGISTRANT<br>COMPANY</th>
-                                    <th>DATE OF UNLOCK</th>
+                                    <th>DATE OF UNLOCK<br><small>(M-D-Y)</small></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,29 +137,30 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <p><span>{{$each->domains_create_date}}</span></p>
+                                            <p><span>{{date('m-d-Y', strtotime($each->domains_create_date))}}</span></p>
                                             
                                         </td>
                                         <td>
-                                            <p><span>{{$each->expiry_date}}</span></p>
+                                            <p><span>{{date('m-d-Y', strtotime($each->expiry_date))}}</span></p>
                                         </td>
                                         <td>
                                             <p><span>{{$each->registrant_company}}</span></p>
                                         </td>
                                         <td>
-                                            <p><span>{{$each->created_at}}</span></p>
+                                            <p><span>{{$each->created_at->format('m-d-Y')}}</span></p>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        @if($leads->count() > 0)
+                        
+                    </div>
+                    @if($leads->count() > 0)
                             <div class="paginate">
                                 {{$leads->appends(['date' => Request::has('date') ? Request::get('date') : null,
                                 'perpage' => Request::has('perpage') ? Request::get('perpage') : 20])->links()}}
                             </div>
                         @endif
-                    </div>
                 </div>
             </div>
 
@@ -138,31 +183,46 @@
     @include('new_version.shared.sticky-note')
 
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
     <script>
 
         var req_pagination = "{{Request::has('pagination') ? Request::get('pagination') : 10}}";
         
-        var submitFormCustom = function() {
-            $('#loader-icon').show();
-            $('#postSearchDataForm').submit();
-        }
+        // var submitFormCustom = function() {
+        //     $('#loader-icon').show();
+        //     $('#unlockedLeadsForm').submit();
+        // }
         
-        $(document).ready(function(){
+        $(document).ready(function() {
+            
+            $( "#filterDate").datepicker({
+                dateFormat: "yy-mm-dd",
+                showOn: "button",
+                buttonImage: "/public/images/icon_calendar.png",
+                buttonImageOnly: true,
+            });
+
+            $(".dateHiddenField").change(function(){
+                var dateSelect = $(this).val().split("-");
+                $(this).nextAll(".year").val(dateSelect[0]);
+                $(this).nextAll(".month").val(dateSelect[1]);
+                $(this).nextAll(".day").val(dateSelect[2]);
+            });
+
             $(".refineSearch").click(function(){
                 $(".filterPopup").fadeIn();
             });
+
             $(".closeFilterPopup").click(function(){
                 $(".filterPopup").fadeOut();
             });
 
             setTimeout(() => {
                 $('#loader-icon').hide();
-                console.log('I am executing');
             }, 300);
 
             $('#slect-pagination-box').change(function(e) {
-                console.log(e);
                 alert($(this).val());
             });
         });
@@ -205,8 +265,11 @@
                 thisVal.val($(this).attr('rel'));
                 list.fadeOut(200);
                 req_pagination = thisVal.val();
-                $('#pagination').val(thisVal.val());
-                submitFormCustom();
+                // $('#pagination').val(thisVal.val());
+
+                $('.selectBox select option[value="' + thisVal.val() + '"]').html();
+
+                // submitFormCustom();
             });
 
             $(document).click(function() {
@@ -215,57 +278,7 @@
             });
         });
 
-        var canvas = document.getElementById('crart');
-        var context = canvas.getContext('2d');
-        var al=0;
-        var av = 0;
-        var start=4.72;
-        var cw=context.canvas.width/2;
-        var ch=context.canvas.height/2;
-        var diff;
-
-        var targetVal = 50;
-        var currentVal = 40;
-
-        var radius = 60;
-        var chartVal = (currentVal / targetVal) * 100;
-
-        var gradient = context.createLinearGradient(0, 0, 0, 140);
-            gradient.addColorStop(0, '#48e4b3');
-            gradient.addColorStop(0.5, '#3cbec1');
-            gradient.addColorStop(1, '#48e4b3');
-
-        function progressBar(){
-            diff=(al/100)*Math.PI*2;
-            context.clearRect(0,0,400,400);
-            context.beginPath();
-            context.arc(cw,ch,radius,0,2*Math.PI,false);
-            context.fillStyle='#FFF';
-            context.fill();
-            context.strokeStyle='#f6f6f6';
-            context.stroke();
-            context.fillStyle='#000';
-            context.strokeStyle= gradient;
-            context.textAlign='center';
-            context.lineWidth=10;
-            context.font = '21px "Avenir LT Std 95 Black"';
-            context.fillStyle = '#333';
-            context.beginPath();
-            context.arc(cw,ch,radius,start,diff+start,false);
-            context.stroke();
-            context.lineCap = 'round';
-            context.fillText(av+"/50" ,65, 75 );
-            if(al>=chartVal){
-                clearTimeout(bar);
-            }
-                al++;
-                av++;
-            if(av>=currentVal){
-                av = currentVal;
-            }
-                
-        }
-        var bar = setInterval(progressBar, 10);
+        
     </script>
 </body>
 </html>

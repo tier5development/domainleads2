@@ -34,9 +34,10 @@ use \Carbon\Carbon as Carbon;
 class UserController extends Controller
 {
     public function myUnlockedLeads(Request $request) {
+        // dd($request->all());
         if(Auth::check() && Auth::user()->user_type <= 3) {
             $date = $request->has('date') ? $request->date : null;
-            $data['perpage'] = $request->has('perpage') ? $request->perpage : 20;
+            $data['perpage'] = $request->has('perpage') ? $request->perpage : 10;
             $user = Auth::user();
             $data['leads'] = LeadUser::where('user_id', $user->id);
             if($date) {
@@ -114,9 +115,9 @@ class UserController extends Controller
           $temp['website'] = $each->domain_name;
           $temp['phone'] = $each->registrant_phone;
           $temp['number_type'] = $each->number_type;
-          $temp['domains_create_date'] = $each->domains_create_date == null ? '' : date('d/m/Y', strtotime($each->domains_create_date));
-          $temp['expiry_date'] = $each->expiry_date == null ? '' : date('d/m/Y', strtotime($each->expiry_date));
-          $temp['created_at'] = $each->created_at;
+          $temp['domains_create_date'] = $each->domains_create_date == null ? '' : date('m-d-Y', strtotime($each->domains_create_date));
+          $temp['expiry_date'] = $each->expiry_date == null ? '' : date('m-d-Y', strtotime($each->expiry_date));
+          $temp['created_at'] = $each->created_at ? $each->created_at->format('m-d-Y') : '';
           $exportArray[] = $temp;
         }
         return Excel::create('domainleads', function($excel) use ($exportArray) {
@@ -124,6 +125,17 @@ class UserController extends Controller
             $sheet->fromArray($exportArray);
           });
         })->download('csv');
+    }
+
+    public function fetchUsageData() {
+        try {
+
+            $user = Auth::user();
+
+
+        } catch(\Exception $e) {
+
+        }
     }
 }
 
