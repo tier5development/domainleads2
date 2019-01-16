@@ -238,6 +238,7 @@
 //     context : document.getElementById('crart1').getContext('2d')
 // }
 
+
 var canvas = document.getElementById('crart');
 
 var context = canvas.getContext('2d');
@@ -305,7 +306,16 @@ var optionScrollWidth;
 
         thisVar.addClass('select-hidden'); 
         thisVar.wrap('<div class="select"></div>');
-        thisVar.after('<div class="select-styled"><div class="tagContainer"><div class="tagArea"><div class="tagAreaInner"></div></div></div><div class="tglBtn"></div></div>');
+        thisVar.after(`
+        <div class="select-styled">
+            <div class="tagContainer">
+                <div class="tagArea">
+                    <div class="tagAreaInner"></div>
+                </div>
+            </div>
+            <div class="tglBtn"></div>
+        </div>
+        `);
 
         var styledSelect = thisVar.next('div.select-styled');
         //styledSelect.text(thisVar.children('option').eq(0).text());
@@ -355,9 +365,7 @@ var optionScrollWidth;
                         $(this).show();
                     }
                 });
-            });
-
-            
+            });  
         });
         $(document).click(function(e) {
             styledSelect.removeClass('active');
