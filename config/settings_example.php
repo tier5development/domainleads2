@@ -6,6 +6,7 @@ return [
     'ADMIN-NUM' => 4,
     'LEVEL1-USER' => 50,
     'LEVEL2-USER' => 500,
+    'RESET-PASSWORD-LIFE' => 72,
     'DB' => [
         'USER'      =>  'root',
         'PASS'      =>  'toor',
