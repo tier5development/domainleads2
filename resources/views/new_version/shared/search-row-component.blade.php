@@ -23,7 +23,7 @@
                     <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_view_disable.png" alt="">
                 </p>
             @else
-                <p data-domainname="{{$each['domain_name']}}"
+                <p class="wordBreak" data-domainname="{{$each['domain_name']}}"
                     data-restrict="0" 
                     id="domain_name_{{$key}}">{{$each['domain_name']}}</p>
             @endif
@@ -54,7 +54,7 @@
                 </div>
             @else
                 <p>{{$each['registrant_name']}}</p>
-                <p class="email">
+                <p class="email wordBreak">
                     <a href="#">{{$each['registrant_email']}}</a>
                 </p>
                 <p class="country">
@@ -101,7 +101,7 @@
                 </div>
             @else
                 <p>
-                    <span>{{$each['registrant_company']}}</span>
+                    <span class="wordBreak">{{$each['registrant_company']}}</span>
                 </p>
             @endif
         </td>

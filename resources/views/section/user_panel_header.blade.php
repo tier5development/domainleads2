@@ -11,7 +11,7 @@
                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/search.png" alt="SEARCH DOMAIN" class="mobileOnly">
                     </a>
                 </li>
-                @if($user->user_type <= 3)
+                @if($user->user_type <= 2)
                 <li>
                     <a href="{{route('myUnlockedLeads')}}">
                         <span class="desktopOnly">UNLOCKED LEADS</span>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div id="profileMenu" class="profileMenu" style="display: none">
-                <div class="closeMenu profileMenuCloseBtn"></div>
+                <div class="closeMenu profileMenuCloseBtn" id="profileMenuCloseBtn"></div>
                 <div class="profilePic">
                     <a href="" class="changePic"><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_camera_green.png" alt="change picture"></a>
                     <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/profilePic.png" alt="">
@@ -39,7 +39,7 @@
                 <div class="profileMenuBody">
                     <div class="profileName">
                         <p>{{isset($user) && strlen(trim($user->name)) > 0 ? strtoupper($user->name) : 'USER'}}</p>
-                        <span>john.doe@tier5.us</span>
+                        <span>{{isset($user) && strlen(trim($user->email)) > 0 ? strtoupper($user->email) : 'USER-EMAIL'}}</span>
                     </div>
                     <ul>
                         <li><a href="{{route('profile')}}">Profile</a></li>

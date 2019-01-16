@@ -39,11 +39,11 @@
                             <div class="pageViewControl">
                             <label for="">SHOW : </label>
                                 <div class="selectBox">
-                                    <select id="slect-pagination-box" class="selectpage">
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 10 ? 'selected' : ''}} value="10">10 per page</option>
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 20 ? 'selected' : ''}} value="20">20 per page</option>
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 50 ? 'selected' : ''}} value="50">50 per page</option>
-                                        <option {{Request::has('pagination') && Request::get('pagination') == 100 ? 'selected' : ''}} value="100">100 per page</option>
+                                    <select data-pagination='1' id="slect-pagination-box" class="selectpage">
+                                        <option {{$pagination == 10 ? 'selected' : ''}} value="10">10 per page</option>
+                                        <option {{$pagination == 20 ? 'selected' : ''}} value="20">20 per page</option>
+                                        <option {{$pagination == 50 ? 'selected' : ''}} value="50">50 per page</option>
+                                        <option {{$pagination == 100 ? 'selected' : ''}} value="100">100 per page</option>
                                     </select>
                                 </div>
                             </div>
@@ -100,11 +100,11 @@
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
     <script>
 
-        var req_pagination = "{{Request::has('pagination') ? Request::get('pagination') : 10}}";
+        var req_pagination = "{{isset($pagination) ? $pagination : 10}}";
         
         var submitFormCustom = function() {
             $('#loader-icon').show();
-            $('#postSearchDataForm').submit();
+            $('#postAdvancedSearchDataForm').submit();
         }
         
         $(document).ready(function(){
@@ -127,6 +127,9 @@
         });
 
         $('.selectpage').each(function(){
+
+            var thisInstance = $(this);
+
             var thisVal = $(this), numberOfOptions = $(this).children('option').length;
 
             thisVal.addClass('select-hidden'); 
@@ -163,9 +166,18 @@
                 styledSelect.text($(this).text()).removeClass('active');
                 thisVal.val($(this).attr('rel'));
                 list.fadeOut(200);
-                req_pagination = thisVal.val();
-                $('#pagination').val(thisVal.val());
-                submitFormCustom();
+
+                if(thisInstance.data('pagination') !== undefined) {
+                    req_pagination = thisVal.val();
+                    $('#pagination').val(thisVal.val());
+                }
+
+                // Used for advanced-search-box
+                if(thisInstance.data('stopsubmit') === undefined) {
+                    submitFormCustom(); 
+                }
+                // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));
+                // submitFormCustom();
             });
 
             $(document).click(function() {

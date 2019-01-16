@@ -1,4 +1,4 @@
-<div class="rightPanel">
+<div class="rightPanel" style="display: none;">
     <div class="leftLine">
         <span></span>
         <p></p>
@@ -22,7 +22,7 @@
     </div>
     <div class="tilldateContent">
         <h3>Till Date</h3>
-        <p>You have unlocked <span class="green"><span id="tillDateCount"></span></span> domails till date</p>
+        <p>You have unlocked <span class="green"> <a href="{{route('myUnlockedLeads')}}"><span id="tillDateCount"></span></a> </span> domails till date</p>
     </div>
 </div>
  <script type="text/javascript">
@@ -34,12 +34,17 @@
             success: function(r) {
                 console.log('response obt : ', r);
                 if(r.status) {
-                    canvasObj.setCanvas();
-                    canvasObj.setCurve(r.leadsUnlocked, r.limit);
-                    canvasObj.drawProgressBar(10);
-                    $('#currentUnlockedCount').text(r.leadsUnlocked);
-                    $('#perDayLimitCount').text(r.limit);
-                    $('#tillDateCount').text(r.allLeadsUnlocked);
+                    if(r.limit == -1) {
+                        $('.container').addClass('level3User');
+                    } else {
+                        $('.rightPanel').show();
+                        canvasObj.setCanvas();
+                        canvasObj.setCurve(r.leadsUnlocked, r.limit);
+                        canvasObj.drawProgressBar(10);
+                        $('#currentUnlockedCount').text(r.leadsUnlocked);
+                        $('#perDayLimitCount').text(r.limit);
+                        $('#tillDateCount').text(r.allLeadsUnlocked);
+                    }
                 }
             }, error: function(e) {
                 console.error(e);

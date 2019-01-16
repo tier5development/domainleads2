@@ -5,9 +5,7 @@
     <link rel="stylesheet" href="{{url('/')}}/public/css/style.css">
 </head>
 <body>
-    <div class="tableContainer"> 
-
-
+    <div class="tableContainer">
 
     <p class="tableHeading">All leads unlocked </p>
     <u class="totalPage">Total count : {{$leads->total()}}</u>

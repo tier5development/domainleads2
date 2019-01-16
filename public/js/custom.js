@@ -8,7 +8,7 @@ $(document).ready(function(){
     $('.bottomRight').removeClass('pull');
   });
 
-  $('.fancybox').fancybox();
+  // $('.fancybox').fancybox();
  
 });
 

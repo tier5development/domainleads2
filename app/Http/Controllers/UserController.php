@@ -34,7 +34,10 @@ use \Carbon\Carbon as Carbon;
 class UserController extends Controller
 {
     public function myUnlockedLeads(Request $request) {
-        // dd($request->all());
+        // 
+        // if($request->all()) {
+        //     dd($request->all());
+        // }
         if(Auth::check() && Auth::user()->user_type <= 3) {
             $date = $request->has('date') ? $request->date : null;
             $data['perpage'] = $request->has('perpage') ? $request->perpage : 10;

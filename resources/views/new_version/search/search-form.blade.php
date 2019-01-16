@@ -65,50 +65,46 @@
             
 
             <div id="expired_date_div" style="display: none">
-                    <div class="rowHeading">Expired date range</div>
-                    <div class="formRowInner dateRange">
-                        <div class="dateArea">
-                            <div class="date">
-                                {{-- <input type="text" 
-                                id="datepicker" 
-                                class="dateHidden"> --}}
-        
-                                <input type="text" 
-                                    value="{{Request::get('domains_expired_date') != null ? date('Y-m-d',strtotime(Request::get('domains_expired_date'))) : '' }}" 
-                                    name="domains_expired_date" 
-                                    id="expired_date" 
-                                    class="dateHidden"
-                                    placeholder="Start Date"
-                                    style="disply: none;">
-                                
-                                <input type="text" class="month" placeholder="mm" readonly>
-                                <input type="text" class="day" placeholder="dd" readonly>
-                                <input type="text" class="year" placeholder="yyyy" readonly>
-                            </div>
+                <div class="rowHeading">Expired date range</div>
+                <div class="formRowInner dateRange">
+                    <div class="dateArea">
+                        <div class="date">
+                            {{-- <input type="text" 
+                            id="datepicker" 
+                            class="dateHidden"> --}}
+    
+                            <input type="text" 
+                                value="{{Request::get('domains_expired_date') != null ? date('Y-m-d',strtotime(Request::get('domains_expired_date'))) : '' }}" 
+                                name="domains_expired_date" 
+                                id="expired_date" 
+                                class="dateHidden"
+                                placeholder="Start Date"
+                                style="disply: none;">
+                            
+                            <input type="text" class="month" placeholder="mm" readonly>
+                            <input type="text" class="day" placeholder="dd" readonly>
+                            <input type="text" class="year" placeholder="yyyy" readonly>
                         </div>
-                        <div class="dateArea endDate">
-                            <div class="date">
-                                {{-- <input type="text" id="datepicker2" class="dateHidden"> --}}
-                                
-                                <input type="text" 
-                                    value="{{Request::get('domains_expired_date2') != null ? date('Y-m-d',strtotime(Request::get('domains_expired_date2'))) : ''}}" 
-                                    name="domains_expired_date2" 
-                                    id="expired_date2" 
-                                    class="dateHidden" 
-                                    placeholder="End Date"
-                                    style="display: none">
-        
-                                <input type="text" class="month" placeholder="mm" readonly>
-                                <input type="text" class="day" placeholder="dd" readonly>
-                                <input type="text" class="year" placeholder="yyyy" readonly>
-                            </div>
+                    </div>
+                    <div class="dateArea endDate">
+                        <div class="date">
+                            {{-- <input type="text" id="datepicker2" class="dateHidden"> --}}
+                            
+                            <input type="text" 
+                                value="{{Request::get('domains_expired_date2') != null ? date('Y-m-d',strtotime(Request::get('domains_expired_date2'))) : ''}}" 
+                                name="domains_expired_date2" 
+                                id="expired_date2" 
+                                class="dateHidden" 
+                                placeholder="End Date"
+                                style="display: none">
+    
+                            <input type="text" class="month" placeholder="mm" readonly>
+                            <input type="text" class="day" placeholder="dd" readonly>
+                            <input type="text" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                 </div>
-            
-            
-
-
+            </div>
         </div>
         <div class="formRow">
             <div class="rowHeading">Domain name</div>
@@ -172,5 +168,13 @@
         <div class="formRow submit">
             <button type="submit" type="button" id="searchDomains" class="orangeBtn">Search Domains</button>
         </div>
+
+        {{-- Hidden fields --}}
+        <input type="hidden" name="gt_ls_domaincount_no" value="0">
+        <input type="hidden" name="domaincount_no" value="0">
+        <input type="hidden" name="gt_ls_leadsunlocked_no" value="0">
+        <input type="hidden" name="leadsunlocked_no" value="0">
+        <input type="hidden" name="sort" value="unlocked_acnd">
+        <input type="hidden" name="pagination" value="10">
     </form>
 </div>
