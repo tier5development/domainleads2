@@ -594,7 +594,7 @@ input, select, textarea, button {
     border-radius: 3px;
     padding: 13px;
     display: inline-block;
-    width: calc(100% - 275px);
+    width: 32%;
     height: 50px;
     font-family: 'Avenir LT Std 65 Medium';
     color: #6c6c6c;
@@ -668,17 +668,10 @@ input, select, textarea, button {
     padding: 5px;
 }
 
-
-
-
-
-
-
 .domainName .selectBox {
-    width: 250px;
+    width: 64%;
     float: right;
 }
-
 .domainName .selectBox .select-styled p {
     float: left;
     border: 1px solid #e5e5e5;
@@ -706,6 +699,24 @@ input, select, textarea, button {
 .domainName .selectBox .select-styled p:first-child {
     margin-left: 0;
 }
+
+.tagContainer {
+    height: 29px;
+    overflow: hidden;
+    display: inline-block;
+    width: calc(100% - 20px);
+}
+.tagArea {
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.tagAreaInner{
+    width: 700px;
+    height: 30px;
+}
+
+
+
 .formRow.address {
     width: 100%;
     display: inline-block;
@@ -764,6 +775,12 @@ input, select, textarea, button {
     margin: 30px 0;
     padding: 0 15px 0 45px;
     position: relative;
+}
+.container.level3User .rightPanel {
+    display: none;
+}
+.container.level3User .leftPanel {
+    width: 100%;
 }
 .rightPanel h2 {
     color: #c6c6c6;
@@ -915,6 +932,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 .dataTableHeaderRight {
     float: right;
+    width: 680px;
 }
 .dataTableHeaderRight .dateArea {
     float: left;
@@ -929,6 +947,17 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     padding: 0 25px;
     padding-top: 2px;
 }
+
+#unlockedLeadsForm {
+    float: left;
+}
+#downloadCsvForm {
+    float: left;
+}
+#downloadCsvForm .greenBtn {
+    margin: 0 15px 0 0;
+}
+
 .greenBtn {
     background: linear-gradient(to right, #3cbec1, #48e4b3);
     height: 45px;
@@ -944,7 +973,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 .pageViewControl {
     float: right;
-    margin-left: 47px;
     margin-top: 10px;
 }
 .pageViewControl label {
@@ -1027,6 +1055,9 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     float: left;
     margin-top: 3px;
 }
+.wordBreak {
+    word-break: break-all;
+}
 .datatable table tbody td p.domains img {
     float: left;
     margin-right: 10px;
@@ -1056,6 +1087,9 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     font-size: 12px;
     color: #a5a5a5;
     font-family: 'Avenir LT Std 65 Medium';
+}
+.datatable table tbody td p.phone {
+    width: 155px;
 }
 .datatable table tbody td p.phone img {
     float: left;
@@ -1339,7 +1373,18 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .profileFormArea button.orangeBtn {
     font-size: 14px;
     letter-spacing: 2px;
-    padding: 0 74px;
+    padding: 0 74px;.pageViewControl {
+        float: left;
+        margin: 20px 0 0 0;
+        width: 100%;
+    }
+    .pageViewControl label {
+        float: left;
+        margin-top: 7px;
+    }
+    .pageViewControl .selectBox {
+        float: left;
+    }
     margin-top: 30px;
 }
 
@@ -1362,6 +1407,16 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .container {
     margin: 0 20px;
 }
+}
+
+@media screen and (max-width: 1520px) {
+    .dataTableHeader .unlockInfo {
+        width: 100%;
+        margin: 0 0 20px 0;
+    }
+    .dataTableHeaderRight {
+        width: 100%;
+    }
 }
 
 @media screen and (max-width: 1500px) {
@@ -1402,13 +1457,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .datatable table {
     width: 875px;
 }
-.dataTableHeader .unlockInfo {
-    width: 100%;
-    margin: 0 0 20px 0;
-}
-.dataTableHeaderRight {
-    width: 100%;
-}
 }
 
 @media screen and (max-width: 1300px) {
@@ -1441,6 +1489,21 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 }
 
+@media screen and (max-width: 1050px) {
+    .pageViewControl {
+        float: left;
+        margin: 20px 0 0 0;
+        width: 100%;
+    }
+    .pageViewControl label {
+        float: left;
+        margin-top: 7px;
+    }
+    .pageViewControl .selectBox {
+        float: left;
+    }
+}
+
 @media screen and (max-width: 900px) {
 .mainBody {
     padding: 20px;
@@ -1460,7 +1523,10 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     float: left;
 }
 .dateArea .date {
-    margin-left: 10px;
+    margin-left: 0;
+}
+.ui-datepicker-trigger {
+    margin-right: 10px;
 }
 .searchDomainForm .formRow .radioCol {
     display: block;
@@ -1494,18 +1560,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 .profileFormArea {
     max-width: 100%;
-}
-.pageViewControl {
-    float: left;
-    margin: 20px 0 0 0;
-    width: 100%;
-}
-.pageViewControl label {
-    float: left;
-    margin-top: 7px;
-}
-.pageViewControl .selectBox {
-    float: left;
 }
 }
 
@@ -1672,6 +1726,12 @@ body {
 }
 }
 
+@media screen and (max-width: 460px) {
+#downloadCsvForm {
+    margin-bottom: 15px;
+}
+}
+
 @media screen and (max-width: 420px) {
 .profileFormArea {
     margin-top: 0;
@@ -1738,7 +1798,12 @@ body {
 }
 }
 
-
+@media screen and (max-width: 340px) {
+    .mainBody {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
 
 
 

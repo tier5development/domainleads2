@@ -12,7 +12,7 @@ class UserHelper {
     /**
      * Function called in to get usage matrix data
      */
-    public static function geUsageMatrix() {
+    public static function getUsageMatrix() {
         try {
             if(Auth::check()) {
                 $user = Auth::user();

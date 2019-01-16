@@ -1,8 +1,8 @@
 $(document).ready(function() {
     $('#profileTag').click(function() {
-        $('#profileMenu').show();
+        $('#profileMenu').show(300);
     });
     $('#profileMenuCloseBtn').click(function() {
-        $('#profileMenu').hide();
+        $('#profileMenu').hide(300);
     });
 });

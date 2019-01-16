@@ -2,36 +2,13 @@
 <html lang="en">
     @include('section.user_panel_head', ['title' => 'Domainleads | Dashboard | Search'])
 <body>
+    @include('new_version.shared.loader')
+
     <div class="container">
         @include('section.user_panel_header', ['user' => $user])
         <section class="mainBody">
-            <div class="rightPanel">
-                <div class="leftLine">
-                    <span></span>
-                    <p></p>
-                    <span></span>
-                </div>
-                <h2>YOUR DOMAIN UNLOCKING HISTORY</h2>
-                <div class="todayContent">
-                    <h3>Today</h3>
-                    <div class="chart">
-                        <canvas id="crart" width="132" height="132"></canvas>
-                    </div>
-                    <p>
-                        You have unlocked <span class="green">40 /</span> <span class="yellow">50</span> domains today
-                    </p>
-                    <p>
-                        Upgrade your membership<br> to unlock more of your daily limit.
-                    </p>
-                    <p>
-                        <button type="button" class="orangeBtn">Upgrade Now</button>
-                    </p>
-                </div>
-                <div class="tilldateContent">
-                    <h3>Till Date</h3>
-                    <p>You have unlocked <span class="green">359</span> domails till date</p>
-                </div>
-            </div>
+            {{-- Include common dashboard right panel --}}
+            @include('new_version.shared.right-panel')
 
             <div class="leftPanel">
                 <div class="leftPanelHeader">
@@ -43,7 +20,6 @@
                         <p>Welcome to Domain Leads. Start your domain search right here.</p>
                     </div>
                 </div>
-
                 {{-- Search form lies here --}}
                 @include('new_version.search.search-form')
             </div>
@@ -57,19 +33,10 @@
     </div>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
-<script>
-// Activity circle chart 1 --------------------------------------
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
 
-// var chartConfig = {ier5
-//     al: 0,
-//     start: 4.72,
-//     cw: null,
-//     diff:null,
-//     radius : 80,
-//     chartVal : 84,
-//     canvas : document.getElementById('crart1'),
-//     context : document.getElementById('crart1').getContext('2d')
-// }
+<script>
 
 var tdlExtensions = {};
 
@@ -86,181 +53,42 @@ var popExtension = function(ext) {
     }
 }
 
-var canvas = document.getElementById('crart');
-
-var context = canvas.getContext('2d');
-var al=0;
-var av = 0;
-var start=4.72;
-var cw=context.canvas.width/2;
-var ch=context.canvas.height/2;
-var diff;
-
-var targetVal = 50;
-var currentVal = 40;
-
-var radius = 60;
-var chartVal = (currentVal / targetVal) * 100;
-
-var gradient = context.createLinearGradient(0, 0, 0, 140);
-    gradient.addColorStop(0, '#48e4b3');
-    gradient.addColorStop(0.5, '#3cbec1');
-    gradient.addColorStop(1, '#48e4b3');
-
-function progressBar(){
-    diff=(al/100)*Math.PI*2;
-    context.clearRect(0,0,400,400);
-    context.beginPath();
-    context.arc(cw,ch,radius,0,2*Math.PI,false);
-    context.fillStyle='#FFF';
-    context.fill();
-    context.strokeStyle='#f6f6f6';
-    context.stroke();
-    context.fillStyle='#000';
-    context.strokeStyle= gradient;
-    context.textAlign='center';
-    context.lineWidth=10;
-    context.font = '21px "Avenir LT Std 95 Black"';
-    context.fillStyle = '#333';
-    context.beginPath();
-    context.arc(cw,ch,radius,start,diff+start,false);
-    context.stroke();
-    context.lineCap = 'round';
-    context.fillText(av+"/50" ,65, 75 );
-    if(al>=chartVal){
-        clearTimeout(bar);
-    }
-        al++;
-        av++;
-    if(av>=currentVal){
-        av = currentVal;
-    }
-        
-}
-
-$('#postSearchDataForm input[type=radio]').on('change', function() {
-    var mode = $(this).val();
-    if(mode == 'newly_registered') {
-        $('#created_date_div').show();
-        $('#expired_date_div').hide();
-        $('#domains_expired_date').val('');
-        $('#domains_expired_date2').val('');
-    } else if(mode == 'getting_expired') {
-        $('#expired_date_div').show();
-        $('#created_date_div').hide();
-        $('#registered_date').val('');
-        $('#registered_date2').val('');
-    }
-});
-
-$('.selectOption').each(function(){
-    var thisVar = $(this); 
-    var numberOfOptions = $(this).children('option').length;
-
-    thisVar.addClass('select-hidden'); 
-    thisVar.wrap('<div class="select"></div>');
-    thisVar.after('<div class="select-styled"><div class="tglBtn"></div></div>');
-
-    var styledSelect = thisVar.next('div.select-styled');
-    //styledSelect.text(thisVar.children('option').eq(0).text());
-
-    var list = $('<ul />', {
-        'class': 'select-options'
-    }).insertAfter(styledSelect);
-
-    for (var i = 0; i < numberOfOptions; i++) {
-        $('<li />', {
-            text: thisVar.children('option').eq(i).text(),
-            rel: thisVar.children('option').eq(i).val()
-        }).appendTo(list);
-    }
-
-    var listItems = list.children('li');
-
-    styledSelect.click(function(e) {
-        e.stopPropagation();
-        //console.log('here1');
-        $('div.select-styled.active').not(this).each(function() {
-            $(this).removeClass('active').next('ul.select-options').fadeOut(200);
-        });
-        $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
-    });
-
-    listItems.click(function(e) {
-        e.stopPropagation();
-        console.log('here2');
-        //styledSelect.text($(this).text()).removeClass('active');
-        styledSelect.append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
-        $(this).hide();
-        thisVar.val($(this).attr('rel'));
-        list.fadeOut(200);
-        pushExtension($(this).text());
-        console.log($(this).text(), tdlExtensions);
-        //console.log(thisVar.val());
-        $(".select-styled p .cl").click(function(e){
-            e.stopPropagation();
-            var a = $(this).prev(".tagTxt").text();
-            
-            popExtension(a);
-            console.log('here4', a, tdlExtensions);
-
-            $(this).parent("p").remove();
-            $('ul.select-options li').each(function(){
-                if($(this).text() == a){
-                    $(this).show();
-                }
-            });
-        });
-    });
-    $(document).click(function(e) {
-        console.log('here3', e);
-        styledSelect.removeClass('active');
-        list.fadeOut(200);
-    });
-});
-
-$('#searchDomains').click(function(e) {
-    e.preventDefault();
-
-    var tldOptionsStr = '';
-    Object.keys(tdlExtensions).map(function(key, index) {
-        if(tldOptionsStr != '') {
-            tldOptionsStr += ','+key;
-        } else {
-            tldOptionsStr += key;
-        }
-    });
-    console.log(tldOptionsStr);
-    $('#domain_ext').val(tldOptionsStr);
-    $('#postSearchDataForm').submit();
-    // console.log(tdlExtensions.toString());
-    // var x = tdlExtensions.map(() => function(a, b) {
-    //     console.log(a, b);
-    // });
-    // console.log('x = ', x);
-})
-
-var bar = setInterval(progressBar, 10);
-
-</script>
-
-
-<script>
 $(document).ready(function(){
 
     var PATH = "{{config('settings.APPLICATION-DOMAIN')}}/public/";
+
+    setTimeout(() => {
+        $('#loader-icon').hide();    
+    }, 400);
+
     console.log(PATH+"images/icon_calendar.png");
+
+        $('#postSearchDataForm input[type=radio]').on('change', function() {
+        var mode = $(this).val();
+        if(mode == 'newly_registered') {
+            $('#created_date_div').show();
+            $('#expired_date_div').hide();
+            $('#domains_expired_date').val('');
+            $('#domains_expired_date2').val('');
+        } else if(mode == 'getting_expired') {
+            $('#expired_date_div').show();
+            $('#created_date_div').hide();
+            $('#registered_date').val('');
+            $('#registered_date2').val('');
+        }
+    });
+
     $('.selectOption').each(function(){
         var thisVar = $(this), numberOfOptions = $(this).children('option').length;
 
         thisVar.addClass('select-hidden'); 
         thisVar.wrap('<div class="select"></div>');
-        thisVar.after('<div class="select-styled"></div>');
+        thisVar.after('<div class="select-styled"><div class="tagContainer"><div class="tagArea"><div class="tagAreaInner"></div></div></div><div class="tglBtn"></div></div>');
 
         var styledSelect = thisVar.next('div.select-styled');
         //styledSelect.text(thisVar.children('option').eq(0).text());
 
-        var list = $('<ul />', {
+        var $list = $('<ul />', {
             'class': 'select-options'
         }).insertAfter(styledSelect);
 
@@ -268,36 +96,153 @@ $(document).ready(function(){
             $('<li />', {
                 text: thisVar.children('option').eq(i).text(),
                 rel: thisVar.children('option').eq(i).val()
-            }).appendTo(list);
+            }).appendTo($list);
         }
 
-        var listItems = list.children('li');
+        var $listItems = $list.children('li');
 
         styledSelect.click(function(e) {
-            console.log('here1');
             e.stopPropagation();
+            //console.log('here1');
             $('div.select-styled.active').not(this).each(function(){
                 $(this).removeClass('active').next('ul.select-options').fadeOut(200);
             });
             $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
         });
 
-        listItems.click(function(e) {
-            // e.stopPropagation();
-            console.log('here2');
+        $listItems.click(function(e) {
+            e.stopPropagation();
             //styledSelect.text($(this).text()).removeClass('active');
-            styledSelect.append("<p>" + $(this).text() + "<span class='cl'>x</span></p>");
+            $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
             $(this).hide();
             thisVar.val($(this).attr('rel'));
-            list.fadeOut(200);
+            $list.fadeOut(200);
+            pushExtension($(this).text());
             //console.log(thisVar.val());
+            var tagAreaWidth = 0;
+            $(".tagAreaInner p").each(function(){
+                tagAreaWidth += $(this).outerWidth()+3;
+            });
+            $(".tagAreaInner").css("width", tagAreaWidth + "px");
+            
+            $(".select-styled p .cl").click(function(e){
+                e.stopPropagation();
+                var a = $(this).prev(".tagTxt").text();
+                $(this).parent("p").remove();
+                popExtension(a);
+                $('ul.select-options li').each(function(){
+                    if($(this).text() == a){
+                        $(this).show();
+                    }
+                });
+            });
         });
+
         $(document).click(function(e) {
-            console.log('here3', e);
             styledSelect.removeClass('active');
-            list.fadeOut(200);
+            $list.fadeOut(200);
+        });
+
+        var sc = 0;
+        $('body').on('mousewheel', function(e) {
+            if($(e.target).closest(".select-styled").hasClass("select-styled")){
+                return false;
+            // e.preventDefault();
+            // e.stopPropagation();
+            }
+        });
+
+        $('.tagAreaInner').on('mousewheel', function(event) {
+            optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
+            if(event.deltaY == -1){
+                if(sc > optionScrollWidth){
+                sc = optionScrollWidth;
+            }
+                sc += 10;
+            } 
+            else if(event.deltaY == 1){
+                if(sc < 0){
+                sc = 0;
+            }
+                sc -= 10;
+            }
+                
+            $(".tagArea").scrollLeft(sc);        
         });
     });
+
+
+    $('#searchDomains').click(function(e) {
+        e.preventDefault();
+
+        var tldOptionsStr = '';
+        Object.keys(tdlExtensions).map(function(key, index) {
+            if(tldOptionsStr != '') {
+                tldOptionsStr += ','+key;
+            } else {
+                tldOptionsStr += key;
+            }
+        });
+        console.log(tldOptionsStr);
+        $('#domain_ext').val(tldOptionsStr);
+        $('#postSearchDataForm').submit();
+        // console.log(tdlExtensions.toString());
+        // var x = tdlExtensions.map(() => function(a, b) {
+        //     console.log(a, b);
+        // });
+        // console.log('x = ', x);
+    });
+
+
+
+    // $('.selectOption').each(function(){
+    //     var thisVar = $(this), numberOfOptions = $(this).children('option').length;
+
+    //     thisVar.addClass('select-hidden'); 
+    //     thisVar.wrap('<div class="select"></div>');
+    //     thisVar.after('<div class="select-styled"></div>');
+
+    //     var styledSelect = thisVar.next('div.select-styled');
+    //     //styledSelect.text(thisVar.children('option').eq(0).text());
+
+    //     var list = $('<ul />', {
+    //         'class': 'select-options'
+    //     }).insertAfter(styledSelect);
+
+    //     for (var i = 0; i < numberOfOptions; i++) {
+    //         $('<li />', {
+    //             text: thisVar.children('option').eq(i).text(),
+    //             rel: thisVar.children('option').eq(i).val()
+    //         }).appendTo(list);
+    //     }
+
+    //     var listItems = list.children('li');
+
+    //     styledSelect.click(function(e) {
+    //         console.log('here1');
+    //         e.stopPropagation();
+    //         $('div.select-styled.active').not(this).each(function(){
+    //             $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+    //         });
+    //         $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+    //     });
+
+    //     listItems.click(function(e) {
+    //         // e.stopPropagation();
+    //         console.log('here2');
+    //         //styledSelect.text($(this).text()).removeClass('active');
+    //         styledSelect.append("<p>" + $(this).text() + "<span class='cl'>x</span></p>");
+    //         $(this).hide();
+    //         thisVar.val($(this).attr('rel'));
+    //         list.fadeOut(200);
+    //         //console.log(thisVar.val());
+    //     });
+    //     $(document).click(function(e) {
+    //         console.log('here3', e);
+    //         styledSelect.removeClass('active');
+    //         list.fadeOut(200);
+    //     });
+    // });
 
     var cross = $(".selectBox .select-styled p span");
 

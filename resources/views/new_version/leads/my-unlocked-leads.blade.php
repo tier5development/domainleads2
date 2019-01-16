@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/laravel-pagination.css">
 <body>
 
+
     {{-- Loader icon in the platform --}}
     @include('new_version.shared.loader')
 
@@ -27,36 +28,13 @@
                         <div class="unlockInfo">
                             <strong>{{isset($leads) ? $leads->total() : 0}}</strong> domains found against your search
                         </div>
-                        {{-- <div class="dataTableHeaderRight">
-                            
-
-                            <form method="POST" action = "{{route('downloadUnlockedLeads')}}" id="downloadCsvForm">
-                                <input type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}">
-                                <button type="submit" class="greenBtn">Download CSV</button>
-                                {{csrf_field()}}
-                            </form>
-
-                            <div class="pageViewControl">
-                                <form id="unlockedLeadsForm" class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
-                                    <label for="">SHOW : </label>
-                                    <div class="selectBox">
-                                        <select id="slect-pagination-box" class="selectpage" name="perpage">
-                                            <option {{Request::has('pagination') && Request::get('pagination') == 10 ? 'selected' : ''}} value="10">10 per page</option>
-                                            <option {{Request::has('pagination') && Request::get('pagination') == 20 ? 'selected' : ''}} value="20">20 per page</option>
-                                            <option {{Request::has('pagination') && Request::get('pagination') == 50 ? 'selected' : ''}} value="50">50 per page</option>
-                                            <option {{Request::has('pagination') && Request::get('pagination') == 100 ? 'selected' : ''}} value="100">100 per page</option>
-                                        </select>
-                                    </div>
-                                   
-                                    <input type="date" name="date" value="{{Request::has('date') ? Request::get('date') : null}}" class="dateInp">
-                                    <button class="orangeBtn" id="search">Apply</button>
-                                    {{csrf_field()}}
-                                </form>
-                            </div>
-
-                        </div> --}}
 
                         <div class="dataTableHeaderRight">
+                            <form method="POST" action = "{{route('downloadUnlockedLeads')}}" id="downloadCsvForm">
+                                <button type="submit" class="greenBtn">Download CSV</button>
+                                <input type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}">
+                                {{csrf_field()}}
+                            </form>
                             <form id="unlockedLeadsForm" class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
                                 <div class="dateArea">
                                     <div class="date">
@@ -66,24 +44,20 @@
                                         <input type="text" class="year" placeholder="yyyy">
                                     </div>
                                 </div>
+                                <input type="hidden" name = "perpage" id="perpageVal" value="{{Request::has('perpage') ? Request::get('perpage') : null}}">
                                 <button type="submit" class="orangeBtn">Filter</button>
                                 {{csrf_field()}}
                             </form>
                             
-                            <form method="POST" action = "{{route('downloadUnlockedLeads')}}" id="downloadCsvForm">
-                                <button type="submit" class="greenBtn">Download CSV</button>
-                                <input type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}">
-                                {{csrf_field()}}
-                            </form>
                             
                             <div class="pageViewControl">
                                 <label for="">SHOW:</label>
                                 <div class="selectBox">
                                     <select class="selectpage">
-                                        <option value="10">10 per page</option>
-                                        <option value="20">20 per page</option>
-                                        <option value="50">50 per page</option>
-                                        <option value="100">100 per page</option>
+                                        <option {{Request::has('perpage') && Request::get('perpage') == 10 ? 'selected' : ''}} value="10">10 per page</option>
+                                        <option {{Request::has('perpage') && Request::get('perpage') == 20 ? 'selected' : ''}} value="20">20 per page</option>
+                                        <option {{Request::has('perpage') && Request::get('perpage') == 50 ? 'selected' : ''}} value="50">50 per page</option>
+                                        <option {{Request::has('perpage') && Request::get('perpage') == 100 ? 'selected' : ''}} value="100">100 per page</option>
                                     </select>
                                 </div>
                             </div>
@@ -111,10 +85,10 @@
                                             <p data-restrict="1" id="domain_name_{{$key}}"> {{$each->domain_name}}</p>
                                         </td>
                                         <td>
-                                            <p class="name">
+                                            <p class="name wordBreak">
                                                 {{$each->registrant_fname}}&nbsp;{{$each->registrant_lname}}
                                             </p>
-                                            <p class="email">
+                                            <p class="email wordBreak">
                                                 {{$each->registrant_email}}
                                             </p>
                                         </td>
@@ -144,7 +118,7 @@
                                             <p><span>{{date('m-d-Y', strtotime($each->expiry_date))}}</span></p>
                                         </td>
                                         <td>
-                                            <p><span>{{$each->registrant_company}}</span></p>
+                                            <p><span class="wordBreak">{{$each->registrant_company}}</span></p>
                                         </td>
                                         <td>
                                             <p><span>{{$each->created_at->format('m-d-Y')}}</span></p>
@@ -153,7 +127,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        
                     </div>
                     @if($leads->count() > 0)
                             <div class="paginate">
@@ -187,15 +160,35 @@
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
     <script>
 
+
+        var preDate = "{{Request::has('date') ? Request::get('date') : ''}}";
+
+        
+
         var req_pagination = "{{Request::has('pagination') ? Request::get('pagination') : 10}}";
         
         // var submitFormCustom = function() {
         //     $('#loader-icon').show();
         //     $('#unlockedLeadsForm').submit();
         // }
+
+        var submitFormCustom = function() {
+            $('#loader-icon').show();
+            $('#unlockedLeadsForm').submit();
+        }
         
         $(document).ready(function() {
             
+
+            (function() {
+                console.log('predate', preDate);
+                var dateSelect = preDate.split("-");
+                // console.log(dateSelect);
+                $('.dateHiddenField').nextAll(".year").val(dateSelect[0]);
+                $('.dateHiddenField').nextAll(".month").val(dateSelect[1]);
+                $('.dateHiddenField').nextAll(".day").val(dateSelect[2]);
+            })();
+
             $( "#filterDate").datepicker({
                 dateFormat: "yy-mm-dd",
                 showOn: "button",
@@ -268,8 +261,8 @@
                 // $('#pagination').val(thisVal.val());
 
                 $('.selectBox select option[value="' + thisVal.val() + '"]').html();
-
-                // submitFormCustom();
+                $('#perpageVal').val(thisVal.val());
+                submitFormCustom();
             });
 
             $(document).click(function() {

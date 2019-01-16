@@ -48,7 +48,7 @@ public function downloadExcel2(Request $request) {
 }
 
 public function totalLeadsUnlockedToday() {
-  return response()->json(UserHelper::geUsageMatrix());
+  return response()->json(UserHelper::getUsageMatrix());
 }
 // public function downloadExcel(Request $request) {
 //   // dd($request->all());
@@ -369,7 +369,7 @@ public function download_csv_single_page(Request $request)
           // return \Response::json($array);
 
           // Compose a view to render the html
-          $usageMatrix = UserHelper::geUsageMatrix();
+          $usageMatrix = UserHelper::getUsageMatrix();
           $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key, 'restricted' => false])->render();
           return Response::json([
             'view'    =>  $view,
@@ -1321,7 +1321,7 @@ public function download_csv_single_page(Request $request)
     //counts total page based on $this->totalDomains and $this->totalLeads count
     private function count_total_pages($pagination)
     {
-      if($pagination==null || $pagination == '')
+      if($pagination == null || $pagination == 0 || $pagination == '')
         $pagination = 10;
 
       $extraPage = (int)($this->totalLeads%$pagination);
@@ -1777,9 +1777,10 @@ public function download_csv_single_page(Request $request)
       {
         if($request->all())
         {
-          
+          // dd($request->all());
           $request['pagination']  = $request->has('pagination') ? $request->pagination : 10;
           $request['domain_ext']  = $this->tldExtToArray($request->domain_ext);
+          \Log::info('inp : ', $request->all());
           // dd($request->all());
           // $request->domain_ext = [];
           $start = microtime(true);
@@ -1811,6 +1812,7 @@ public function download_csv_single_page(Request $request)
           $request['domain_ext'] = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
           Session::forget('oldReq');
           Session::put('oldReq', $request->all());
+          // dd($result, $request->all());
           // return view('home.search.search',$result);
           return view('new_version.search.search-results',$result);
         

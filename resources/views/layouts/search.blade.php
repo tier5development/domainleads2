@@ -163,6 +163,7 @@
                   </div>
                   <div class="row">
 
+
                   <div class="col-md-6 col-sm-6">
                      <label>Sort filter</label>
                      <select id="sort" name="sort">
@@ -181,22 +182,23 @@
                   <div style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;">
                   
                   <div class="row form-group">
-                  <div class="col-md-4 col-sm-3">
-                     <label>DomainCount :</label> <br>
+                     <!-- done -->
+                     <div class="col-md-4 col-sm-3">
+                        <label>DomainCount :</label> <br>
+                     </div>
+                     <div class="col-md-4 col-sm-3">   	
+                        <select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
+                           <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
+                           <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
+                           <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option>
+                           <option value="3" <?php if(Input::get('gt_ls_domaincount_no')==3) { echo "selected";} ?>>Equals</option>
+                        </select>
+                     </div>
+                     <div class="col-md-4 col-sm-3">   
+                        <input class="form-control" type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
+                     </div>
                   </div>
-                  <div class="col-md-4 col-sm-3">   	
-                     <select name="gt_ls_domaincount_no" id="gt_ls_domaincount_no">
-                        <option value="0" <?php if(Input::get('gt_ls_domaincount_no')==0) { echo "selected";} ?>>Select</option>
-                        <option value="1" <?php if(Input::get('gt_ls_domaincount_no')==1) { echo "selected";} ?>>Greater than</option>
-                        <option value="2" <?php if(Input::get('gt_ls_domaincount_no')==2) { echo "selected";} ?>>Lesser Than</option>
-                        <option value="3" <?php if(Input::get('gt_ls_domaincount_no')==3) { echo "selected";} ?>>Equals</option>
-                     </select>
-                  </div>
-                  <div class="col-md-4 col-sm-3">   
-                     <input class="form-control" type="text" name="domaincount_no" id="domaincount_no" value="{{ Input::get('domaincount_no') }}">
-                  </div>   
 
-                  </div> 
                   <div class="row">
                   	<div class="col-md-4 col-sm-3">  
                      <label>LeadsUnlocked :</label> 
@@ -212,7 +214,7 @@
                      <div class="col-md-4 col-sm-3">  
                      <input class="form-control" type="text" name="leadsunlocked_no" id="leadsunlocked_no" value="{{ Input::get('leadsunlocked_no') }}"> 
                      </div>
-                 </div>  
+                  </div>  
                    
                  <br>
                      <div class="btn btn-primary pull-right" id="refine_searchID">Refine Search</div>
