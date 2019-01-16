@@ -103,7 +103,7 @@ $(document).ready(function(){
 
         styledSelect.click(function(e) {
             e.stopPropagation();
-            //console.log('here1');
+            
             $('div.select-styled.active').not(this).each(function(){
                 $(this).removeClass('active').next('ul.select-options').fadeOut(200);
             });
@@ -139,6 +139,7 @@ $(document).ready(function(){
         });
 
         $(document).click(function(e) {
+            console.log('removing class');
             styledSelect.removeClass('active');
             $list.fadeOut(200);
         });
@@ -174,7 +175,7 @@ $(document).ready(function(){
 
     $('#searchDomains').click(function(e) {
         e.preventDefault();
-
+        $('#loader-icon').show();
         var tldOptionsStr = '';
         Object.keys(tdlExtensions).map(function(key, index) {
             if(tldOptionsStr != '') {

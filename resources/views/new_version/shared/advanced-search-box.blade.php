@@ -82,7 +82,6 @@
                 </div>
                 <div class="filterFormRow">
                     <button type="submit" class="orangeBtn">Apply Filter</button>
-                    {{$pagination}}
                 </div>
             </div>
         </div>
