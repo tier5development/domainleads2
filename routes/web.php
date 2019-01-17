@@ -105,6 +105,8 @@ Route::get('/aa',function(){
     
     Route::group(['middleware' => 'auth'],function() {
 
+        Route::post('unlockFromLeads', ['uses' => 'SearchController@unlockFromLeads', 'as' => 'unlockFromLeads']);
+
         Route::post('updateUserInfo', ['uses' => 'AccountController@updateUserInfo', 'as' => 'updateUserInfo']);
 
         Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
@@ -131,7 +133,7 @@ Route::get('/aa',function(){
 
         Route::post('unlocked-leads', ['uses' => 'UserController@myUnlockedLeads', 'as' => 'myUnlockedLeadsPost']);
 
-    	Route::get('importExport', 'ImportExport@importExport');
+    	Route::get('importExport', ['uses' => 'ImportExport@importExport', 'as' => 'importExport']);
 
     	Route::post('/importExcel', 'ImportExport@importExcel')->name('import_Excel'); // new version of import exel
 

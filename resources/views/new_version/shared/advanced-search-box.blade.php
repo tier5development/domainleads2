@@ -69,13 +69,13 @@
 
                         <div class="radio">
                             <input type="checkbox" name="cell_number" value="cell number" @if(Input::get('cell_number')) checked @endif >
-                            {{-- <p><span></span></p> --}}
+                            <p><span></span></p>
                         </div>
                         <span class="label">Mobile</span>
                             
                         <div class="radio">
                             <input type="checkbox" name="landline_number" value="landline number" @if(Input::get('landline_number')) checked @endif>
-                            {{-- <p><span></span></p> --}}
+                            <p><span></span></p>
                         </div>
                         <span class="label">Landline</span>
                     </div>

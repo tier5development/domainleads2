@@ -490,7 +490,8 @@ input, select, textarea, button {
     height: 22px;
     position: relative;
 }
-.radio input[type="radio"] {
+.radio input[type="radio"], 
+.radio input[type="checkbox"] {
     position: absolute;
     width: 22px;
     height: 22px;
@@ -528,10 +529,12 @@ input, select, textarea, button {
     opacity: 1;
     transition: all 0.3s ease 0.1s, opacity 0.3s ease 0.15s;
 }
-.radio input[type="radio"]:checked + p {
+.radio input[type="radio"]:checked + p, 
+.radio input[type="checkbox"]:checked + p {
     border-color: #1fbec5; 
 }
-.radio input[type="radio"]:checked + p:after {
+.radio input[type="radio"]:checked + p:after, 
+.radio input[type="checkbox"]:checked + p:after  {
     border: 6px solid #1fbec5;
     width: 38px;
     height: 38px;
@@ -539,7 +542,8 @@ input, select, textarea, button {
     top: -8px;
     opacity: 0;
 }
-.radio input[type="radio"]:checked + p span {
+.radio input[type="radio"]:checked + p span, 
+.radio input[type="checkbox"]:checked + p span {
     width: 14px;
     height: 14px;
     left: 4px;
