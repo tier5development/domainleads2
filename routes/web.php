@@ -105,6 +105,8 @@ Route::get('/aa',function(){
     
     Route::group(['middleware' => 'auth'],function() {
 
+        Route::post('updateUserInfo', ['uses' => 'AccountController@updateUserInfo', 'as' => 'updateUserInfo']);
+
         Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
 
         Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);

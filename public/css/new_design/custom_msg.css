@@ -1,0 +1,73 @@
+.fieldWrap {
+    position: relative;
+    }
+    .fieldWrap .errorMsg {
+    display: none;
+    }
+    .fieldWrap.error .errorMsg {
+    display: block;
+    }
+    .fieldWrap.error input {
+    border-color: #e93b10 !important;
+    box-shadow: 0 0 10px rgba(233, 83, 16, 0.7);
+    border-radius: 0 0 3px 3px;
+    }
+    .fieldWrap.error .errorMsg {
+    position: absolute;
+    width: 100%;
+    background: #e93b10;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(233, 83, 16, 0.7);
+    padding: 5px 10px;
+    border-radius: 3px 3px 0 0;
+    font-size: 14px;
+    top: 0;
+    transform: translateY(-100%);
+    }
+
+    .alertBox{
+        padding: 14px 20px 12px;
+        font-size: 16px;
+        color: #fff;
+        border-radius: 30px;
+        font-family: 'Avenir LT Std 85 Heavy';
+        box-shadow: 5px 8px 7px rgba(0,0,0,0.1);
+        display: none;
+        width: 100%;
+        }
+        .alertBox p {
+        float: left;
+        }
+        .alertBox.success{
+        background: linear-gradient(to right, #3cbec1, #48e4b2);
+        display: inline-block;
+        }
+        .alertBox.error{
+        background: linear-gradient(to right, #e94310, #ec2907);
+        display: inline-block;
+        }
+        .alertBox.warning{
+        background: linear-gradient(to right, #e9a112, #e98512);
+        display: inline-block;
+        }
+        .alertBox .close {
+        position: relative;
+        float: right;
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        }
+        .alertBox .close:before,
+        .alertBox .close:after {
+        content: "";
+        position: absolute;
+        right: 5px;
+        top: 0;
+        width: 2px;
+        height: 15px;
+        background: #fff;
+        transform: rotate(45deg);
+        }
+        .alertBox .close:after {
+        transform: rotate(-45deg);
+        }

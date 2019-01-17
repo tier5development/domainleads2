@@ -116,7 +116,7 @@ $(document).ready(function(){
             $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
             $(this).hide();
             thisVar.val($(this).attr('rel'));
-            $list.fadeOut(200);
+            // $list.fadeOut(200);
             pushExtension($(this).text());
             //console.log(thisVar.val());
             var tagAreaWidth = 0;

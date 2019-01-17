@@ -111,6 +111,9 @@ input, select, textarea, button {
     clear: both;
 }
 
+.all-domains-unlocked {
+    color: #41c8cd
+}
 
 /* CSS for custom select dropdown -start */
 .selectNumberArea {
@@ -1363,11 +1366,11 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .profileFormArea input[type="password"]::placeholder {
     color: #c8c8c8;
 }
-.profileFormArea input.small {
+.profileFormArea .small {
     width: 48%;
     float: left;
 }
-.profileFormArea input.small:last-child {
+.profileFormArea .small:last-child {
     float: right;
 }
 .profileFormArea button.orangeBtn {
@@ -1736,10 +1739,10 @@ body {
 .profileFormArea {
     margin-top: 0;
 }
-.profileFormArea input.small {
+.profileFormArea .small {
     width: 100%;
 }
-.profileFormArea input.small:last-child {
+.profileFormArea .small:last-child {
     margin-top: 30px;
 }
 .filterPopup .popupLeft .smallSelectBox {
