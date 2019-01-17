@@ -22,7 +22,7 @@
     </div>
     <div class="tilldateContent">
         <h3>Till Date</h3>
-        <p>You have unlocked <span class="green"> <a href="{{route('myUnlockedLeads')}}"><span id="tillDateCount"></span></a> </span> domails till date</p>
+        <p>You have unlocked <span class="green"> <a class="all-domains-unlocked" href="{{route('myUnlockedLeads')}}"><span id="tillDateCount"></span></a> </span> domails till date</p>
     </div>
 </div>
  <script type="text/javascript">

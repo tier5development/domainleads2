@@ -19,6 +19,7 @@
         </li>
       @endif
       
+      
         {{--
       @if(\Auth::user()->membership_status == 0)
         <li class="pull-right"><a href="#">free membership</a></li>

@@ -20,9 +20,31 @@ class AccountController extends Controller
 	public function changePassword() {
 		if(Auth::check()) {
 			$user = Auth::user();
-			return view('change-password', compact('user'));
+			return view('new_version.auth.change-password', compact('user'));
+			// return view('change-password', compact('user'));
 		}
 		return redirect('home');
+	}
+
+	public function updateUserInfo(Request $request) {
+		try {
+
+			if(!Auth::check()) {
+				return redirect()->back()->with('fail', 'Session expired. Please log in again.');	
+			}
+			$name = $request->fname . ' '. $request->lname;
+			if(strlen($request->fname) == 0 || strlen($name) == 0) {
+				return redirect()->back()->with('fail', 'Please enter a valid name.');
+			}
+
+			$user = Auth::user();
+			$user->name = $name;
+			$user->save();
+			return redirect()->back()->with('success', 'Password updated successfully!');
+
+		} catch(Exception $e) {
+			return redirect()->back()->with('fail', 'ERROR : '.$e->getMessages().' LINE : '.$e->getLine());
+		}
 	}
 
 	public function changePasswordPost(Request $request) {
@@ -33,16 +55,16 @@ class AccountController extends Controller
 			}
 
 			$user = Auth::user();
-			$email 	= $request->email;
+			// $email 	= $request->email;
 			$opass 	= $request->o_pass;
 			$pass 	= $request->pass;
 			$cpass 	= $request->c_pass;
 
 			$oldPass  = $user->password;
 			
-			if($email !== $user->email) {
-				return redirect()->back()->with('fail', 'Please enter your own email correctly!');
-			}
+			// if($email !== $user->email) {
+			// 	return redirect()->back()->with('fail', 'Please enter your own email correctly!');
+			// }
 
 			if (!Hash::check($opass, $oldPass)) {
 				return redirect()->back()->with('fail', 'Sorry your old password did not match!');
@@ -195,8 +217,13 @@ class AccountController extends Controller
 	}
 
 	public function profile() {
-		$user = Auth::user();
-		return view('profile', compact('user'));
+
+		if(Auth::check()) {
+			$user = Auth::user();
+			// return view('profile', compact('user'));
+			return view('new_version.auth.profile', compact('user'));
+		}
+		return redirect()->route('loginPage');
 	}
 
 	public function signupPost(Request $request) {
