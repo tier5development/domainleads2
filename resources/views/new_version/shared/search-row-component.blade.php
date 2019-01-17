@@ -34,13 +34,12 @@
                 </p>
                 <p class="domains">
                     <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_more_domains.png" alt="">
-                    <a onclick="clickLink(this, {{$key}})" 
+                    <a 
+                     
                     id="linkClick_{{$key}}" 
-                    data-ref = "{{route('viewDomainsOfUnlockedLeed', 
-                        ['email' => encrypt($each['registrant_email']), 
-                        'request' => Session::has('oldReq') ? Session::get('oldReq') : null
-                        ])}}"
-                    href="javascript:void(0)">{{$each['domains_count']}}</a>
+                    href = "{{route('viewDomainsOfUnlockedLeed', 
+                        ['email' => encrypt($each['registrant_email'])])}}"
+                    >{{$each['domains_count']}}</a>
                 </p>
             </div>
         </td>

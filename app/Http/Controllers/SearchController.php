@@ -276,23 +276,129 @@ public function download_csv_single_page(Request $request)
      }
     public function lead_domains($email, Request $request)
     {
-      $oldReq = $request->all();
-      $oldReq = isset($oldReq['request']) ? $oldReq['request'] : [];
-      $req =  new Request($oldReq);
       try {
+        if(!Auth::check()) {
+          return redirect('loginPage');
+        }
+
+        $pagination = $request->has('pagination') ? $request->pagination : 10; 
+        // dd($pagination);
         $email = decrypt($email);
         $lead = Lead::where('registrant_email', $email)->first();
         if(!$lead) {
-          return redirect()->back()->with('error', 'This lead is deleted')->withInput($req->all());
+          // $oldReq = $request->all();
+          // $oldReq = isset($oldReq['request']) ? $oldReq['request'] : [];
+          // $req =  new Request($oldReq);
+          // return redirect()->back()->with('error', 'This lead is deleted')->withInput($req->all());
+
+          return redirect()->back()->with('error', 'This lead is deleted');
         }
-        $leadsUnlocked = LeadUser::where('registrant_email', $email)->where('user_id', \Auth::user()->id)->first();
-        if(!$leadsUnlocked && \Auth::user()->user_type == 1) {
-          return redirect()->back()->with('error', 'You don\'t have access of this data')->withInput($req->all());
-        }
+
+        // $leadsUnlocked = LeadUser::where('registrant_email', $email)->where('user_id', \Auth::user()->id)->first();
+        // if(!$leadsUnlocked && \Auth::user()->user_type == 1) {
+        //   $oldReq = $request->all();
+        //   $oldReq = isset($oldReq['request']) ? $oldReq['request'] : [];
+        //   $req =  new Request($oldReq);
+        //   return redirect()->back()->with('error', 'You don\'t have access of this data')->withInput($req->all());
+        // }
+        
         $alldomains = EachDomain::with('wordpress_env')->where('registrant_email',$email);
-        return view('home.lead_domains',['alldomain'=>$alldomains , 'email'=>$email]);
+        $alldomains = $alldomains->paginate($pagination);
+        $user = Auth::user();
+        $users_array = LeadUser::where('user_id',$user->id)->pluck('domain_name')->toArray();
+        $users_array = array_flip($users_array);
+        $restricted = true;
+        $user = Auth::user();
+        if($user->user_type == 4 || $user->user_type == 3) {
+          $restricted = false;
+        }
+
+        // dd($alldomains);
+        // dd('here');
+        return view('new_version.search.lead-domains',['alldomain'=>$alldomains , 'email'=>$email, 'user'=>$user, 'users_array' => $users_array ,'restricted' => $restricted, 'pagination' => $pagination]);
+        // return view('home.lead_domains',['alldomain'=>$alldomains , 'email'=>$email]);
+        
+        return view('home.',['alldomain'=>$alldomains , 'email'=>$email]);
       } catch(\Exception $e) {
+        // dd($e);
         return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
+      }
+    }
+
+    public function unlockFromLeads(Request $request) {
+      try {
+
+        $key = $request->key;
+        if(!Auth::check()) {
+          return Response::json(array('status'=>false , 'message' => 'Please login once again!'));
+        }
+        $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
+        $limit = 0;
+        if(Auth::user()->user_type == 1) {
+          $limit = config('settings.LEVEL1-USER');
+        } else if(Auth::user()->user_type == 2) {
+          $limit = config('settings.LEVEL2-USER');
+        }
+        if($count >= $limit && $limit > 0) {
+          $array['status'] = false;
+          $array['message'] = 'Per day limit exceeded';
+          $array['leadsUnlocked'] = $count;
+          return Response::json($array);
+        }
+
+        $domainName = $request->has('domain_name') ? $request->domain_name : null;
+        $data = Lead::where('registrant_email', $request->registrant_email)->first();
+        $domain = $data->each_domain->filter(function($each, $key) use($domainName) {
+          return $each->domain_name == $domainName ? $each : null;
+        })->first();
+
+
+        $leaduser = new LeadUser();
+        $leaduser->user_id = $request->user_id;
+        $leaduser->registrant_email = $request->registrant_email;
+        
+        $leaduser->registrant_country = $data->registrant_country;
+        $leaduser->registrant_fname   = $data->registrant_fname;
+        $leaduser->registrant_lname   = $data->registrant_lname;
+        $leaduser->registrant_phone   = $data->registrant_phone;
+        $leaduser->number_type        = $data->valid_phone ? $data->valid_phone->number_type : null;
+        $leaduser->registrant_company = $data->registrant_company;
+        $leaduser->domain_name        = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name;
+        $leaduser->domains_create_date = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
+                                        : $domain->domains_info->domains_create_date;
+        $leaduser->expiry_date = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->expiry_date 
+                                        : $domain->domains_info->expiry_date;
+
+        $data->unlocked_num++;
+        if($data->save() && $leaduser->save())
+        {
+          // Compose a view to render the html
+          $usageMatrix = UserHelper::getUsageMatrix();
+          $view = View::make('new_version.shared.lead-domain-row-component', ['each' => $domain, 'key' => $key, 'restricted' => false, 'email' => $data->registrant_email])->render();
+          return Response::json([
+            'view'    =>  $view,
+            'status'  =>  true,
+            'message' =>  'success',
+            'usageMatrix' => $usageMatrix
+          ]);
+        }
+        // Previous
+        // return \Response::json(array('status'=>false,'message' => 'Cannot connect with db, try again later', 'leadsUnlocked' => $count));
+        Response::json([
+          'view'    =>  null,
+          'status'  =>  false,
+          'message' =>  'Cannot connect with db, try again later',
+          'usageMatrix' => isset($usageMatrix) ? $usageMatrix : null
+        ]);
+      } catch(\Exception $e) {
+        // Previous
+        // return \Response::json(array('status'=>false,'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine()));
+        return Response::json([
+          'view'    =>  null,
+          'status'  =>  false,
+          'message' => 'Error : '.$e->getMessage().' LINE : '.$e->getLine(),
+          'usageMatrix' => isset($usageMatrix) ? $usageMatrix : null
+        ]);
       }
     }
 
