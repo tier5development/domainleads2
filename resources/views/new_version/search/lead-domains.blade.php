@@ -125,11 +125,6 @@
                 $(".filterPopup").fadeOut();
             });
 
-            setTimeout(() => {
-                $('#loader-icon').hide();
-                console.log('I am executing');
-            }, 300);
-
             $('#slect-pagination-box').change(function(e) {
                 console.log(e);
                 alert($(this).val());
