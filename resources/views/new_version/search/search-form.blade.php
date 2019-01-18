@@ -365,7 +365,7 @@
         $('#searchDomains').click(function(e) {
             e.preventDefault();
             // checkSumbitForm();
-            // $('#loader-icon').show();
+            $('#loader-icon').show();
             var tldOptionsStr = '';
             Object.keys(tdlExtensions).map(function(key, index) {
                 if(tldOptionsStr != '') {
