@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-    @include('section.user_panel_head', ['title' => 'Edit Profile'])
+    @include('new_version.section.user_panel_head', ['title' => 'Edit Profile'])
 <body>
+    @include('new_version.shared.loader')
     <div class="container">
-        @include('section.user_panel_header', ['user' => $user])
-        
-        @include('new_version.shared.loader')
 
+        @include('new_version.section.user_panel_header', ['user' => $user])
         <section class="mainBody">
+
+            {{-- Right panel of dashboard comes here --}}
+            @include('new_version.shared.right-panel')
+
             <div class="leftPanel leadUnlock">
                 
                 <h2 class="editProfileHeading">Edit your profile information</h2>
@@ -20,28 +23,14 @@
                     </p>
                 </div>
                 
-                
                 <div class="profileFormArea">
-                    <div class="mesg">
-                        @if(Session::has('fail'))
-                            <div class="formHeading" style="margin-top:18px;">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-                                <strong>Error!</strong> {{Session::get('fail')}}
-                            </div>
-                            @php Session::forget('fail') @endphp
-                        @elseif(Session::has('success'))
-                            <div class="formHeading" style="margin-top:18px;">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-                                <strong>Success!</strong> {{Session::get('success')}}
-                            </div>
-                            @php Session::forget('success') @endphp
-                        @endif   
-                    </div>
+                    
+                    {{-- Error or Success Message --}}
+                    @include('new_version.shared.messages')
 
                     <div class="formHeading">
                         Your personal information
                     </div>
-                    
                     
                     <form action="{{route('updateUserInfo')}}" method="POST" id="updateUserInfo">
                         <div class="formRow">
@@ -71,9 +60,6 @@
                 </div>
             </div>
 
-            {{-- Right panel of dashboard comes here --}}
-            @include('new_version.shared.right-panel')
-
             <footer class="footer mobileOnly">
                 &copy; 2017 Powered by Tier5 <span><a href="">Privacy Policy</a> / <a href="">Terms of Use</a></span>
             </footer>
@@ -84,38 +70,31 @@
         </footer>
     </div>
 
-
-    {{-- <div class="alert">
-        <div class="alertLeft">
-            <img src="images/Logo_symbol_green.png" alt="">
-        </div>
-        <div class="alertRight">
-            <p>You have unlocked 4 leads today.
-                <br>
-                You can unlocked upto <span>50</span> leads per day.
-            </p>
-        </div>
-    </div> --}}
-
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
 
     <script type="text/javascript">
         
+        var nameValidation = function(name) {
+            var regex = /^[a-zA-Z ]{2,30}$/;
+            return regex.test(name);
+        }
+
         var checkUserInfoForm = function() {
             var flag = true;
             var fname = $('#fname').val();
             var lname = $('#lname').val();
             var name = fname + ' ' + lname;
-            if(fname.trim().length == 0 || name.trim().length == 0) {
+            if(fname.trim().length == 0 || name.trim().length == 0 || !nameValidation(fname) ) {
                 $('#fname').parent().addClass('error');
-                var msg = 'Please enter a valid first name.'
+                var msg = 'Please enter a valid first name.';
                 $('#fname_err').text(msg);
                 return {msg : msg, flag: false}
             } else {
                 $('#fname').parent().removeClass('error');
-                var msg = ''
+                var msg = '';
                 $('#fname_err').text(msg);
                 return {msg : msg, flag: true}
             }
@@ -123,9 +102,6 @@
         }
 
         $(document).ready(function() {
-            setTimeout(() => {
-                $('#loader-icon').hide();
-            }, 400);
             $('#updateUserInfoBtn').click(function(e) {
                 e.preventDefault();
                 var ob = checkUserInfoForm();

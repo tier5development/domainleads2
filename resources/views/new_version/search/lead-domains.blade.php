@@ -5,7 +5,7 @@
     * Input title (Optional)
     * Brings in css and js files
     --}}
-@include('section.user_panel_head', ['title' => 'Domainleads | Search Results'])
+@include('new_version.section.user_panel_head', ['title' => 'Domainleads | Search Results'])
 <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/laravel-pagination.css">
 <body>
 
@@ -17,7 +17,7 @@
         {{-- Include common user panel header used for all dashboard components 
             * Input user object (compulsary)
             --}}
-        @include('section.user_panel_header', ['user' => $user])
+        @include('new_version.section.user_panel_header', ['user' => $user])
         
         <section class="mainBody">
             <div class="leftPanel leadUnlock">
@@ -29,7 +29,7 @@
                 <div class="dataTableArea">
                     <div class="dataTableHeader">
                         <div class="unlockInfo">
-                            <strong>{{isset($alldomain) ? $alldomain->total() : 0}}</strong> domains found against your search
+                            <strong>{{isset($alldomain) ? $alldomain->total() : 0}}</strong> domains found against your search!
                         </div>
                         <div class="dataTableHeaderRight">
                             <div class="pageViewControl">

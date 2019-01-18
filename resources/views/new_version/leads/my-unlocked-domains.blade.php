@@ -5,10 +5,14 @@
     * Input title (Optional)
     * Brings in css and js files
     --}}
-@include('section.user_panel_head', ['title' => 'Domainleads | Unlocked Leads'])
+@include('new_version.section.user_panel_head', ['title' => 'Domainleads | Unlocked Leads'])
 <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/laravel-pagination.css">
 <body>
 
+
+    @php
+        $country_codes = country_codes();
+    @endphp
 
     {{-- Loader icon in the platform --}}
     @include('new_version.shared.loader')
@@ -18,7 +22,7 @@
         {{-- Include common user panel header used for all dashboard components 
             * Input user object (compulsary)
             --}}
-        @include('section.user_panel_header', ['user' => $user])
+        @include('new_version.section.user_panel_header', ['user' => $user])
         
         <section class="mainBody">
             <div class="leftPanel leadUnlock">
@@ -26,7 +30,7 @@
                 <div class="dataTableArea">
                     <div class="dataTableHeader">
                         <div class="unlockInfo">
-                            <strong>{{isset($leads) ? $leads->total() : 0}}</strong> domains found against your search
+                            <strong>{{isset($domains) ? $domains->total() : 0}}</strong> result{{$domains->total() > 1 ? 's':''}} found against your search!
                         </div>
 
                         <div class="dataTableHeaderRight">
@@ -79,10 +83,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($leads as $key => $each)
+                                @foreach ($domains as $key => $each)
                                     <tr>
                                         <td>
                                             <p data-restrict="1" id="domain_name_{{$key}}"> {{$each->domain_name}}</p>
+                                            <div class="leadStatus">
+                                                <p class="locked">
+                                                    <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_lock_opened.png" alt="">
+                                                    <span>{!!$each->lead ? $each->lead->unlocked_num : '<i><small>unavailable</small></i>'!!}</span>
+                                                </p>
+                                            </div>
                                         </td>
                                         <td>
                                             <p class="name wordBreak">
@@ -91,12 +101,27 @@
                                             <p class="email wordBreak">
                                                 {{$each->registrant_email}}
                                             </p>
+                                            <p class="country">
+                                                <!-- TODO -->
+                                                @php
+                                                    $country_abr = isset($country_codes[ucwords(strtolower($each->registrant_country))]) 
+                                                        ? strtoupper($country_codes[ucwords(strtolower($each->registrant_country))]) : null;
+                                                @endphp
+                                                
+                                                <img 
+                                                    @if(strlen($country_abr) > 0)
+                                                        src="{{config('settings.APPLICATION-DOMAIN')}}/public/svg/{{$country_abr}}.svg" 
+                                                    @endif
+                                                alt="" style="width: 18px; height: 18px;">
+                                                <span>{!! $each->lead ? $each->lead->registrant_country : '<i><small>unavailable</small></i>'!!}</span>
+                                            </p>
                                         </td>
                                         <td>
+                                            
                                             @if($each->lead)
                                                 @php 
-                                                    $phone = $each->lead->registrant_phone; 
-                                                    $phoneType = $each->lead->valid_phone ? $each->lead->valid_phone->number_type : null;
+                                                    $phone = $each->lead ? $each->lead->registrant_phone : '<i><small>unavailable</small></i>'; 
+                                                    $phoneType = $each->lead ? ($each->lead->valid_phone ? $each->lead->valid_phone->number_type : null) : '<i><small>unavailable</small></i>';
                                                 @endphp
                                                 <p class="phone">
                                                     @if(strtolower(trim($phoneType)) == 'cell number')
@@ -104,18 +129,17 @@
                                                     @elseif(strtolower(trim($phoneType)) == 'landline')
                                                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_land_phone.png" alt="">
                                                     @endif
-                                                    <span>{{$phone}}</span>
+                                                    <span>{!!$phone!!}</span>
                                                 </p>
                                             @else
 
                                             @endif
                                         </td>
                                         <td>
-                                            <p><span>{{date('m-d-Y', strtotime($each->domains_create_date))}}</span></p>
-                                            
+                                            <p><span>{{DateTime::createFromFormat('Y-m-d', $each->domains_create_date)->format('m-d-Y')}}</span></p>
                                         </td>
                                         <td>
-                                            <p><span>{{date('m-d-Y', strtotime($each->expiry_date))}}</span></p>
+                                            <p><span>{{DateTime::createFromFormat('Y-m-d', $each->expiry_date)->format('m-d-Y')}}</span></p>
                                         </td>
                                         <td>
                                             <p><span class="wordBreak">{{$each->registrant_company}}</span></p>
@@ -128,9 +152,9 @@
                             </tbody>
                         </table>
                     </div>
-                    @if($leads->count() > 0)
+                    @if($domains->count() > 0)
                             <div class="paginate">
-                                {{$leads->appends(['date' => Request::has('date') ? Request::get('date') : null,
+                                {{$domains->appends(['date' => Request::has('date') ? Request::get('date') : null,
                                 'perpage' => Request::has('perpage') ? Request::get('perpage') : 20])->links()}}
                             </div>
                         @endif
@@ -211,9 +235,9 @@
                 $(".filterPopup").fadeOut();
             });
 
-            setTimeout(() => {
-                $('#loader-icon').hide();
-            }, 300);
+            // setTimeout(() => {
+            //     $('#loader-icon').hide();
+            // }, 300);
 
             $('#slect-pagination-box').change(function(e) {
                 alert($(this).val());

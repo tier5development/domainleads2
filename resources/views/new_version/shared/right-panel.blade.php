@@ -11,7 +11,7 @@
             <canvas id="crart" width="132" height="132"></canvas>
         </div>
         <p>
-            You have unlocked <span class="green"><span id="currentUnlockedCount"></span> /</span> <span class="yellow"><span id="perDayLimitCount"></span></span> domains today
+            You have unlocked <span class="green"><span id="currentUnlockedCount"></span> /</span> <span class="yellow"><span id="perDayLimitCount"></span></span> domains today.
         </p>
         <p>
             Upgrade your membership<br> to unlock more of your daily limit.
@@ -22,7 +22,7 @@
     </div>
     <div class="tilldateContent">
         <h3>Till Date</h3>
-        <p>You have unlocked <span class="green"> <a class="all-domains-unlocked" href="{{route('myUnlockedLeads')}}"><span id="tillDateCount"></span></a> </span> domails till date</p>
+        <p>You have unlocked <span class="green"> <a class="all-domains-unlocked" href="{{route('myUnlockedLeads')}}"><span id="tillDateCount"></span></a> </span> domails till date.</p>
     </div>
 </div>
  <script type="text/javascript">
@@ -32,7 +32,8 @@
             type: "POST",
             data: {_token: "{{csrf_token()}}"},
             success: function(r) {
-                console.log('response obt : ', r);
+                $('#loader-icon').hide(); 
+                // console.log('response obt : ', r);
                 if(r.status) {
                     if(r.limit == -1) {
                         $('.container').addClass('level3User');
@@ -47,7 +48,10 @@
                     }
                 }
             }, error: function(e) {
-                console.error(e);
+                if(e.status === 401) {
+                    window.location.replace("{{route('home')}}");
+                }
+                console.error('error occoured :: -->', e.status);
             }
     });
  }

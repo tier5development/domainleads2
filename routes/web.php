@@ -17,12 +17,7 @@ Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPag
 Route::get('/signup', ['uses' => 'AccountController@signupPage', 'as' => 'signupPage']);
 Route::post('/signup', ['uses' => 'AccountController@signupPost', 'as' => 'signupPost']);
 
-
 Route::get('/update_metadata_today/{date}',['uses'=>'SearchController@update_metadata_today']);
-
-Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
-
-Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);
 
 Route::get('/forgot-password', ['uses' => 'AccountController@forgotPassword', 'as' => 'forgotPassword']);
 
@@ -34,6 +29,7 @@ Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPass
 
 Route::get('/testfn',function() {
 
+    dd(country_codes());
     // $x = true;
     // dd(isset($x));
 
@@ -96,14 +92,18 @@ Route::get('/aa',function(){
     
 	Route::post('/signme','AccountController@signme' );
 
-	Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains', 'as' => 'viewDomainsOfUnlockedLeed']);
-
     Route::post('/download_csv_single_page','SearchController@download_csv_single_page');
 
        
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
     Route::group(['middleware' => 'auth'],function() {
+
+        Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
+
+        Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);
+
+        Route::get('/lead/{email}',['uses'=>'SearchController@lead_domains', 'as' => 'viewDomainsOfUnlockedLeed']);
 
         Route::post('unlockFromLeads', ['uses' => 'SearchController@unlockFromLeads', 'as' => 'unlockFromLeads']);
 
@@ -144,8 +144,7 @@ Route::get('/aa',function(){
 
     	//Route::get('/search', ['uses'=>'SearchController@search','as'=>'search']);
 
-    	Route::any('/search' , ['uses'=>'SearchController@search','as'=>'search']);
-        
+    	Route::any('/search', ['uses'=>'SearchController@search','as'=>'search']);
 
         Route::post('createWordpressForDomain' , ['uses'=>'SearchController@createWordpressForDomain','as'=>'createWordpressForDomain']);
         Route::post('storechkboxvariable' , ['uses'=>'SearchController@storechkboxvariable','as'=>'storechkboxvariable']);
@@ -156,13 +155,10 @@ Route::get('/aa',function(){
 
         Route::get('/manage',['uses'=>'Maintainance@manage','as'=>'manage']);
 
+        Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'=>'search_paginated']);
+
+        Route::any('/import-excel', 'ImportExport@importExcelNew')->name('importExcelNew');
  });
-
-
-
-
-Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'=>'search_paginated']);
-
 
 Route::post('login', ['uses' => 'AccountController@login', 'as' => 'loginPost']);
 Route::get('logout', ['uses' => 'AccountController@logout', 'as' => 'logout']);
@@ -174,4 +170,4 @@ Route::any('regredirect',['uses'=>'AccountController@regredirect','as'=>'regredi
 
 //=============================new import===================================
 //importExcelNew
-Route::any('/import-excel', 'ImportExport@importExcelNew')->name('importExcelNew');
+

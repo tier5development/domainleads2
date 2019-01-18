@@ -17,7 +17,7 @@ var canvasObj = {
         
         this.canvas = document.getElementById('crart'); 
         this.context = this.canvas.getContext('2d');
-        console.log('context set', this.context);
+        // console.log('context set', this.context);
         this.counter = 0;
         this.av = 0;
         this.start = 4.72;
@@ -26,7 +26,7 @@ var canvasObj = {
         this.diff = 0;
     
     }, setCurve : function(current, target) {
-        console.log('current : '. current, 'target : ', target);
+        // console.log('current : '. current, 'target : ', target);
         this.targetVal = target;
         this.currentVal = current == undefined ? 0 : current;
         this.radius = 60;

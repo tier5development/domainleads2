@@ -2,18 +2,18 @@
 <div class="searchDomainForm">
     <form method="POST" action="{{Route('search')}}" class="col-md-6 search_form" id="postSearchDataForm">
         <div class="formRow">
-            <div class="rowHeading">I am looking for</div>
+            {{-- <div class="rowHeading">I am looking for...</div> --}}
             <div class="formRowInner">
                 <div class="radioCol">
                     <div class="radio">
-                        <input type="radio" id="mode_switch" checked name="mode" value="newly_registered" {{Input::get('mode') == 'newly_registered' ? 'checked' : '' }}>
+                        <input type="radio" checked name="mode" value="newly_registered" {{Input::get('mode') == 'newly_registered' ? 'checked' : '' }}>
                         <p><span></span></p>
                     </div>
                     <label for="">Newly registered domains</label>
                 </div>
                 <div class="radioCol">
                     <div class="radio">
-                        <input type="radio" id="mode_switch" name="mode" value="getting_expired" {{Input::get('mode') == 'getting_expired' ? 'checked' : ''}}>
+                        <input type="radio" name="mode" value="getting_expired" {{Input::get('mode') == 'getting_expired' ? 'checked' : ''}}>
                         <p><span></span></p>
                     </div>
                     <label for="">To be expired domains</label>
@@ -38,9 +38,9 @@
                                 placeholder="Start Date"
                                 style="disply: none;">
     
-                            <input type="text" class="month" placeholder="mm" readonly>
-                            <input type="text" class="day" placeholder="dd" readonly>
-                            <input type="text" class="year" placeholder="yyyy" readonly>
+                            <input type="text" id="registered-date1-m" value="" class="month" placeholder="mm" readonly>
+                            <input type="text" id="registered-date1-d" value="" class="day" placeholder="dd" readonly>
+                            <input type="text" id="registered-date1-y" value="" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                     <div class="dateArea endDate">
@@ -55,9 +55,9 @@
                                 placeholder="End Date"
                                 style="display: none">
     
-                            <input type="text" class="month" placeholder="mm" readonly>
-                            <input type="text" class="day" placeholder="dd" readonly>
-                            <input type="text" class="year" placeholder="yyyy" readonly>
+                            <input type="text" id="registered-date2-m" value="" class="month" placeholder="mm" readonly>
+                            <input type="text" id="registered-date2-d" value="" class="day" placeholder="dd" readonly>
+                            <input type="text" id="registered-date2-y" value="" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                 </div>
@@ -81,9 +81,9 @@
                                 placeholder="Start Date"
                                 style="disply: none;">
                             
-                            <input type="text" class="month" placeholder="mm" readonly>
-                            <input type="text" class="day" placeholder="dd" readonly>
-                            <input type="text" class="year" placeholder="yyyy" readonly>
+                            <input type="text" id="expired-date1-m" class="month" placeholder="mm" readonly>
+                            <input type="text" id="expired-date1-d" class="day" placeholder="dd" readonly>
+                            <input type="text" id="expired-date1-y" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                     <div class="dateArea endDate">
@@ -98,9 +98,9 @@
                                 placeholder="End Date"
                                 style="display: none">
     
-                            <input type="text" class="month" placeholder="mm" readonly>
-                            <input type="text" class="day" placeholder="dd" readonly>
-                            <input type="text" class="year" placeholder="yyyy" readonly>
+                            <input type="text" id="expired-date2-m" class="month" placeholder="mm" readonly>
+                            <input type="text" id="expired-date2-d" class="day" placeholder="dd" readonly>
+                            <input type="text" id="expired-date2-y" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                 </div>
@@ -122,15 +122,6 @@
                         @foreach ($allExtensions as $item)
                             <option value="{{$item}}">{{$item}}</option>
                         @endforeach
-                        {{-- <option value="com">com</option>
-                        <option value="org">org</option>
-                        <option value="us">us</option>
-                        <option value="com">io</option>
-                        <option value="org">net</option>
-                        <option value="us">gov</option>
-                        <option value="com">edu</option>
-                        <option value="org">in</option>
-                        <option value="us">onion</option> --}}
                     </select>
                 </div>
             </div>
@@ -142,7 +133,7 @@
                     value   =   "{{ Request::get('registrant_country') }}" 
                     name    =   "registrant_country" 
                     id      =   "registrant_country"
-                    placeholder = "United States">
+                    placeholder = "ex:United States">
                 {{-- <input type="text"> --}}
             </div>
             <div class="formCol">
@@ -153,7 +144,7 @@
                     value="{{ Request::get('registrant_state') }}" 
                     name="registrant_state" 
                     id="registrant_state"
-                    placeholder = "California">
+                    placeholder = "ex:California">
             </div>
             <div class="formCol">
                 <label for="">ZIP Code</label>
@@ -162,7 +153,7 @@
                     type="text" 
                     name="registrant_zip" 
                     value="{{Request::get('registrant_zip')}}"
-                    placeholder = "54321">
+                    placeholder = "ex:54321">
             </div>
         </div>
         <div class="formRow submit">
@@ -178,3 +169,236 @@
         <input type="hidden" name="pagination" value="10">
     </form>
 </div>
+
+<script type="text/javascript">
+
+    var PATH = "{{config('settings.APPLICATION-DOMAIN')}}/public/";
+    
+    var tdlExtensions = {};
+    
+    var pushExtension = function(ext) {
+        // console.log(typeof tdlExtensions.ext, tdlExtensions.ext === undefined, tdlExtensions.ext === null, tdlExtensions.ext === undefined || tdlExtensions.ext === null);
+        if(tdlExtensions.ext === undefined || tdlExtensions.ext === null) {
+            tdlExtensions[ext] = 1;
+        }
+    }
+    
+    var popExtension = function(ext) {
+        if(typeof tdlExtensions.ext !== undefined && typeof tdlExtensions.ext !== null) {
+            delete tdlExtensions[ext];
+        }
+    }
+
+    // var validateDate = function(inputText) {
+    //     console.log('input text received : ', inputText);
+    //     var dateformat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+        
+    //     // Match the date format through regular expression
+    //     if(inputText.match(dateformat))
+    //     {
+    //         //Test which seperator is used '/' or '-'
+            
+    //         var opera = inputText.split('-');
+            
+    //         lopera = opera.length;
+    //         // Extract the string into month, date and year
+    //         if (lopera>1) {
+    //             var pdate = inputText.split('-');
+    //         }
+
+    //         var dd = parseInt(pdate[0]);
+    //         var mm  = parseInt(pdate[1]);
+    //         var yy = parseInt(pdate[2]);
+            
+    //         // Create list of days of a month [assume there is no leap year by default]
+    //         var ListofDays = [31,28,31,30,31,30,31,31,30,31,30,31];
+    //         if (mm==1 || mm>2)
+    //         {
+    //             if (dd>ListofDays[mm-1]) {
+    //                 // alert('Invalid date format!');
+    //                 return false;
+    //             }
+    //         }
+    //         if (mm==2) {
+    //             var lyear = false;
+    //             if ( (!(yy % 4) && yy % 100) || !(yy % 400)) {
+    //                 lyear = true;
+    //             }
+    //             if ((lyear==false) && (dd>=29)) {
+    //                 // alert('Invalid date format!');
+    //                 return false;
+    //             }
+    //             if ((lyear==true) && (dd>29)) {
+    //                 // alert('Invalid date format!');
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     else {
+    //         // alert("Invalid date format!");
+    //         // document.form1.text1.focus();
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
+    // var checkDates = function(mode) {
+    //     switch(mode) {
+    //         case 'getting_expired':
+    //             // do something
+                
+    //         case 'newly_registered':
+    //             console.log('came here : : ', $('#registered-date1-d').val(), $('#registered-date1-m').val(), $('#registered-date1-y').val());
+    //             // do something
+    //             var newDate = $('#registered-date1-d').val().toString()+'-'+$('#registered-date1-m').val().toString()+'-'+$('#registered-date1-y').val().toString();
+    //             console.log(newDate, validateDate(newDate));
+    //         default : 
+    //     }
+    // }
+
+    // var checkSumbitForm = function() {
+    //     var mode = $('#postSearchDataForm input[name=mode]:checked').val();
+    //     checkDates(mode);
+    // }
+    
+    $(document).ready(function(){
+    
+        $('#postSearchDataForm input[type=radio]').on('change', function() {
+            var mode = $(this).val();
+            if(mode == 'newly_registered') {
+                $('#created_date_div').show();
+                $('#expired_date_div').hide();
+                $('#domains_expired_date').val('');
+                $('#domains_expired_date2').val('');
+            } else if(mode == 'getting_expired') {
+                $('#expired_date_div').show();
+                $('#created_date_div').hide();
+                $('#registered_date').val('');
+                $('#registered_date2').val('');
+            }
+        });
+    
+        $('.selectOption').each(function(){
+            var thisVar = $(this), numberOfOptions = $(this).children('option').length;
+            thisVar.addClass('select-hidden'); 
+            thisVar.wrap('<div class="select"></div>');
+            thisVar.after('<div class="select-styled"><div class="tagContainer"><div class="tagArea"><div class="tagAreaInner"></div></div></div><div class="tglBtn"></div></div>');
+    
+            var styledSelect = thisVar.next('div.select-styled');
+            //styledSelect.text(thisVar.children('option').eq(0).text());
+    
+            var list = $('<ul />', {
+                'class': 'select-options'
+            }).insertAfter(styledSelect);
+    
+            for (var i = 0; i < numberOfOptions; i++) {
+                $('<li />', {
+                    text: thisVar.children('option').eq(i).text(),
+                    rel: thisVar.children('option').eq(i).val()
+                }).appendTo(list);
+            }
+    
+            var listItems = list.children('li');
+            styledSelect.click(function(e) {
+                e.stopPropagation();
+                $('div.select-styled.active').not(this).each(function(){
+                    $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+                });
+                $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+            });
+    
+            listItems.click(function(e) {
+                e.stopPropagation();
+                $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
+                $(this).hide();
+                thisVar.val($(this).attr('rel'));
+                pushExtension($(this).text());
+                //console.log(thisVar.val());
+                var tagAreaWidth = 0;
+                $(".tagAreaInner p").each(function(){
+                    tagAreaWidth += $(this).outerWidth()+3;
+                });
+                $(".tagAreaInner").css("width", tagAreaWidth + "px");
+                $(".select-styled p .cl").click(function(e){
+                    e.stopPropagation();
+                    var a = $(this).prev(".tagTxt").text();
+                    $(this).parent("p").remove();
+                    popExtension(a);
+                    $('ul.select-options li').each(function(){
+                        if($(this).text() == a){
+                            $(this).show();
+                        }
+                    });
+                });
+            });
+    
+            $(document).click(function(e) {
+                styledSelect.removeClass('active');
+                list.fadeOut(200);
+            });
+    
+            var sc = 0;
+            $('body').on('mousewheel', function(e) {
+                if($(e.target).closest(".select-styled").hasClass("select-styled")){
+                    return false;
+                }
+            });
+    
+            $('.tagAreaInner').on('mousewheel', function(event) {
+                optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
+                if(event.deltaY == -1) {
+                    if(sc > optionScrollWidth) {
+                    sc = optionScrollWidth;
+                }
+                    sc += 10;
+                } 
+                else if(event.deltaY == 1) {
+                    if(sc < 0) {
+                    sc = 0;
+                }
+                    sc -= 10;
+                }
+                $(".tagArea").scrollLeft(sc);        
+            });
+        });
+    
+        $('#searchDomains').click(function(e) {
+            e.preventDefault();
+            // checkSumbitForm();
+            // $('#loader-icon').show();
+            var tldOptionsStr = '';
+            Object.keys(tdlExtensions).map(function(key, index) {
+                if(tldOptionsStr != '') {
+                    tldOptionsStr += ','+key;
+                } else {
+                    tldOptionsStr += key;
+                }
+            });
+            $('#domain_ext').val(tldOptionsStr);
+            $('#postSearchDataForm').submit();
+        });
+    
+        var cross = $(".selectBox .select-styled p span");
+        $(".cl").click(function(event){
+            event.stopPropagation();
+            console.log(event);
+            event.stopPropagation();
+            $(this).closest("p").css("background","#000");
+        });
+    
+        $( "#registered_date, #registered_date2, #expired_date, #expired_date2").datepicker({
+            dateFormat: "yy-mm-dd",
+            showOn: "button",
+            buttonImage: "/public/images/icon_calendar.png",
+            buttonImageOnly: true,
+        });
+    
+        $(".dateHidden").change(function(){
+            var dateSelect = $(this).val().split("-");
+            $(this).nextAll(".year").val(dateSelect[0]);
+            $(this).nextAll(".month").val(dateSelect[1]);
+            $(this).nextAll(".day").val(dateSelect[2]);
+        });
+
+    });
+</script>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  @include('section.head')
+  @include('new_version.section.head')
   <body>
 
   <!-- banner -->
   <section class="banner">
     <!-- header -->
-    @include('section.header_menu')
+    @include('new_version.section.header_menu')
     <!-- inner content -->
     <div class="innerContent login clearfix">
         <div class="container customCont">
