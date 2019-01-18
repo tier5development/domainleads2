@@ -1,36 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  @include('section.head')
+  @include('new_version.section.head')
   <body>
 
   <!-- banner -->
   <section class="banner">
     <!-- header -->
-    @include('section.header_menu')
+    @include('new_version.section.header_menu')
     <!-- inner content -->
     <div class="innerContent login clearfix">
         <div class="container customCont">
             <div class="col-sm-8 col-xs-12 innerContentWrap">
                 <div class="col-md-6 col-sm-7 createForm">
-                    <h2>Login</h2>
-                    <div class="errorMsg">
-                        @if(Session::has('error'))
-                            <div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-                                <strong>Error!</strong> {{Session::get('error')}}
-                            </div>
-                            @php Session::forget('error') @endphp
-                        @elseif(Session::has('success'))
-                            <div class="alert alert-success fade in alert-dismissible" style="margin-top:18px;">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-                                <strong>Success!</strong> {{Session::get('success')}}
-                            </div>
-                            @php Session::forget('success') @endphp
-                        @endif
-                    </div>
+
+                    
+
+                    <h2>Login</h2><br>
+                    {{-- Error or Success Message --}}
+                    @include('new_version.shared.messages')
+                    
                     <form action="{{route('loginPost')}}" method="post">
                         <div class="form-group">
-                            <input name="email" type="email" class="form-control" id="" placeholder="email">
+                            <input name="email" type="email" class="form-control" placeholder="email">
                         </div>
                         <div class="form-group">
                             <input name="password" type="password" class="form-control" id="" placeholder="*********">
@@ -47,7 +38,7 @@
                         <button type="submit" class="btn button gradiant-orange">login</button>
                         <span>Don't have an account?</span>
                         <a href="{{config('settings.LANDING-DOMAIN')}}">register now!</a>
-                </form>
+                    </form>
                 </div>
             </div>
         </div>

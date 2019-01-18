@@ -1,71 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-    @include('section.user_panel_head', ['title' => 'Edit Profile'])
+    @include('new_version.section.user_panel_head', ['title' => 'Edit Profile'])
 <body>
     <div class="container">
-        @include('section.user_panel_header', ['user' => $user])
+        @include('new_version.section.user_panel_header', ['user' => $user])
         
         @include('new_version.shared.loader')
 
         <section class="mainBody">
             <div class="leftPanel leadUnlock">
-                
                 <h2 class="editProfileHeading">Change your password below</h2>        
-                    <div class="profileFormArea">
-                        {{-- <div class="mesg">
-                            @if(Session::has('fail'))
-                                <div class="formHeading" style="margin-top:18px;">
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-                                    <strong>Error!</strong> {{Session::get('fail')}}
-                                </div>
-                                @php Session::forget('fail') @endphp
-                            @elseif(Session::has('success'))
-                                <div class="formHeading" style="margin-top:18px;">
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-                                    <strong>Success!</strong> {{Session::get('success')}}
-                                </div>
-                                @php Session::forget('success') @endphp
-                            @endif   
-                        </div> --}}
+                <div class="profileFormArea">
 
-                        @if(Session::has('fail'))
-                            <div class="alertBox error">
-                                <p>{{Session::get('fail')}}</p>
-                                <span class="close"></span>
+                    {{-- Error or Success Message --}}
+                    @include('new_version.shared.messages')
+                    
+                    <form action="{{route('changePasswordPost')}}" method="POST" class="change-password form-group" id="changePasswordForm">
+                        <div class="formRow">
+                            <div class="fieldWrap">
+                                <input type="password" name="o_pass" id="o_pass" placeholder="Current Password">
+                                <div id="o_pass_err" class="errorMsg"></div>
                             </div>
-                        @elseif(Session::has('success'))
-                            <div class="alertBox success">
-                                <p>{{Session::get('success')}}</p>
-                                <span class="close"></span>
+                        </div>
+                        <div class="formRow">
+                            <div class="fieldWrap small">
+                                <input type="password" name="pass" id="pass" placeholder="New Password">
+                                <div id="pass_err" class="errorMsg"></div>
                             </div>
-                        @endif
-
+                            <div class="fieldWrap small">
+                                <input type="password" name="c_pass" id="c_pass" placeholder="Confirm New Password">
+                                <div id="c_pass_err" class="errorMsg"></div>
+                            </div>
+                        </div>
                         
-                        <form action="{{route('changePasswordPost')}}" method="POST" class="change-password form-group" id="changePasswordForm">
-                            <div class="formRow">
-                                <div class="fieldWrap">
-                                    <input type="password" name="o_pass" id="o_pass" placeholder="Current Password">
-                                    <div id="o_pass_err" class="errorMsg"></div>
-                                </div>
-                            </div>
-                            <div class="formRow">
-                                <div class="fieldWrap small">
-                                    <input type="password" name="pass" id="pass" placeholder="New Password">
-                                    <div id="pass_err" class="errorMsg"></div>
-                                </div>
-                                <div class="fieldWrap small">
-                                    <input type="password" name="c_pass" id="c_pass" placeholder="Confirm New Password">
-                                    <div id="c_pass_err" class="errorMsg"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="formRow">
-                                <button type="submit" id="submitChangePasswordForm" class="orangeBtn">UPDATE</button>
-                            </div>
-                            {{csrf_field()}}
-                        </form>
-                    </div>
-                
+                        <div class="formRow">
+                            <button type="submit" id="submitChangePasswordForm" class="orangeBtn">CHANGE</button>
+                        </div>
+                        {{csrf_field()}}
+                    </form>
+                </div>
             </div>
 
             {{-- Right panel of dashboard comes here --}}
@@ -112,6 +85,14 @@
 
         var checkChangePasswordForm = function() {
             // Check the form
+
+            $('#c_pass_err').text('');
+            $('#c_pass_err').parent().removeClass('error');
+            $('#o_pass_err').text('');
+            $('#o_pass_err').parent().removeClass('error');
+            $('#pass_err').text('');
+            $('#pass_err').parent().removeClass('error');
+
             var flag = true;
             var pass = $('#pass').val();
             var c_pass = $('#c_pass').val();
@@ -122,39 +103,21 @@
                 $('#pass_err').text(msg);
                 $('#pass_err').parent().addClass('error');
                 return {msg : msg, flag: false}
-            } else {
-                $('#pass_err').text('');
-                $('#pass_err').parent().removeClass('error');
-            } 
-            
-            
-            if(pass !== c_pass) {
+            } else if(pass !== c_pass) {
                 var msg = 'Password and confirm password should match.'
                 $('#c_pass_err').text(msg);
                 $('#c_pass_err').parent().addClass('error');
                 return {msg : msg, flag: false}
-            } else {
-                $('#c_pass_err').text('');
-                $('#c_pass_err').parent().removeClass('error');
-            }
-            
-            
-            if(o_pass.trim().length == 0) {
+            } else if(o_pass.trim().length == 0) {
                 var msg = 'You have to enter your old password.'
                 $('#o_pass_err').text(msg);
                 $('#o_pass_err').parent().addClass('error');
                 return {msg : msg, flag: false}
-            } else {
-                $('#o_pass_err').text('');
-                $('#o_pass_err').parent().removeClass('error');
             }
             return {msg : 'success', flag: true};
         }
 
         $(document).ready(function() {
-            setTimeout(() => {
-                $('#loader-icon').hide();
-            }, 400);
 
             $('#submitChangePasswordForm').click(function(e) {
                 e.preventDefault();
@@ -169,10 +132,6 @@
             // $('input').blur(function() {
             //     checkChangePasswordForm();
             // });
-
-            $('.close').click(function() {
-                $(this).parent().removeClass('error').removeClass('success').hide();
-            });
         });
     </script>
 </body>

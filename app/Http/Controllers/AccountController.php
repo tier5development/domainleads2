@@ -309,14 +309,13 @@ class AccountController extends Controller
 	  }
 	}
 
-	public function home()
-	{
+	public function home() {
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		// return redirect('login');
-		// return view('new-version/home');
-		return view('home');
+		return redirect('login');
+		// return view('new_version.landing-pages.home');
+		// return view('home');
 	}
 
     public function login(Request $request) {

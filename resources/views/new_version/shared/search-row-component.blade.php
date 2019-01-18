@@ -58,7 +58,11 @@
                 </p>
                 <p class="country">
                     <!-- TODO -->
-                    <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/flag_usa.png" alt="">
+                    <img 
+                    @if(isset($country_abr) && strlen($country_abr) > 0)
+                        src="{{config('settings.APPLICATION-DOMAIN')}}/public/svg/{{$country_abr}}.svg" 
+                    @endif
+                    alt="" style="width: 18px; height: 18px;">
                     <span>{{$each['registrant_country']}}</span>
                 </p>
             @endif
@@ -83,13 +87,19 @@
 
         <td>
             <p>
-                <span>{{$each['domains_create_date']}}</span>
+                @php
+                    $resultDate = DateTime::createFromFormat('d/m/Y', $each['domains_create_date'])->format('m-d-Y');
+                @endphp
+                <span>{{$resultDate}}</span>
             </p>
         </td>
             
         <td>
             <p>
-                <span>{{$each['expiry_date']}}</span>
+                @php
+                    $resultDate = DateTime::createFromFormat('d/m/Y', $each['expiry_date'])->format('m-d-Y');
+                @endphp
+                <span>{{$resultDate}}</span>
             </p>
         </td>
             

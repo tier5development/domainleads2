@@ -38,20 +38,21 @@ class UserController extends Controller
         // if($request->all()) {
         //     dd($request->all());
         // }
+        /// dd(1);
         if(Auth::check() && Auth::user()->user_type <= 3) {
             $date = $request->has('date') ? $request->date : null;
             $data['perpage'] = $request->has('perpage') ? $request->perpage : 10;
             $user = Auth::user();
-            $data['leads'] = LeadUser::where('user_id', $user->id);
+            $data['domains'] = LeadUser::where('user_id', $user->id);
             if($date) {
                 // dd($date);
-                $data['leads'] = $data['leads']->whereDate('created_at', $date);
+                $data['domains'] = $data['domains']->whereDate('created_at', $date);
             }
-            $data['leads'] = $data['leads']->orderBy('id', 'ASC')->paginate($data['perpage']);
-            $data['title'] = 'Unlocked leads | Domainleads';
+            $data['domains'] = $data['domains']->orderBy('id', 'ASC')->paginate($data['perpage']);
+            $data['title'] = 'Unlocked domains | Domainleads';
             $data['user'] = Auth::user();
             // return view('home.search.my-unlocked-domains', $data);
-            return view('new_version.leads.my-unlocked-leads', $data);
+            return view('new_version.leads.my-unlocked-domains', $data);
         } else {
             return redirect('search');
         }

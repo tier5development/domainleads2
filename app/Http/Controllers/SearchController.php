@@ -20,7 +20,7 @@ use \App\CSV;
 use \App\SearchMetadata;
 use DB;
 use Hash;
-use Auth, View, Response;
+use Auth, View, Response, Log;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
@@ -374,7 +374,18 @@ public function download_csv_single_page(Request $request)
         {
           // Compose a view to render the html
           $usageMatrix = UserHelper::getUsageMatrix();
-          $view = View::make('new_version.shared.lead-domain-row-component', ['each' => $domain, 'key' => $key, 'restricted' => false, 'email' => $data->registrant_email])->render();
+          $country_codes = country_codes();
+          $country_abr = isset($country_codes[ucwords(strtolower($leaduser->registrant_country))]) 
+          ? strtoupper($country_codes[ucwords(strtolower($leaduser->registrant_country))]) : null;
+          
+          
+          $view = View::make('new_version.shared.lead-domain-row-component', [
+            'each' => $domain, 
+            'key' => $key, 
+            'restricted' => false, 
+            'email' => $data->registrant_email, 
+            'country_abr'=>$country_abr])->render();
+
           return Response::json([
             'view'    =>  $view,
             'status'  =>  true,
@@ -476,7 +487,11 @@ public function download_csv_single_page(Request $request)
 
           // Compose a view to render the html
           $usageMatrix = UserHelper::getUsageMatrix();
-          $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key, 'restricted' => false])->render();
+          $country_codes = country_codes();
+          $country_abr = isset($country_codes[ucwords(strtolower($array['registrant_country']))]) 
+          ? strtoupper($country_codes[ucwords(strtolower($array['registrant_country']))]) : null;
+
+          $view = View::make('new_version.shared.search-row-component', ['each' => $array, 'key' => $key, 'restricted' => false, 'country_abr'=>$country_abr])->render();
           return Response::json([
             'view'    =>  $view,
             'status'  =>  true,
@@ -1872,15 +1887,16 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
+      // dd('here');
       ini_set('max_execution_time', 346000);
-      if(\Auth::check())
+      if(Auth::check())
       {
         if($request->all())
         {
           // dd($request->all());
           $request['pagination']  = $request->has('pagination') ? $request->pagination : 10;
           $request['domain_ext']  = $this->tldExtToArray($request->domain_ext);
-          \Log::info('inp : ', $request->all());
+          Log::info('inp : ', $request->all());
           // dd($request->all());
           // $request->domain_ext = [];
           $start = microtime(true);

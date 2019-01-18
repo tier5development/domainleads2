@@ -14,7 +14,6 @@
         </tr>
     --}}
     @php
-        
         $lead = $each->leads; 
         $ph = isset($lead) ? $lead->valid_phone : null;
         $domainsInfo = $each->domains_info; 
@@ -55,11 +54,15 @@
                 </p>
                 <p class="country">
                     <!-- TODO -->
-                    <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/flag_usa.png" alt="">
+                    <img 
+                    @if(isset($country_abr) && strlen($country_abr) > 0)
+                        src="{{config('settings.APPLICATION-DOMAIN')}}/public/svg/{{$country_abr}}.svg" 
+                    @endif
+                    alt="" style="width: 18px; height: 18px;">
                     <span>{{$lead->registrant_country}}</span>
                 </p>
             @else
-                <p>Corrupt Data</p>
+                
             @endif
         @endif
     </td>
@@ -71,16 +74,17 @@
             </div>
         @else
             <p class="phone">
-                @if($lead && $ph)
-                    @if($ph->number_type && strtolower($ph->number_type) == 'cell number')
-                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_mobile.png" alt="">
-                    @elseif($ph->number_type && strtolower($ph->number_type) == 'landline')
-                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_land_phone.png" alt="">
+                @if($lead)
+                    @if($ph)
+                        @if($ph->number_type && strtolower($ph->number_type) == 'cell number')
+                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_mobile.png" alt="">
+                        @elseif($ph->number_type && strtolower($ph->number_type) == 'landline')
+                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_land_phone.png" alt="">
+                        @endif
                     @endif
-
                     <span>{{$lead->registrant_phone}}</span>
                 @else
-                   
+
                 @endif
             </p>
         @endif
@@ -90,7 +94,7 @@
         <p>
             <span>
                 @if($domainsInfo)
-                    {{$domainsInfo->domains_create_date}}
+                    {{DateTime::createFromFormat('Y-m-d', $domainsInfo->domains_create_date)->format('m-d-Y')}}
                 @endif
             </span>
         </p>
@@ -100,7 +104,7 @@
         <p>
             <span>
                 @if($domainsInfo)
-                    {{$domainsInfo->expiry_date}}
+                    {{DateTime::createFromFormat('Y-m-d', $domainsInfo->expiry_date)->format('m-d-Y')}}
                 @endif
             </span>
         </p>
