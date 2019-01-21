@@ -1,5 +1,6 @@
 <?php
 
+
 function country_codes() { 
     $countries = array(
         'AF' => 'Afghanistan',
@@ -55,7 +56,7 @@ function country_codes() {
         'CD' => 'Congo, Democratic Republic',
         'CK' => 'Cook Islands',
         'CR' => 'Costa Rica',
-        'CI' => 'Cote D\'Ivoire',
+        'CI' => 'Ivory Coast',
         'HR' => 'Croatia',
         'CU' => 'Cuba',
         'CY' => 'Cyprus',
@@ -97,15 +98,15 @@ function country_codes() {
         'GY' => 'Guyana',
         'HT' => 'Haiti',
         'HM' => 'Heard Island & Mcdonald Islands',
-        'VA' => 'Holy See (Vatican City State)',
+        'VA' => 'Vatican City',
         'HN' => 'Honduras',
         'HK' => 'Hong Kong',
         'HU' => 'Hungary',
         'IS' => 'Iceland',
         'IN' => 'India',
         'ID' => 'Indonesia',
-        'IR' => 'Iran, Islamic Republic Of',
-        'IQ' => 'Iraq',
+        'IR' => 'Iran',
+        'IQ' => 'Iraq', // ---------------------- //
         'IE' => 'Ireland',
         'IM' => 'Isle Of Man',
         'IL' => 'Israel',
