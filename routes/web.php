@@ -133,7 +133,9 @@ Route::get('/aa',function(){
 
         Route::post('unlocked-leads', ['uses' => 'UserController@myUnlockedLeads', 'as' => 'myUnlockedLeadsPost']);
 
-    	Route::get('importExport', ['uses' => 'ImportExport@importExport', 'as' => 'importExport']);
+        Route::get('importExport', ['uses' => 'ImportExport@importExport', 'as' => 'importExport']);
+        
+        Route::post('importBulkZip', ['uses' => 'ImportExport@importBulkZip', 'as' => 'importBulkZip']);
 
     	Route::post('/importExcel', 'ImportExport@importExcel')->name('import_Excel'); // new version of import exel
 
