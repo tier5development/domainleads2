@@ -13,12 +13,15 @@ var canvasObj = {
     chartRatio : 0,
     gradient : null,
     previousModel: null,
+    previousStartPoint : null,
+    previousCounter : null,
+    stepRatio : 0,
     setCanvas : function() {
         
         this.canvas = document.getElementById('crart'); 
         this.context = this.canvas.getContext('2d');
         // console.log('context set', this.context);
-        this.counter = 0;
+        this.counter = this.counter > 0 ? this.counter : 0;
         this.av = 0;
         this.start = 4.72;
         this.cw = this.context.canvas.width/2;
@@ -41,6 +44,7 @@ var canvasObj = {
         
         this.currentVal = current;
         this.chartRatio = (this.currentVal / this.targetVal) * 100;
+        this.stepRatio = 1/this.targetVal * 100;
         this.previousModel = setInterval(this.drawCanvasCustom.bind(this), interval);
     
     }, drawProgressBar : function(interval) {
@@ -49,10 +53,41 @@ var canvasObj = {
 
     }, drawCanvasCustom : function() {
 
+        // this.diff = (this.counter/100)*Math.PI*2;
+        // this.context.clearRect(0,0,400,400);
+        // // this.context.beginPath();
+        // // this.context.arc(this.cw, this.ch, this.radius, 0, 2*Math.PI, false);
+        // this.context.fillStyle      =   '#FFF';
+        // this.context.fill();
+        // this.context.strokeStyle    =   '#f6f6f6';
+        // this.context.stroke();
+        // this.context.fillStyle      =   '#000';
+        // this.context.strokeStyle    =   this.gradient;
+        // this.context.textAlign      =   'center';
+        // this.context.lineWidth      =   10;
+        // this.context.font           =   '21px "Avenir LT Std 95 Black"';
+        // this.context.fillStyle      =   '#333';
+        // this.context.beginPath();
+        // this.context.arc(this.cw, this.ch, this.radius, this.start, (this.diff + this.start), false);
+        // // console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter);
+        // this.context.stroke();
+        // this.context.lineCap        =   'round';
+        // this.context.fillText(this.currentVal + "/" + this.targetVal ,65 ,75);
+        // if(this.counter >= this.chartRatio) {
+        //     clearTimeout(this.previousModel);
+        //     // console.log('final context : ', this.context);
+        // }
+        // this.counter++;
+        // this.av++;
+        // if(this.av >= this.currentVal) {
+        //     this.av = this.currentVal;
+        // }
+
+
         this.diff = (this.counter/100)*Math.PI*2;
         this.context.clearRect(0,0,400,400);
-        this.context.beginPath();
-        this.context.arc(this.cw, this.ch, this.radius, 0, 2*Math.PI, false);
+        // this.context.beginPath();
+        // this.context.arc(this.cw, this.ch, this.radius, 0, 2*Math.PI, false);
         this.context.fillStyle      =   '#FFF';
         this.context.fill();
         this.context.strokeStyle    =   '#f6f6f6';
@@ -65,18 +100,23 @@ var canvasObj = {
         this.context.fillStyle      =   '#333';
         this.context.beginPath();
         this.context.arc(this.cw, this.ch, this.radius, this.start, (this.diff + this.start), false);
-        // console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter);
+        console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter);
         this.context.stroke();
         this.context.lineCap        =   'round';
         this.context.fillText(this.currentVal + "/" + this.targetVal ,65 ,75);
         if(this.counter >= this.chartRatio) {
+            // this.previousStartPoint = this.diff + this.start;
+            this.start = this.diff + this.start;
+            // this.previousCounter = this.counter;
+            console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter, ' previousStartPOINT = '+this.start);
             clearTimeout(this.previousModel);
             // console.log('final context : ', this.context);
-        }
-        this.counter++;
-        this.av++;
-        if(this.av >= this.currentVal){
-            this.av = this.currentVal;
+        } else {
+            this.counter++;
+            this.av++;
+            if(this.av >= this.currentVal) {
+                this.av = this.currentVal;
+            }
         }
     }
 }
