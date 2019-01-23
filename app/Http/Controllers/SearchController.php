@@ -1827,7 +1827,6 @@ public function download_csv_single_page(Request $request)
 
     public function search_api(Request $request)
     {
-        //dd($request->all());
         $status = 'ok';
         $result = null;
         try {
@@ -1866,6 +1865,9 @@ public function download_csv_single_page(Request $request)
         if(count($result) < $limit) {
           $url = null;
         } else {
+          if($request->has('domain_ext')) {
+            $request['domain_ext'] = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
+          }
           $newRequest = $request->all();
           $newRequest['offset'] = $offset + 1;
           $url = explode('?', \Request::url())[0].getQueryParamsCustom($newRequest);
