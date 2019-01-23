@@ -1399,7 +1399,22 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     display: none;
 }
 
-
+.refresh-anchor{
+    background: linear-gradient(to right, #3c9bc1, #48e4b3);
+    height: 33px;
+    padding: 0 15px;
+    color: #fff;
+    border-radius: 30px;
+    border: none;
+    font-family: 'Avenir LT Std 65 Medium';
+    font-size: 15px;
+    padding-top: 3px;
+    margin-left: 10px;
+    cursor: pointer;
+    float: right;
+    padding-top: 10px;
+    margin-bottom: 16px;
+}
   /* ============================================================================ */
  /* ============================== Responsive CSS ============================== */
 /* ============================================================================ */

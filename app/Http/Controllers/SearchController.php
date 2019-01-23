@@ -25,7 +25,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
 use Excel;
-use Input;
+use Input, DateTime;
 use Illuminate\Pagination\Paginator;
 use \Carbon\Carbon as Carbon;
 use App\Helpers\UserHelper;
@@ -128,7 +128,7 @@ public function print_csv($leads,$type)
 
 public function download_csv_single_page(Request $request)
 {
-  // dd($request->all());
+  
   $type = 'csv';
   $phone_type_array = array();
   if(isset($request->cell) && $request->cell != null)
@@ -136,7 +136,7 @@ public function download_csv_single_page(Request $request)
   if(isset($request->landline) && $request->landline != null)
     array_push($phone_type_array, 'Landline');
   $start = microtime(true);
-  if($request->has('exportAllLeads') && strlen($request->exportAllLeads) > 0) {
+  if($request->has('exportAllLeads') && strlen($request->exportAllLeads) > 0 && $request->exportAllLeads == 'Export All Leads') {
     $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
   } else {
     $limit = $request->totalPagination;
@@ -178,7 +178,7 @@ public function download_csv_single_page(Request $request)
     $array  = $this->leadsPerPage_Search($leads);
     $param  = ['domain_name'=>$request->domain_name
              ,'domain_ext' =>(sizeof($domain_ext_arr) == 0 ? null : $domain_ext_arr)
-             ,'domains_create_date'=>$request->domains_create_date
+             ,'domains_create_date'=> $request->domains_create_date
              ,'domains_create_date2'=>$request->domains_create_date2];
 
     \Log::info(' domainleads api :: '.print_r($param, true));
@@ -198,8 +198,8 @@ public function download_csv_single_page(Request $request)
       $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
       $reqData[$i]['country']    = $val['registrant_country'];
       $reqData[$i]['website']    = $val['domain_name'];
-      $reqData[$i]['domains_create_date'] = $val['domains_create_date'];
-      $reqData[$i]['expiry_date'] = $val['expiry_date'];
+      $reqData[$i]['domains_create_date'] = DateTime::createFromFormat('d/m/Y', $val['domains_create_date'])->format('m-d-Y');
+      $reqData[$i]['expiry_date'] =  DateTime::createFromFormat('d/m/Y', $val['expiry_date'])->format('m-d-Y');
       $reqData[$i]['phone']      = $val['registrant_phone'];
       $reqData[$i]['email_id']   = $val['registrant_email'];
       $reqData[$i]['company']    = $val['registrant_company'];

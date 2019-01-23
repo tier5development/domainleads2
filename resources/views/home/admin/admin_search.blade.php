@@ -157,6 +157,7 @@
          <br><br>
          <div>
           
+            
             @if($record !== null)
             <hr>
             <br><br>
