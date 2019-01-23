@@ -148,9 +148,6 @@
 
                ?>
          </div>
-         {{-- <div>
-            <a href="{{url('/')}}/myLeads/{{encrypt(\Auth::user()->id)}}">My Leads</a>
-         </div> --}}
 
          @include('layouts.search')
 
