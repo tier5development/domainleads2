@@ -1724,7 +1724,7 @@ public function download_csv_single_page(Request $request)
       
       $start = microtime(true);
       $this->setVariables($request); //initiating MY VARIABLES
-      $this->set_mysql_global_vars();
+      // $this->set_mysql_global_vars();
       $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
       $array = $this->leadsPerPage_Search($leads);
       
