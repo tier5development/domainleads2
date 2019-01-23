@@ -871,8 +871,8 @@ input, select, textarea, button {
 }
 
 .pagination-parent {
-    width: 70%;
-    margin-bottom: 20px;
+    width: 100%;
+    margin-top: 20px;
     float: left;
 }
 .pagination-cl {
@@ -1061,6 +1061,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .datatable table tbody td p span {
     float: left;
     margin-top: 3px;
+    min-width: 80px;
 }
 .wordBreak {
     word-break: break-all;
@@ -1124,6 +1125,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .greenBtn.unlockBtn {
     height: 36px;
     font-size: 14px;
+    width: 95px;
 }
 .datatable table tbody td p.locked img {
     float: left;
@@ -1132,6 +1134,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .datatable table tbody td p.locked span {
     float: left;
     margin-top: 5px;
+    min-width: auto;
 }
 .datatable table tbody td .leadStatus p {
     float: left;
@@ -1399,6 +1402,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     display: none;
 }
 
+
 .refresh-anchor{
     background: linear-gradient(to right, #3c9bc1, #48e4b3);
     height: 33px;
@@ -1414,6 +1418,10 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     float: right;
     padding-top: 10px;
     margin-bottom: 16px;
+}
+
+.rightPanTgl {
+    display: none;
 }
   /* ============================================================================ */
  /* ============================== Responsive CSS ============================== */
@@ -1592,6 +1600,9 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 
 @media screen and (max-width: 768px) {
+.container {
+    position: relative;
+}
 .mainBody {
     margin-top: 10px;
     padding-bottom: 60px;
@@ -1647,13 +1658,60 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     display: block;
     margin: 20px auto 0;
 }
-.leftPanel.leadUnlock + .rightPanel {
+.rightPanTgl {
+    display: block;
+    height: 28px;
+    position: absolute;
+    right: -12px;
+    top: 100px;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    padding: 8px;
+    cursor: pointer;
+    z-index: 99;
+}
+.rightPanTgl span {
+    display: block;
+    background: #aaa;
+    width: 14px;
+    height: 2px;
+    margin-bottom: 3px;
+    transition: all 0.5s ease 0s;
+}
+.rightPanTgl span:last-child {
+    margin-bottom: 0;
+}
+.rightPanTgl.open span:first-child {
+    transform: rotate(45deg) translate(4px, 3px);
+}
+.rightPanTgl.open span:nth-child(2) {
     display: none;
 }
-.pagination-parent {
-    width: 100%;
-    margin: -40px 0 0 0;
+.rightPanTgl.open span:last-child {
+    transform: rotate(-45deg);
 }
+.leftPanel.leadUnlock + .rightPanel {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 290px;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    margin-top: 0;
+    border-radius: 10px;
+    transition: all 0.5s ease 0s;
+}
+.leftPanel.leadUnlock + .rightPanel.open {
+    display: block;
+    right: 0;
+}
+
+
+
 }
 
 @media screen and (max-width: 560px) {
@@ -1706,12 +1764,7 @@ body {
     padding: 0 10px;
     text-align: center;
 }
-.pagination-parent {
-    margin: 0;
-    position: absolute;
-    bottom: 44px;
-    width: 94%;
-}
+
 .pagination-cl {
     overflow: hidden;
 }

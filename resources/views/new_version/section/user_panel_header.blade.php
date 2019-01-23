@@ -186,15 +186,28 @@ var dataURLToBlob = function(dataURL) {
 
 $(document).ready(function() {
 
+
     // Scrren width mobile resolution 
-    $(".datatable table tbody tr td:first-child").click(function(){
+    // $(".datatable table tbody tr td:first-child").click(function(){
+    //     console.log('td clicked');
+    //     if($(this).parent("tr").hasClass("show")){
+    //         $(this).parent("tr").removeClass("show");
+    //     } else {
+    //         $(".datatable table tbody tr").removeClass("show");
+    //         $(this).parent("tr").addClass("show");
+    //     }
+    // });
+
+    $(document).on('click', '.datatable table tbody tr td:first-child', function() {
+        console.log('td clicked');
         if($(this).parent("tr").hasClass("show")){
             $(this).parent("tr").removeClass("show");
         } else {
             $(".datatable table tbody tr").removeClass("show");
             $(this).parent("tr").addClass("show");
         }
-    });
+    })
+    
 
     $('#upload_profile_pic').click(function() {
         console.log('click deetcted');

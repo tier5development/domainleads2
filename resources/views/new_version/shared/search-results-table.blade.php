@@ -24,7 +24,7 @@
                 $country_abr = isset($country_codes[ucwords(strtolower($each['registrant_country']))]) 
                     ? strtoupper($country_codes[ucwords(strtolower($each['registrant_country']))]) : null;
             @endphp
-                <tr id="tr_{{$key}}">
+                <tr id="tr_{{$key}}" class="{{ !isset($users_array[$each['registrant_email']]) && $restricted == true ? 'locked' : ''}}">
                     @include('new_version.shared.search-row-component', ['each' => $each, 'key' => $key, 'restricted' => $restricted, 'country_abr'=>$country_abr])
                 </tr>
             @endforeach
