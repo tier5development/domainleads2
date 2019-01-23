@@ -1836,6 +1836,10 @@ public function download_csv_single_page(Request $request)
           $start  = microtime(true);
           $offset = $request->offset;
           $limit  = $request->limit;
+          if($request->has('domain_ext')) {
+            $request['domain_ext'] = $this->tldExtToArray($request->domain_ext);
+          }
+          
           $result = $this->search_algo($request);
           // Session::put('oldReq', $request->all());
           $end    = microtime(true)-$start;
