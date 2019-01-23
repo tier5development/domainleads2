@@ -109,4 +109,25 @@
         .datatable table tbody tr.show td:first-child:after {
         transform: translateY(-50%) rotate(135deg);
         }
+
+        .datatable table tbody tr.locked td, 
+        .datatable table tbody tr.locked td:first-child:before, 
+        .datatable table tbody tr.locked td:first-child:after {
+            display: none;
+        }
+        .datatable table tbody tr.locked td:first-child,
+        .datatable table tbody tr.locked td:last-child  {
+            display: block;
+        }
+        .datatable table tbody tr.locked td:last-child {
+            padding: 0;
+        }
+        .datatable table tbody tr.locked {
+            position: relative;
+        }
+        .datatable table tbody tr.locked td .greenBtn.unlockBtn {
+            position: absolute;
+            margin-top: -56px;
+            right: 0;
+        }
 }

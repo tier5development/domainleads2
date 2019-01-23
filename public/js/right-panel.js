@@ -100,7 +100,7 @@ var canvasObj = {
         this.context.fillStyle      =   '#333';
         this.context.beginPath();
         this.context.arc(this.cw, this.ch, this.radius, this.start, (this.diff + this.start), false);
-        console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter);
+        // console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter);
         this.context.stroke();
         this.context.lineCap        =   'round';
         this.context.fillText(this.currentVal + "/" + this.targetVal ,65 ,75);
@@ -108,7 +108,7 @@ var canvasObj = {
             // this.previousStartPoint = this.diff + this.start;
             this.start = this.diff + this.start;
             // this.previousCounter = this.counter;
-            console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter, ' previousStartPOINT = '+this.start);
+            // console.log('context ref : ', this.cw, this.ch, this.radius, this.start, this.diff + this.start,  this.diff, 'counter = '+this.counter, ' previousStartPOINT = '+this.start);
             clearTimeout(this.previousModel);
             // console.log('final context : ', this.context);
         } else {

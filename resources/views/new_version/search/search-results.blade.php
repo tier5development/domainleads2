@@ -13,13 +13,18 @@
     @include('new_version.shared.loader')
 
     <div class="container">
-
+        <div class="rightPanTgl">   
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         {{-- Include common user panel header used for all dashboard components 
             * Input user object (compulsary)
             --}}
         @include('new_version.section.user_panel_header', ['user' => $user])
         
         <section class="mainBody">
+            
             <div class="leftPanel leadUnlock">
              
                 {{-- Include advanced sdearch options for more filtering on current result set
@@ -90,6 +95,26 @@
                         'user'          =>  $user
                     ])
                 </div>
+
+                <div class="pagination-parent">
+                    <div class="pagination-cl">
+                        @if(isset($totalPage) && $totalPage > 0)
+                        <div class="pg_" id="pages">
+                            <button class="pg_btn" value="prev" id="pg_prev"><<</button>
+                            <?php $i=$page-1; ?>
+                            @while(++$i <= $totalPage)
+                                @if($i<=6)
+                                    <button class="pg_btn @if($i==1) btn-info @endif" id="pg_{{$i}}" value="{{$i}}">{{$i}}</button>
+                                @else
+                                    <button class="pg_btn" id="pg_{{$i}}" value="{{$i}}" style="display:none;">{{$i}}</button>
+                                @endif
+                            @endwhile
+                                <button class="pg_btn" value="next" id="pg_next">>></button>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
             </div>
 
             {{-- Include common dashboard right panel --}}
@@ -99,25 +124,6 @@
             @include('new_version.shared.dashboard-footer', ['class' => 'footer mobileOnly'])
             
         </section>
-
-        <div class="pagination-parent">
-            <div class="pagination-cl">
-                @if(isset($totalPage) && $totalPage > 0)
-                <div class="pg_" id="pages">
-                    <button class="pg_btn" value="prev" id="pg_prev">Previous</button>
-                    <?php $i=$page-1; ?>
-                    @while(++$i <= $totalPage)
-                        @if($i<10)
-                            <button class="pg_btn @if($i==1) btn-info @endif" id="pg_{{$i}}" value="{{$i}}">{{$i}}</button>
-                        @else
-                            <button class="pg_btn" id="pg_{{$i}}" value="{{$i}}" style="display:none;">{{$i}}</button>
-                        @endif
-                    @endwhile
-                        <button class="pg_btn" value="next" id="pg_next">Next</button>
-                </div>
-                @endif
-            </div>
-        </div>
 
         @include('new_version.shared.dashboard-footer', ['class' => 'footer'])
     </div>
@@ -138,8 +144,27 @@
             $('#loader-icon').show();
             $('#postAdvancedSearchDataForm').submit();
         }
-        
+        var bodyScroll;
         $(document).ready(function(){
+            
+            $(".rightPanTgl").click(function(){    
+                if($(this).hasClass("open")){
+                    $(this).removeClass("open");
+                    $(".rightPanel").removeClass("open");
+                    $(".mainBody").scrollTop(bodyScroll);
+                    $(".leftPanel").css("opacity","1");
+                } else {
+                    bodyScroll = $(".mainBody").scrollTop();
+                    $(".mainBody").scrollTop(0);
+                    $(this).addClass("open");
+                    $(".rightPanel").addClass("open");
+                    $(".leftPanel").css("opacity","0.2");
+                }
+            });
+
+
+
+
             $(".refineSearch").click(function(){
                 $(".filterPopup").fadeIn();
             });
@@ -226,7 +251,7 @@
         var per_page     = parseInt($('#pagination').val()); 
         var right_most   = Math.ceil(parseInt("{{$totalLeads}}")/per_page);
         var meta_id      = parseInt("{{$meta_id}}");
-        var display_limit= 5;
+        var display_limit= 2;
 
         $(function() {
             pages();
@@ -305,7 +330,7 @@
         {
             $('#page_forms').hide();
             var pages     = [];
-            var limit = 9;
+            var limit     = 6;
             l  = parseInt(thisPage) -5;
             h  = parseInt(thisPage) +5;
             l_most = 0;
@@ -426,7 +451,7 @@
                         // Show loader
                     }, success :function(response) {
                         if(response.status) {
-                            $('#tr_'+key).empty().append(response.view);
+                            $('#tr_'+key).removeClass('locked').empty().append(response.view);
                             r = response.usageMatrix;
                             if(r !== null && r !== undefined) {
                                 canvasObj.setCanvas();

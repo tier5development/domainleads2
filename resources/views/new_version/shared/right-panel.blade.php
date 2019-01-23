@@ -1,4 +1,4 @@
-<div class="rightPanel" style="display: none;">
+<div class="rightPanel">
     <div class="leftLine">
         <span></span>
         <p></p>
@@ -38,7 +38,7 @@
                     if(r.limit == -1) {
                         $('.container').addClass('level3User');
                     } else {
-                        $('.rightPanel').show();
+                        // $('.rightPanel').show();
                         canvasObj.setCanvas();
                         canvasObj.setCurve(r.leadsUnlocked, r.limit);
                         canvasObj.drawProgressBar(10);
