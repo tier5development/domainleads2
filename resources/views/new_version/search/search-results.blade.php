@@ -49,6 +49,38 @@
                             </div>
                         </div>
                     </div>
+
+                    @if($user->user_type >= 3)
+                    <div class="dataTableHeader">
+                        <form method="POST" action="{{route('download_csv_single_page')}}">
+                            {{csrf_field()}}
+                            {{-- {{dd(Input::get('domain_ext'))}} --}}
+                            <input type="hidden" name="currentPage" id="currentPage" value="{{$page}}">
+                            <input  type="hidden" name="totalPagination" id="totalPagination" value="{{Input::get('pagination')}}">
+                            <input type="hidden" name="mode" value="{{Input::get('mode')}}">  
+                            <input type="hidden" name="domain_name" value="{{Input::get('domain_name')}}">
+                            <input type="hidden" name="registrant_country" value="{{Request::get('registrant_country')}}">
+                            <input type="hidden" name="registrant_state" value="{{Request::get('registrant_country')}}">
+                            <input type="hidden" name="registrant_zip" value="{{Request::get('registrant_zip')}}">
+                            <input type="hidden" name="domains_create_date" value="{{ Input::get('domains_create_date') }}">
+                            <input type="hidden" name="domains_create_date2" value="{{ Input::get('domains_create_date2') }}">
+                            <input type="hidden" name="domains_expired_date" value="{{Request::get('domains_expired_date')}}">
+                            <input type="hidden" name="domains_expired_date2" value="{{Request::get('domains_expired_date2')}}">
+                            
+                            <input style="float: left" class="orangeBtn" id="exportLeads" type="submit" name="exportLeads" value="Export">
+                            <input style="float: right" class="orangeBtn" type="submit" name="exportAllLeads" value="Export All Leads">
+                            <input type="hidden" name="meta_id" value="{{$meta_id}}">
+                            <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
+                            
+                            <input type="hidden" name="domain_ext"  value="{{ Input::get('domain_ext') }}">
+                            
+                            <input type="hidden" name="cell" value="{{Input::get('cell_number')}}">
+                            <input type="hidden" name="landline" value="{{Input::get('landline_number')}}">
+                            {{-- <button type="submit" class="orangeBtn pull-left">Export</button>
+                            <button type="submit" class="orangeBtn pull-right">Export All</button> --}}
+                        </form>
+                    </div>
+                    @endif
                     
                     {{-- Include common search results table : this is reused in multiple places across different user profiles and admin --}}        
                     @include('new_version.shared.search-results-table', [
@@ -349,6 +381,7 @@
                         // $('.table-container').empty();
                         // $('.table-container').append(response.view);
                         thisPage = parseInt(page);
+                        $('#currentPage').val(thisPage);
                         adjust();
                         $('#pg_'+thisPage).addClass('btn-info');
                         pages();

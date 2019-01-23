@@ -50,6 +50,7 @@
                                 </div>
                                 <input type="hidden" name = "perpage" id="perpageVal" value="{{Request::has('perpage') ? Request::get('perpage') : null}}">
                                 <button type="submit" class="orangeBtn">Filter</button>
+                                
                                 {{csrf_field()}}
                             </form>
                             
@@ -70,6 +71,8 @@
                     
                     {{-- All leads unlocked goes here --}}
                     <div class="datatable" id="search-result-container">
+                        <a class="refresh-anchor" href="{{route('myUnlockedLeads')}}">Refresh </a>
+                        
                         <table cellpadding="0" cellspacing="0">
                             <thead>
                                 <tr>
