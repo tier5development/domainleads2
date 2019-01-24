@@ -145,6 +145,13 @@
             $('#postAdvancedSearchDataForm').submit();
         }
         var bodyScroll;
+
+        // $(document).on('ready', '.selectpage', function() {
+        //     var thisVal = $(this);
+        //     var styledSelect = thisVal.next('div.select-styled');
+        //     styledSelect.text(thisVal.children('option:selected').text());
+        // });
+
         $(document).ready(function(){
             
             $(".rightPanTgl").click(function(){    
@@ -161,9 +168,6 @@
                     $(".leftPanel").css("opacity","0.2");
                 }
             });
-
-
-
 
             $(".refineSearch").click(function(){
                 $(".filterPopup").fadeIn();
@@ -185,6 +189,7 @@
 
         $('.selectpage').each(function(){
 
+            console.log('each executed', req_pagination);
             var thisInstance = $(this);
 
             var thisVal = $(this), numberOfOptions = $(this).children('option').length;
@@ -226,11 +231,13 @@
 
                 if(thisInstance.data('pagination') !== undefined) {
                     req_pagination = thisVal.val();
+                    console.log('pagination', thisInstance.data('pagination'), thisVal.val());
                     $('#pagination').val(thisVal.val());
                 }
 
                 // Used for advanced-search-box
                 if(thisInstance.data('stopsubmit') === undefined) {
+                    console.log('not pagination', thisInstance.data('stopsubmit'));
                     submitFormCustom(); 
                 }
                 // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));

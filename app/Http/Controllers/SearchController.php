@@ -188,59 +188,57 @@ public function download_csv_single_page(Request $request)
     $key=0;
     $hash = array();
     
-    foreach($data as $i=>$val)
-    {
+    foreach($data as $i=>$val) {
       $name = explode(' ',$val['registrant_name']);
       $reqData[$i]['first_name'] = isset($name[0]) ? $name[0] : '';
       $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
       $reqData[$i]['country']    = $val['registrant_country'];
       $reqData[$i]['website']    = $val['domain_name'];
       $reqData[$i]['domains_create_date'] = DateTime::createFromFormat('d/m/Y', $val['domains_create_date'])->format('m-d-Y');
-      $reqData[$i]['expiry_date'] =  DateTime::createFromFormat('d/m/Y', $val['expiry_date'])->format('m-d-Y');
-      $reqData[$i]['phone']      = $val['registrant_phone'];
+      $reqData[$i]['expiry_date']= DateTime::createFromFormat('d/m/Y', $val['expiry_date'])->format('m-d-Y');
+      $reqData[$i]['phone']      = str_replace('.', '-', $val['registrant_phone']);
       $reqData[$i]['email_id']   = $val['registrant_email'];
       $reqData[$i]['company']    = $val['registrant_company'];
     }
 
+    // dd($reqData);
     return $reqData;
   }
 
     public function createWordpressForDomain(Request $request)
     {
 
-     $domain_name= $request->domain_name;
-     $registrant_email= $request->registrant_email;
-     $user_id= $request->user_id;
-     $client = new Client(); //GuzzleHttp\Client
-     $client->setDefaultOption('verify', false);
+      $domain_name= $request->domain_name;
+      $registrant_email= $request->registrant_email;
+      $user_id= $request->user_id;
+      $client = new Client(); //GuzzleHttp\Client
+      $client->setDefaultOption('verify', false);
                 $result = $client->get('http://api.tier5.website/api/make_free_wp_website/'.$domain_name);
                $domain_data = json_decode($result->getBody()->getContents(), true);
-             //  echo $domain_data['message'];
+      //echo $domain_data['message'];
 
-        $obj = new Wordpress_env();
-        $obj->domain_name= $domain_name;
-        $obj->registrant_email= $registrant_email;
-        $obj->user_id= $user_id;
-        $array = array();
-        $array['message']    = $domain_data['message'];
-
-
-        // $IP = env('TR5IP');
-        // $ip = gethostbyname($request->domain_name);
-        // $array['created'] = $ip != $IP ? 'false' : 'true';
-        // $array['created'] == 'false' ? $obj->status = 1 : $obj->status = 2;
-        $array['error'] = 'null';
-        if($obj->save())
-        {
-          return \Response::json($array);
-        }
-        else
-        {
-          $array['error'] = 'cannot insert into db';
-          return \Response::json($array);
-        }
+      $obj = new Wordpress_env();
+      $obj->domain_name= $domain_name;
+      $obj->registrant_email= $registrant_email;
+      $obj->user_id= $user_id;
+      $array = array();
+      $array['message']    = $domain_data['message'];
 
 
+      // $IP = env('TR5IP');
+      // $ip = gethostbyname($request->domain_name);
+      // $array['created'] = $ip != $IP ? 'false' : 'true';
+      // $array['created'] == 'false' ? $obj->status = 1 : $obj->status = 2;
+      $array['error'] = 'null';
+      if($obj->save())
+      {
+        return \Response::json($array);
+      }
+      else
+      {
+        $array['error'] = 'cannot insert into db';
+        return \Response::json($array);
+      }
     }
 
      public function storechkboxvariable(Request $request){
@@ -309,9 +307,8 @@ public function download_csv_single_page(Request $request)
         return view('new_version.search.lead-domains',['alldomain'=>$alldomains , 'email'=>$email, 'user'=>$user, 'users_array' => $users_array ,'restricted' => $restricted, 'pagination' => $pagination]);
         // return view('home.lead_domains',['alldomain'=>$alldomains , 'email'=>$email]);
         
-        return view('home.',['alldomain'=>$alldomains , 'email'=>$email]);
+        // return view('home.',['alldomain'=>$alldomains , 'email'=>$email]);
       } catch(\Exception $e) {
-        
         return redirect()->back()->with('error', 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine());
       }
     }
@@ -718,7 +715,6 @@ public function download_csv_single_page(Request $request)
       if(strlen($leads_str) == 0) {
         return [];
       }
-      
       $sql = "SELECT DISTINCT l.registrant_email
       , l.id
       , l.registrant_fname
@@ -750,6 +746,7 @@ public function download_csv_single_page(Request $request)
       $date_flag = 0;
       $phone_type_array = $this->phone_type_array;
       $domain_ext_str   = $this->domain_ext_str; 
+      $this->setMysqlVars();
       $sql = "SELECT DISTINCT l.registrant_email
             , l.id
             , l.registrant_fname
@@ -890,16 +887,18 @@ public function download_csv_single_page(Request $request)
                 $sql .= " and vp.number_type IN ".$phone_type_array_str;
               }
             }
+            
+            $sql .= " GROUP BY l.registrant_email";
+
             if(isset($request->sort))
             {
                 $req = $request->sort;
-
                 if($req == 'unlocked_asnd')  $sql .= " ORDER BY l.unlocked_num ASC ";
                 else if($req == 'unlocked_dcnd') $sql .= " ORDER BY l.unlocked_num DESC ";
                 else if($req == 'domain_count_asnd')  $sql .= " ORDER BY l.domains_count ASC ";
                 else if($req == 'domain_count_dcnd')  $sql .= " ORDER BY l.domains_count DESC";
             }
-            $sql .= " GROUP BY l.registrant_email";
+            
             // echo $sql;die();
             $leads = DB::select(DB::raw($sql));
             
@@ -949,7 +948,7 @@ public function download_csv_single_page(Request $request)
 
       if($leads_string != '()')
       {
-        $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,di.expiry_date,vp.number_type FROM `each_domain` ed
+        $sql = " SELECT ed.domain_name, ed.domain_ext, ed.registrant_email ,di.domains_create_date,di.expiry_date,vp.number_type, vp.phone_number FROM `each_domain` ed
         INNER JOIN domains_info as di
         ON di.domain_name = ed.domain_name ";
         isset($phone_type_array) && sizeof($phone_type_array)>0
@@ -1651,6 +1650,7 @@ public function download_csv_single_page(Request $request)
     // Binding 2 tables - leads - each_domain -> dataset into 1 array
     private function domains_output_Search($data , $domains)
     {
+      // dd($data, $domains);
       if($domains == null || $data == null) {
         return [];
       }
@@ -1661,15 +1661,19 @@ public function download_csv_single_page(Request $request)
       
       foreach($domains as $k=>$v)
       {
-        if(!($domain_list[$v->registrant_email]['checked']))
-        {
+        if(!($domain_list[$v->registrant_email]['checked'])) {
           $domain_list[$v->registrant_email]['checked']             = true;
           $domain_list[$v->registrant_email]['domain_name']         = $v->domain_name;
           $domain_list[$v->registrant_email]['domain_ext']          = $v->domain_ext;
           $domain_list[$v->registrant_email]['domains_create_date'] = $v->domains_create_date;
           $domain_list[$v->registrant_email]['number_type']         = $v->number_type;
           $domain_list[$v->registrant_email]['expiry_date']         = $v->expiry_date;
-        }
+          $domain_list[$v->registrant_email]['phone_number']        = $v->phone_number;
+          // $domain_list[$v->registrant_email]['all_numbers'][]       = $v->phone_number;
+        } 
+        // else if($v->phone_number) {
+        //   $domain_list[$v->registrant_email]['all_numbers'][]       = $v->phone_number;
+        // }
       }
       
       foreach ($data as $key => $value)
@@ -1679,9 +1683,16 @@ public function download_csv_single_page(Request $request)
         // $phone = isset($phone[1]) ? $phone[1] : $phone[0];
 
         //Logic changed to show original phone
-        $phone = $value['registrant_phone'];
+        // $phone = $value['registrant_phone'];
+        // $data[$key]['registrant_phone']     = $phone;
 
-        $data[$key]['registrant_phone']     = $phone;
+        $data[$key]['registrant_phone']     = isset($domain_list[$value['registrant_email']]['domain_name']) && isset($domain_list[$value['registrant_email']]['phone_number'])
+                                                ? $domain_list[$value['registrant_email']]['phone_number']
+                                                : $value['registrant_phone'];
+
+        // $data[$key]['all_numbers']          = isset($domain_list[$value['registrant_email']]['domain_name']) 
+        //                                         ? $domain_list[$value['registrant_email']]['all_numbers']
+        //                                         : [];
 
         $data[$key]['domain_name']          = isset($domain_list[$value['registrant_email']]['domain_name'])
                                               ? $domain_list[$value['registrant_email']]['domain_name']
@@ -1710,21 +1721,19 @@ public function download_csv_single_page(Request $request)
 
         $data[$key]['registrant_country']   = $data[$key]['registrant_country'];
       }
-      
+      // dd($data);
       return $data;
     }
 
-    private function set_mysql_global_vars() {
-      $sql = $sql = "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))";
+    private function setMysqlVars() {
+      $sql = $sql = "SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))";
       return DB::select(DB::raw($sql));
     }
 
     private function search_algo(Request $request)
     {
-      
       $start = microtime(true);
       $this->setVariables($request); //initiating MY VARIABLES
-      // $this->set_mysql_global_vars();
       $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
       $array = $this->leadsPerPage_Search($leads);
       
@@ -1754,13 +1763,13 @@ public function download_csv_single_page(Request $request)
 
       $end = microtime(true)-$start;
 
-      $return =  [ 'record'            =>$data,
+      $return =  [ 'record'         => $data,
               'page'                => 1,
               'meta_id'             => $this->meta_id,
               'totalLeads'          => $this->totalLeads,
               'totalDomains'        => $this->totalDomains,
               'totalPage'           => $this->totalPage,
-              'pagination'          => 10,
+              'pagination'          => $request->has('pagination') ? $request->pagination : 10,
               'domain_list'         => isset($domain_list) ? $domain_list : null,
               'query_time'          => $end
             ];
@@ -1837,11 +1846,11 @@ public function download_csv_single_page(Request $request)
       {
         if($request->all())
         {
-          
+          // dd($request->all(), $request->has('pagination')); 
           $request['pagination']  = $request->has('pagination') ? $request->pagination : 10;
           $request['domain_ext']  = $this->tldExtToArray($request->domain_ext);
           Log::info('inp : ', $request->all());
-          
+
           $start = microtime(true);
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
@@ -1853,6 +1862,7 @@ public function download_csv_single_page(Request $request)
             $request['domain_ext'] = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
             Session::forget('oldReq');
             Session::put('oldReq', $request->all());
+            // dd($result);
             return view('new_version.search.search-results', $result);
             // return view('home.admin.admin_search',$result);
           }
