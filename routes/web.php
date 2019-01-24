@@ -99,6 +99,8 @@ Route::get('/aa',function(){
     
     Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
 
+        Route::post('/uploadImage', ['uses' => 'UserController@uploadImage', 'as' => 'uploadImage']);
+
         Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
 
         Route::post('/ajax_search_paginated_subadmin', ['uses' => 'SearchController@ajax_search_paginated_subadmin', 'as' => 'ajax_search_paginated_subadmin']);

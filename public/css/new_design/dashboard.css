@@ -89,6 +89,7 @@ body {
     font-weight: 400; 
     background: #ffffff url("/public/images/bg_main.png") no-repeat;
     background-position: top center;
+    background-size: 100% auto;
 }
 table {
     border-collapse: collapse;
@@ -320,18 +321,26 @@ input, select, textarea, button {
 .profilePic img {
     transition: all 0.5s ease 0s;
 }
-.profilePic .changePic {
+.displayPic .changePic {
     position: absolute;
     z-index: 10;
     bottom: 10px;
     left: 14px;
     opacity: 0;
     transition: all 0.5s ease 0s;
+    width: 19px;
+    height: 16px;
+    background: url("/public/images/icon_camera_green.png") no-repeat;
+    overflow: hidden;
+    cursor: pointer;
 }
-.profilePic:hover .changePic {
+.displayPic .changePic input {
+    opacity: 0;
+}
+.displayPic:hover .changePic {
     opacity: 1;
 }
-.profilePic .changePic:hover + img {
+.displayPic .changePic:hover + img {
     filter: grayscale(1);
 }
 .profileMenuBody {
@@ -1332,6 +1341,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     text-align: center;
     margin: -10px 70px 0 0;
 }
+
 .profileTip figure {
     padding-top: 35px;
 }
@@ -1341,13 +1351,25 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     padding: 20px 15px 0;
 }
 
+.displayPic {
+    width: 185px;
+    height: 123px;
+    margin-top: 30px;
+    position: relative;
+}
+.displayPicContainer {
+    width: 185px;
+    height: 123px;
+    box-shadow: inset 0 0 25px rgba(0,0,0,0.2);
+}
+
 .profileFormArea {
     max-width: 630px;
     margin-top: 30px;
     float: left;
 }
 .profileFormArea .formHeading {
-    margin-top: 55px;
+    margin-top: 15px;
     font-size: 15px;
     font-family: 'Avenir LT Std 65 Medium';
     color: #6c6c6c;
@@ -1423,6 +1445,16 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .rightPanTgl {
     display: none;
 }
+.datatable table tbody tr.show td.unlock-date-hide p {
+    display: none;
+}
+/* .heaverNav ul.admin-user {
+    width: 20px;
+} */
+.container.level3User .rightPanel {
+    display: none;
+}
+
   /* ============================================================================ */
  /* ============================== Responsive CSS ============================== */
 /* ============================================================================ */
@@ -1709,7 +1741,9 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     display: block;
     right: 0;
 }
-
+.container.level3User .rightPanTgl {
+    display: none;
+}
 
 
 }
@@ -1804,6 +1838,9 @@ body {
 @media screen and (max-width: 460px) {
 #downloadCsvForm {
     margin-bottom: 15px;
+}
+.dataTableHeader .orangeBtn {
+    padding: 0 20px;
 }
 }
 
