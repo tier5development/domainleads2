@@ -177,9 +177,11 @@
           <input type="hidden" name="name" value="{{$eachUser->name}}">
           <input type="hidden" name="email" value="{{$eachUser->email}}">
           <select class="form-control" onchange="this.form.submit()" type="submit" name="user_type" style="width: 100%">
-            <option value="1" {{$eachUser->user_type == 1 ? 'selected' : ''}}>Level 1</option>
-            <option value="2" {{$eachUser->user_type == 2 ? 'selected' : ''}}>Level 2</option>
-            <option value="3" {{$eachUser->user_type == 3 ? 'selected' : ''}}>Level 3</option>
+            @for ($i = 1; $i < config('settings.PLAN.L2'); $i++)
+              <option value="{{$i}}" {{$eachUser->user_type == $i ? 'selected' : ''}}>
+                Unlock {{config('settings.PLAN.'.$i)[0] > 0 ? config('settings.PLAN.'.$i)[0] : 'unlimited'}}
+              </option>
+            @endfor
           </select>
         </form>
       </td>

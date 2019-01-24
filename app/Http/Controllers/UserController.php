@@ -39,7 +39,7 @@ class UserController extends Controller
         //     dd($request->all());
         // }
         /// dd(1);
-        if(Auth::check() && Auth::user()->user_type <= 3) {
+        if(Auth::check() && Auth::user()->user_type <= config('settings.PLAN.L1') ) {
             $date = $request->has('date') ? $request->date : null;
             $data['perpage'] = $request->has('perpage') ? $request->perpage : 10;
             $user = Auth::user();

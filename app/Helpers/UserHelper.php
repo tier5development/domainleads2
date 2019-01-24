@@ -18,13 +18,12 @@ class UserHelper {
                 $user = Auth::user();
                 $domainsUnlockedToday = LeadUser::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
                 $domainsUnlocked = LeadUser::where('user_id', $user->id)->count();
-                if($user->user_type == 1) {
-                    $limit = config('settings.LEVEL1-USER');
-                } else if($user->user_type == 2) {
-                    $limit = config('settings.LEVEL2-USER');
-                } else {
-                    $limit = -1;
+                $limit = -1;
+
+                if($user->user_type <= config('settings.PLAN.L1')) {
+                    $limit = config('settings.PLAN.'.$user->user_type)[0];
                 }
+                
                 return ([
                     'status' => true,
                     'leadsUnlocked' => $domainsUnlockedToday,
@@ -58,10 +57,9 @@ class UserHelper {
     public static function editUser(Request $request) {
         try {
             $email = $request->email;
-            $validator = Validator::make($request->all(), 
-            [
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|email|max:255|unique:users,id,'.$email,
-                'user_type' => 'required|numeric|integer|between:1,3'
+                'user_type' => 'required|numeric|integer|between:1,'.(config('settings.PLAN.L1') + 1)
             ]);
             
             if($validator->fails()) {
@@ -128,10 +126,10 @@ class UserHelper {
             
             $usertype = 1;
             if($request->has('user_type')) {
-                if(!is_numeric($request->user_type) || $request->user_type < 1 || $request->user_type > 3) {
+                if(!is_numeric($request->user_type) || $request->user_type < 1 || $request->user_type > config('settings.PLAN.L1') + 1) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Invalid user type provided, user types should be in between 1 and 3'
+                        'message' => 'Invalid user type provided, user types should be in between 1 and '.(config('settings.PLAN.L1') + 1)
                     ], 200);
                 } else {
                     $usertype = (int)$request->user_type;

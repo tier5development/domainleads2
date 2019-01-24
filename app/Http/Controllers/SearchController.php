@@ -301,7 +301,7 @@ public function download_csv_single_page(Request $request)
         $users_array = array_flip($users_array);
         $restricted = true;
         $user = Auth::user();
-        if($user->user_type == 4 || $user->user_type == 3) {
+        if($user->user_type > config('settings.PLAN.L1')) {
           $restricted = false;
         }
         return view('new_version.search.lead-domains',['alldomain'=>$alldomains , 'email'=>$email, 'user'=>$user, 'users_array' => $users_array ,'restricted' => $restricted, 'pagination' => $pagination]);
@@ -322,14 +322,20 @@ public function download_csv_single_page(Request $request)
         }
         $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $limit = 0;
-        if(Auth::user()->user_type == 1) {
-          $limit = config('settings.LEVEL1-USER');
-        } else if(Auth::user()->user_type == 2) {
-          $limit = config('settings.LEVEL2-USER');
+        // if(Auth::user()->user_type == 1) {
+        //   // $limit = config('settings.LEVEL1-USER');
+        //   $limit = 
+        // } else if(Auth::user()->user_type == 2) {
+        //   $limit = config('settings.LEVEL2-USER');
+        // }
+
+        if(Auth::user()->user_type < config('settings.PLAN.L1')) {
+          $limit = config('settings.PLAN.'.Auth::user()->user_type)[0];
         }
+
         if($count >= $limit && $limit > 0) {
           $array['status'] = false;
-          $array['message'] = 'Per day limit exceeded';
+          $array['message'] = 'Per day limit exceeded! Please contact administrator to upgrade usage.';
           $array['leadsUnlocked'] = $count;
           return Response::json($array);
         }
@@ -339,7 +345,6 @@ public function download_csv_single_page(Request $request)
         $domain = $data->each_domain->filter(function($each, $key) use($domainName) {
           return $each->domain_name == $domainName ? $each : null;
         })->first();
-
 
         $leaduser = new LeadUser();
         $leaduser->user_id = $request->user_id;
@@ -413,14 +418,18 @@ public function download_csv_single_page(Request $request)
         }
         $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $limit = 0;
-        if(Auth::user()->user_type == 1) {
-          $limit = config('settings.LEVEL1-USER');
-        } else if(Auth::user()->user_type == 2) {
-          $limit = config('settings.LEVEL2-USER');
+        // if(Auth::user()->user_type == 1) {
+        //   $limit = config('settings.LEVEL1-USER');
+        // } else if(Auth::user()->user_type == 2) {
+        //   $limit = config('settings.LEVEL2-USER');
+        // }
+        if(Auth::user()->user_type < config('settings.PLAN.L1')) {
+          $limit = config('settings.PLAN.'.Auth::user()->user_type)[0];
         }
+
         if($count >= $limit && $limit > 0) {
           $array['status'] = false;
-          $array['message'] = 'Per day limit exceeded';
+          $array['message'] = 'Per day limit exceeded! Please contact administrator to upgrade usage.';
           $array['leadsUnlocked'] = $count;
           return Response::json($array);
         }
@@ -1624,9 +1633,15 @@ public function download_csv_single_page(Request $request)
 
         $result['restricted'] = true;
         $user = Auth::user();
-        if($user->user_type == 4 || $user->user_type == 3) {
+        // if($user->user_type == 4 || $user->user_type == 3) {
+        //   // $result['restricted'] = false;
+
+        // }
+
+        if($user->user_type > config('settings.PLAN.L1')) {
           $result['restricted'] = false;
         }
+
         // $result['oldReq'] = Session::has('oldReq') ? Session::get('oldReq') : null;
 
         $user_id = $user->id;
@@ -1855,22 +1870,27 @@ public function download_csv_single_page(Request $request)
           $result = $this->search_algo($request);
           $end = microtime(true)-$start;
 
-          if(Auth::user()->user_type == 4 || Auth::user()->user_type == 3)
-          {
-            $result['user'] = Auth::user();
-            $result['restricted'] = false;
-            $request['domain_ext'] = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
+          $user = Auth::user();
+          if($user->user_type > config('settings.PLAN.L1')) {
+            $result['restricted']   = false;
+            $result['user']         = $user;
+            $result['restricted']   = false;
+            $request['domain_ext']  = $request->has('domain_ext') ? $this->tldArrayToExt($request->domain_ext) : '';
             Session::forget('oldReq');
             Session::put('oldReq', $request->all());
-            // dd($result);
             return view('new_version.search.search-results', $result);
             // return view('home.admin.admin_search',$result);
           }
 
-          $return['totalUnlockAbility']  = 'unlimited';
+          // $return['totalUnlockAbility']  = 'unlimited';
           // user type 1 can unlock 50 leads
           // user type 2 can unlock 50 leads
-          $result['totalUnlockAbility']  = config('settings.LEVEL'.Auth::user()->user_type.'-USER');
+          // user type 3 can unlock 150 leads
+          
+          $result['totalUnlockAbility']  =  config('settings.PLAN.'.$user->user_type)[0] < 0 
+                                            ? 'unlimited' 
+                                            : config('settings.PLAN.'.$user->user_type)[0];  //config('settings.LEVEL'.Auth::user()->user_type.'-USER');
+
           $user_id = Auth::user()->id;
           $users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
           $users_array = array_flip($users_array);

@@ -461,7 +461,7 @@ class AccountController extends Controller
 			if(!\Auth::check()) {
 				return redirect()->back()->with('error', 'Session expired. Please Log In Again!');
 			}
-			if(\Auth::user()->user_type != 4) {
+			if(\Auth::user()->user_type != config('settings.ADMIN-NUM')) {
 				return redirect()->back()->with('error', 'Access denied.');
 			}
 
