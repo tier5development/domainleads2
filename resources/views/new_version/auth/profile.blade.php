@@ -23,11 +23,11 @@
                     </p>
                 </div> --}}
                 {{-- <div class="displayPic">
-                    <div class="displayPicContainer"></div>
+                    <div class="displayPicContainer">{!! $user->profile_image !!}</div>
                     <div class="changePic">
                         <form method="POST" action="{{route('uploadImage')}}" id="uploadImagePost" enctype="multipart/form-data">
                             {{csrf_field()}}
-                            <input type="file" name="originalImage" class="changeProPic">
+                            <input type="file" name="originalImage" class="changeProPic" accept=".jpeg,.png,.jpg">
                             <input type="hidden" value="" name="icon" id="iconId">
                             <input type="hidden" value="" name="image" id="imageId">
                         </form>
@@ -35,7 +35,6 @@
                 </div> --}}
                 
                 <div class="profileFormArea">
-                    
                     {{-- Error or Success Message --}}
                     @include('new_version.shared.messages')
 
@@ -86,46 +85,46 @@
 
 
     <div class="uploadPicModal" style="display: none;">
-            <div class="modalContainer">
-            <span class="close"></span>
-            <h2>Edit Image</h2>
-            <div class="imageContainer">
-            <div class="imageHolder">
-            <img alt="">
+    <div class="modalContainer">
+    <span class="close"></span>
+    <h2>Edit Image</h2>
+    <div class="imageContainer">
+        <div class="imageHolder">
+        <img alt="">
+        </div>
+        <div class="imageFrame"></div>
+        <div class="editInfo" style="display: none;"></div>
+    </div>
+    <div class="editCtrl">
+        <span>Zoom In</span>
+        <div class="range"><input type="range" min="185" max="740" value="185" class="scale"></div>
+        <span>Zoom Out</span>
+        <button type="button" class="resetZoom">Reset</button>
+    </div>
+    <div class="editCtrl rotateCtrl">
+        <span>0 Deg</span>
+        <div class="range"><input type="range" min="0" max="180" value="0" class="rotate"></div>
+        <span>180 Deg</span>
+        <button type="button" class="resetRotate">Reset</button>
+    </div>
+    
+        <div class="previewArea">
+            <div class="preview">
+                <h3>Preview</h3>
+                <div class="output">{!! $user->profile_image !!}</div>
             </div>
-            <div class="imageFrame"></div>
-            <div class="editInfo" style="display: none;"></div>
-            </div>
-            <div class="editCtrl">
-            <span>Zoom In</span>
-            <div class="range"><input type="range" min="185" max="740" value="185" class="scale"></div>
-            <span>Zoom Out</span>
-            <button type="button" class="resetZoom">Reset</button>
-            </div>
-            <div class="editCtrl rotateCtrl">
-            <span>0 Deg</span>
-            <div class="range"><input type="range" min="0" max="180" value="0" class="rotate"></div>
-            <span>180 Deg</span>
-            <button type="button" class="resetRotate">Reset</button>
-            </div>
-            
-                    <div class="previewArea">
-                        <div class="preview">
-                            <h3>Preview</h3>
-                            <div class="output"></div>
-                        </div>
-                        <div class="preview2">
-                            <h3>Icon</h3>
-                            <div class="output2"></div>
-                        </div> 
-                    </div>
-            
-                    <div class="modalFooter">
-                        <button class="crop orangeBtn">Crop</button>
-                        <button class="greenBtn" id="uploadProfilePic">Upload</button>
-                    </div>
-                </div>
-            </div>
+            <div class="preview2">
+                <h3>Icon</h3>
+                <div class="output2">{!! $user->profile_image_icon !!}</div>
+            </div> 
+        </div>
+
+        <div class="modalFooter">
+            <button class="crop orangeBtn">Crop</button>
+            <button class="greenBtn" id="uploadProfilePic">Upload</button>
+        </div>
+        </div>
+    </div>
 
 
 
@@ -172,14 +171,14 @@
 
         var cropify = function() {
             cropedCss = $(".imageHolder").attr("style");
-            images.icon = '<div style="width:185px;height:124px;overflow:hidden;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ img +'"></div></div></div>';
-            images.image = '<div style="width:185px;height:124px;overflow:hidden;transform:scale(0.34);position:relative;left:-185%;top:-103%;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ img +'"></div></div></div>';
+            images.image = '<div style="width:185px;height:124px;overflow:hidden;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ img +'"></div></div></div>';
+            images.icon = '<div style="width:185px;height:124px;overflow:hidden;transform:scale(0.34);position:relative;left:-185%;top:-103%;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ img +'"></div></div></div>';
             
-            images.iconEnc = '<div style="width:185px;height:124px;overflow:hidden;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ '--icon--img--to--upload--' +'"></div></div></div>';
-            images.imageEnc = '<div style="width:185px;height:124px;overflow:hidden;transform:scale(0.34);position:relative;left:-185%;top:-103%;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ '--icon--img--to--upload--' +'"></div></div></div>';
+            images.imageEnc = '<div style="width:185px;height:124px;overflow:hidden;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ '--icon--img--to--upload--' +'"></div></div></div>';
+            images.iconEnc = '<div style="width:185px;height:124px;overflow:hidden;transform:scale(0.34);position:relative;left:-185%;top:-103%;"><div style="position:relative; left:-59px; top:-64px;"><div style="'+ cropedCss +'"><img style="width:100%;" src="'+ '--icon--img--to--upload--' +'"></div></div></div>';
 
-            $(".output").html(images.icon);
-            $(".output2").html(images.image);
+            $(".output").html(images.image);
+            $(".output2").html(images.icon);
             
             console.log('icon : ', images.icon);
             console.log('image : ', images.image);
