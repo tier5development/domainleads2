@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CurlErrorSeeder::class);
         $this->call(LeadUserSyncSeeder::class);
         $this->call(LeadUserSyncExpiredDomainsSeeder::class);
+        $this->call(SuspendSeeder::class);
     }
 }
