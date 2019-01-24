@@ -458,7 +458,9 @@
                     key: key
                 }, beforeSend: function() {
                     // Show loader
+                    $('#loader-icon').show();
                 }, success :function(response) {
+                    $('#loader-icon').hide();
                     if(response.status) {
                         $('#tr_'+key).removeClass('locked').empty().append(response.view);
                         r = response.usageMatrix;
@@ -474,6 +476,7 @@
                         alert(response.message);
                     }
                 }, error : function(er) {
+                    $('#loader-icon').hide();
                     if(er.status == 401) {
                         window.location.replace("{{route('loginPage')}}");
                     }
