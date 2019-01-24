@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LeadUserSyncExpiredDomainsSeeder::class);
         $this->call(SuspendSeeder::class);
         $this->call(AdminSettingsSeeder::class);
+        $this->call(UserPermissionsSeeder::class);
     }
 }
