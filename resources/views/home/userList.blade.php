@@ -242,9 +242,11 @@
         <label for="">User Role:</label>
         <select required name="user_type" id="" class="form-control">
           <option value="">Select</option>
-          <option value="1">Level 1</option>
-          <option value="2">Level 2</option>
-          <option value="3">Level 3</option>
+          @for ($i = 1; $i < config('settings.PLAN.L2'); $i++)
+            <option value="{{$i}}" {{$eachUser->user_type == $i ? 'selected' : ''}}>
+              Unlock {{config('settings.PLAN.'.$i)[0] > 0 ? config('settings.PLAN.'.$i)[0] : 'unlimited'}}
+            </option>
+          @endfor
         </select>
       </div>
       <div class="form-group">
