@@ -97,7 +97,7 @@ Route::get('/aa',function(){
        
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
-    Route::group(['middleware' => 'auth'],function() {
+    Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
 
         Route::post('/ajax_search_paginated',['uses'=>'SearchController@ajax_search_paginated','as'=>'ajax_search_paginated']);
 

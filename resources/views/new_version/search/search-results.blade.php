@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    @if($user->user_type >= 3)
+                    @if($user->user_type >= config('settings.PLAN.L1'))
                     <div class="dataTableHeader">
                         <form method="POST" action="{{route('download_csv_single_page')}}">
                             {{csrf_field()}}
@@ -426,7 +426,9 @@
                     // $('#table').show();
                     // $('#ajax-loader').hide();
                 }, error : function(er) {
-                    console.log(er);
+                    if(er.status == 401) {
+                        window.location.replace("{{route('loginPage')}}");
+                    }
                 }, complete: function() {
                     $('#loader-icon').hide();
                 }
@@ -446,34 +448,36 @@
         {
             var id = '{{$user->id}}';
             var domain_name = $('#domain_name_'+key).data('domainname');
-                $.ajax({
-                    type : 'POST',
-                    url  : "{{route('unlockleed')}}",
-                    data : { _token:'{{csrf_token()}}',
-                        registrant_email:reg_em ,
-                        user_id:id, 
-                        domain_name: domain_name,
-                        key: key
-                    }, beforeSend: function() {
-                        // Show loader
-                    }, success :function(response) {
-                        if(response.status) {
-                            $('#tr_'+key).removeClass('locked').empty().append(response.view);
-                            r = response.usageMatrix;
-                            if(r !== null && r !== undefined) {
-                                canvasObj.setCanvas();
-                                canvasObj.setCurve(r.leadsUnlocked, r.limit);
-                                canvasObj.drawProgressBar(10);
-                                $('#currentUnlockedCount').text(r.leadsUnlocked);
-                                $('#perDayLimitCount').text(r.limit);
-                                $('#tillDateCount').text(r.allLeadsUnlocked);
-                            }
-                        } else {
-                            alert(response.message);
+            $.ajax({
+                type : 'POST',
+                url  : "{{route('unlockleed')}}",
+                data : { _token:'{{csrf_token()}}',
+                    registrant_email:reg_em ,
+                    user_id:id, 
+                    domain_name: domain_name,
+                    key: key
+                }, beforeSend: function() {
+                    // Show loader
+                }, success :function(response) {
+                    if(response.status) {
+                        $('#tr_'+key).removeClass('locked').empty().append(response.view);
+                        r = response.usageMatrix;
+                        if(r !== null && r !== undefined) {
+                            canvasObj.setCanvas();
+                            canvasObj.setCurve(r.leadsUnlocked, r.limit);
+                            canvasObj.drawProgressBar(10);
+                            $('#currentUnlockedCount').text(r.leadsUnlocked);
+                            $('#perDayLimitCount').text(r.limit);
+                            $('#tillDateCount').text(r.allLeadsUnlocked);
                         }
-                    }, error : function(er) {
-                        console.error(er);
+                    } else {
+                        alert(response.message);
                     }
+                }, error : function(er) {
+                    if(er.status == 401) {
+                        window.location.replace("{{route('loginPage')}}");
+                    }
+                }
             });
         }
         @endif

@@ -156,11 +156,11 @@
                         </table>
                     </div>
                     @if($domains->count() > 0)
-                            <div class="paginate">
-                                {{$domains->appends(['date' => Request::has('date') ? Request::get('date') : null,
-                                'perpage' => Request::has('perpage') ? Request::get('perpage') : 20])->links()}}
-                            </div>
-                        @endif
+                        <div class="paginate">
+                            {{$domains->appends(['date' => Request::has('date') ? Request::get('date') : null,
+                            'perpage' => Request::has('perpage') ? Request::get('perpage') : 20])->links()}}
+                        </div>
+                    @endif
                 </div>
             </div>
 
