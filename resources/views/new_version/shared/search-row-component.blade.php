@@ -115,7 +115,7 @@
             @endif
         </td>
             
-        <td>
+        <td class="unlock-date-hide">
             @if(!isset($users_array[$each['registrant_email']]) && $restricted == true)
                 <button type="button" class="greenBtn unlockBtn" 
                     onclick="unlock('{{$each['registrant_email']}}', '{{$key}}')">

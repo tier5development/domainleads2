@@ -4,7 +4,7 @@
     </div>
     <div class="headerRight">
         <div class="heaverNav">
-            <ul>
+            <ul class={{config('settings.ADMIN-NUM') == $user->user_type ? 'admin-user' : 'normal-user'}}>
                 <li>
                     <a href="{{route('search')}}">
                         <span class="desktopOnly">SEARCH DOMAIN</span>

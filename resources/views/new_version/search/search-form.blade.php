@@ -68,7 +68,7 @@
                 <div class="rowHeading">Expired date range</div>
                 <div class="formRowInner dateRange">
                     <div class="dateArea">
-                        <div class="date">
+                        <div class="date ">
                             {{-- <input type="text" 
                             id="datepicker" 
                             class="dateHidden"> --}}
@@ -399,6 +399,9 @@
             $(this).nextAll(".month").val(dateSelect[1]);
             $(this).nextAll(".day").val(dateSelect[2]);
         });
-
+       
+        $(".date").click(function(){
+            $(this).find(".ui-datepicker-trigger").trigger('click');
+        });
     });
 </script>

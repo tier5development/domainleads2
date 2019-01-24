@@ -58,6 +58,18 @@ class UserController extends Controller
         }
     }
 
+    public function uploadImage(Request $request) {
+        try {
+
+            // dd($request->all());
+            $file = $request->getClientOriginalFilename;
+            dd($file);
+
+        } catch(\Exception $e) {
+            return redirect()->back()->with('fail', 'Error : '.$e->getMessage().' Line : '.$e->getLine());
+        }
+    }
+
     // public function downloadUnlockedLeads(Request $request) {
     //     $date = $request->has('date') ? $request->date : null;
     //     $result = DB::table('leads')
