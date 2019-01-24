@@ -59,12 +59,29 @@ class UserController extends Controller
     }
 
     public function uploadImage(Request $request) {
+        
         try {
-
-            // dd($request->all());
-            $file = $request->getClientOriginalFilename;
-            dd($file);
-
+            if(!\Auth::check()) {
+                return redirect()->route('loginPage');
+            }
+            
+            $this->validate($request, [
+                'originalImage'     => 'required',
+                'originalImage.*'   => 'image|mimes:jpeg,png,jpg|max:2048'
+            ]);
+            
+            $user = \Auth::user();
+            if($request->hasfile('originalImage')) {
+                $image  =   $request->file('originalImage');
+                $name   =   $image->getClientOriginalName();
+                $image  =   $request->file('originalImage');
+                $image->move(public_path().'/profile-pics/', $name);
+                $user->image_path = config('settings.APPLICATION-DOMAIN').'/public/profile-pics/'.$name;
+                $user->profile_image_icon   = str_replace('--icon--img--to--upload--', $user->image_path, $request->icon);
+                $user->profile_image        = str_replace('--icon--img--to--upload--', $user->image_path, $request->image);
+                $user->save();
+                return back()->with('success', 'Image Uploaded Successfully');
+            }
         } catch(\Exception $e) {
             return redirect()->back()->with('fail', 'Error : '.$e->getMessage().' Line : '.$e->getLine());
         }

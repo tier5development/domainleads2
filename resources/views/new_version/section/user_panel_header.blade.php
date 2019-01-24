@@ -49,6 +49,11 @@
                     <span class="desktopOnly">{{isset($user) && strlen(trim($user->name)) > 0 ? strtoupper($user->name) : 'USER'}}</span>
                 </div>
                 <div class="userImg">
+                    {{-- @if(strlen($user->profile_image_icon) > 0)
+                        <div class="output">{!! $user->profile_image_icon !!}</div>
+                    @else
+                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Profile_circle.png" alt="">
+                    @endif --}}
                     <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Profile_circle.png" alt="">
                 </div>
             </div>
@@ -57,6 +62,11 @@
                 <div class="profilePic">
                     {{-- <a href="javascript:void(0)" class="changePic"><img id="upload_profile_pic" src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_camera_green.png" alt="change picture"></a> --}}
                     <input type="file" id="avatar_file" accept="image/jpeg, image/png" style="display: none;" />
+                    {{-- @if(strlen($user->profile_image) > 0)
+                        <div class="output2"> {!! $user->profile_image !!} </div>
+                    @else
+                        <img id="profile_pic_container" style="max-width: 185; max-height: 123;" src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/profilePic.png" alt="">
+                    @endif --}}
                     <img id="profile_pic_container" style="max-width: 185; max-height: 123;" src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/profilePic.png" alt="">
                 </div>
                 <div class="profileMenuBody">
