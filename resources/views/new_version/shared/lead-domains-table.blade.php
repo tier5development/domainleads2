@@ -24,8 +24,9 @@
         <tbody>
             @foreach ($alldomain as $key=>$each)
             @php
-                $country_abr = isset($country_codes[ucwords(strtolower($each->registrant_country))]) 
-                    ? strtoupper($country_codes[ucwords(strtolower($each->registrant_country))]) : null;
+                $country = $each->leads ? $each->leads->registrant_country : null;
+                $country_abr = isset($country_codes[ucwords(strtolower($country))]) 
+                    ? strtoupper($country_codes[ucwords(strtolower($country))]) : null;
             @endphp
                 <tr id="tr_{{$key}}">
                     @include('new_version.shared.lead-domain-row-component', ['each' => $each, 'key' => $key, 'restricted' => $restricted, 'email' => $email, 'country_abr'=> $country_abr])
