@@ -166,7 +166,10 @@
   @foreach($users as $key => $eachUser)
       <tr id="row_{{$eachUser->id}}" style="background-color:mintcream" >
       {{-- <th scope="row">{!! $key + 1 !!}</th> --}}
-      <td>{!! $eachUser->name!!}</td>
+      <td>
+        {!! $eachUser->name!!}<br>
+        <strong><small>affiliate_id : {{ strlen($eachUser->affiliate_id) > 0 ? $eachUser->affiliate_id : 'nil'}}</small></strong>
+      </td>
       <td id="email_{{$eachUser->id}}">{!! $eachUser->email!!}</td>
       <td id="user_type_{{$eachUser->id}}">
         <form class="form-group" action="{{route('editUser')}}" method="POST">
@@ -181,7 +184,13 @@
         </form>
       </td>
       <td>
-          @if(strpos($eachUser->email, '_suspended'))
+          {{-- @if(strpos($eachUser->email, '_suspended'))
+            <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-warning">Unsuspend</button>
+          @else
+            <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-primary">Suspend</button>
+          @endif --}}
+
+          @if($eachUser->suspended == '1')
             <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-warning">Unsuspend</button>
           @else
             <button onclick="suspend_api('{{$eachUser->id}}', this)" class="btn btn-sm btn-primary">Suspend</button>
@@ -235,6 +244,10 @@
           <option value="2">Level 2</option>
           <option value="3">Level 3</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label for="">Affiliate Id (optional):</label>
+        <input required name="affiliate_id" type="text" class="form-control">
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-info pull-right createUserPost">Create</button>

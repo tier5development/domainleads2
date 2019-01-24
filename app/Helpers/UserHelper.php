@@ -111,7 +111,6 @@ class UserHelper {
 
     public static function createUser(Request $request) {
         try {
-            //dd('here');
             $email = $request->email;
             $validator = Validator::make($request->all(), ['email' => 'email|max:255']);
             if($validator->fails()) {
@@ -155,6 +154,7 @@ class UserHelper {
             $newUser->password = Hash::make(123456);
             $newUser->user_type = $usertype;
             $newUser->membership_status = 1;
+            $newUser->affiliate_id = $request->affiliate_id;
             if($newUser->save()) {
                 return response()->json([
                     'status' => true,
@@ -232,25 +232,34 @@ class UserHelper {
             $validator = Validator::make($request->all(), ['email' => 'email|max:255']);
             if($validator->fails()) {
                 return response()->json([
-                    'status' => false,
-                    'message' => $validator->errors()->first('email')
+                    'status'    => false,
+                    'message'   => $validator->errors()->first('email'),
+                    'email'     => $email
                 ], 200);
             }
+            
             $user = User::where('email', $email)->first();
             if(!$user) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'No such user or user is already suspended!'
+                    'status'    => false,
+                    'message'   => 'This user may have been deleted!',
+                    'email'     => $email
                 ], 200);
             }
-
-            $user->email .= '_suspended';
+            if($user->suspended == '1') {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'This user is already suspended!',
+                    'email'     => $user->email
+                ], 200);
+            }
+            $user->suspended = '1';
             $user->save();
             return response()->json([
-                'status' => true,
-                'message' => 'User suspended successfully!',
-                'email' => $user->email
-            ]);
+                'status'    => true,
+                'message'   => 'User suspended successfully!',
+                'email'     => $user->email
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -268,23 +277,32 @@ class UserHelper {
             if($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => $validator->errors()->first('email')
+                    'message' => $validator->errors()->first('email'),
+                    'email' => $email
                 ], 200);
             }
-            $user = User::where('email', $email.'_suspended')->first();
+            
+            $user = User::where('email', $email)->first();
             if(!$user) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'No such user or user is already unsuspended!'
+                    'status'    => false,
+                    'message'   => 'This user may have been deleted!',
+                    'email'     => $email
                 ], 200);
             }
-
-            $user->email = $email;
+            if($user->suspended == '0') {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'This user is already unsuspended!',
+                    'email'     =>  $email
+                ], 200);
+            }
+            $user->suspended = '1';
             $user->save();
             return response()->json([
-                'status' => true,
-                'message' => 'User unsuspended successfully!',
-                'email' => $user->email
+                'status'    => true,
+                'message'   => 'User unsuspended successfully!',
+                'email'     => $user->email
             ]);
 
         } catch (\Exception $e) {
@@ -322,7 +340,7 @@ class UserHelper {
                         'message' => $validator->errors()->first('email')
                     ], 200);
                 }
-                $user = User::where('email', $email)->orWhere('email', $email.'_suspended')->first();
+                $user = User::where('email', $email)->first();
                 if(!$user) {
                     return response()->json([
                         'status' => false,
@@ -331,24 +349,13 @@ class UserHelper {
                 }
             }
 
-            if(strpos($user->email, '_suspended') === false) {
-				$user->email .= '_suspended';
-				$user->save();
-				return response()->json([
-					'status' => true,
-					'message' => 'User suspended successfully!',
-					'email' => $user->email
-				]);
-			} else {
-				$user->email = str_replace('_suspended', '', $user->email);
-				$user->save();
-				return response()->json([
-					'status' => true,
-					'message' => 'User unsuspended successfully!',
-					'email' => $user->email
-				]);
-			}
-
+            $user->suspended = (string)abs(1-$user->suspended);
+            $user->save();
+            return response()->json([
+                'status'    => true,
+                'message'   => $user->suspended == 1 ? 'User suspended successfully!' : 'User unsuspended successfully!',
+                'email'     => $user->email
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
