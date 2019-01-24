@@ -206,8 +206,10 @@
                     key: key
                 }, beforeSend: function() {
                     // Show loader
+                    $('#loader-icon').show();
                 }, success :function(response) {
-                    console.log(response);
+                    $('#loader-icon').hide();
+                    // console.log(response);
                     if(response.status) {
                         $('#tr_'+key).empty().append(response.view);
                         r = response.usageMatrix;
@@ -224,6 +226,7 @@
                     }
                 }, error : function(er) {
                     // console.error(er);
+                    $('#loader-icon').hide();
                     if(er.status == 401) {
                         window.location.replace("{{route('loginPage')}}");
                     }
