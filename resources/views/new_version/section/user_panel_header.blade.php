@@ -195,7 +195,11 @@ var dataURLToBlob = function(dataURL) {
 // }
 
 $(document).ready(function() {
-
+console.log('ajkhsdtafkjytfkjtyfkjftykjfy');
+    // $(window).on('popstate', function(event) {
+    //     console.log('euhjatyfjy');
+    //     $('#loader-icon').hide();
+    // });
 
     // Scrren width mobile resolution 
     // $(".datatable table tbody tr td:first-child").click(function(){

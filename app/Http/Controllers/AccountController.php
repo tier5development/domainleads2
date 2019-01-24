@@ -339,6 +339,12 @@ class AccountController extends Controller
 		{
 		  if (Auth::validate($userdata)) {
 			if (Auth::attempt($userdata)) {
+
+				$user = Auth::user();
+				if($user->suspended == 1) {
+					Auth::logout();
+					return redirect()->back()->with('error', 'Your account has been suspended! Please contact with the administrator.');
+				}
 				return redirect('search');
 			} else {
 				return redirect()->back()->with('error', 'Please check your email and password!');

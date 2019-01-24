@@ -377,6 +377,10 @@
             $('#domain_ext').val(tldOptionsStr);
             $('#postSearchDataForm').submit();
         });
+
+        $(window).bind("pageshow", function(event) {
+            $("#loader-icon").hide();
+        });
     
         var cross = $(".selectBox .select-styled p span");
         $(".cl").click(function(event){
