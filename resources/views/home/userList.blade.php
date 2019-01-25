@@ -94,7 +94,7 @@
         </div>
     </div>
   </div>
-
+  
 <div class="container">
     <div>
 				@if(Session::has('error'))
@@ -242,11 +242,10 @@
         <label for="">User Role:</label>
         <select required name="user_type" id="" class="form-control">
           <option value="">Select</option>
-          @for ($i = 1; $i < config('settings.PLAN.L2'); $i++)
-            <option value="{{$i}}" {{$eachUser->user_type == $i ? 'selected' : ''}}>
-              Unlock {{config('settings.PLAN.'.$i)[0] > 0 ? config('settings.PLAN.'.$i)[0] : 'unlimited'}}
-            </option>
-          @endfor
+          <option value="1">Unlock {{config('settings.PLAN.1')[0]}}</option>
+          <option value="2">Unlock {{config('settings.PLAN.2')[0]}}</option>
+          <option value="3">Unlock {{config('settings.PLAN.3')[0]}}</option>
+          <option value="4">Unlock unlimited</option>
         </select>
       </div>
       <div class="form-group">
