@@ -300,7 +300,6 @@
                 $(this).find(".ui-datepicker-trigger").trigger('click');
             });
         });
-
         
     </script>
 </body>

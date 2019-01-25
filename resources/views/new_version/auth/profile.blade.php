@@ -141,7 +141,7 @@
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
-
+    
     <script type="text/javascript">
         var img = null;
         var images = {
@@ -231,7 +231,7 @@
             var scale = 185;
             var rotate = 0;
             var cropedCss;
-            $(".scale").mousemove(function(){
+            $(".scale").change(function(){
                 scale = $(this).val();
                 $(".imageHolder").css("width", scale + "px");
             });
@@ -244,12 +244,9 @@
                 }, 1000);
             });
 
-            $(".rotate").mousemove(function(){
+            $(".rotate").change(function(){
                 rotate = $(this).val();
                 $(".imageHolder").css("transform", "rotate(" + rotate + "deg)");
-
-            });
-            $(".rotate").change(function(){
                 $(".editInfo").text(rotate + "deg");
                 $(".editInfo").fadeIn(300);
                 setTimeout(function(){

@@ -12,4 +12,7 @@
     <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/profile-pic.css">
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/jQuery-min-3.3.1.min.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/jquery-ui.min.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/touch-punch.min.js"></script>
+    {{-- <script src="jquery.ui.mouse.js"></script> --}}
+    {{-- <script src="https://raw.githubusercontent.com/furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js"></script> --}}
 </head>

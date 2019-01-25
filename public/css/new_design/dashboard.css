@@ -1359,6 +1359,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     position: relative;
     border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 10px;
 }
 .displayPicContainer {
     width: 185px;

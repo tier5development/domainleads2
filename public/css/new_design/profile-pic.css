@@ -6,6 +6,7 @@
     height: 100%;
     background: rgba(255,255,255,0.9);
     z-index: 999;
+    overflow-y: scroll;
     }
     .uploadPicModal .modalContainer {
     max-width: 550px;
@@ -350,7 +351,7 @@ background: transparent;
 border-color: transparent;
 border-width: 16px 0;
 color: transparent;
-}
+}.previewArea
 input[type=range]::-ms-fill-lower {
 background: #ccc;
 border-radius: 2.6px;
@@ -390,3 +391,23 @@ background: #ccc;
 input[type=range]:focus::-ms-fill-upper {
 background: #ccc;
 }
+
+
+@media screen and (max-width: 540px) {
+    .uploadPicModal .modalContainer {
+        padding: 10px;
+        max-width: 320px;
+    }
+    .previewArea {
+        transform: translateX(10%);
+    }
+    .range {
+        width: 100px;
+    }
+    .editCtrl {
+        width: 300px;
+    }
+    .editCtrl span {
+        font-size: 12px;
+    }
+} 
