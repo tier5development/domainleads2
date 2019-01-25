@@ -13,7 +13,11 @@
             <div class="leftPanel">
                 <div class="leftPanelHeader">
                     <div class="clientImg">
-                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Profile_circle_small.png" alt="">
+                        @if(strlen($user->profile_image_icon) > 0)
+                            {!! $user->profile_image_icon !!}
+                        @else
+                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/dl_default_user_pic_40x40.png" alt="">
+                        @endif
                     </div>
                     <div class="clientInfo">
                         <h1>Hey {{ucwords(strtolower(explode(' ', $user->name)[0]))}},</h1>
