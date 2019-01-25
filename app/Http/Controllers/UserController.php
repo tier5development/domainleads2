@@ -67,7 +67,7 @@ class UserController extends Controller
             
             $this->validate($request, [
                 'originalImage'     => 'required',
-                'originalImage.*'   => 'image|mimes:jpeg,png,jpg|max:2048'
+                'originalImage.*'   => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
             
             $user = \Auth::user();

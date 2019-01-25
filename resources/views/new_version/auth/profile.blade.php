@@ -23,11 +23,16 @@
                     </p>
                 </div> --}}
                 <div class="displayPic">
-                    <div class="displayPicContainer">{!! $user->profile_image !!}</div>
-                    <div class="changePic">
+                    {{--  --}}
+                    @if(strlen($user->profile_image) > 0)
+                        <div class="displayPicContainer">{!! $user->profile_image !!}</div>
+                    @else
+                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/dl_default_user_pic.gif" alt="">
+                    @endif
+                    <div class="changePic">    
                         <form method="POST" action="{{route('uploadImage')}}" id="uploadImagePost" enctype="multipart/form-data">
                             {{csrf_field()}}
-                            <input type="file" name="originalImage" class="changeProPic" accept=".jpeg,.png,.jpg">
+                            <input type="file" name="originalImage" class="changeProPic" accept=".jpeg,.png,.jpg,.gif">
                             <input type="hidden" value="" name="icon" id="iconId">
                             <input type="hidden" value="" name="image" id="imageId">
                         </form>

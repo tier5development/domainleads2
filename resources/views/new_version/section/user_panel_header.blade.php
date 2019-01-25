@@ -50,9 +50,9 @@
                 </div>
                 <div class="userImg">
                     @if(strlen($user->profile_image_icon) > 0)
-                    {!! $user->profile_image_icon !!}
+                        {!! $user->profile_image_icon !!}
                     @else
-                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Profile_circle.png" alt="">
+                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/dl_default_user_pic_40x40.png" alt="">
                     @endif
                     {{-- <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Profile_circle.png" alt=""> --}}
                 </div>
@@ -63,9 +63,9 @@
                     {{-- <a href="javascript:void(0)" class="changePic"><img id="upload_profile_pic" src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_camera_green.png" alt="change picture"></a> --}}
                     <input type="file" id="avatar_file" accept="image/jpeg, image/png" style="display: none;" />
                     @if(strlen($user->profile_image) > 0)
-                    {!! $user->profile_image !!}
+                        {!! $user->profile_image !!}
                     @else
-                        <img id="profile_pic_container" style="max-width: 185; max-height: 123;" src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/profilePic.png" alt="">
+                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/dl_default_user_pic.gif" alt="">
                     @endif
                     {{-- <img id="profile_pic_container" style="max-width: 185; max-height: 123;" src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/profilePic.png" alt=""> --}}
                 </div>
