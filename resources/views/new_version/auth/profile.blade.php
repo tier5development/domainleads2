@@ -22,7 +22,7 @@
                         TIP: Click on the "Camera" icon on the profile pic<br>to change it
                     </p>
                 </div> --}}
-                {{-- <div class="displayPic">
+                <div class="displayPic">
                     <div class="displayPicContainer">{!! $user->profile_image !!}</div>
                     <div class="changePic">
                         <form method="POST" action="{{route('uploadImage')}}" id="uploadImagePost" enctype="multipart/form-data">
@@ -32,7 +32,7 @@
                             <input type="hidden" value="" name="image" id="imageId">
                         </form>
                     </div>
-                </div> --}}
+                </div>
                 
                 <div class="profileFormArea">
                     {{-- Error or Success Message --}}
@@ -212,6 +212,7 @@
             reader.onloadend = function() {
                 $(".imageHolder img").attr("src", reader.result);
                 img = reader.result;
+                cropify();
                 //console.log('on load loaded : ', reader.result);
             }
             $(".uploadPicModal").fadeIn();

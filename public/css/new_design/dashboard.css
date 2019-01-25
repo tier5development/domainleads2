@@ -293,12 +293,13 @@ input, select, textarea, button {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
 }
 .profileMenu {
     position: absolute;
     z-index: 99;
     top: 0;
-    left: 0;
+    right: -30px;
     width: 185px;
     border-radius: 10px;
     overflow: hidden;
@@ -1356,6 +1357,8 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     height: 123px;
     margin-top: 30px;
     position: relative;
+    border-radius: 10px;
+    overflow: hidden;
 }
 .displayPicContainer {
     width: 185px;
