@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    @if($user->user_type >= config('settings.PLAN.L1'))
+                    @if($user->user_type > config('settings.PLAN.L1'))
                     <div class="dataTableHeader">
                         <form method="POST" action="{{route('download_csv_single_page')}}">
                             {{csrf_field()}}
