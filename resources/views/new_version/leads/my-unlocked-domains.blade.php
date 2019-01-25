@@ -296,6 +296,9 @@
                 styledSelect.removeClass('active');
                 list.fadeOut(200);
             });
+            $(".date").click(function(){
+                $(this).find(".ui-datepicker-trigger").trigger('click');
+            });
         });
 
         

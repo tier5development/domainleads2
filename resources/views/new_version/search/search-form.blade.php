@@ -403,7 +403,7 @@
             $(this).nextAll(".month").val(dateSelect[1]);
             $(this).nextAll(".day").val(dateSelect[2]);
         });
-       
+        
         $(".date").click(function(){
             $(this).find(".ui-datepicker-trigger").trigger('click');
         });
