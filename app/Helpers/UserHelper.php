@@ -91,7 +91,8 @@ class UserHelper {
             if($user->save()) {
                 return response()->json([
                     'status' => true,
-                    'message' => 'User Updated successfully'
+                    'message' => 'User Updated successfully',
+                    'email' => $user->email
                 ]);
             } else {
                 return response()->json([
@@ -156,7 +157,8 @@ class UserHelper {
             if($newUser->save()) {
                 return response()->json([
                     'status' => true,
-                    'message' => 'User Created successfully'
+                    'message' => 'User Created successfully',
+                    'email' =>  $newUser->email
                 ]);
             } else {
                 return response()->json([

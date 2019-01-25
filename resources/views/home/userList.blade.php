@@ -251,7 +251,7 @@
       </div>
       <div class="form-group">
         <label for="">Affiliate Id (optional):</label>
-        <input required name="affiliate_id" type="text" class="form-control">
+        <input name="affiliate_id" type="text" class="form-control">
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-info pull-right createUserPost">Create</button>
