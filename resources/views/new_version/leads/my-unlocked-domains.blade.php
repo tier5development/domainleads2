@@ -132,7 +132,7 @@
                                                     @elseif(strtolower(trim($phoneType)) == 'landline')
                                                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_land_phone.png" alt="">
                                                     @endif
-                                                    <span>{!!$phone!!}</span>
+                                                    <span>{{ str_replace('.', '-', $phone) }}</span>
                                                 </p>
                                             @else
 

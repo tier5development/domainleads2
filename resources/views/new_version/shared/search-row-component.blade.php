@@ -80,7 +80,7 @@
                     @elseif(isset($each['number_type']) && strtolower($each['number_type']) == 'landline')
                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_land_phone.png" alt="">
                     @endif
-                    <span>{{$each['registrant_phone']}}</span>
+                    <span>{{str_replace('.', '-', $each['registrant_phone'])}}</span>
                 </p>
             @endif
         </td>

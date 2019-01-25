@@ -82,7 +82,7 @@
                             <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_land_phone.png" alt="">
                         @endif
                     @endif
-                    <span>{{$lead->registrant_phone}}</span>
+                    <span>{{str_replace('.', '-', $lead->registrant_phone)}}</span>
                 @else
 
                 @endif
