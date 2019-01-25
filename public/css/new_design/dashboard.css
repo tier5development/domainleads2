@@ -446,8 +446,8 @@ input, select, textarea, button {
     margin: 100px 0 30px 0;
 }
 .leftPanelHeader .clientImg {
-    width: 33px;
-    height: 33px;
+    width: 40px;
+    height: 40px;
     border-radius: 20px;
     overflow: hidden;
     text-align: center;
