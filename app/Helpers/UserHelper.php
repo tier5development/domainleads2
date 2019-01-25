@@ -286,7 +286,7 @@ class UserHelper {
             if(!$user) {
                 return response()->json([
                     'status'    => false,
-                    'message'   => 'This user may have been deleted!',
+                    'message'   => 'This user is not present or may have been deleted!',
                     'email'     => $email
                 ], 200);
             }

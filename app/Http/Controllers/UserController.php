@@ -146,7 +146,7 @@ class UserController extends Controller
           $temp['first_name'] = $each->registrant_fname;
           $temp['last_name'] = $each->registrant_lname;
           $temp['website'] = $each->domain_name;
-          $temp['phone'] = $each->registrant_phone;
+          $temp['phone'] = str_replace('.', '-', $each->registrant_phone);
           $temp['number_type'] = $each->number_type;
           $temp['domains_create_date'] = $each->domains_create_date == null ? '' : date('m-d-Y', strtotime($each->domains_create_date));
           $temp['expiry_date'] = $each->expiry_date == null ? '' : date('m-d-Y', strtotime($each->expiry_date));
@@ -158,17 +158,6 @@ class UserController extends Controller
             $sheet->fromArray($exportArray);
           });
         })->download('csv');
-    }
-
-    public function fetchUsageData() {
-        try {
-
-            $user = Auth::user();
-
-
-        } catch(\Exception $e) {
-
-        }
     }
 }
 
