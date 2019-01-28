@@ -1858,7 +1858,6 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
-      
       ini_set('max_execution_time', 346000);
       if(Auth::check())
       {

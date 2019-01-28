@@ -81,7 +81,7 @@
                     </div>
                 </div>
                 <div class="filterFormRow">
-                    <button type="submit" class="orangeBtn">Apply Filter</button>
+                    <button id="advanced-search-btn" type="submit" class="orangeBtn">Apply Filter</button>
                 </div>
             </div>
         </div>
@@ -131,6 +131,14 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
+        $(window).bind("pageshow", function(event) {
+            $("#loader-icon").hide();
+        });
+
+        $('#advanced-search-btn').on('click', function() {
+            $("#loader-icon").show();
+        });
+
         // $('.select').each(function(){
         //     var thisVar = $(this), numberOfOptions = $(this).children('option').length;
 
