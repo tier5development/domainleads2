@@ -107,6 +107,10 @@
 
 <script type="text/javascript">
 
+String.prototype.translateToDate = function() {
+    return this.length == 1 ? '0'+this : this;
+} 
+
 image_config = {
     'w' : 185,
     'h' : 123,

@@ -1858,11 +1858,13 @@ public function download_csv_single_page(Request $request)
 
     public function search(Request $request)
     {
+      
       ini_set('max_execution_time', 346000);
       if(Auth::check())
       {
         if($request->all())
         {
+          // dd($request->all());
           // dd($request->all(), $request->has('pagination')); 
           $request['pagination']  = $request->has('pagination') ? $request->pagination : 10;
           $request['domain_ext']  = $this->tldExtToArray($request->domain_ext);
