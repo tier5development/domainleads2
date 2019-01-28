@@ -162,9 +162,9 @@
 
         {{-- Hidden fields --}}
         <input type="hidden" name="gt_ls_domaincount_no" value="0">
-        <input type="hidden" name="domaincount_no" value="0">
+        <input type="hidden" name="domaincount_no">
         <input type="hidden" name="gt_ls_leadsunlocked_no" value="0">
-        <input type="hidden" name="leadsunlocked_no" value="0">
+        <input type="hidden" name="leadsunlocked_no">
         <input type="hidden" name="sort" value="unlocked_acnd">
         <input type="hidden" name="pagination" value="10">
     </form>
@@ -403,7 +403,7 @@
             $(this).nextAll(".month").val(dateSelect[1]);
             $(this).nextAll(".day").val(dateSelect[2]);
         });
-        
+
         $(".date").click(function(){
             $(this).find(".ui-datepicker-trigger").trigger('click');
         });

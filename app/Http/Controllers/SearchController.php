@@ -1078,8 +1078,9 @@ public function download_csv_single_page(Request $request)
 
     private function checkMetadata_Search(Request $request)
     {
-      
+      // dd($request->all());
       $input = $this->estimated_input_fields();
+      
       $date_flag = 0;
       $phone_type_meta  = '('.implode(',',$this->phone_type_array).')';
       $domain_ext_meta  = '('.implode(',',$this->domain_ext_arr).')';
@@ -1168,7 +1169,9 @@ public function download_csv_single_page(Request $request)
           // }
           else if($key == 'leadsunlocked_no')
           {
-              if($gt_ls_leadsunlocked_no == '') continue;
+              if($gt_ls_leadsunlocked_no == '') {
+                continue;
+              } 
               else if($gt_ls_leadsunlocked_no != '' && is_null($req)) continue;
               if($req == '')  $req=0;
               $sql .= " and unlocked_num = ".$req." and leads_unlocked_operator = '".$gt_ls_leadsunlocked_no."'";
@@ -1279,9 +1282,7 @@ public function download_csv_single_page(Request $request)
             }
           }
         }
-
         $sql .= " and sortby = '".$req."'";
-
         // if($req == 'unlocked_asnd')  $sql .= " ORDER BY unlocked_num ASC ";
         // else if($req == 'unlocked_dcnd') $sql .= " ORDER BY unlocked_num DESC ";
         // else if($req == 'domain_count_asnd')  $sql .= " ORDER BY domains_count ASC ";
@@ -1293,7 +1294,7 @@ public function download_csv_single_page(Request $request)
       
       // No leads are cached so actual search is implemented
       if($meta_data_leads == null) {
-        
+        Log::info('no cached search ');
         $t1 = microtime(true);
         $leads = $this->leads_Search($request);
         $t2 = microtime(true);
@@ -1330,6 +1331,7 @@ public function download_csv_single_page(Request $request)
         
         if($last_query_update_time > $last_csv_insert_time)
         {
+          Log::info('cached search - but update first');
           $this->update_metadata_partial($meta_data_leads[0]->id);
           $raw_leads_id = $this->uncompress($meta_data_leads[0]->leads
                                   ,$meta_data_leads[0]->compression_level);
@@ -1341,6 +1343,7 @@ public function download_csv_single_page(Request $request)
           $raw_leads_id = $this->paginated_raw_leads($raw_leads_id,$limit,$offset);
           return $this->raw_leads($raw_leads_id);
         } else {
+          Log::info('cached search');
           $t1 = microtime(true);
           $leads = $this->leads_Search($request);
           $t2 = microtime(true);
