@@ -230,6 +230,8 @@ input, select, textarea, button {
 }
 .select-styled.active + ul.select-options{
     margin-top: 1px;
+    max-height: 250px;
+    overflow-y: scroll;
 }
 
 .selectNumberArea .select {
@@ -297,7 +299,7 @@ input, select, textarea, button {
 }
 .profileMenu {
     position: absolute;
-    z-index: 99;
+    z-index: 999;
     top: 0;
     right: -30px;
     width: 185px;

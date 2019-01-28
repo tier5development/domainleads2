@@ -125,11 +125,11 @@
             </p>
         @endif
     </td>
-            
+    
     <td>
         @if(!isset($users_array[$each->domain_name]) && $restricted == true)
             <button type="button" class="greenBtn unlockBtn" 
-                onclick="unlockFromLeads('{{$email}}', '{{$key}}', '{{base64_encode($lead->registrant_phone)}}', '{{base64_encode($ph->number_type)}}')">
+                onclick="unlockFromLeads('{{$email}}', '{{$key}}')">
                 <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_unclok_whilte.png" alt=""> Unlock
             </button>
         @else

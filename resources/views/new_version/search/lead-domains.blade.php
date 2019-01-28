@@ -193,7 +193,7 @@
             });
         });
 
-        function unlockFromLeads(reg_em , key, ph, ph_type) {
+        function unlockFromLeads(reg_em , key) {
             var id = '{{$user->id}}';
             var domain_name = $('#domain_name_'+key).data('domainname');
             $.ajax({
@@ -203,9 +203,7 @@
                     registrant_email:reg_em ,
                     user_id:id, 
                     domain_name: domain_name,
-                    key: key,
-                    ph: ph,
-                    ph_type: ph_type
+                    key: key
                 }, beforeSend: function() {
                     // Show loader
                     $('#loader-icon').show();

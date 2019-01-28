@@ -322,8 +322,7 @@ public function download_csv_single_page(Request $request)
         }
         $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $limit = 0;
-        $phone = base64_decode($request->ph);
-        $phone_type = base64_decode($request->ph_type);
+        
         // if(Auth::user()->user_type == 1) {
         //   // $limit = config('settings.LEVEL1-USER');
         //   $limit = 
@@ -355,8 +354,8 @@ public function download_csv_single_page(Request $request)
         $leaduser->registrant_country = $data->registrant_country;
         $leaduser->registrant_fname   = $data->registrant_fname;
         $leaduser->registrant_lname   = $data->registrant_lname;
-        $leaduser->registrant_phone   = $phone;//$data->registrant_phone;
-        $leaduser->number_type        = $phone_type;//$data->valid_phone ? $data->valid_phone->number_type : null;
+        $leaduser->registrant_phone   = $data->registrant_phone;
+        $leaduser->number_type        = $data->valid_phone ? $data->valid_phone->number_type : null;
         $leaduser->registrant_company = $data->registrant_company;
         $leaduser->domain_name        = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name;
         $leaduser->domains_create_date = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
@@ -1922,7 +1921,7 @@ public function download_csv_single_page(Request $request)
           $leadArr = null;
           $totalDomains = null;
           $user = Auth::user();
-          $allExtensions = ['com', 'org', 'us', 'io', 'net', 'gov', 'edu', 'in', 'onion'];
+          $allExtensions = ['au','ar','an', 'ca', 'com', 'co', 'ch', 'de', 'es', 'jp', 'edu', 'fr', 'gov', 'io', 'in', 'it', 'info', 'jobs', 'mil', 'mobi', 'net', 'nl', 'no', 'org', 'onion', 'ru', 'us', 'uk', 'se', 'travel', 'pro'];
           // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
           // return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
           return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user, 'allExtensions' => $allExtensions]);
