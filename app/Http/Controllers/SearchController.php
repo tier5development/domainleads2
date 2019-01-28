@@ -322,6 +322,8 @@ public function download_csv_single_page(Request $request)
         }
         $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $limit = 0;
+        $phone = base64_decode($request->ph);
+        $phone_type = base64_decode($request->ph_type);
         // if(Auth::user()->user_type == 1) {
         //   // $limit = config('settings.LEVEL1-USER');
         //   $limit = 
@@ -353,8 +355,8 @@ public function download_csv_single_page(Request $request)
         $leaduser->registrant_country = $data->registrant_country;
         $leaduser->registrant_fname   = $data->registrant_fname;
         $leaduser->registrant_lname   = $data->registrant_lname;
-        $leaduser->registrant_phone   = $data->registrant_phone;
-        $leaduser->number_type        = $data->valid_phone ? $data->valid_phone->number_type : null;
+        $leaduser->registrant_phone   = $phone;//$data->registrant_phone;
+        $leaduser->number_type        = $phone_type;//$data->valid_phone ? $data->valid_phone->number_type : null;
         $leaduser->registrant_company = $data->registrant_company;
         $leaduser->domain_name        = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name;
         $leaduser->domains_create_date = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
@@ -418,6 +420,8 @@ public function download_csv_single_page(Request $request)
         }
         $count = LeadUser::where('user_id', Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $limit = 0;
+        $phone = base64_decode($request->ph);
+        $phone_type = base64_decode($request->ph_type);
         // if(Auth::user()->user_type == 1) {
         //   $limit = config('settings.LEVEL1-USER');
         // } else if(Auth::user()->user_type == 2) {
@@ -448,8 +452,8 @@ public function download_csv_single_page(Request $request)
         $leaduser->registrant_country = $data->registrant_country;
         $leaduser->registrant_fname   = $data->registrant_fname;
         $leaduser->registrant_lname   = $data->registrant_lname;
-        $leaduser->registrant_phone   = $data->registrant_phone;
-        $leaduser->number_type        = $data->valid_phone ? $data->valid_phone->number_type : null;
+        $leaduser->registrant_phone   = $phone; //$data->registrant_phone;
+        $leaduser->number_type        = $phone_type;// $data->valid_phone ? $data->valid_phone->number_type : null;
         $leaduser->registrant_company = $data->registrant_company;
         $leaduser->domain_name        = count($domain) == 0 ? $data->each_domain->first()->domain_name : $domain->domain_name;
         $leaduser->domains_create_date = count($domain) == 0 ? $data->each_domain->first()->domains_info->first()->domains_create_date 
@@ -467,16 +471,17 @@ public function download_csv_single_page(Request $request)
           $array['id']     = $data->id;
           $array['registrant_email']    = $leaduser->registrant_email;
           $array['registrant_name']     = $leaduser->registrant_fname." ".$data->registrant_lname;
-          $array['registrant_phone']    = $leaduser->registrant_phone;
+          $array['registrant_phone']    =  $leaduser->registrant_phone;
           $array['registrant_company']  = $leaduser->registrant_company;
           $array['domain_name']         = $leaduser->domain_name;
-          $array['domain_name_masked']    = customMaskDomain($leaduser->domain_name);
+          $array['domain_name_masked']  = customMaskDomain($leaduser->domain_name);
           $array['domains_create_date'] = date('d/m/Y', strtotime($leaduser->domains_create_date));
           $array['expiry_date']         = date('d/m/Y', strtotime($leaduser->expiry_date));
           $array['unlocked_num']        = $data->unlocked_num;
           $array['registrant_country']  = $leaduser->registrant_country;
           $array['domains_count']       = $data->domains_count;
           $array['restricted']          = false;
+          $array['number_type']         = $leaduser->number_type;
           //$array['total_domain_count']  = $lead->each_domain;
 
           // previous
@@ -1693,7 +1698,7 @@ public function download_csv_single_page(Request $request)
         //   $domain_list[$v->registrant_email]['all_numbers'][]       = $v->phone_number;
         // }
       }
-      
+      // dd($domain_list);
       foreach ($data as $key => $value)
       {
         

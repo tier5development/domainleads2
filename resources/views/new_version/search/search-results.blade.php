@@ -444,7 +444,7 @@
             }
         }
 
-        function unlock(reg_em , key)
+        function unlock(reg_em , key, ph, ph_type)
         {
             var id = '{{$user->id}}';
             var domain_name = $('#domain_name_'+key).data('domainname');
@@ -455,7 +455,9 @@
                     registrant_email:reg_em ,
                     user_id:id, 
                     domain_name: domain_name,
-                    key: key
+                    key: key,
+                    ph: ph,
+                    ph_type : ph_type
                 }, beforeSend: function() {
                     // Show loader
                     $('#loader-icon').show();

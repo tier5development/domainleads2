@@ -16,6 +16,7 @@
     
     
         <td>
+            
             @if(!isset($users_array[$each['registrant_email']]) && $restricted == true)
                 <p data-domainname="{{$each['domain_name']}}"
                     data-restrict="1" 
@@ -118,7 +119,7 @@
         <td class="unlock-date-hide">
             @if(!isset($users_array[$each['registrant_email']]) && $restricted == true)
                 <button type="button" class="greenBtn unlockBtn" 
-                    onclick="unlock('{{$each['registrant_email']}}', '{{$key}}')">
+                    onclick="unlock('{{$each['registrant_email']}}', '{{$key}}', '{{base64_encode($each['registrant_phone'])}}', '{{base64_encode($each['number_type'])}}')">
                     <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_unclok_whilte.png" alt=""> Unlock
                 </button>
             @else
