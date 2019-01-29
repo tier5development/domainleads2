@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    @include('new_version.section.user_panel_head', ['title' => 'Domainleads | Dashboard | Search'])
+    @include('new_version.section.user_panel_head', ['title' => 'Domainleads Search'])
 <body>
     @include('new_version.shared.loader')
     <div class="container">

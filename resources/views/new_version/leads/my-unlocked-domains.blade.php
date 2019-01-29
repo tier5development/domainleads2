@@ -5,7 +5,7 @@
     * Input title (Optional)
     * Brings in css and js files
     --}}
-@include('new_version.section.user_panel_head', ['title' => 'Domainleads | Unlocked Leads'])
+@include('new_version.section.user_panel_head', ['title' => 'Unlocked Leads | Domainleads'])
 <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/laravel-pagination.css">
 <body>
 
