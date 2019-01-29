@@ -1,5 +1,5 @@
 $(document).ready(function(){
-//responsive menu
+// for responsive menu
 
   $('.menu-button').click(function(){
     $('.bottomRight').addClass('pull');
@@ -14,12 +14,14 @@ $(document).ready(function(){
 //   $('#bannercaptionWrap').scroll(function() { 
 //     $('#banner_img_left').animate({top:$(this).scrollTop()},100,"linear");
 // })
+
+
  });
 
 
 
 
-// sidepopup
+// for sidepopup
 function PopUp(hideOrshow) {
       if (hideOrshow == 'hide') document.getElementById('stickyBoxWrap').style.display = "none";
       else document.getElementById('stickyBoxWrap').removeAttribute('style');
@@ -29,5 +31,4 @@ function PopUp(hideOrshow) {
               PopUp('show' , '1000');
           }, 2000);
       }
-
 

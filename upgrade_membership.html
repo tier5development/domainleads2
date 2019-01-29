@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>|| Upgrade Membership.png ||</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
+    
+</head>
+<body>
+    <div class="container noWidth">
+        <header class="dashHeader">
+            <div class="headerLeft">
+                <a href=""><img src="images/logo.png" alt=""></a>
+            </div>
+            <div class="headerRight">
+                <div class="heaverNav">
+                    <ul>
+                        <li>
+                            <a href="">
+                                <span class="desktopOnly">SEARCH DOMAIN</span>
+                                <img src="images/search.png" alt="SEARCH DOMAIN" class="mobileOnly">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="desktopOnly">UNLOCKED LEADS</span>
+                                <img src="images/icon_unlocked_leads_mobile.png" alt="UNLOCKED LEADS" class="mobileOnly">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="userNameArea">
+                    <div class="userName">
+                        <span class="desktopOnly">JOHN VAUGHN</span>
+                    </div>
+                    <div class="userImg">
+                        <img src="images/Profile_circle.png" alt="">
+                    </div>
+                    <div class="profileMenu">
+                        <div class="closeMenu"></div>
+                        <div class="profilePic">
+                            <a href="" class="changePic"><img src="images/icon_camera_green.png" alt="change picture"></a>
+                            <img src="images/profilePic.png" alt="">
+                        </div>
+                        <div class="profileMenuBody">
+                            <div class="profileName">
+                                <p>JOHN VAUGHN</p>
+                                <span>john.doe@tier5.us</span>
+                            </div>
+                            <ul>
+                                <li><a href="">Profile</a></li>
+                                <li><a href="">Payment Info</a></li>
+                                <li><a href="">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </header>
+        
+        <section class="mainBody">
+            <div class="rightPanel">
+                <div class="leftLine">
+                    <span></span>
+                    <p></p>
+                    <span></span>
+                </div>
+                <h2>YOUR DOMAIN UNLOCKING HISTORY</h2>
+                <div class="todayContent">
+                    <h3>Today</h3>
+                    <div class="chart">
+                        <canvas id="crart" width="132" height="132"></canvas>
+                    </div>
+                    <p>
+                        You have unlocked <span class="green">40 /</span> <span class="yellow">50</span> domains today
+                    </p>
+                    <p>
+                        Upgrade your membership<br> to unlock more of your daily limit.
+                    </p>
+                    <p>
+                        <button type="button" class="orangeBtn">Upgrade Now</button>
+                    </p>
+                </div>
+                <div class="tilldateContent">
+                    <h3>Till Date</h3>
+                    <p>You have unlocked <span class="green">359</span> domails till date</p>
+                </div>
+            </div>
+
+            <div class="leftPanel">
+                <div class="tab">
+                    <button onclick="openItem('profile_info')" class="singleItem">profile information</button>
+                    <button onclick="openItem('change _password')" class="singleItem">change password</button>
+                    <button onclick="openItem('payment_info')" class="singleItem">payment information</button>
+                    <button onclick="openItem('membership')" class="singleItem active">membership</button>
+                </div>
+                    
+                <div id="profile_info" class="eachItem" style="display:none">
+                    <h2>Edit your profile information layout will be here.</h2>
+                    <p>some content</p>
+                </div>
+                
+                <div id="change _password" class="eachItem" style="display:none">
+                    <h2>Change your password layout will be here.</h2>
+                    <p>some text</p> 
+                </div>
+                
+                <div id="payment_info" class="eachItem" style="display:none">
+                    <h2>hfghfhfhfhf</h2>
+                    <p>Tokyo is the capital of Japan.</p>
+                </div>
+
+                <div id="membership" class="eachItem">
+                    <h2>your membership plan</h2>
+                    <p>Upgrade or downgrade your membership plan anytime.</p>
+                    <div class="plans">
+                        <div class="container">
+                            <div class="eachPlanContainer clearfix">
+                            <div class="eachPlanOuter">
+                                <div class="eachPlan">
+                                <img src="images/basic_plan.png">
+                                <h4>basic</h4>
+                                <ul>
+                                    <li>50 leads a day</li>
+                                    <li>location filters</li>
+                                    <li>keywords filters</li>
+                                    <li>TLD filters</li>
+                                    <li>lead exports</li>
+                                </ul>
+                                <h3>$47</h3>
+                                <span>Billed monthly, no set up fee.</span>
+                                <button class="greyButton">current plan</button>
+                                <!-- <a href="#" class="button gradiant-orange">get started</a> -->
+                                </div>
+                            </div>
+                            <div class="eachPlanOuter">
+                                <div class="eachPlan">
+                                <img src="images/pro_plan.png">
+                                <h4>pro</h4>
+                                <ul>
+                                    <li>50 leads a day</li>
+                                    <li>location filters</li>
+                                    <li>keywords filters</li>
+                                    <li>TLD filters</li>
+                                    <li>lead exports</li>
+                                </ul>
+                                <h3>$97</h3>
+                                <span>Billed monthly, no set up fee.</span>
+                                <a href="#" class="button gradiant-orange">get started</a>
+                                </div>
+                            </div>
+                            <div class="eachPlanOuter">
+                                <div class="eachPlan">
+                                <img src="images/agency_plan.png">
+                                <h4>agency</h4>
+                                <ul>
+                                    <li>50 leads a day</li>
+                                    <li>location filters</li>
+                                    <li>keywords filters</li>
+                                    <li>TLD filters</li>
+                                    <li>lead exports</li>
+                                </ul>
+                                <h3>$197</h3>
+                                <span>Billed monthly, no set up fee.</span>
+                                <a href="#" class="button gradiant-orange">get started</a>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>I want to <a href="#" class="cancelMembership">cancel my membership</a> now</p>
+                </div>
+            </div>
+            <footer class="footer mobileOnly">
+                &copy; 2017 Powered by Tier5 <span><a href="">Privacy Policy</a> / <a href="">Terms of Use</a></span>
+            </footer>
+        </section>
+
+        <footer class="footer">
+            &copy; 2017 Powered by Tier5 <a href="">Privacy Policy</a> <a href="">Terms of Use</a>
+        </footer>
+    </div>
+
+
+    <!-- <div class="loader" style="display: none;">
+        <div class="loaderContainer">
+            <span class="c4">
+                <span class="c3">
+                    <span class="c2">
+                        <span class="c1">
+                            <span class="c0"></span>
+                        </span>
+                    </span>
+                </span>
+            </span>
+        </div>
+    </div> -->
+
+    <div class="loader" style="display: none;">
+        <div class="loaderContainer">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+
+    <script src="js/custom.js"></script>
+<script>
+// Activity circle chart 1 --------------------------------------
+
+// var chartConfig = {ier5
+//     al: 0,
+//     start: 4.72,
+//     cw: null,
+//     diff:null,
+//     radius : 80,
+//     chartVal : 84,
+//     canvas : document.getElementById('crart1'),
+//     context : document.getElementById('crart1').getContext('2d')
+// }
+
+
+var canvas = document.getElementById('crart');
+
+var context = canvas.getContext('2d');
+var al=0;
+var av = 0;
+var start=4.72;
+var cw=context.canvas.width/2;
+var ch=context.canvas.height/2;
+var diff;
+
+var targetVal = 50;
+var currentVal = 40;
+
+var radius = 60;
+var chartVal = (currentVal / targetVal) * 100;
+
+var gradient = context.createLinearGradient(0, 0, 0, 140);
+    gradient.addColorStop(0, '#48e4b3');
+    gradient.addColorStop(0.5, '#3cbec1');
+    gradient.addColorStop(1, '#48e4b3');
+
+function progressBar(){
+    diff=(al/100)*Math.PI*2;
+    context.clearRect(0,0,400,400);
+    context.beginPath();
+    context.arc(cw,ch,radius,0,2*Math.PI,false);
+    context.fillStyle='#FFF';
+    context.fill();
+    context.strokeStyle='#f6f6f6';
+    context.stroke();
+    context.fillStyle='#000';
+    context.strokeStyle= gradient;
+    context.textAlign='center';
+    context.lineWidth=10;
+    context.font = '21px "Avenir LT Std 95 Black"';
+    context.fillStyle = '#333';
+    context.beginPath();
+    context.arc(cw,ch,radius,start,diff+start,false);
+    context.stroke();
+    context.lineCap = 'round';
+    context.fillText(av+"/50" ,65, 75 );
+    if(al>=chartVal){
+        clearTimeout(bar);
+    }
+        al++;
+        av++;
+    if(av>=currentVal){
+        av = currentVal;
+    }
+        
+}
+
+var bar = setInterval(progressBar, 10);
+
+</script>
+
+
+<script>
+$(document).ready(function(){
+
+var optionScrollWidth;
+
+    $('.selectOption').each(function(){
+        var thisVar = $(this), numberOfOptions = $(this).children('option').length;
+
+        thisVar.addClass('select-hidden'); 
+        thisVar.wrap('<div class="select"></div>');
+        thisVar.after(`
+        <div class="select-styled">
+            <div class="tagContainer">
+                <div class="tagArea">
+                    <div class="tagAreaInner"></div>
+                </div>
+            </div>
+            <div class="tglBtn"></div>
+        </div>
+        `);
+
+        var styledSelect = thisVar.next('div.select-styled');
+        //styledSelect.text(thisVar.children('option').eq(0).text());
+
+        var $list = $('<ul />', {
+            'class': 'select-options'
+        }).insertAfter(styledSelect);
+
+        for (var i = 0; i < numberOfOptions; i++) {
+            $('<li />', {
+                text: thisVar.children('option').eq(i).text(),
+                rel: thisVar.children('option').eq(i).val()
+            }).appendTo($list);
+        }
+
+        var $listItems = $list.children('li');
+
+        styledSelect.click(function(e) {
+            e.stopPropagation();
+            //console.log('here1');
+            $('div.select-styled.active').not(this).each(function(){
+                $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+            });
+            $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+        });
+
+        $listItems.click(function(e) {
+            e.stopPropagation();
+            //styledSelect.text($(this).text()).removeClass('active');
+            $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
+            $(this).hide();
+            thisVar.val($(this).attr('rel'));
+            $list.fadeOut(200);
+            //console.log(thisVar.val());
+            var tagAreaWidth = 0;
+            $(".tagAreaInner p").each(function(){
+                tagAreaWidth += $(this).outerWidth()+3;
+            });
+            $(".tagAreaInner").css("width", tagAreaWidth + "px");
+            
+            $(".select-styled p .cl").click(function(e){
+                e.stopPropagation();
+                var a = $(this).prev(".tagTxt").text();
+                $(this).parent("p").remove();
+                $('ul.select-options li').each(function(){
+                    if($(this).text() == a){
+                        $(this).show();
+                    }
+                });
+            });  
+        });
+        $(document).click(function(e) {
+            styledSelect.removeClass('active');
+            $list.fadeOut(200);
+        });
+
+    var sc = 0;
+
+    $('body').on('mousewheel', function(e) {
+        if($(e.target).closest(".select-styled").hasClass("select-styled")){
+            return false;
+        // e.preventDefault();
+        // e.stopPropagation();
+        }
+    });
+
+    $('.tagAreaInner').on('mousewheel', function(event) {
+        optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
+        if(event.deltaY == -1){
+            if(sc > optionScrollWidth){
+            sc = optionScrollWidth;
+        }
+            sc += 10;
+        } 
+        else if(event.deltaY == 1){
+            if(sc < 0){
+            sc = 0;
+        }
+            sc -= 10;
+        }
+             
+        $(".tagArea").scrollLeft(sc);        
+    });
+    
+
+        
+    });
+
+
+
+    $( "#datepicker" ).datepicker({
+        dateFormat: "dd mm yy",
+        showOn: "button",
+        buttonImage: "images/icon_calendar.png",
+        buttonImageOnly: true,
+    });
+
+    $( "#datepicker2" ).datepicker({
+        dateFormat: "dd mm yy",
+        showOn: "button",
+        buttonImage: "images/icon_calendar.png",
+        buttonImageOnly: true,
+    });
+
+    $(".dateHidden").change(function(){
+        var dateSelect = $(this).val().split(" ");
+        $(this).nextAll(".day").val(dateSelect[0]);
+        $(this).nextAll(".month").val(dateSelect[1]);
+        $(this).nextAll(".year").val(dateSelect[2]);
+    });
+});
+</script>
+<!-- for dasboard page tab -->
+<script>
+    function openItem(itemName) {
+        var i;
+        var x = document.getElementsByClassName("eachItem");
+        for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+        }
+        document.getElementById(itemName).style.display = "block";  
+    }
+</script>
+</body>
+</html>

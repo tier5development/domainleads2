@@ -1224,12 +1224,129 @@ h1, h2, h3, h4, h5, h6, p{
 .slideContainer .slide.active {
 	opacity: 1;
 }
-
+/* cancelDomain */
+.innerContent .cancelDomain .innerContentWrap{
+	background-image: none !important;
+	box-shadow: none;
+}
+.innerContent .cancelDomain .innerContentWrap .createForm{
+	text-align: center;
+	padding: 134px 0;
+}
+.innerContent .cancelDomain .innerContentWrap .createForm img{
+	margin-bottom: 52px;
+}
+.innerContent .cancelDomain .innerContentWrap .createForm h2{
+	margin-bottom: 24px;
+}
+.innerContent .cancelDomain .innerContentWrap .createForm p{
+	width: 490px;
+	margin: 0px auto;
+	font-family: 'Avenir LT Std 65 Medium';
+}
+.innerContent .signUpConfirmation .innerContentWrap .createForm img{
+	margin-bottom: 12px;
+}
+.fade {
+	opacity: 0;
+	transition:(opacity .15s linear);
+}  
+.mainBody .leftPanel .tab{
+	margin-bottom: 77px;
+}
+.mainBody .leftPanel .singleItem{
+	color: #8b8b8b;
+    font-family: 'Avenir LT Std 65 Medium';
+	font-size: 15px;
+	text-transform: capitalize;
+	border: none;
+	background-color: transparent;
+	margin: 5px 25px;
+	cursor: pointer;
+	transition: 0.5s;
+	position: relative;
+	letter-spacing: 1px;
+}
+.mainBody .leftPanel .singleItem:before{
+	position: absolute;
+	content: '';
+	bottom: -14px;
+	left: 0;
+	right: 0;
+	margin: 0px auto;
+	height: 2px;
+	width: 0%;
+	transition: 0.5s;
+	background-color: #1fbec5;
+}
+.mainBody .leftPanel .singleItem:hover:before, .mainBody .leftPanel .singleItem.active:before{
+	width: 100%;
+	transition: 0.5s;
+}
+.mainBody .leftPanel .singleItem:hover, .mainBody .leftPanel .singleItem.active{
+	color: #1fbec5;
+}
+.mainBody .leftPanel .singleItem:first-child{
+	margin-left: 0px;
+}
+.noWidth{
+	width: auto;
+}
+.profileMenuBody ul li{
+	display: block;
+}
+.mainBody .leftPanel .eachItem h2{
+	text-transform: capitalize;
+	margin-bottom: 15px;
+	color: #6c6c6c;
+	font-size: 25px;
+	font-family: 'Avenir LT Std 35 Light';
+}
+.mainBody .leftPanel .eachItem p{
+	color: #6c6c6c;
+	margin-bottom: 35px;
+	display: inline-block;
+}
+.mainBody .leftPanel .eachItem .eachPlanContainer{
+	margin: 0px;
+}
+.mainBody .leftPanel .eachItem .eachPlanOuter{
+	margin-bottom: 73px;
+}
+.mainBody .leftPanel .eachItem .cancelMembership{
+	text-transform: capitalize;
+	color: #1fbec5;
+	font-family: 'Avenir LT Std 65 Medium';
+	text-decoration: underline;
+}
+.eachItem .plans .eachPlan .button{
+	margin-top: 56px;
+}
+.greyButton{
+	display: inline-block;
+    font-size: 15px;
+    text-transform: capitalize;
+	padding: 17px 28px;
+	background-color: #dbdbdb;
+	border-radius: 30px;
+	font-family: 'Avenir LT Std 65 Medium';
+	cursor: pointer;
+	outline: none;
+	border: none;
+	color: #8b8b8b;
+	margin-top: 15px;
+}
 /*responsive*/
 
 @media screen and (max-width: 1320px) {
 .container {
 	width: 1170px;
+}
+.noWidth {
+    width: auto;
+}
+.eachPlanOuter{
+	width: auto;
 }
 }
 
@@ -1257,6 +1374,7 @@ h1, h2, h3, h4, h5, h6, p{
 	right: -70px;
 	width: 180px;
 }
+
 }
 
 @media screen and (max-width: 1170px) {
@@ -1266,6 +1384,14 @@ h1, h2, h3, h4, h5, h6, p{
 .cardArea {
 	padding-left: 0;
 }
+.noWidth {
+    width: auto;
+}
+}
+@media only screen and (min-width : 1201px) and (max-width : 1264px) {
+	.mainBody .leftPanel .singleItem{
+		margin: 5px 12px;
+	}
 }
 /* Large Devices, Wide Screens(md) */
 @media only screen and (min-width : 992px) and (max-width : 1199px) {
@@ -1308,6 +1434,9 @@ h1, h2, h3, h4, h5, h6, p{
 	    top: -293px;
 	    right: -6px;
 	} */
+	.mainBody .leftPanel .singleItem{
+		margin: 5px 12px;
+	}
 }
 
 @media screen and (max-width: 991px) {
@@ -1688,11 +1817,17 @@ h1, h2, h3, h4, h5, h6, p{
 	.header .bottomRight{
 		width: 50% !important;
 	}
+	.innerContent .cancelDomain .innerContentWrap .createForm p{
+		width: 100%;
+	}
 }
 
 @media screen and (max-width: 400px) {
 .slideContainer {
 	margin-bottom: 30px;
+}
+.innerContent .cancelDomain .innerContentWrap .createForm p{
+	width: 100%;
 }
 }
 
@@ -1789,6 +1924,9 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.lead_conversion_imgWrap img{
 		max-width: 100%;
+	}
+	.innerContent .cancelDomain .innerContentWrap .createForm p{
+		width: 100%;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 767px) {
