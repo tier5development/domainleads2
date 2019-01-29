@@ -38,9 +38,9 @@
                                 placeholder="Start Date"
                                 style="disply: none;">
     
-                            <input type="text" id="registered-date1-m" value="" class="month" placeholder="mm">
-                            <input type="text" id="registered-date1-d" value="" class="day" placeholder="dd">
-                            <input type="text" id="registered-date1-y" value="" class="year" placeholder="yyyy">
+                            <input type="text" id="registered-date1-m" value="" class="month" placeholder="mm" readonly>
+                            <input type="text" id="registered-date1-d" value="" class="day" placeholder="dd" readonly>
+                            <input type="text" id="registered-date1-y" value="" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                     <div class="dateArea endDate">
@@ -55,9 +55,9 @@
                                 placeholder="End Date"
                                 style="display: none">
     
-                            <input type="text" id="registered-date2-m" value="" class="month" placeholder="mm">
-                            <input type="text" id="registered-date2-d" value="" class="day" placeholder="dd">
-                            <input type="text" id="registered-date2-y" value="" class="year" placeholder="yyyy">
+                            <input type="text" id="registered-date2-m" value="" class="month" placeholder="mm" readonly>
+                            <input type="text" id="registered-date2-d" value="" class="day" placeholder="dd" readonly>
+                            <input type="text" id="registered-date2-y" value="" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                 </div>
@@ -80,9 +80,9 @@
                                 placeholder="Start Date"
                                 style="disply: none;">
                             
-                            <input type="text" id="expired-date1-m" class="month" placeholder="mm">
-                            <input type="text" id="expired-date1-d" class="day" placeholder="dd">
-                            <input type="text" id="expired-date1-y" class="year" placeholder="yyyy">
+                            <input type="text" id="expired-date1-m" class="month" placeholder="mm" readonly>
+                            <input type="text" id="expired-date1-d" class="day" placeholder="dd" readonly>
+                            <input type="text" id="expired-date1-y" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                     <div class="dateArea endDate">
@@ -97,9 +97,9 @@
                                 placeholder="End Date"
                                 style="display: none">
     
-                            <input type="text" id="expired-date2-m" class="month" placeholder="mm">
-                            <input type="text" id="expired-date2-d" class="day" placeholder="dd">
-                            <input type="text" id="expired-date2-y" class="year" placeholder="yyyy">
+                            <input type="text" id="expired-date2-m" class="month" placeholder="mm" readonly>
+                            <input type="text" id="expired-date2-d" class="day" placeholder="dd" readonly>
+                            <input type="text" id="expired-date2-y" class="year" placeholder="yyyy" readonly>
                         </div>
                     </div>
                 </div>
