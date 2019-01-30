@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>|| Upgrade Membership.png ||</title>
+    <title>|| Upgrade Membership ||</title>
+    <link rel="shortcut icon" type="text/css" href="images/favicon-dl.ico">
+    <!-- css -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
     <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/style.css">
-
+    <!-- js -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
@@ -17,6 +19,11 @@
 </head>
 <body>
     <div class="container noWidth">
+        <div class="rightPanTgl">   
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <header class="dashHeader">
             <div class="headerLeft">
                 <a href=""><img src="images/logo.png" alt=""></a>
@@ -45,7 +52,7 @@
                     <div class="userImg">
                         <img src="images/Profile_circle.png" alt="">
                     </div>
-                    <div class="profileMenu">
+                    <div class="profileMenu" style="display: none;">
                         <div class="closeMenu"></div>
                         <div class="profilePic">
                             <a href="" class="changePic"><img src="images/icon_camera_green.png" alt="change picture"></a>
@@ -130,7 +137,7 @@
                                 <div class="eachPlan">
                                 <img src="images/basic_plan.png">
                                 <h4>basic</h4>
-                                <ul>
+                                <ul class="features">
                                     <li>50 leads a day</li>
                                     <li>location filters</li>
                                     <li>keywords filters</li>
@@ -141,13 +148,21 @@
                                 <span>Billed monthly, no set up fee.</span>
                                 <button class="greyButton">current plan</button>
                                 <!-- <a href="#" class="button gradiant-orange">get started</a> -->
+                                <button class="viewMore1">View more</button>
+                                <ul class="viewMorePanel1">
+                                    <li>50 leads a day,</li>
+                                    <li> location filters,</li>
+                                    <li> keywords filters,</li>
+                                    <li> TLD filters,</li>
+                                    <li> lead exports</li>
+                                </ul>
                                 </div>
                             </div>
                             <div class="eachPlanOuter">
                                 <div class="eachPlan">
                                 <img src="images/pro_plan.png">
                                 <h4>pro</h4>
-                                <ul>
+                                <ul class="features">
                                     <li>50 leads a day</li>
                                     <li>location filters</li>
                                     <li>keywords filters</li>
@@ -157,22 +172,38 @@
                                 <h3>$97</h3>
                                 <span>Billed monthly, no set up fee.</span>
                                 <a href="#" class="button gradiant-orange">get started</a>
+                                <button class="viewMore2">View more</button>
+                                <ul class="viewMorePanel2">
+                                    <li>50 leads a day,</li>
+                                    <li> location filters,</li>
+                                    <li> keywords filters,</li>
+                                    <li> TLD filters,</li>
+                                    <li> lead exports</li>
+                                </ul>
                                 </div>
                             </div>
                             <div class="eachPlanOuter">
                                 <div class="eachPlan">
-                                <img src="images/agency_plan.png">
-                                <h4>agency</h4>
-                                <ul>
-                                    <li>50 leads a day</li>
-                                    <li>location filters</li>
-                                    <li>keywords filters</li>
-                                    <li>TLD filters</li>
-                                    <li>lead exports</li>
-                                </ul>
-                                <h3>$197</h3>
-                                <span>Billed monthly, no set up fee.</span>
-                                <a href="#" class="button gradiant-orange">get started</a>
+                                    <img src="images/agency_plan.png">
+                                    <h4>agency</h4>
+                                    <ul class="features">
+                                        <li>50 leads a day</li>
+                                        <li>location filters</li>
+                                        <li>keywords filters</li>
+                                        <li>TLD filters</li>
+                                        <li>lead exports</li>
+                                    </ul>
+                                    <h3>$197</h3>
+                                    <span>Billed monthly, no set up fee.</span>
+                                    <a href="#" class="button gradiant-orange">get started</a>
+                                    <button class="viewMore3">View more</button>
+                                    <ul class="viewMorePanel3">
+                                        <li>50 leads a day,</li>
+                                        <li> location filters,</li>
+                                        <li> keywords filters,</li>
+                                        <li> TLD filters,</li>
+                                        <li> lead exports</li>
+                                    </ul>
                                 </div>
                             </div>
                             </div>
@@ -216,6 +247,7 @@
 
 
     <script src="js/custom.js"></script>
+    <script src="https://app.domainleads.io/public/js/right-panel.js"></script>
 <script>
 // Activity circle chart 1 --------------------------------------
 
