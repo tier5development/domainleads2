@@ -237,6 +237,8 @@ input, select, textarea, button {
 }
 .select-styled.active + ul.select-options{
     margin-top: 1px;
+    max-height: 250px;
+    overflow-y: scroll;
 }
 
 .selectNumberArea .select {
@@ -757,7 +759,7 @@ input, select, textarea, button {
     border: none;
     color: #fff;
     font-family: 'Avenir LT Std 65 Medium';
-    font-size: 16px;
+    font-size: 15px;
     text-align: center;
     height: 50px;
     padding: 0 50px;

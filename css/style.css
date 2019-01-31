@@ -1283,11 +1283,125 @@ h1, h2, h3, h4, h5, h6, p{
 .rightPanTgl {
     display: none;
 }
+/* cancellation MemberShip step1 page  */
+.cancellationMemberShip{
+	text-align: center;
+	width: 737px;
+	margin: 0px auto;
+}
+.cancellationMemberShip h2{
+	letter-spacing: 1px;
+	margin-bottom: 25px !important;
+}
+.cancellationMemberShip p{
+	margin-bottom: 60px !important;
+}
+.cancellationMemberShip form{
+	width: 400px;
+	margin: 0px auto;
+}
+.cancellationMemberShip label{
+	font-size: 18px;
+	color: #c6c6c6;
+	display: block;
+	margin-bottom: 10px;
+	text-align: left;
+}
+.cancellationMemberShip input[type="text"] {
+    border: 1px solid #dbdbdb;
+    background: #fff;
+    border-radius: 3px;
+    padding: 13px;
+    height: 66px;
+    width: 100%;
+    font-family: 'Avenir LT Std 65 Medium';
+    color: #6c6c6c;
+	font-size: 17px;
+	margin-bottom: 35px;
+}
+.cancellationMemberShip .largeSelectBox{
+	margin-bottom: 25px;
+    height: 66px;
+}
+.cancellationMemberShip .select-styled{
+	height: 66px;
+	font-size: 17px;
+	line-height: 43px;
+	font-family: 'Avenir LT Std 55 Roman';
+}
+.cancellationMemberShip .select-styled:before {
+    content: "";
+    width: 8px;
+    height: 2px;
+    background: #818181;
+    position: absolute;
+    top: 30px;
+    right: 8px;
+    transform: rotate(135deg);
+    transition: all 0.3s ease 0s;
+}
+.cancellationMemberShip .select-styled:after {
+    content: "";
+    width: 8px;
+    height: 2px;
+    background: #818181;
+    position: absolute;
+    top: 30px;
+    right: 13px;
+    transform: rotate(-135deg);
+    transition: all 0.3s ease 0s;
+}
+.select-styled.active:after {
+    transform: rotate(-45deg);
+}
+.select-styled.active:before {
+    transform: rotate(45deg);
+}
+.updateCardWrap .updateCard{
+	background-color: #fff;
+	border: 1px solid #d9d9d9;
+	border-radius: 3px;
+	padding: 14px 23px;
+}
+.updateCardWrap{
+	width: 624px;
+	margin: 0px auto;
+	margin-top: 109px;
+}
+.updateCardWrap p{
+	text-transform: capitalize;
+	margin-bottom: 27px !important;
+}
+.updateCardWrap .updateCard button{
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	padding: 0 27px;
+	line-height: 54px;
+	font-size: 14px;
+}
+.updateCardWrap .updateCard .cardInfo{
+	float: left;
+	margin-top: 8px;
+}
+.updateCardWrap .updateCard .cardNumber{
+	width: 276px;
+}
+.updateCardWrap .updateCard .expiryDate{
+	width: 138px;
+}
+.updateCardWrap .updateCard .cardInfo h4{
+	text-transform: uppercase;
+	color: #c6c6c6;
+	font-size: 11px;
+	font-family: 'Avenir LT Std 35 Light';
+	margin-bottom: 4px;
+}
+.updateCardWrap .updateCard .cardInfo h3{
+	font-family: 'Avenir LT Std 35 Light';
+}
 /*responsive*/
 @media screen and (max-width: 1600px) {
-	.container{
-		margin: 0px auto;
-	}
+	
 }
 @media screen and (max-width: 1320px) {
 	.container {
@@ -1387,6 +1501,9 @@ h1, h2, h3, h4, h5, h6, p{
 	.plans .eachPlan{
 		padding: 13px;
 	}
+	.cancellationMemberShip{
+		width: 540px;
+	}
 }
 
 @media screen and (max-width: 991px) {
@@ -1412,6 +1529,12 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.noWidth {
 		width: auto;
+	}
+	.cancellationMemberShip{
+		width: 677px;
+	}
+	.updateCardWrap{
+		text-align: left;
 	}
 }
 
@@ -1511,50 +1634,6 @@ h1, h2, h3, h4, h5, h6, p{
 		right: -40px;
 		width: 120px;
 		bottom: -15px;
-	}
-}
-@media screen and (max-width: 768px){
-	.rightPanTgl {
-		display: block;
-		height: 28px;
-		position: absolute;
-		right: -12px;
-		top: 100px;
-		border-radius: 5px;
-		background: #fff;
-		box-shadow: 0 0 5px rgba(0,0,0,0.3);
-		padding: 8px;
-		cursor: pointer;
-		z-index: 99;
-	}
-	.rightPanTgl span {
-		display: block;
-		background: #aaa;
-		width: 14px;
-		height: 2px;
-		margin-bottom: 3px;
-		transition: all 0.5s ease 0s;
-	}
-	.container {
-		position: relative;
-	}
-	.leftPanel.leadUnlock + .rightPanel {
-		display: none;
-		position: absolute;
-		top: 0;
-		right: 0;
-		width: 290px;
-		background: #fff;
-		box-sizing: border-box;
-		padding: 15px;
-		box-shadow: 0 0 10px rgba(0,0,0,0.2);
-		margin-top: 0;
-		border-radius: 10px;
-		transition: all 0.5s ease 0s;
-	}
-	.leftPanel.leadUnlock + .rightPanel.open {
-		display: block;
-		right: 0;
 	}
 }
 @media screen and (max-width: 767px) {
@@ -1741,7 +1820,22 @@ h1, h2, h3, h4, h5, h6, p{
 }
 @media only screen and (min-width : 560px) and (max-width : 767px) {
 	.container {
-		width: 750px;
+		margin: 0px 20px;
+	}
+	.noWidth {
+		width: auto;
+	}
+	.cancellationMemberShip{
+		width: auto;
+	}
+	.updateCardWrap{
+		width: auto;
+	}
+	.updateCardWrap .updateCard .cardNumber{
+		width: 170px;
+	}
+	.updateCardWrap .updateCard .expiryDate{
+		width: 103px;
 	}
 }
 /* Small Devices, Tablets (xs)*/
@@ -2091,6 +2185,81 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.footer{
 		text-align: center;
+	}
+	.rightPanel {
+		width: 290px;
+		padding: 0;
+		margin: 10px 0 0 0;
+		text-align: center;
+		box-shadow: 0 0 10px rgba(0,0,0,0.2);
+		padding: 15px;
+		margin-top: 0;
+		border-radius: 10px;
+		transition: all 0.5s ease 0s;
+		top: 0;
+		right: 0;
+		position: absolute;
+		box-sizing: border-box;
+		background: #fff;
+		height: auto;
+		z-index: 1;
+	}
+	.rightPanTgl {
+		display: block;
+		height: 28px;
+		position: absolute;
+		right: -13px;
+		top: 100px;
+		border-radius: 5px;
+		background: #fff;
+		box-shadow: 0 0 5px rgba(0,0,0,0.3);
+		padding: 8px;
+		cursor: pointer;
+		z-index: 99;
+	}
+	.rightPanTgl span {
+		display: block;
+		background: #aaa;
+		width: 14px;
+		height: 2px;
+		margin-bottom: 3px;
+		transition: all 0.5s ease 0s;
+	}
+	.rightPanTgl span:last-child {
+		margin-bottom: 0;
+	}
+	.rightPanTgl.open span:first-child {
+		transform: rotate(45deg) translate(4px, 3px);
+	}
+	.rightPanTgl.open span:nth-child(2) {
+		display: none;
+	}
+	.rightPanTgl.open span:last-child {
+		transform: rotate(-45deg);
+	}
+	.leftPanel.leadUnlock + .rightPanel {
+		display: none;
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 290px;
+		background: #fff;
+		box-sizing: border-box;
+		padding: 15px;
+		box-shadow: 0 0 10px rgba(0,0,0,0.2);
+		margin-top: 0;
+		border-radius: 10px;
+		transition: all 0.5s ease 0s;
+	}
+	.leftPanel.leadUnlock + .rightPanel.open {
+		display: block;
+		right: 0;
+	}
+	.container.level3User .rightPanTgl {
+		display: none;
+	}
+	.container{
+		position: relative;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 560px) {

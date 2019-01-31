@@ -121,95 +121,67 @@
                     <h2>Change your password layout will be here.</h2>
                     <p>some text</p> 
                 </div>
-                
-                <div id="payment_info" class="eachItem" style="display:none">
-                    <h2>hfghfhfhfhf</h2>
-                    <p>Tokyo is the capital of Japan.</p>
-                </div>
-
-                <div id="membership" class="eachItem">
-                    <h2>your membership plan</h2>
-                    <p>Upgrade or downgrade your membership plan anytime.</p>
-                    <div class="plans">
-                        <div class="container">
-                            <div class="eachPlanContainer clearfix">
-                            <div class="eachPlanOuter">
-                                <div class="eachPlan">
-                                <img src="images/basic_plan.png">
-                                <h4>basic</h4>
-                                <ul class="features">
-                                    <li>50 leads a day</li>
-                                    <li>location filters</li>
-                                    <li>keywords filters</li>
-                                    <li>TLD filters</li>
-                                    <li>lead exports</li>
-                                </ul>
-                                <h3>$47</h3>
-                                <span>Billed monthly, no set up fee.</span>
-                                <button class="greyButton">current plan</button>
-                                <!-- <a href="#" class="button gradiant-orange">get started</a> -->
-                                <button class="viewMore1">View more</button>
-                                <ul class="viewMorePanel1">
-                                    <li>50 leads a day,</li>
-                                    <li> location filters,</li>
-                                    <li> keywords filters,</li>
-                                    <li> TLD filters,</li>
-                                    <li> lead exports</li>
-                                </ul>
-                                </div>
+                <!-- for payment information -->
+                <!-- <div id="payment_info" class="eachItem" style="display:none">
+                    <h2>My Payment Information</h2>
+                    <p>You have added below card information to your account.</p>
+                    <div class="updateCardWrap">
+                        <p>credit card information</p>
+                        <div class="updateCard">
+                            <div class="cardInfo cardNumber">
+                                <h4>card number</h4>
+                                <h3>xxxx xxxx xxxx 1234</h3>
                             </div>
-                            <div class="eachPlanOuter">
-                                <div class="eachPlan">
-                                <img src="images/pro_plan.png">
-                                <h4>pro</h4>
-                                <ul class="features">
-                                    <li>50 leads a day</li>
-                                    <li>location filters</li>
-                                    <li>keywords filters</li>
-                                    <li>TLD filters</li>
-                                    <li>lead exports</li>
-                                </ul>
-                                <h3>$97</h3>
-                                <span>Billed monthly, no set up fee.</span>
-                                <a href="#" class="button gradiant-orange">get started</a>
-                                <button class="viewMore2">View more</button>
-                                <ul class="viewMorePanel2">
-                                    <li>50 leads a day,</li>
-                                    <li> location filters,</li>
-                                    <li> keywords filters,</li>
-                                    <li> TLD filters,</li>
-                                    <li> lead exports</li>
-                                </ul>
-                                </div>
+                            <div class="cardInfo expiryDate">
+                                <h4>expiry (mm/yy)</h4>
+                                <h3>02/22</h3>
                             </div>
-                            <div class="eachPlanOuter">
-                                <div class="eachPlan">
-                                    <img src="images/agency_plan.png">
-                                    <h4>agency</h4>
-                                    <ul class="features">
-                                        <li>50 leads a day</li>
-                                        <li>location filters</li>
-                                        <li>keywords filters</li>
-                                        <li>TLD filters</li>
-                                        <li>lead exports</li>
-                                    </ul>
-                                    <h3>$197</h3>
-                                    <span>Billed monthly, no set up fee.</span>
-                                    <a href="#" class="button gradiant-orange">get started</a>
-                                    <button class="viewMore3">View more</button>
-                                    <ul class="viewMorePanel3">
-                                        <li>50 leads a day,</li>
-                                        <li> location filters,</li>
-                                        <li> keywords filters,</li>
-                                        <li> TLD filters,</li>
-                                        <li> lead exports</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            </div>
+                            <button id="advanced-search-btn" type="submit" class="orangeBtn">update card</button>
                         </div>
                     </div>
-                    <p>I want to <a href="#" class="cancelMembership">cancel my membership</a> now</p>
+                </div> -->
+
+                <!-- for payment information update -->
+                <div id="payment_info" class="eachItem" style="display:none">
+                        <h2>My Payment Information</h2>
+                        <p>You have added below card information to your account.</p>
+                        
+                    </div> 
+                <div id="membership" class="eachItem cancellationMemberShip">
+                    <h2>Cancellation of your Domain Leads membership</h2>
+                    <p>We are so sad to see you go.We would like you to tell us the reason of cancellation of your membership.This would help us to serve the community better experience.</p>
+                    <form action="#" method="POST" id="">
+                        <div class="formRow">
+                            <div class="fieldWrap">
+                                <label for="">Select your reason</label>
+                                <div class="largeSelectBox">
+                                    <div class="select">
+                                        <select data-stopsubmit="1" class="selectpage select-hidden" id="" name="">
+                                            <option value="unlocked_asnd">ghffffffffffffff</option>
+                                            <option value="unlocked_dcnd">Unlock Count more to less</option>
+                                            <option value="domain_count_asnd">Domain Count less to more</option>
+                                            <option value="domain_count_dcnd">Domain Count more to less</option>
+                                        </select>
+                                        <div class="select-styled">Unlock Count less to more</div>
+                                        <ul class="select-options">
+                                            <li>Unlock Count less to more</li>
+                                            <li>Unlock Count more to less</li>
+                                            <li>Domain Count less to more</li>
+                                            <li>Domain Count more to less</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fieldWrap">
+                                <label for="">Enter your custom reason</label>
+                                <input type="text" class="form-control" name="" id="">
+                                <div id="fname_err" class="errorMsg"></div>
+                            </div>
+                            <div class="fieldWrap">
+                                <button id="advanced-search-btn" type="submit" class="orangeBtn">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
             <footer class="footer mobileOnly">
@@ -247,6 +219,7 @@
 
 
     <script src="js/custom.js"></script>
+    <script src="js/custom2.js"></script>
     <script src="https://app.domainleads.io/public/js/right-panel.js"></script>
 <script>
 // Activity circle chart 1 --------------------------------------

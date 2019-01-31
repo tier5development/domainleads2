@@ -18,19 +18,23 @@ $(document).ready(function(){
     $(".viewMorePanel3").toggle();
   });
 
-// for sight panel  
+// for rightside panel
+  $(".rightPanTgl").click(function(){    
     if($(this).hasClass("open")){
         $(this).removeClass("open");
         $(".rightPanel").removeClass("open");
         $(".mainBody").scrollTop(bodyScroll);
         $(".leftPanel").css("opacity","1");
+        $(".rightPanel").css("display","none");
     } else {
         bodyScroll = $(".mainBody").scrollTop();
         $(".mainBody").scrollTop(0);
         $(this).addClass("open");
         $(".rightPanel").addClass("open");
         $(".leftPanel").css("opacity","0.2");
+        $(".rightPanel").css("display","block");
     }
+});
 });
 
 
