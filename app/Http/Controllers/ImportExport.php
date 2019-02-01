@@ -94,7 +94,6 @@ class ImportExport extends Controller
         echo('***** Insertion started ********');
         $import = new ImportCsvHelper();
         $arr = $import->insertion_Execl($file);
-        $this->insertion_Execl($file);
         fclose($file);
         echo('***** Insertion ended *******');
         $leads_inserted   = Lead::count()-$total_leads_before_insertion;
@@ -102,7 +101,7 @@ class ImportExport extends Controller
         $end = microtime(true) - $start;
 
         $obj = new CSV();
-        $obj->file_name         = $original_file_name;
+        $obj->file_name         = $name;
         $obj->leads_inserted    = $leads_inserted;
         $obj->domains_inserted  = $domains_inserted;
         $obj->status            = 2;

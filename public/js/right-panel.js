@@ -85,9 +85,10 @@ var canvasObj = {
 
 
         this.diff = (this.counter/100)*Math.PI*2;
+        console.log('this is called');
         this.context.clearRect(0,0,400,400);
-        // this.context.beginPath();
-        // this.context.arc(this.cw, this.ch, this.radius, 0, 2*Math.PI, false);
+        this.context.beginPath();
+        this.context.arc(this.cw, this.ch, this.radius, 0, 2*Math.PI, false);
         this.context.fillStyle      =   '#FFF';
         this.context.fill();
         this.context.strokeStyle    =   '#f6f6f6';
