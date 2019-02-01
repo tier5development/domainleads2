@@ -97,9 +97,9 @@ h1, h2, h3, h4, h5, h6, p{
 	margin: 0px;
 	padding: 0px;
 }
-
 .container {
-	width: 1320px;
+	max-width: 1560px;
+    margin: 0 auto;
 }
 
 /*banner*/
@@ -305,17 +305,17 @@ h1, h2, h3, h4, h5, h6, p{
 .createForm form .form-group.nameField input:first-child{
 	margin-right: 25px;
 }
-.createForm form span, .createForm form a{
+.createForm form span, .createForm form a, .signUpWrap form span, .signUpWrap form a{
 	display: block;
 	text-align: center;
 }
-.createForm form span{
+.createForm form span, .signUpWrap form span{
 	font-size: 15px;
 	color: #6c6c6c;
 	margin-bottom: 7px;
     line-height: 15px;
 }
-.createForm form a{
+.createForm form a, .signUpWrap form a{
 	color: #1fbec5;
 	text-decoration: underline;	
 	text-transform: capitalize;
@@ -436,7 +436,7 @@ h1, h2, h3, h4, h5, h6, p{
 	margin-bottom: 10px !important;
 }
 /*logout page*/
-.logout .innerContentWrap{
+.logout .innerContentWrap, .signUp .innerContentWrap{
 	background-image: none;
 } 
 .logout .innerContentWrap .createForm{
@@ -1296,18 +1296,24 @@ h1, h2, h3, h4, h5, h6, p{
 .cancellationMemberShip p{
 	margin-bottom: 60px !important;
 }
-.cancellationMemberShip form{
+.cancellationMemberShip form, .cardField form{
 	width: 400px;
 	margin: 0px auto;
 }
-.cancellationMemberShip label{
+.cancellationMemberShip label, .cardField label, .signUp .signUpWrap label{
 	font-size: 18px;
 	color: #c6c6c6;
 	display: block;
 	margin-bottom: 10px;
 	text-align: left;
+	text-transform: capitalize;
 }
-.cancellationMemberShip input[type="text"] {
+.signUp .signUpWrap label{
+	font-size: 14px;
+	font-family: 'Avenir LT Std 35 Light';
+	margin-bottom: 5px;
+}
+.cancellationMemberShip input[type="text"], .cardField input[type="text"] {
     border: 1px solid #dbdbdb;
     background: #fff;
     border-radius: 3px;
@@ -1319,17 +1325,23 @@ h1, h2, h3, h4, h5, h6, p{
 	font-size: 17px;
 	margin-bottom: 35px;
 }
-.cancellationMemberShip .largeSelectBox{
+.cardField input[type="text"]{
+	margin-bottom: 23px;
+}
+.cancellationMemberShip .largeSelectBox, .cardField .largeSelectBox{
 	margin-bottom: 25px;
     height: 66px;
 }
-.cancellationMemberShip .select-styled{
+.cardField .largeSelectBox, .signUpWrap .largeSelectBox{
+	margin-bottom: 50px;
+}
+.cancellationMemberShip .select-styled, .cardField .select-styled, .signUp .select-styled{
 	height: 66px;
 	font-size: 17px;
 	line-height: 43px;
 	font-family: 'Avenir LT Std 55 Roman';
 }
-.cancellationMemberShip .select-styled:before {
+.cancellationMemberShip .select-styled:before, .cardField .select-styled:before, .signUp .select-styled:before{
     content: "";
     width: 8px;
     height: 2px;
@@ -1340,7 +1352,10 @@ h1, h2, h3, h4, h5, h6, p{
     transform: rotate(135deg);
     transition: all 0.3s ease 0s;
 }
-.cancellationMemberShip .select-styled:after {
+.signUp .select-styled:before{
+	top: 24px;
+}
+.cancellationMemberShip .select-styled:after, .cardField .select-styled:after, .signUp .select-styled:after  {
     content: "";
     width: 8px;
     height: 2px;
@@ -1350,6 +1365,9 @@ h1, h2, h3, h4, h5, h6, p{
     right: 13px;
     transform: rotate(-135deg);
     transition: all 0.3s ease 0s;
+}
+.signUp .select-styled:after  {
+	top: 24px;
 }
 .select-styled.active:after {
     transform: rotate(-45deg);
@@ -1398,6 +1416,115 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .updateCardWrap .updateCard .cardInfo h3{
 	font-family: 'Avenir LT Std 35 Light';
+}
+.cardField{
+    margin-top: 109px;
+}
+.cardNum{
+	float: left;
+    width: 260px;
+}
+.signUp .signUpWrap .cardNum{
+	width: 199px;
+}
+.cvc{
+	float: right;
+    width: calc(100% - 286px);
+    margin-left: 26px;
+}
+.signUp .signUpWrap .cvc{
+	width: calc(100% - 225px);
+}
+.cardField .fieldWrap{
+	float: left;
+    width: 187px;
+}
+.signUp .signUpWrap .fieldWrap{
+	padding: 0 70px 0 28px;
+}
+.signUp .signUpWrap .fieldCover{
+	float: left;
+    width: 134px;
+}
+.cardField .fieldWrap:nth-child(2), .signUp .signUpWrap .fieldCover:nth-child(2){
+	margin-left: 26px;
+}
+.cardField button, .signUpWrap button{
+	display: block;
+	margin: 0px auto;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	padding: 0 27px;
+	line-height: 25px;
+}
+.signUpWrap button{
+	width: 100%;
+	margin-bottom: 10px;
+}
+.signUp .innerContentWrap{
+	padding: 36px 30px 36px 40px;
+	position: relative;
+}
+.signUp .signUpWrap h2{
+	margin-bottom: 34px;
+	color: #6c6c6c;
+	font-size: 25px;
+	font-family: 'Avenir LT Std 55 Roman';
+}
+.signUp .innerContentWrap:before{
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 340px;
+	background-color:#1FBEC5;
+	border-radius: 0px 10px 10px 0px;
+}
+.signUp .signUpWrap input[type="text"]{
+	border: 1px solid #dbdbdb;
+	background: #fff;
+	border-radius: 3px;
+	padding: 13px;
+	height: 50px;
+	width: 100%;
+	font-family: 'Avenir LT Std 65 Medium';
+	color: #6c6c6c;
+	font-size: 17px;
+	margin-bottom: 30px;
+	box-shadow: none;
+} 
+.signUp .signUpWrap .cardNum input[type="text"], .signUp .signUpWrap .cvc input[type="text"]{
+	margin-bottom: 20px;
+}
+.signUp .signUpWrap ::placeholder{
+	color: #c6c6c6;
+	font-size: 15px;
+	text-transform: capitalize;
+}
+.signUp .signUpWrap h3{
+	font-size: 15px;
+	text-transform: capitalize;
+	margin-bottom: 25px;
+	color: #6c6c6c;
+}
+.signUp .signUpCover{
+	width:393px;
+}
+.signUp .signUpWrap .select-styled{
+	height: 50px;
+    font-size: 17px;
+    line-height: 43px;
+    font-family: 'Avenir LT Std 55 Roman';
+}
+.signUpWrap img{
+    padding-bottom: 43px;
+    width: 195px;
+    margin: 0px auto;
+    display: block;
+}
+.signUp{
+	margin: 60px 0px;
 }
 /*responsive*/
 @media screen and (max-width: 1600px) {

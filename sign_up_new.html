@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>|| Logout ||Domain Leads</title>
+    <link rel="shortcut icon" type="text/css" href="images/favicon-dl.ico">
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- fonts -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  </head>
+  <body>
+
+  <!-- banner -->
+  <section class="banner">
+    <!-- herader -->
+    <header class="header">
+      <div class="container noWidth">
+        <div class="row">
+          <div class="col-xs-3">
+            <div class="logo">
+              <a href="index.html">
+                <img src="images/logo.png" alt="logo">
+              </a>
+            </div>
+          </div>
+          <a href="javascript:void(0);" class="menu-button"><i class="fa fa-bars"></i></a>
+
+          <div class="col-xs-9 bottomRight">
+            <nav class="menu clearfix">
+              <a href="javascript:void(0);" class="menuClose"><i class="fas fa-arrow-right"></i></a>
+              <ul>
+                <li><a href="#">lead conversion</a></li>
+                <li><a href="#">pricing</a></li>
+                <a class="button gradiant-orange">login</a>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- inner content -->
+    <div class="innerContent signUp clearfix">
+      <div class="container customCont">
+        <div class="innerContentWrap">
+          <div class="signUpWrap">
+              <h2>Get an account to unlock leads</h2>
+              <form action="#">
+                <div class="signUpCover">
+                  <h3>personal information</h3>
+                  <div class="fieldWrap">
+                    <input type="text" class="form-control" placeholder="full name">
+                    <input type="text" class="form-control" placeholder="email">
+                    <input type="text" class="form-control" placeholder="password">
+                  </div>
+                </div>
+                <div class="signUpCover">
+                  <h3>credit card information</h3>
+                  <div class="fieldWrap">
+                    <div class="formRow">
+                        <div class="cardNum">
+                            <label for="">card number</label>
+                            <input type="text" class="form-control" name="" id="">
+                        </div>
+                        <div class="cvc">
+                            <label for="">CVC code</label>
+                            <input type="text" class="form-control" name="" id="">
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <div class="fieldCover">
+                            <label for="">expiry month</label>
+                            <div class="largeSelectBox">
+                                <div class="select">
+                                    <select data-stopsubmit="1" class="selectpage select-hidden" id="" name="">
+                                        <option value="unlocked_asnd">01</option>
+                                        <option value="unlocked_dcnd">Unlock Count more to less</option>
+                                        <option value="domain_count_asnd">Domain Count less to more</option>
+                                        <option value="domain_count_dcnd">Domain Count more to less</option>
+                                    </select>
+                                    <div class="select-styled">Unlock Count less to more</div>
+                                    <ul class="select-options">
+                                        <li>Unlock Count less to more</li>
+                                        <li>Unlock Count more to less</li>
+                                        <li>Domain Count less to more</li>
+                                        <li>Domain Count more to less</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fieldCover">
+                            <label for="">expiry year</label>
+                            <div class="largeSelectBox">
+                                <div class="select">
+                                    <select data-stopsubmit="1" class="selectpage select-hidden" id="" name="">
+                                        <option value="unlocked_asnd">2019</option>
+                                        <option value="unlocked_dcnd">Unlock Count more to less</option>
+                                        <option value="domain_count_asnd">Domain Count less to more</option>
+                                        <option value="domain_count_dcnd">Domain Count more to less</option>
+                                    </select>
+                                    <div class="select-styled">Unlock Count less to more</div>
+                                    <ul class="select-options">
+                                        <li>Unlock Count less to more</li>
+                                        <li>Unlock Count more to less</li>
+                                        <li>Domain Count less to more</li>
+                                        <li>Domain Count more to less</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="signUpCover">
+                    <h3>personal information</h3>
+                    <div class="fieldWrap">
+                      <input type="text" class="form-control" placeholder="full name">
+                      <input type="text" class="form-control" placeholder="email">
+                      <input type="text" class="form-control" placeholder="password">
+                    </div>
+                  </div>
+                  <div class="signUpCover">
+                    <div class="fieldWrap">
+                      <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
+                      <img src="images/cards.webp" alt="cards">
+                      <span>Have an account?</span>
+                      <a href="#">login now!</a>
+                    </div>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- sticky text -->
+  <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
+    <div id="popup">
+      <img src="images/sticky_Logo.png">
+      <div class="stickyText">
+        <p>You have unlocked 4 leads today.</p>
+        <p>You can unlocked upto <span>50</span> leads per day.</p>
+      </div>
+    </div>
+  </div> 
+   <!-- footer -->
+  <footer class="footer clearboth">
+    <div class="container">
+      <div class="col-md-12 pull-left">
+        <span>&copy; 2017 Powered by Tier5</span>
+        <a href="#">privacy policy</a>
+        <a href="#">terms of use</a>
+      </div>
+    </div>
+  </footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
+    <script src="js/custom2.js"></script>
+  </body>
+</html>
