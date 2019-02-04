@@ -29,27 +29,27 @@ Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPass
 
 Route::get('/testfn',function() {
 
-    dd(country_codes());
-    // $x = true;
-    // dd(isset($x));
+    // dd(country_codes());
+    // // $x = true;
+    // // dd(isset($x));
 
-    $x = 'abcde.io.aksdf.com';
-    dd(customMaskDomain($x));
+    // $x = 'abcde.io.aksdf.com';
+    // dd(customMaskDomain($x));
 
-    $email = '2000yd.com@wix-domains.com';
-    // $email = 'work@tier5.us';
-    // dd(1);
-    $email = 'jacke1688@outlook.com';
-    // dd(filter_var($email, FILTER_VALIDATE_EMAIL));
-    dd(preg_match('/^.+@.+$/i', $email));
-    // $v = custom_curl_errors();
-    // dd($v);
+    // $email = '2000yd.com@wix-domains.com';
+    // // $email = 'work@tier5.us';
+    // // dd(1);
+    // $email = 'jacke1688@outlook.com';
+    // // dd(filter_var($email, FILTER_VALIDATE_EMAIL));
+    // dd(preg_match('/^.+@.+$/i', $email));
+    // // $v = custom_curl_errors();
+    // // dd($v);
 
-    // $x = LeadUser::updateOrCreate([
-    //         ['registrant_email' => 'support@dropcatch.comop', 'domain_name' => 'afinarte.com'],
-    //         ['registrant_fname' => 'adsj', 'registrant_country' => 'Some Country']
-    // ]);
-    // dd($x);
+    // // $x = LeadUser::updateOrCreate([
+    // //         ['registrant_email' => 'support@dropcatch.comop', 'domain_name' => 'afinarte.com'],
+    // //         ['registrant_fname' => 'adsj', 'registrant_country' => 'Some Country']
+    // // ]);
+    // // dd($x);
 });
 
 // Route::get('/aaa',function(){
@@ -98,6 +98,10 @@ Route::get('/aa',function(){
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
     Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
+
+        Route::group(['prefix' => 'profile'], function() {
+            Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
+        });
 
         Route::post('/uploadImage', ['uses' => 'UserController@uploadImage', 'as' => 'uploadImage']);
 

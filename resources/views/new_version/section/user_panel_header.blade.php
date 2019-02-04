@@ -206,34 +206,9 @@ var dataURLToBlob = function(dataURL) {
 
     return new Blob([uInt8Array], {type: contentType});
 }
-/* End Utility function to convert a canvas to a BLOB      */
-
-
-// function processImage(picContainerId, input) {
-//         var reader = new FileReader();
-//         reader.onload = function(e) {
-//             $('#'+picContainerId).attr('src', e.target.result);
-//         }
-//         reader.readAsDataURL(input.files[0]);
-// }
+/* End Utility function to convert a canvas to a BLOB */
 
 $(document).ready(function() {
-console.log('ajkhsdtafkjytfkjtyfkjftykjfy');
-    // $(window).on('popstate', function(event) {
-    //     console.log('euhjatyfjy');
-    //     $('#loader-icon').hide();
-    // });
-
-    // Scrren width mobile resolution 
-    // $(".datatable table tbody tr td:first-child").click(function(){
-    //     console.log('td clicked');
-    //     if($(this).parent("tr").hasClass("show")){
-    //         $(this).parent("tr").removeClass("show");
-    //     } else {
-    //         $(".datatable table tbody tr").removeClass("show");
-    //         $(this).parent("tr").addClass("show");
-    //     }
-    // });
 
     $(document).on('click', '.datatable table tbody tr td:first-child', function() {
         console.log('td clicked');
@@ -243,15 +218,12 @@ console.log('ajkhsdtafkjytfkjtyfkjftykjfy');
             $(".datatable table tbody tr").removeClass("show");
             $(this).parent("tr").addClass("show");
         }
-    })
-    
+    });
 
     $('#upload_profile_pic').click(function() {
-        console.log('click deetcted');
         $("input[id='avatar_file']").click();
     });
     $('#avatar_file').change(function() {
-        console.log('change detected', this);
         processImage('profile_pic_container', this);
     });
 
@@ -273,6 +245,13 @@ console.log('ajkhsdtafkjytfkjtyfkjftykjfy');
             //     }
             // });
         }
+    });
+
+    $('#profileTag').click(function() {
+        $('#profileMenu').show(300);
+    });
+    $('#profileMenuCloseBtn').click(function() {
+        $('#profileMenu').hide(300);
     });
 });
 </script>

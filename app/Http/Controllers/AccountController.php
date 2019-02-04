@@ -17,6 +17,19 @@ use \Carbon\Carbon;
 class AccountController extends Controller
 {
 
+	public function  showMembershipPage() {
+		try {
+
+			$user = Auth::user();
+			// dd($user);
+			return view('new_version.auth.profile.membership', ['user' => $user]);
+
+		} catch(Exception $e) {
+			// dd($e);
+			return redirect()->back()->with('Error : '.$e->getMessage());
+		}
+	}
+
 	public function changePassword() {
 		if(Auth::check()) {
 			$user = Auth::user();
