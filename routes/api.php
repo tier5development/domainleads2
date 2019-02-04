@@ -29,3 +29,19 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function() {
     Route::any('unsuspend-user', ['uses' => 'UserManagementController@unsuspendUser', 'as' => 'unsuspendUser']);
     Route::get('all-suspended-users', ['uses' => 'UserManagementController@allSuspendedUser', 'as' => 'allSuspendedUser']);
 });
+
+Route::group(['prefix' => 'stripe', 'namespace' => 'Stripe'], function() {
+    /**
+     * Listens customer.subscription.updated
+     * Listens customer.subscription.deleted
+     * Listens customer.subscription.trial_will_end
+     * from stripe webhooks
+     */
+    Route::any('customer-subscription-updated', ['uses' => 'StripeWebhooksController@customerSubscriptionUpdated', 'as' => 'customerSubscriptionDeleted']);
+
+    /**
+     * Listens customer.invoice.payment_failed from stripe
+     * from stripe webhooks
+     */
+    Route::any('customer-invoice-payment_failed', ['uses' => 'StripeWebhooksController@customerInvoicePaymentFailed', 'as' => 'customerInvoicePaymentFailed']);
+});

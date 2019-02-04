@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,11 +33,6 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        //dd($exception);
-        // if ($exception instanceof 'MethodNotAllowedHttpException') {
-        //     return response()->view('errors.custom', [], 500);
-        // }
-
         parent::report($exception);
     }
 
@@ -49,21 +45,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        
-            // switch ($e->getStatusCode()) 
-            // {
-            //     case 404:
-            //         return redirect()->route('404');
-            //         break;
-
-            //     case 500:
-            //         return redirect()->route('500');
-            //         break;
-            // }
-        
-        
-        //dd('here');
-        //dd($e);
+        if ($e instanceof TokenMismatchException) {
+            return redirect($request->fullUrl())->with('error',"Oops! Seems you couldn't submit form for a long time. Please try again.");
+        }
         return parent::render($request, $e);
     }
 

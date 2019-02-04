@@ -17,14 +17,26 @@
                 <nav class="menu clearfix">
                     <a href="javascript:void(0);" class="menuClose"><i class="fas fa-arrow-right"></i></a>
                     <ul>
-                        <li><a href="#">lead conversion</a></li>
-                        <li><a href="#">pricing</a></li>
-                        <a href="{{route('loginPage')}}" class="button gradiant-orange">login</a>
+                        <li><a href="#" class="lead-conversion">lead conversion</a></li>
+                        <li><a href="#" class="pricing">pricing</a></li>
+                        @if(Auth::check())
+                            <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a>
+                        @else
+                            <a href="{{route('loginPage')}}" class="button gradiant-orange">login</a>
+                        @endif
                     </ul>
                 </nav>
             @endif
         </div>
       </div>
     </div>
-    
+
+    <script type="text/javascript">
+        $(".pricing").click(function() {
+            $('html,body').animate({scrollTop: $(".plans").offset().top+80},'slow');
+        });
+        $(".lead-conversion").click(function() {
+            $('html,body').animate({scrollTop: $(".leadConversion").offset().top},'slow');
+        });
+    </script>
   </header>

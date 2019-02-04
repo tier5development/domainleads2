@@ -425,10 +425,11 @@
                     }
                     // $('#table').show();
                     // $('#ajax-loader').hide();
-                }, error : function(er) {
-                    if(er.status == 401) {
+                }, error : function(er, status) {
+                    console.log('err : ', er);
+                    // if(er.status == 401) {
                         window.location.replace("{{route('loginPage')}}");
-                    }
+                    // }
                 }, complete: function() {
                     $('#loader-icon').hide();
                 }

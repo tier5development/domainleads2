@@ -39,6 +39,18 @@ class Kernel extends HttpKernel
             \Illuminate\Auth\Middleware\Authenticate::class,
             \App\Http\Middleware\UnsuspendedUser::class,
         ],
+        'subscribedUserGroup' => [
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            \App\Http\Middleware\SubscribedUser::class,
+        ],
+        'pendingSubscription' => [
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            \App\Http\Middleware\UnsubscribedUser::class,
+        ],
+        'adminGroup' => [
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            \App\Http\Middleware\AdminUser::class,
+        ],
         'api' => [
             'throttle:2000,1',
             'bindings',
@@ -60,5 +72,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'UnsuspendedUser' => \App\Http\Middleware\UnsuspendedUser::class,
+        'AdminUser' => \App\Http\Middleware\AdminUser::class,
+        'SubscribedUser' => \App\Http\Middleware\SubscribedUser::class,
     ];
 }

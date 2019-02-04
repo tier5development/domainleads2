@@ -26,7 +26,7 @@ class UserHelper {
                 
                 return ([
                     'status' => true,
-                    'leadsUnlocked' => $domainsUnlockedToday,
+                    'leadsUnlocked' => $limit > -1 && $domainsUnlockedToday > $limit ? $limit : $domainsUnlockedToday,
                     'allLeadsUnlocked' => $domainsUnlocked,
                     'limit' => $limit,
                     'session' => true,
@@ -88,11 +88,12 @@ class UserHelper {
             
             $usertype = $request->user_type;
             $user->user_type = $usertype;
+            $user->base_type = $usertype;
             if($user->save()) {
                 return response()->json([
-                    'status' => true,
-                    'message' => 'User Updated successfully',
-                    'email' => $user->email
+                    'status'    => true,
+                    'message'   => 'User Updated successfully',
+                    'email'     => $user->email
                 ]);
             } else {
                 return response()->json([
@@ -147,6 +148,10 @@ class UserHelper {
             $newUser->email     = $email;
             $newUser->password  = Hash::make(123456);
             $newUser->user_type = $usertype;
+            if(strlen(trim($affiliateId)) > 0) {
+                $newUser->affiliate_id = $affiliateId;
+                $newUser->user_type = $usertype;
+            }
             $newUser->membership_status = 1;
             if(strlen($affiliateId) > 0) {
                 $newUser->base_type = $usertype;

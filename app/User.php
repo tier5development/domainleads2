@@ -36,5 +36,8 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Lead','leadusers','user_id','id');
     }
 
+    public function allowedToCancelMembership() {
+        return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
+    }
     
 }

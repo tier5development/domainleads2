@@ -1932,7 +1932,6 @@ public function download_csv_single_page(Request $request)
           return view('new_version.search.search-results',$result);
         
         } else {
-          
           Session::forget('emailID_list');
           Session::forget('oldReq');
           $allrecords = null;
@@ -1942,6 +1941,7 @@ public function download_csv_single_page(Request $request)
           $allExtensions = ['au','ar','an', 'ca', 'com', 'co', 'ch', 'de', 'es', 'jp', 'edu', 'fr', 'gov', 'io', 'in', 'it', 'info', 'jobs', 'mil', 'mobi', 'net', 'nl', 'no', 'org', 'onion', 'ru', 'us', 'uk', 'se', 'travel', 'pro'];
           // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
           // return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
+          
           return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user, 'allExtensions' => $allExtensions]);
         }
       } else {

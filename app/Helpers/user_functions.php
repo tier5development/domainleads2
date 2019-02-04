@@ -1,7 +1,6 @@
 <?php
 //use DateTime;
-function generateDateRange($start_date,$end_date)
-{
+function generateDateRange($start_date,$end_date) {
     $dates = [];
     if($start_date == null && $end_date == null)
     {
@@ -69,6 +68,33 @@ function convertToMDY($date) {
     } else {
         return $date;
     }
+}
+
+function getPlanName($id) {
+    return config('settings.PLAN.'.$id)[2]['name'];
+}
+
+function getPlanNumber($name) {
+    return config('settings.PLAN.NAMEMAP.'.$name)[0];
+}
+
+function getCancelMembershipReasons() {
+    return [
+        'Bad onboarding',
+        'Buggy product',
+        'Bad support',
+        'Not a right fit',
+        'Price is too high',
+        'Others'
+    ];
+}
+
+function getCardMonth($month) {
+    return sprintf("%02d", $month);
+}
+
+function getCardYear($year) {
+    return substr($year, -2);
 }
     
 ?>

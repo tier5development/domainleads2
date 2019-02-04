@@ -12,6 +12,9 @@
 */
 
 use App\LeadUser;
+use Zipper as Zipper;
+use App\Helpers\StripeHelper;
+use App\StripeDetails;
 
 Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
 Route::get('/signup', ['uses' => 'AccountController@signupPage', 'as' => 'signupPage']);
@@ -27,29 +30,21 @@ Route::get('/reset-password/{e_token}', ['uses' => 'AccountController@resetPassw
 
 Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPasswordExternalPost', 'as' => 'resetPasswordExternalPost']);
 
-Route::get('/testfn',function() {
+Route::get('/verify-email', ['uses' => 'AccountController@verifyEmail', 'as' => 'verifyEmail']);
 
-    dd(country_codes());
-    // $x = true;
-    // dd(isset($x));
+Route::get('/testfn', function() {
 
-    $x = 'abcde.io.aksdf.com';
-    dd(customMaskDomain($x));
+    return route('verifyEmail', ['id' => 12]);
+    // Create webhook
 
-    $email = '2000yd.com@wix-domains.com';
-    // $email = 'work@tier5.us';
-    // dd(1);
-    $email = 'jacke1688@outlook.com';
-    // dd(filter_var($email, FILTER_VALIDATE_EMAIL));
-    dd(preg_match('/^.+@.+$/i', $email));
-    // $v = custom_curl_errors();
-    // dd($v);
+    $strDetails = StripeDetails::first();
 
-    // $x = LeadUser::updateOrCreate([
-    //         ['registrant_email' => 'support@dropcatch.comop', 'domain_name' => 'afinarte.com'],
-    //         ['registrant_fname' => 'adsj', 'registrant_country' => 'Some Country']
-    // ]);
-    // dd($x);
+    $allWebhooks = StripeHelper::retriveAllWebhooks($strDetails->private_key);
+    foreach($allWebhooks as $key => $each) {
+        StripeHelper::deleteWebhook($strDetails->private_key, $each->id);
+    }
+
+    dd(StripeHelper::createChargeWebhook($strDetails->private_key));
 });
 
 // Route::get('/aaa',function(){
@@ -71,7 +66,7 @@ Route::get('/verify_domains','Maintainance@verify_domains');
 Route::get('/tstt','Maintainance@each_domain_verification');
 
 
-Route::get('/wb',function(){
+Route::get('/wb',function() {
     $x = \App\Wordpress_env::all();
 });
 
@@ -97,7 +92,46 @@ Route::get('/aa',function(){
        
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
-    Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
+
+    // Route::group(['middleware' => 'pendingSubscription'], function() {
+    //     Route::group(['prefix' => 'failed-subscription'], function() {
+    //         Route::get('/pay-now', ['uses' => 'AccountController@failedSubscription', 'as' => 'failedSubscription']);
+    //         Route::post('/pay-now', ['uses' => 'AccountController@failedSubscription', 'as' => 'failedSubscriptionPost']);
+    //     });
+    // });
+
+    Route::group(['middleware' => 'subscribedUserGroup'], function() {
+        Route::group(['prefix' => 'failed-subscription'], function() {
+            Route::get('/pay-now', ['uses' => 'AccountController@failedSubscription', 'as' => 'failedSubscription']);
+            Route::post('/pay-now', ['uses' => 'AccountController@failedSubscriptionPost', 'as' => 'failedSubscriptionPost']);
+        });
+    });
+
+    Route::group(['middleware' => ['unsuspendedUserGroup', 'subscribedUserGroup']], function() {
+
+        // Route::get('welcome', ['uses' => 'AccountController@checkFirstVisit', 'as' => 'checkFirstVisit']);
+
+        // Route::post('logout-user', ['uses'=>'AccountController@logoutUserPost', 'as' => 'logoutUserPost']);
+
+        Route::group(['prefix' => 'profile'], function() {
+            Route::get('/', ['uses' => 'AccountController@profile', 'as' => 'profile']);
+            
+            Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
+            Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
+            Route::get('payment-info', ['uses' => 'AccountController@paymentInformation', 'as' => 'paymentInformation']);
+            Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
+            
+            Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
+            Route::post('update-card-details-pay', ['uses' => 'AccountController@updateCardDetailsAndSubscribe', 'as' => 'updateCardDetailsAndSubscribe']);
+            Route::post('change-plan', ['uses' => 'AccountController@upgradeOrDowngradePlan', 'as'=>'upgradeOrDowngradePlan']);
+
+            Route::get('cancel-membership', ['uses' => 'AccountController@cancelMembership', 'as'=>'cancelMembership']);
+            Route::post('cancel-membership', ['uses' => 'AccountController@cancelMembershipPost', 'as'=>'cancelMembershipPost']);
+            Route::group(['middleware' => 'adminGroup'], function() {
+                Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);
+                Route::post('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeysPost', 'as' => 'updatePaymentKeysPost']);
+            });
+        });
 
         Route::post('/uploadImage', ['uses' => 'UserController@uploadImage', 'as' => 'uploadImage']);
 
@@ -110,12 +144,8 @@ Route::get('/aa',function(){
         Route::post('unlockFromLeads', ['uses' => 'SearchController@unlockFromLeads', 'as' => 'unlockFromLeads']);
 
         Route::post('updateUserInfo', ['uses' => 'AccountController@updateUserInfo', 'as' => 'updateUserInfo']);
-
-        Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
-
-        Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
         
-        Route::get('profile', ['uses' => 'AccountController@profile', 'as' => 'profile']);
+        
 
         Route::post('editUser', ['uses' => 'AccountController@editUser', 'as' => 'editUser']);
 

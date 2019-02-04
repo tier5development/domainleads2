@@ -12,17 +12,11 @@
             @include('new_version.shared.right-panel')
 
             <div class="leftPanel leadUnlock">
-                
+                @include('new_version.shared.profile-panel-header')
+
                 <h2 class="editProfileHeading">Edit your profile information</h2>
-                {{-- <div class="profileTip">
-                    <figure>
-                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_camera_black.png" alt="">
-                    </figure>
-                    <p>
-                        TIP: Click on the "Camera" icon on the profile pic<br>to change it
-                    </p>
-                </div> --}}
-                <div class="displayPic">
+                
+                <div class="displayPic"> 
                     {{--  --}}
                     @if(strlen($user->profile_image) > 0)
                         <div class="displayPicContainer">{!! $user->profile_image !!}</div>
@@ -83,59 +77,50 @@
         <footer class="footer">
             &copy; 2017 Powered by Tier5 <a href="">Privacy Policy</a> / <a href="">Terms of Use</a>
         </footer>
-
         
     </div>
 
-
-
     <div class="uploadPicModal" style="display: none;">
-    <div class="modalContainer">
-    <span class="close"></span>
-    <h2>Edit Image</h2>
-    <div class="imageContainer">
-        <div class="imageHolder">
-        <img alt="">
-        </div>
-        <div class="imageFrame"></div>
-        <div class="editInfo" style="display: none;"></div>
-    </div>
-    <div class="editCtrl">
-        <span>Zoom In</span>
-        <div class="range"><input type="range" min="185" max="740" value="185" class="scale"></div>
-        <span>Zoom Out</span>
-        <button type="button" class="resetZoom">Reset</button>
-    </div>
-    <div class="editCtrl rotateCtrl">
-        <span>0 Deg</span>
-        <div class="range"><input type="range" min="0" max="180" value="0" class="rotate"></div>
-        <span>180 Deg</span>
-        <button type="button" class="resetRotate">Reset</button>
-    </div>
-    
-        <div class="previewArea">
-            <div class="preview">
-                <h3>Preview</h3>
-                <div class="output">{!! $user->profile_image !!}</div>
+        <div class="modalContainer">
+            <span class="close"></span>
+            <h2>Edit Image</h2>
+            <div class="imageContainer">
+                <div class="imageHolder">
+                <img alt="">
+                </div>
+                <div class="imageFrame"></div>
+                <div class="editInfo" style="display: none;"></div>
             </div>
-            <div class="preview2">
-                <h3>Icon</h3>
-                <div class="output2">{!! $user->profile_image_icon !!}</div>
-            </div> 
-        </div>
+            <div class="editCtrl">
+                <span>Zoom In</span>
+                <div class="range"><input type="range" min="185" max="740" value="185" class="scale"></div>
+                <span>Zoom Out</span>
+                <button type="button" class="resetZoom">Reset</button>
+            </div>
+            <div class="editCtrl rotateCtrl">
+                <span>0 Deg</span>
+                <div class="range"><input type="range" min="0" max="180" value="0" class="rotate"></div>
+                <span>180 Deg</span>
+                <button type="button" class="resetRotate">Reset</button>
+            </div>
+    
+            <div class="previewArea">
+                <div class="preview">
+                    <h3>Preview</h3>
+                    <div class="output">{!! $user->profile_image !!}</div>
+                </div>
+                <div class="preview2">
+                    <h3>Icon</h3>
+                    <div class="output2">{!! $user->profile_image_icon !!}</div>
+                </div> 
+            </div>
 
-        <div class="modalFooter">
-            <button class="crop orangeBtn">Crop</button>
-            <button class="greenBtn" id="uploadProfilePic">Upload</button>
-        </div>
+            <div class="modalFooter">
+                <button class="crop orangeBtn">Crop</button>
+                <button class="greenBtn" id="uploadProfilePic">Upload</button>
+            </div>
         </div>
     </div>
-
-
-
-
-
-
 
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>

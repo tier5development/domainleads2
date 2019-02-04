@@ -19,10 +19,25 @@
     @php Session::forget('success') @endphp
 @endif
 
+@if(!empty($errors->first()))
+    <div class="alertBox error">
+        <p>{{$errors->first()}}</p>
+        <span class="close"></span>
+    </div>
+    @php unset($errors) @endphp
+@endif
+
+{{-- Needed for ajax --}}
+<div id="ajax-msg-box" class="alertBox" style="display: none;">
+    <p id="ajax-body" class="message-body-ajax"></p>
+    <span class="close"></span>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('.close').click(function() {
             $(this).parent().removeClass('error').removeClass('success').hide();
+            $(".message-body-ajax").text('');
         });
     });
 </script>

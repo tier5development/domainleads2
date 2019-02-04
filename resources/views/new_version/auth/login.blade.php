@@ -12,9 +12,6 @@
         <div class="container customCont">
             <div class="col-sm-8 col-xs-12 innerContentWrap">
                 <div class="col-md-6 col-sm-7 createForm">
-
-                    
-
                     <h2>Login</h2><br>
                     {{-- Error or Success Message --}}
                     @include('new_version.shared.messages')
@@ -37,7 +34,7 @@
                         </div>
                         <button type="submit" class="btn button gradiant-orange">login</button>
                         <span>Don't have an account?</span>
-                        <a href="{{config('settings.LANDING-DOMAIN')}}">register now!</a>
+                        <a href="{{route('signupPage')}}">register now!</a>
                     </form>
                 </div>
             </div>

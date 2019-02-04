@@ -23,6 +23,15 @@
     font-size: 14px;
     top: 0;
     transform: translateY(-100%);
+    margin-top: 5px;
+    }
+    .fieldWrap.success .form-control {
+        background: url('../../../public/images/checked.png') no-repeat right 10px center !important;
+        border: 1px solid #3ec0c7 !important;
+    }
+    .fieldWrap.success input[type="password"].form-control {
+        background: url('../../../public/images/lock.png') no-repeat right 10px center !important;
+        border: 1px solid #3ec0c7 !important;
     }
 
     .alertBox{
@@ -37,10 +46,12 @@
         }
         .alertBox p {
         float: left;
+        width: 90%;
         }
         .alertBox.success{
         background: linear-gradient(to right, #3cbec1, #48e4b2);
         display: inline-block;
+        margin-bottom: 30px;
         }
         .alertBox.error{
         background: linear-gradient(to right, #e94310, #ec2907);
@@ -53,7 +64,7 @@
         .alertBox .close {
         position: relative;
         float: right;
-        width: 14px;
+        width: calc(100% - 90%);
         height: 14px;
         cursor: pointer;
         }
@@ -70,4 +81,27 @@
         }
         .alertBox .close:after {
         transform: rotate(-45deg);
+        }
+        .signUp .leftSide .fieldWrap.error input{
+            margin-top: 50px;
+        }
+        .signUp .fieldWrap.error .errorMsg {
+            width: 84%;
+        }
+        /* responsive */
+        @media only screen and (max-width : 767px) {
+            .signUp .leftSide .fieldWrap.error{
+                width: 100%;
+            }
+            .signUp .fieldWrap.error .errorMsg{
+                width: 100%;
+            }
+        }
+        @media only screen and (min-width: 595px) and (max-width : 767px) {
+            .signUp .leftSide .fieldWrap.error{
+                width: 100%;
+            }
+            .signUp .fieldWrap.error .errorMsg{
+                width: 100%;
+            }
         }
