@@ -305,17 +305,17 @@ h1, h2, h3, h4, h5, h6, p{
 .createForm form .form-group.nameField input:first-child{
 	margin-right: 25px;
 }
-.createForm form span, .createForm form a, .signUpWrap form span, .signUpWrap form a{
+.createForm form span, .createForm form a, .leftSide span, .leftSide a{
 	display: block;
 	text-align: center;
 }
-.createForm form span, .signUpWrap form span{
+.createForm form span, .leftSide span{
 	font-size: 15px;
 	color: #6c6c6c;
 	margin-bottom: 7px;
     line-height: 15px;
 }
-.createForm form a, .signUpWrap form a{
+.createForm form a, .leftSide a{
 	color: #1fbec5;
 	text-decoration: underline;	
 	text-transform: capitalize;
@@ -1300,7 +1300,7 @@ h1, h2, h3, h4, h5, h6, p{
 	width: 400px;
 	margin: 0px auto;
 }
-.cancellationMemberShip label, .cardField label, .signUp .signUpWrap label{
+.cancellationMemberShip label, .cardField label, .signUp .leftSide label{
 	font-size: 18px;
 	color: #c6c6c6;
 	display: block;
@@ -1308,7 +1308,7 @@ h1, h2, h3, h4, h5, h6, p{
 	text-align: left;
 	text-transform: capitalize;
 }
-.signUp .signUpWrap label{
+.signUp .leftSide label, .signUp .rightSide label{
 	font-size: 14px;
 	font-family: 'Avenir LT Std 35 Light';
 	margin-bottom: 5px;
@@ -1332,7 +1332,7 @@ h1, h2, h3, h4, h5, h6, p{
 	margin-bottom: 25px;
     height: 66px;
 }
-.cardField .largeSelectBox, .signUpWrap .largeSelectBox{
+.cardField .largeSelectBox, .leftSide .largeSelectBox{
 	margin-bottom: 50px;
 }
 .cancellationMemberShip .select-styled, .cardField .select-styled, .signUp .select-styled{
@@ -1424,7 +1424,7 @@ h1, h2, h3, h4, h5, h6, p{
 	float: left;
     width: 260px;
 }
-.signUp .signUpWrap .cardNum{
+.signUp .leftSide .cardNum{
 	width: 199px;
 }
 .cvc{
@@ -1432,24 +1432,24 @@ h1, h2, h3, h4, h5, h6, p{
     width: calc(100% - 286px);
     margin-left: 26px;
 }
-.signUp .signUpWrap .cvc{
+.signUp .leftSide .cvc{
 	width: calc(100% - 225px);
 }
 .cardField .fieldWrap{
 	float: left;
     width: 187px;
 }
-.signUp .signUpWrap .fieldWrap{
-	padding: 0 70px 0 28px;
+.signUp .leftSide .fieldWrap{
+	padding: 0 30px 0 28px;
 }
-.signUp .signUpWrap .fieldCover{
+.signUp .leftSide .fieldCover{
 	float: left;
-    width: 134px;
+    width: 139px;
 }
-.cardField .fieldWrap:nth-child(2), .signUp .signUpWrap .fieldCover:nth-child(2){
+.cardField .fieldWrap:nth-child(2), .signUp .leftSide .fieldCover:nth-child(2){
 	margin-left: 26px;
 }
-.cardField button, .signUpWrap button{
+.cardField button, .leftSide button{
 	display: block;
 	margin: 0px auto;
 	letter-spacing: 1px;
@@ -1457,21 +1457,17 @@ h1, h2, h3, h4, h5, h6, p{
 	padding: 0 27px;
 	line-height: 25px;
 }
-.signUpWrap button{
+.leftSide button{
 	width: 100%;
 	margin-bottom: 10px;
 }
-.signUp .innerContentWrap{
-	padding: 36px 30px 36px 40px;
-	position: relative;
-}
-.signUp .signUpWrap h2{
+.signUp .leftSide h2{
 	margin-bottom: 34px;
 	color: #6c6c6c;
 	font-size: 25px;
 	font-family: 'Avenir LT Std 55 Roman';
 }
-.signUp .innerContentWrap:before{
+/* .signUp .innerContentWrap:before{
 	content: '';
 	position: absolute;
 	top: 0;
@@ -1480,8 +1476,8 @@ h1, h2, h3, h4, h5, h6, p{
 	width: 340px;
 	background-color:#1FBEC5;
 	border-radius: 0px 10px 10px 0px;
-}
-.signUp .signUpWrap input[type="text"]{
+} */
+.signUp .leftSide input[type="text"]{
 	border: 1px solid #dbdbdb;
 	background: #fff;
 	border-radius: 3px;
@@ -1497,27 +1493,30 @@ h1, h2, h3, h4, h5, h6, p{
 .signUp .signUpWrap .cardNum input[type="text"], .signUp .signUpWrap .cvc input[type="text"]{
 	margin-bottom: 20px;
 }
-.signUp .signUpWrap ::placeholder{
+.signUp .leftSide ::placeholder{
 	color: #c6c6c6;
 	font-size: 15px;
 	text-transform: capitalize;
 }
-.signUp .signUpWrap h3{
+.signUp .leftSide h3, .signUp .rightSide h3{
 	font-size: 15px;
 	text-transform: capitalize;
 	margin-bottom: 25px;
 	color: #6c6c6c;
 }
+.signUp .rightSide h3{
+	color: #fff;
+}
 .signUp .signUpCover{
 	width:393px;
 }
-.signUp .signUpWrap .select-styled{
+.signUp .leftSide .select-styled{
 	height: 50px;
     font-size: 17px;
     line-height: 43px;
     font-family: 'Avenir LT Std 55 Roman';
 }
-.signUpWrap img{
+.leftSide img{
     padding-bottom: 43px;
     width: 195px;
     margin: 0px auto;
@@ -1525,6 +1524,148 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .signUp{
 	margin: 60px 0px;
+}
+.signUpCoverWrap{
+	position: relative;
+}
+.signUpCoverWrap .signUpLeft{
+    float: left;
+    width: 393px;
+}
+.signUpCoverWrap .signUpRight{
+    float: right;
+    width: calc(100% - 433px);
+	z-index: 9999;
+	position: relative;
+}
+.rightSide:before{
+	position: absolute;
+    top: 300px;
+    right: 0;
+    content: '';
+    border-bottom: 1px solid #40c9c9;
+    width: 100%;
+}
+.signUp .innerContentWrap{
+	position: relative;
+}
+.signUpCoverWrap .signUpRight h3{
+	color: #fff;
+}
+.signUp .rightSide .cartWrap img{
+	width: auto;
+    padding-bottom: 0px;
+    margin: 0px auto;
+    display: flex;
+}
+.signUp .rightSide .cartWrap{
+	position: absolute;
+    content: '';
+    bottom: 260px;
+	right: 0;
+    left: 0;
+}
+.signUp .rightSide .cartWrap span{
+	color: #59e0b4;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-family: 'Avenir LT Std 65 Medium';
+	margin-bottom: 23px;
+	display: block;
+	text-align: center;
+	margin-top: 18px;
+}
+.signUp .rightSide .cartWrap h4{
+	text-align: center;
+	color: #fff;
+	font-size: 40px;
+}
+/* custom radio button */
+.signUp .rightSide .fieldWrap .radioItem {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 20px;
+	cursor: pointer;
+	font-size: 14px;
+	text-transform: capitalize;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+  }
+  .signUp .rightSide .fieldWrap .radioItem input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+  }
+  .signUp .rightSide .fieldWrap .checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 23px;
+	width: 23px;
+	background-color: #eee;
+	border-radius: 50%;
+	background: transparent;
+	border: 2px solid #a5eada;
+  }
+  .signUp .rightSide .fieldWrap .radioItem:hover input ~ .checkmark {
+	background-color: transparent;
+	transition: 0.1s;
+  }
+  .signUp .rightSide .fieldWrap .radioItem input:checked ~ .checkmark {
+	background-color: transparent;
+    border: 2px solid #fff;
+  }
+  .signUp .rightSide .fieldWrap .checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+  }
+  .signUp .rightSide .fieldWrap .radioItem input:checked ~ .checkmark:after {
+	display: block;
+  }
+  .signUp .rightSide .fieldWrap .radioItem .checkmark:after {
+	top: 7px;
+    left: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: white;
+  }
+.signUpCoverWrap .signUpRight .fieldWrap{
+	padding: 0px;
+}
+.signUp .rightSide .fieldWrap label{
+	margin-bottom: 20px;
+	color: #a5eada;
+}
+.signUp .rightSide .fieldWrap label:hover .checkmark{ 
+	background-color: transparent;
+    border: 2px solid #fff;
+}
+.signUp .rightSide .fieldWrap label p{
+	float: right;
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 2px;
+    text-transform: lowercase;
+}
+.signUp .innerContentWrap .leftSide{
+	width: 436px;
+	padding: 37px;
+	float: left;
+}
+.signUp .innerContentWrap .rightSide{
+	width: calc(100% - 436px);
+	background-color: #1FBEC5;
+	border-radius: 0 10px 10px 0;
+	float: right;
+	padding: 97px 29px 39px 39px;
+	min-height: 854px;
+	position: relative;
 }
 /*responsive*/
 @media screen and (max-width: 1600px) {
@@ -1747,6 +1888,9 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.plans .container{
 		margin: 0px auto;
+	}
+	.signUp .leftSide, .signUp .rightSide{
+		text-align: left;
 	}
 }
 @media screen and (max-width: 860px) {
@@ -2089,7 +2233,7 @@ h1, h2, h3, h4, h5, h6, p{
 	.header .menu-button{
 		float: right;
 		position: absolute;
-		top: 23px;
+		top: 6px;
 		right: 16px;
 		border: none;
 		background-color: transparent;
@@ -2388,6 +2532,107 @@ h1, h2, h3, h4, h5, h6, p{
 	.container{
 		position: relative;
 	}
+	.signUp .leftSide, .signUp .rightSide{
+		text-align: left;
+	}
+	.signUp .innerContentWrap .leftSide{
+		width: 100%;
+	}
+	.signUp .innerContentWrap .rightSide{
+		width: 100%;
+		padding: 0px;
+		border-radius: 0px;
+		min-height: auto;
+		position: absolute;
+		bottom: 250px;
+	}
+	.signUp .leftSide .spaceTop{
+		margin-top: 250px;
+	}
+	.signUp .rightSide h3{
+		display: none;
+	}
+	.signUp .innerContentWrap .rightSide .fieldWrap{
+		width: 460px;
+		float: left;
+		padding: 24px;
+	}
+	.signUp .rightSide .cartWrap{
+		width: calc(100% - 460px);
+		float: left;
+		content: normal;
+		position: initial;
+		background: #32a3aa;
+		padding: 30px;
+		min-height: 168px;
+	}
+	.signUp .rightSide .cartWrap img{
+		width: 60px;
+	}
+	.signUp .rightSide .cartWrap span{
+		display: none;
+	}
+	.signUp .rightSide .cartWrap h4{
+		font-size: 23px;
+    	margin-top: 15px;
+	}
+	.rightSide:before{
+		content: normal;
+	}
+	.container {
+		width: 100%;
+		margin: 0px auto;
+	}
+	.signUp .leftSide .cardNum {
+		width: 46%;
+	}
+	.signUp .leftSide .cvc {
+		width: calc(100% - 51%);
+		margin: 0px;
+	}
+	.signUp .leftSide .fieldCover{
+		width: 46%;
+	}
+	.signUp .leftSide .fieldCover.exp{
+		width: calc(100% - 52%);
+	}
+	
+}
+@media only screen and (min-width : 320px) and (max-width : 594px) {
+	.signUp .leftSide .fieldCover.exp {
+		width: calc(100% - 59%);
+	}
+	.signUp .innerContentWrap .rightSide .fieldWrap{
+		width: 200px;
+		padding: 10px;
+	}
+	.signUp .rightSide .fieldWrap label p{
+		font-size: 16px;
+	}
+	.signUp .rightSide .cartWrap {
+		width: calc(100% - 200px);
+	}
+	.leftSide img{
+		width: 100%;
+	}
+	.signUp .rightSide .cartWrap img {
+		width: 40px;
+	}
+	.signUp .rightSide .cartWrap h4 {
+		font-size: 16px;
+	}
+	.signUp .rightSide .cartWrap{
+		min-height: 140px;
+	}
+	.signUp .leftSide .fieldWrap{
+		padding: 0px;
+	}
+	.signUp {
+		margin: 20px 0px;
+	}
+	.signUp .innerContentWrap .rightSide{
+		bottom: 300px;
+	}
 }
 @media only screen and (min-width : 320px) and (max-width : 560px) {
 	.footer {
@@ -2402,6 +2647,8 @@ h1, h2, h3, h4, h5, h6, p{
 	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
 		bottom: 3px;
 	}
+
+	
 }
 
 

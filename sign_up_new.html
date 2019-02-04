@@ -51,20 +51,17 @@
     <div class="innerContent signUp clearfix">
       <div class="container customCont">
         <div class="innerContentWrap">
-          <div class="signUpWrap">
-              <h2>Get an account to unlock leads</h2>
-              <form action="#">
-                <div class="signUpCover">
-                  <h3>personal information</h3>
+          <form action="#">
+            <div class="leftSide">
+                <h2>Get an account to unlock leads</h2>
+                <h3>personal information</h3>
                   <div class="fieldWrap">
                     <input type="text" class="form-control" placeholder="full name">
                     <input type="text" class="form-control" placeholder="email">
                     <input type="text" class="form-control" placeholder="password">
                   </div>
-                </div>
-                <div class="signUpCover">
                   <h3>credit card information</h3>
-                  <div class="fieldWrap">
+                  <div class="fieldWrap clearfix">
                     <div class="formRow">
                         <div class="cardNum">
                             <label for="">card number</label>
@@ -96,7 +93,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="fieldCover">
+                        <div class="fieldCover exp">
                             <label for="">expiry year</label>
                             <div class="largeSelectBox">
                                 <div class="select">
@@ -118,25 +115,40 @@
                         </div>
                     </div>
                   </div>
+                  <div class="fieldWrap spaceTop">
+                    <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
+                    <img src="images/cards.webp" alt="cards">
+                    <span>Have an account?</span>
+                    <a href="#">login now!</a>
+                  </div> 
+            </div>
+            <div class="rightSide">
+                <h3>subcription plans</h3>
+                <div class="fieldWrap">
+                  <label class="radioItem">basic
+                    <p>$47/m</p>
+                    <input type="radio" checked="checked" name="radio">
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="radioItem">pro
+                      <p>$97/m</p>
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="radioItem">agency
+                      <p>$197/m</p>
+                    <input type="radio" name="radio">
+                    <span class="checkmark"></span>
+                  </label>
                 </div>
-                <div class="signUpCover">
-                    <h3>personal information</h3>
-                    <div class="fieldWrap">
-                      <input type="text" class="form-control" placeholder="full name">
-                      <input type="text" class="form-control" placeholder="email">
-                      <input type="text" class="form-control" placeholder="password">
-                    </div>
-                  </div>
-                  <div class="signUpCover">
-                    <div class="fieldWrap">
-                      <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
-                      <img src="images/cards.webp" alt="cards">
-                      <span>Have an account?</span>
-                      <a href="#">login now!</a>
-                    </div>
-                  </div>
-              </form>
-          </div>
+                <div class="cartWrap">
+                  <img src="images/cart.png" alt="cart">
+                  <span>order total</span>
+                  <h4>$47/m</h4>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
