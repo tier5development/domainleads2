@@ -100,7 +100,7 @@
                 </div>
                 <div class="tilldateContent">
                     <h3>Till Date</h3>
-                    <p>You have unlocked <span class="green">359</span> domails till date</p>
+                    <p>You have unlocked <span class="green">359</span> domains till date</p>
                 </div>
             </div>
 
@@ -152,7 +152,7 @@
                                     <label for="">card number</label>
                                     <input type="text" class="form-control" name="" id="">
                                 </div>
-                                <div class="CVC">
+                                <div class="cvc">
                                     <label for="">CVC code</label>
                                     <input type="text" class="form-control" name="" id="">
                                 </div>
@@ -168,13 +168,7 @@
                                                 <option value="domain_count_asnd">Domain Count less to more</option>
                                                 <option value="domain_count_dcnd">Domain Count more to less</option>
                                             </select>
-                                            <div class="select-styled">Unlock Count less to more</div>
-                                            <ul class="select-options">
-                                                <li>Unlock Count less to more</li>
-                                                <li>Unlock Count more to less</li>
-                                                <li>Domain Count less to more</li>
-                                                <li>Domain Count more to less</li>
-                                            </ul>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -182,19 +176,13 @@
                                     <label for="">expiry year</label>
                                     <div class="largeSelectBox">
                                         <div class="select">
-                                            <select data-stopsubmit="1" class="selectpage select-hidden" id="" name="">
+                                            <select class="selectpage">
                                                 <option value="unlocked_asnd">2019</option>
                                                 <option value="unlocked_dcnd">Unlock Count more to less</option>
                                                 <option value="domain_count_asnd">Domain Count less to more</option>
                                                 <option value="domain_count_dcnd">Domain Count more to less</option>
                                             </select>
-                                            <div class="select-styled">Unlock Count less to more</div>
-                                            <ul class="select-options">
-                                                <li>Unlock Count less to more</li>
-                                                <li>Unlock Count more to less</li>
-                                                <li>Domain Count less to more</li>
-                                                <li>Domain Count more to less</li>
-                                            </ul>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -479,6 +467,69 @@ var optionScrollWidth;
         $(this).nextAll(".month").val(dateSelect[1]);
         $(this).nextAll(".year").val(dateSelect[2]);
     });
+
+// for custom dropdown
+            $('.selectpage').each(function(){
+
+    console.log('each executed', req_pagination);
+    var thisInstance = $(this);
+
+    var thisVal = $(this), numberOfOptions = $(this).children('option').length;
+
+    thisVal.addClass('select-hidden'); 
+    thisVal.wrap('<div class="select"></div>');
+    thisVal.after('<div class="select-styled"></div>');
+
+    var styledSelect = thisVal.next('div.select-styled');
+    // styledSelect.text(thisVal.children('option').eq(0).text());
+    styledSelect.text(thisVal.children('option:selected').text());
+
+    var list = $('<ul />', {
+        'class': 'select-options'
+    }).insertAfter(styledSelect);
+
+    for (var i = 0; i < numberOfOptions; i++) {
+        $('<li />', {
+            text: thisVal.children('option').eq(i).text(),
+            rel: thisVal.children('option').eq(i).val()
+        }).appendTo(list);
+    };
+
+    var listItems = list.children('li');
+    styledSelect.click(function(e) {
+        e.stopPropagation();
+        $('div.select-styled.active').not(this).each(function(){
+            $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+        });
+        $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+    });
+
+    listItems.click(function(e) {
+        e.stopPropagation();
+        console.log('clicked');
+        styledSelect.text($(this).text()).removeClass('active');
+        thisVal.val($(this).attr('rel'));
+        list.fadeOut(200);
+
+        if(thisInstance.data('pagination') !== undefined) {
+            req_pagination = thisVal.val();
+            console.log('pagination', thisInstance.data('pagination'), thisVal.val());
+            $('#pagination').val(thisVal.val());
+        }
+
+        // Used for advanced-search-box
+        if(thisInstance.data('stopsubmit') === undefined) {
+            console.log('not pagination', thisInstance.data('stopsubmit'));
+            submitFormCustom(); 
+        }
+        // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));
+        // submitFormCustom();
+    });
+
+    $(document).click(function() {
+        styledSelect.removeClass('active');
+        list.fadeOut(200);
+    });
 });
 </script>
 <!-- for dasboard page tab -->
@@ -487,10 +538,10 @@ var optionScrollWidth;
         var i;
         var x = document.getElementsByClassName("eachItem");
         for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";  
+            x[i].style.display = "none";  
         }
         document.getElementById(itemName).style.display = "block";  
-    }
+    };
 </script>
 </body>
 </html>

@@ -99,7 +99,6 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .container {
 	max-width: 1560px;
-    margin: 0 auto;
 }
 
 /*banner*/
@@ -1785,7 +1784,7 @@ h1, h2, h3, h4, h5, h6, p{
 		font-size: 18px;
 	}
 	.container {
-		width: 750px;
+		width: 100%;
 	}
 	.userSay .userImages .userImg9 {
 		top: -50px;
@@ -1803,6 +1802,12 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.updateCardWrap{
 		text-align: left;
+	}
+	.innerContent{
+		margin: 20px 0 40px 0;
+	}
+	.updateCardWrap{
+		margin: 0px auto 50px;
 	}
 }
 
@@ -1891,6 +1896,12 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.signUp .leftSide, .signUp .rightSide{
 		text-align: left;
+	}
+	.plans .eachPlan{
+		padding: 28px;
+	}
+	.eachPlanOuter {
+		width: 33.33%;
 	}
 }
 @media screen and (max-width: 860px) {
@@ -2111,9 +2122,6 @@ h1, h2, h3, h4, h5, h6, p{
 }
 /* Small Devices, Tablets (xs)*/
 @media only screen and (min-width : 480px) and (max-width : 767px) {
-	.innerContent{
-		margin: 12px 0 140px 0;
-	}
 	.innerContent.logout{
 		margin: 100px 0;
 	}
@@ -2144,6 +2152,21 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.innerContent .cancelDomain .innerContentWrap .createForm p{
 		width: 100%;
+	}
+	.updateCardWrap {
+		width: 100%;
+	}
+	.updateCardWrap .updateCard{
+		padding: 11px;
+	}
+	.updateCardWrap .updateCard .cardNumber {
+		width: 166px;
+	}
+	.updateCardWrap .updateCard .expiryDate {
+		width: 98px;
+	}
+	.updateCardWrap .updateCard button{
+		padding: 0 13px;
 	}
 }
 
@@ -2205,13 +2228,13 @@ h1, h2, h3, h4, h5, h6, p{
 		text-align: center;
 	}
 	.footer span{
-		font-size: 10px;
+		font-size: 14px;
 		display: block;
 		float: none;
 		margin: 0px;
 	}
 	.footer a{
-		font-size: 10px;
+		font-size: 13px;
 	}
 	.footer .pull-left{
 		float: none !important;
@@ -2227,6 +2250,20 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.innerContent .cancelDomain .innerContentWrap .createForm p{
 		width: 100%;
+	}
+	.updateCardWrap{
+		width: 100%;
+	}
+	.updateCardWrap .updateCard .cardNumber {
+		width: 100%;
+	}
+	.updateCardWrap .updateCard .expiryDate {
+		width: 100%;
+		margin-bottom: 30px;
+	}
+	.updateCardWrap .updateCard button{
+		display: block;
+    	margin: 0px auto;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 767px) {
@@ -2383,8 +2420,8 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.plans .eachPlan h4{
 		display: inline;
-		float: left;
-		margin-left: 84px;
+		position: absolute;
+    	left: 230px;
 		margin-bottom: 24px;
 	}
 	.plans .eachPlan{
@@ -2445,14 +2482,14 @@ h1, h2, h3, h4, h5, h6, p{
 		display: none;
 		position: absolute;
 		bottom: 10px;
-		left: 230px;
+		left: 10px;
 	}
 	.plans .eachPlan .viewMorePanel1 li, .plans .eachPlan .viewMorePanel2 li, .plans .eachPlan .viewMorePanel3 li{
 		display: inline;
 		font-size: 14px;
 	}
 	.footer.mobileOnly span{
-		display: inline;
+		display: block;
 	}
 	.footer{
 		text-align: center;
@@ -2531,6 +2568,8 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.container{
 		position: relative;
+		width: 100%;
+		margin: 0px;
 	}
 	.signUp .leftSide, .signUp .rightSide{
 		text-align: left;
@@ -2545,6 +2584,7 @@ h1, h2, h3, h4, h5, h6, p{
 		min-height: auto;
 		position: absolute;
 		bottom: 250px;
+		left: 0;
 	}
 	.signUp .leftSide .spaceTop{
 		margin-top: 250px;
@@ -2579,10 +2619,10 @@ h1, h2, h3, h4, h5, h6, p{
 	.rightSide:before{
 		content: normal;
 	}
-	.container {
+	/* .container {
 		width: 100%;
 		margin: 0px auto;
-	}
+	} */
 	.signUp .leftSide .cardNum {
 		width: 46%;
 	}
@@ -2596,7 +2636,9 @@ h1, h2, h3, h4, h5, h6, p{
 	.signUp .leftSide .fieldCover.exp{
 		width: calc(100% - 52%);
 	}
-	
+	.innerContent{
+		margin: 12px 0 60px  0;
+	}
 }
 @media only screen and (min-width : 320px) and (max-width : 594px) {
 	.signUp .leftSide .fieldCover.exp {
@@ -2613,7 +2655,7 @@ h1, h2, h3, h4, h5, h6, p{
 		width: calc(100% - 200px);
 	}
 	.leftSide img{
-		width: 100%;
+		width: 40%;
 	}
 	.signUp .rightSide .cartWrap img {
 		width: 40px;
@@ -2631,7 +2673,7 @@ h1, h2, h3, h4, h5, h6, p{
 		margin: 20px 0px;
 	}
 	.signUp .innerContentWrap .rightSide{
-		bottom: 300px;
+		bottom: 260px;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 560px) {
@@ -2647,8 +2689,74 @@ h1, h2, h3, h4, h5, h6, p{
 	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
 		bottom: 3px;
 	}
-
+	.signUpCon .footer, .canMem .footer{
+		display: block;
+	}
+	.cancellationMemberShip, .cancellationMemberShip form, .cardField form{
+		width: 100%;
+	}
+	.plans .eachPlan h4{
+		left: 163px;
+	}
+	.plans .eachPlan h3, .plans .eachPlan span, .viewMore1, .viewMore2, .viewMore3{
+		left: 160px;
+	}
+	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
+		left: 154px;
+	}
+	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
+		left: 242px;
+		top: 70px;
+		background: #fff;
+	}
 	
 }
 
-
+@media only screen and (min-width : 320px) and (max-width : 441px) {
+	.cardNum, .cvc, .cardField .fieldWrap{
+		width: 100%;
+	}
+	.cardField .fieldWrap:nth-child(2), .signUp .leftSide .fieldCover:nth-child(2){
+		margin: 0px;
+	}
+	.cardField .largeSelectBox, .leftSide .largeSelectBox{
+		margin-bottom: 25px;
+	}
+	.plans .eachPlan{
+		padding: 10px;
+	}
+	.plans .eachPlan img{
+		width: 20%;
+		height: auto;
+	}
+	.plans .eachPlan h3, .plans .eachPlan span, .viewMore1, .viewMore2, .viewMore3{
+		left: 98px;
+	}
+	.plans .eachPlan h3{
+		top: 24px;
+		font-size: 25px;
+	}
+	.plans .eachPlan span{
+		top: 54px;
+	}
+	.greyButton, .plans .eachPlan .button{
+		padding: 5px 12px;
+		font-size: 14px;
+	}
+	.plans .eachPlan h4{
+		font-size: 14px;
+		left: 100px;
+	}
+	.viewMore1, .viewMore2, .viewMore3{
+		bottom: 4px;
+	}
+	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
+		background-color: #fff;
+		bottom: 20px;
+		left: 143px;
+		top: 3px;
+	}
+	.signUp .leftSide .cardNum, .signUp .leftSide .cvc, .signUp .leftSide .fieldCover, .signUp .leftSide .fieldCover.exp{
+		width: 100%;
+	}
+}
