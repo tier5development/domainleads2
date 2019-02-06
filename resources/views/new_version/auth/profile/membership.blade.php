@@ -42,93 +42,40 @@
                     <div class="plans">
                         <div class="container">
                             <div class="eachPlanContainer clearfix">
-                                    @foreach (config('settings.PLAN.PUBLISHABLE') as $key=>$item)
-                                        <div class="eachPlanOuter">
-                                            <div class="eachPlan">
-                                                <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
-                                                <h4>basic</h4>
-                                                <ul class="features">
-                                                    <li>{{config('settings.PLAN.PUBLISHABLE.'.$key)[0]}} leads a day</li>
-                                                    <li>location filters</li>
-                                                    <li>keywords filters</li>
-                                                    <li>TLD filters</li>
-                                                    <li>lead exports</li>
-                                                </ul>
-                                                <h3>${{config('settings.PLAN.PUBLISHABLE.'.$key)[1]}}</h3>
-                                                <span>Billed monthly, no set up fee.</span>
-                                                
-                                                {{-- <!-- <a href="#" class="button gradiant-orange">get started</a> --> --}}
-                                                
-                                                @if($user->user_type == config('settings.PLAN.L').$key)
-                                                    <button class="greyButton">current plan</button>
-                                                @elseif($user->user_type > config('settings.PLAN.L').$key)
-                                                    <a href="#" class="button gradiant-green">downgrade</a>
-                                                @elseif($user->user_type < config('settings.PLAN.L').$key)
-                                                    <a href="#" class="button gradiant-orange">get started</a>
-                                                @endif
+                                @foreach (config('settings.PLAN.PUBLISHABLE') as $key=>$item)
+                                    <div class="eachPlanOuter">
+                                        <div class="eachPlan">
+                                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
+                                            <h4>basic</h4>
+                                            <ul class="features">
+                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$key)[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$key)[0]}} leads a day</li>
+                                                <li>location filters</li>
+                                                <li>keywords filters</li>
+                                                <li>TLD filters</li>
+                                                <li>lead exports</li>
+                                            </ul>
+                                            <h3>${{config('settings.PLAN.PUBLISHABLE.'.$key)[1]}}</h3>
+                                            <span>Billed monthly, no set up fee.</span>
+                                            
+                                            @if($user->user_type == config('settings.PLAN.L').$key)
+                                                <button class="greyButton">current plan</button>
+                                            @elseif($user->user_type > config('settings.PLAN.L').$key)
+                                                <a href="#" class="button gradiant-green">downgrade</a>
+                                            @elseif($user->user_type < config('settings.PLAN.L').$key)
+                                                <a href="#" class="button gradiant-orange">get started</a>
+                                            @endif
 
-                                                <button class="viewMore1">View more</button>
-                                                <ul class="viewMorePanel1">
-                                                    <li>{{config('settings.PLAN.PUBLISHABLE.'.$key)[0]}} leads a day,</li>
-                                                    <li> location filters,</li>
-                                                    <li> keywords filters,</li>
-                                                    <li> TLD filters,</li>
-                                                    <li> lead exports</li>
-                                                </ul>
-                                            </div>
+                                            <button class="viewMore1">View more</button>
+                                            <ul class="viewMorePanel1">
+                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$key)[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$key)[0]}} leads a day,</li>
+                                                <li>location filters,</li>
+                                                <li>keywords filters,</li>
+                                                <li>TLD filters,</li>
+                                                <li>lead exports</li>
+                                            </ul>
                                         </div>
-                                    @endforeach
-
-                            {{-- <div class="eachPlanOuter">
-                                <div class="eachPlan">
-                                <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
-                                <h4>basic</h4>
-                                <ul class="features">
-                                    <li>50 leads a day</li>
-                                    <li>location filters</li>
-                                    <li>keywords filters</li>
-                                    <li>TLD filters</li>
-                                    <li>lead exports</li>
-                                </ul>
-                                <h3>$47</h3>
-                                <span>Billed monthly, no set up fee.</span>
-                                <button class="greyButton">current plan</button>
-                                <!-- <a href="#" class="button gradiant-orange">get started</a> -->
-                                <button class="viewMore1">View more</button>
-                                <ul class="viewMorePanel1">
-                                    <li>50 leads a day,</li>
-                                    <li> location filters,</li>
-                                    <li> keywords filters,</li>
-                                    <li> TLD filters,</li>
-                                    <li> lead exports</li>
-                                </ul>
-                                </div>
-                            </div>
-                            <div class="eachPlanOuter">
-                                <div class="eachPlan">
-                                <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/pro_plan.png">
-                                <h4>pro</h4>
-                                <ul class="features">
-                                    <li>50 leads a day</li>
-                                    <li>location filters</li>
-                                    <li>keywords filters</li>
-                                    <li>TLD filters</li>
-                                    <li>lead exports</li>
-                                </ul>
-                                <h3>$97</h3>
-                                <span>Billed monthly, no set up fee.</span>
-                                <a href="#" class="button gradiant-orange">get started</a>
-                                <button class="viewMore2">View more</button>
-                                <ul class="viewMorePanel2">
-                                    <li>50 leads a day,</li>
-                                    <li> location filters,</li>
-                                    <li> keywords filters,</li>
-                                    <li> TLD filters,</li>
-                                    <li> lead exports</li>
-                                </ul>
-                                </div>
-                            </div> --}}
-                            
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>

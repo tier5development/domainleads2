@@ -104,7 +104,9 @@ Route::get('/aa',function(){
             Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
             Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
             Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
-            Route::group(['middleware' => 'adminGroup'], function() {  
+            Route::get('payment-info', ['uses' => 'AccountController@paymentInformation', 'as' => 'paymentInformation']);
+            Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
+            Route::group(['middleware' => 'adminGroup'], function() {
                 Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);
                 Route::post('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeysPost', 'as' => 'updatePaymentKeysPost']);
             });

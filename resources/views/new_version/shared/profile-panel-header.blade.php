@@ -1,7 +1,7 @@
 <div class="tab">
     <button onclick=window.location.replace("{{route('profile')}}") class="singleItem prof-info">profile information</button>
     <button onclick=window.location.replace("{{route('changePassword')}}") class="singleItem prof-change-password">change password</button>
-    <button onclick="openItem('payment_info')" class="singleItem prof-payment-info">payment information</button>
+    <button onclick=window.location.replace("{{route('paymentInformation')}}") class="singleItem prof-payment-info">payment information</button>
     <button onclick=window.location.replace("{{route('showMembershipPage')}}") class="singleItem prof-membership">membership</button>
     @if($user->user_type == config('settings.ADMIN-NUM'))
         <button onclick=window.location.replace("{{route('updatePaymentKeys')}}") class="singleItem prof-membership">stripe keys</button>

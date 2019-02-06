@@ -109,7 +109,7 @@
 
 String.prototype.translateToDate = function() {
     return this.length == 1 ? '0'+this : this;
-} 
+}
 
 image_config = {
     'w' : 185,
@@ -118,7 +118,6 @@ image_config = {
         'w' : 40
     }
 }
-
 
 var processImage = function(picContainerId, input) {
 
@@ -159,16 +158,8 @@ var processImage = function(picContainerId, input) {
                     canvas.getContext('2d').drawImage(image, 0, 0, width, height);
                     var dataUrl = canvas.toDataURL('image/jpeg');
                     var resizedImage = dataURLToBlob(dataUrl);
-
-                    
-                    // $.event.trigger({
-                    //     type: "imageResized",
-                    //     blob: resizedImage,
-                    //     url: dataUrl
-                    // });
                 }
                 image.src = readerEvent.target.result;
-
                 // recreating the image
                 $('#'+picContainerId).attr('src', image.src);
             }
@@ -178,8 +169,6 @@ var processImage = function(picContainerId, input) {
 
     // Read in file
     // var file = event.target.files[0];
-
-    
 };
 
 /* Utility function to convert a canvas to a BLOB */
@@ -189,7 +178,6 @@ var dataURLToBlob = function(dataURL) {
         var parts = dataURL.split(',');
         var contentType = parts[0].split(':')[1];
         var raw = parts[1];
-
         return new Blob([raw], {type: contentType});
     }
 
@@ -223,6 +211,7 @@ $(document).ready(function() {
     $('#upload_profile_pic').click(function() {
         $("input[id='avatar_file']").click();
     });
+
     $('#avatar_file').change(function() {
         processImage('profile_pic_container', this);
     });
@@ -232,26 +221,16 @@ $(document).ready(function() {
         var data = new FormData($("form[id*='uploadImageForm']")[0]);
         if (event.blob && event.url) {
             data.append('image_data', event.blob);
-
-            // $.ajax({
-            //     url: event.url,
-            //     data: data,
-            //     cache: false,
-            //     contentType: false,
-            //     processData: false,
-            //     type: 'POST',
-            //     success: function(data){
-            //     //handle errors...
-            //     }
-            // });
         }
     });
 
     $('#profileTag').click(function() {
         $('#profileMenu').show(300);
     });
+
     $('#profileMenuCloseBtn').click(function() {
         $('#profileMenu').hide(300);
     });
+    
 });
 </script>

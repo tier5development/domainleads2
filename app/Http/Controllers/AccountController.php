@@ -14,9 +14,54 @@ use App\Helpers\UserHelper;
 use App\PasswordReset;
 use \Carbon\Carbon;
 use App\StripeDetails;
-
+use App\Traits\StripeTrait;
 class AccountController extends Controller
 {
+	use StripeTrait;
+	public function updateCardDetails(Request $request) {
+		try {
+			DB::beginTransaction();
+			$user = Auth::user();
+			$stripeToken = $request->stripe_token;
+			$stripeDetails = StripeDetails::first();
+            $params = [
+                'email'     	=> 	$user->email,
+				'source'    	=> 	$stripeToken,
+				'name'			=>	$user->name,
+				'description'	=>	'Card updated from platform '.config('settings.APPLICATION-DOMAIN')
+            ];
+            $res = $this->createOrUpdateStripeCustomer($user, $params, $stripeDetails);
+            if($res['status']) {
+				DB::commit();
+                return response()->json([
+                    'status' 	=> true,
+                    'message' 	=> 'Card updated successfully',
+                ]);
+            } else {
+				DB::commit();
+                return response()->json([
+                    'status' 	=> false,
+                    'message' 	=> 'Card upddate failed.',
+                ]);
+            }
+        } catch(Throwable $e) {
+			DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+	}
+
+	public function paymentInformation() {
+		$data = [
+			'user' => Auth::user(),
+			'stripeDetails' => StripeDetails::first(),
+			'cards' => $this->getCustomerDetails(Auth::user())['cards']
+		];
+		return view('new_version.auth.profile.payment-information', $data);
+	}
+
 	public function updatePaymentKeys() {
 		return view('new_version.auth.profile.update-payment-keys', ['user' => Auth::user(), 'stripeDetails' => StripeDetails::first()]);
 	}
