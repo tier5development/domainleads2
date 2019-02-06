@@ -187,15 +187,20 @@ h1, h2, h3, h4, h5, h6, p{
 /*	box-shadow: 7px 4px 11px 0px #616161;*/
 }
 .gradiant-orange{
-	background: linear-gradient(#e96f11, #e95311);
+	background: linear-gradient( to right, #e96f11, #e95311);
 	line-height: 11px;
-	border: 2px solid #e96f11;
 	/* transition: 0.5s; */
 }
 .gradiant-orange:hover{
-	border: 2px solid #e96f11;
-	color: #e96f11;
-	background: #fff;
+	background: linear-gradient( to left, #e96f11, #e95311);;
+}
+.gradiant-green{
+	background: linear-gradient(to right, #3cbec1, #48e4b3);
+	line-height: 11px;
+	/* transition: 0.5s; */
+}
+.gradiant-green:hover{
+	background: linear-gradient(to left, #3cbec1, #48e4b3);
 }
 .searchBox{
 	border-bottom: 1px solid #dbdbdb;	
@@ -254,7 +259,7 @@ h1, h2, h3, h4, h5, h6, p{
 .innerContentWrap{
 	background-color: #fff;
     border-radius: 10px;
-    background-image: url('public/images/bg_popup.png');
+    background-image: url('../../../public/images/bg_popup.png');
     background-repeat: no-repeat;
     background-position: 134% 0%;
     box-shadow: 0px 18px 80px -13px #777777;
@@ -977,7 +982,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .plans .eachPlan:hover .button{
 	display: inline-block;
-} 
+}
 .plans .eachPlan img{
 	margin-bottom: 30px;
 	height: 113px;
@@ -1012,9 +1017,8 @@ h1, h2, h3, h4, h5, h6, p{
 	display: inline-block;
     font-size: 15px;
     text-transform: capitalize;
-    padding: 17px 28px;
+    padding: 19px 28px;
     margin-top: 66px;
-    display: none;
 }
 .viewMore1, .viewMore2, .viewMore3, .viewMorePanel1, .viewMorePanel2, .viewMorePanel3{
 	display:none;

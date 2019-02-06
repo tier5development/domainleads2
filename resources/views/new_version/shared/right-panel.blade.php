@@ -17,7 +17,7 @@
             Upgrade your membership<br> to unlock more of your daily limit.
         </p>
         <p>
-            {{-- <button type="button" class="orangeBtn">Upgrade Now</button> --}}
+            <button type="button" class="orangeBtn">Upgrade Now</button>
         </p>
     </div>
     <div class="tilldateContent">

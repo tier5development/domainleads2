@@ -13,9 +13,30 @@ use Mail, Log, Exception;
 use App\Helpers\UserHelper;
 use App\PasswordReset;
 use \Carbon\Carbon;
+use App\StripeDetails;
 
 class AccountController extends Controller
 {
+	public function updatePaymentKeys() {
+		return view('new_version.auth.profile.update-payment-keys', ['user' => Auth::user(), 'stripeDetails' => StripeDetails::first()]);
+	}
+
+	public function updatePaymentKeysPost(Request $request) {
+		try {
+			$publicKey = $request->public_key;
+			$privateKey = $request->private_key;
+			$stripeDetails = StripeDetails::first();
+			if(!$stripeDetails) {
+				$stripeDetails = new StripeDetails();
+			}
+			$stripeDetails->public_key = $publicKey;
+			$stripeDetails->private_key = $privateKey;
+			$stripeDetails->save();
+			return redirect()->back()->with('success', 'Stripe Keys set up successfully.');
+		} catch(\Excepption $e) {
+			return redirect()->back()->with('fail', 'Error : '.$e->getMessage());
+		}
+	}
 
 	public function  showMembershipPage() {
 		try {

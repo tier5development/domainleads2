@@ -13,8 +13,6 @@
         @include('new_version.section.user_panel_header', ['user' => $user])
         
         @include('new_version.shared.loader')
-
-        
         
         <section class="mainBody">
             @include('new_version.shared.right-panel')
@@ -44,7 +42,44 @@
                     <div class="plans">
                         <div class="container">
                             <div class="eachPlanContainer clearfix">
-                            <div class="eachPlanOuter">
+                                    @foreach (config('settings.PLAN.PUBLISHABLE') as $key=>$item)
+                                        <div class="eachPlanOuter">
+                                            <div class="eachPlan">
+                                                <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
+                                                <h4>basic</h4>
+                                                <ul class="features">
+                                                    <li>{{config('settings.PLAN.PUBLISHABLE.'.$key)[0]}} leads a day</li>
+                                                    <li>location filters</li>
+                                                    <li>keywords filters</li>
+                                                    <li>TLD filters</li>
+                                                    <li>lead exports</li>
+                                                </ul>
+                                                <h3>${{config('settings.PLAN.PUBLISHABLE.'.$key)[1]}}</h3>
+                                                <span>Billed monthly, no set up fee.</span>
+                                                
+                                                {{-- <!-- <a href="#" class="button gradiant-orange">get started</a> --> --}}
+                                                
+                                                @if($user->user_type == config('settings.PLAN.L').$key)
+                                                    <button class="greyButton">current plan</button>
+                                                @elseif($user->user_type > config('settings.PLAN.L').$key)
+                                                    <a href="#" class="button gradiant-green">downgrade</a>
+                                                @elseif($user->user_type < config('settings.PLAN.L').$key)
+                                                    <a href="#" class="button gradiant-orange">get started</a>
+                                                @endif
+
+                                                <button class="viewMore1">View more</button>
+                                                <ul class="viewMorePanel1">
+                                                    <li>{{config('settings.PLAN.PUBLISHABLE.'.$key)[0]}} leads a day,</li>
+                                                    <li> location filters,</li>
+                                                    <li> keywords filters,</li>
+                                                    <li> TLD filters,</li>
+                                                    <li> lead exports</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                            {{-- <div class="eachPlanOuter">
                                 <div class="eachPlan">
                                 <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
                                 <h4>basic</h4>
@@ -92,31 +127,8 @@
                                     <li> lead exports</li>
                                 </ul>
                                 </div>
-                            </div>
-                            <div class="eachPlanOuter">
-                                <div class="eachPlan">
-                                    <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/agency_plan.png">
-                                    <h4>agency</h4>
-                                    <ul class="features">
-                                        <li>50 leads a day</li>
-                                        <li>location filters</li>
-                                        <li>keywords filters</li>
-                                        <li>TLD filters</li>
-                                        <li>lead exports</li>
-                                    </ul>
-                                    <h3>$197</h3>
-                                    <span>Billed monthly, no set up fee.</span>
-                                    <a href="#" class="button gradiant-orange">get started</a>
-                                    <button class="viewMore3">View more</button>
-                                    <ul class="viewMorePanel3">
-                                        <li>50 leads a day,</li>
-                                        <li> location filters,</li>
-                                        <li> keywords filters,</li>
-                                        <li> TLD filters,</li>
-                                        <li> lead exports</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            </div> --}}
+                            
                             </div>
                         </div>
                     </div>

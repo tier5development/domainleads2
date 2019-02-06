@@ -10,7 +10,7 @@
 <body>
 
     {{-- Loader icon in the platform --}}
-    @include('new_version.shared.loader')`
+    @include('new_version.shared.loader')
 
     <div class="container">
 

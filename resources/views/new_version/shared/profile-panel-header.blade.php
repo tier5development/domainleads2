@@ -1,6 +1,43 @@
 <div class="tab">
-    <button onclick="openItem('profile_info')" class="singleItem">profile information</button>
-    <button onclick="openItem('change _password')" class="singleItem">change password</button>
-    <button onclick="openItem('payment_info')" class="singleItem">payment information</button>
-    <button onclick="openItem('membership')" class="singleItem active">membership</button>
+    <button onclick=window.location.replace("{{route('profile')}}") class="singleItem prof-info">profile information</button>
+    <button onclick=window.location.replace("{{route('changePassword')}}") class="singleItem prof-change-password">change password</button>
+    <button onclick="openItem('payment_info')" class="singleItem prof-payment-info">payment information</button>
+    <button onclick=window.location.replace("{{route('showMembershipPage')}}") class="singleItem prof-membership">membership</button>
+    @if($user->user_type == config('settings.ADMIN-NUM'))
+        <button onclick=window.location.replace("{{route('updatePaymentKeys')}}") class="singleItem prof-membership">stripe keys</button>
+    @endif
 </div>
+
+<script type="text/javascript">
+    var showPageMarker = function() {
+        var pageurl = window.location.href;
+        var pageLastUrl = pageurl.split('/').slice(-1)[0];
+        switch(pageLastUrl) {
+            case 'profile' : 
+            $('.tab>button').removeClass('active');
+            $('.prof-info').addClass('active');
+            break;
+            
+            case 'change-password' : 
+            $('.tab>button').removeClass('active');
+            $('.prof-change-password').addClass('active');
+            break;
+
+            case 'payment-info' : 
+            $('.tab>button').removeClass('active');
+            $('.prof-payment-info').addClass('active');
+            break;
+
+            case 'membership' : 
+            $('.tab>button').removeClass('active');
+            $('.prof-membership').addClass('active');
+            break;
+
+            default: 
+            break;
+        }
+    }
+    $(document).ready(function() {
+        showPageMarker();
+    });
+</script>

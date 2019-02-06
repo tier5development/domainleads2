@@ -9,7 +9,8 @@
 
         <section class="mainBody">
             <div class="leftPanel leadUnlock">
-                <h2 class="editProfileHeading">Change your password below</h2>        
+                @include('new_version.shared.profile-panel-header')
+                <h2 class="editProfileHeading">Change your password below</h2>
                 <div class="profileFormArea">
 
                     {{-- Error or Success Message --}}

@@ -100,7 +100,14 @@ Route::get('/aa',function(){
     Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
 
         Route::group(['prefix' => 'profile'], function() {
+            Route::get('/', ['uses' => 'AccountController@profile', 'as' => 'profile']);
             Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
+            Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
+            Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
+            Route::group(['middleware' => 'adminGroup'], function() {  
+                Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);
+                Route::post('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeysPost', 'as' => 'updatePaymentKeysPost']);
+            });
         });
 
         Route::post('/uploadImage', ['uses' => 'UserController@uploadImage', 'as' => 'uploadImage']);
@@ -114,12 +121,8 @@ Route::get('/aa',function(){
         Route::post('unlockFromLeads', ['uses' => 'SearchController@unlockFromLeads', 'as' => 'unlockFromLeads']);
 
         Route::post('updateUserInfo', ['uses' => 'AccountController@updateUserInfo', 'as' => 'updateUserInfo']);
-
-        Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
-
-        Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
         
-        Route::get('profile', ['uses' => 'AccountController@profile', 'as' => 'profile']);
+        
 
         Route::post('editUser', ['uses' => 'AccountController@editUser', 'as' => 'editUser']);
 
