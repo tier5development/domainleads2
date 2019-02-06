@@ -1512,7 +1512,7 @@ h1, h2, h3, h4, h5, h6, p{
 .signUp .leftSide .select-styled{
 	height: 50px;
     font-size: 17px;
-    line-height: 43px;
+    line-height: 30px;
     font-family: 'Avenir LT Std 55 Roman';
 }
 .leftSide img{
@@ -1665,6 +1665,9 @@ h1, h2, h3, h4, h5, h6, p{
 	padding: 97px 29px 39px 39px;
 	min-height: 854px;
 	position: relative;
+}
+#payment_info .select-options, #membership .select-options{
+	top: 66px;
 }
 /*responsive*/
 @media screen and (max-width: 1600px) {
@@ -2511,6 +2514,7 @@ h1, h2, h3, h4, h5, h6, p{
 		background: #fff;
 		height: auto;
 		z-index: 1;
+		display: none;
 	}
 	.rightPanTgl {
 		display: block;

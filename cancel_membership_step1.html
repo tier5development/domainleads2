@@ -9,6 +9,7 @@
     <!-- css -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
     <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/style.css">
     <!-- js -->
@@ -161,29 +162,23 @@
                                 <div class="fieldWrap">
                                     <label for="">expiry month</label>
                                     <div class="largeSelectBox">
-                                        <div class="select">
-                                            <select data-stopsubmit="1" class="selectpage select-hidden" id="" name="">
-                                                <option value="unlocked_asnd">01</option>
-                                                <option value="unlocked_dcnd">Unlock Count more to less</option>
-                                                <option value="domain_count_asnd">Domain Count less to more</option>
-                                                <option value="domain_count_dcnd">Domain Count more to less</option>
-                                            </select>
-                                            
-                                        </div>
+                                        <select data-stopsubmit='1' class="selectpage" id="sort" name="sort">
+                                            <option value="01" >01</option>
+                                            <option value="02" >02</option>
+                                            <option value="03" >03</option>
+                                            <option value="04" >04</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="fieldWrap">
                                     <label for="">expiry year</label>
                                     <div class="largeSelectBox">
-                                        <div class="select">
-                                            <select class="selectpage">
-                                                <option value="unlocked_asnd">2019</option>
-                                                <option value="unlocked_dcnd">Unlock Count more to less</option>
-                                                <option value="domain_count_asnd">Domain Count less to more</option>
-                                                <option value="domain_count_dcnd">Domain Count more to less</option>
-                                            </select>
-                                            
-                                        </div>
+                                        <select data-stopsubmit='1' class="selectpage" id="sort" name="sort">
+                                            <option value="2019" >2019</option>
+                                            <option value="2020" >2020</option>
+                                            <option value="2021" >2021</option>
+                                            <option value="2022" >2022</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <button id="advanced-search-btn" type="submit" class="orangeBtn">update card</button>
@@ -199,21 +194,12 @@
                             <div class="fieldWrap">
                                 <label for="">select your reason</label>
                                 <div class="largeSelectBox">
-                                    <div class="select">
-                                        <select data-stopsubmit="1" class="selectpage select-hidden" id="" name="">
-                                            <option value="unlocked_asnd">ghffffffffffffff</option>
-                                            <option value="unlocked_dcnd">Unlock Count more to less</option>
-                                            <option value="domain_count_asnd">Domain Count less to more</option>
-                                            <option value="domain_count_dcnd">Domain Count more to less</option>
-                                        </select>
-                                        <div class="select-styled">Unlock Count less to more</div>
-                                        <ul class="select-options">
-                                            <li>Unlock Count less to more</li>
-                                            <li>Unlock Count more to less</li>
-                                            <li>Domain Count less to more</li>
-                                            <li>Domain Count more to less</li>
-                                        </ul>
-                                    </div>
+                                    <select data-stopsubmit='1' class="selectpage" id="sort" name="sort">
+                                        <option value="other" >Other</option>
+                                        <option value="lorem ipsum1" >lorem ipsum1</option>
+                                        <option value="lorem ipsum2" >lorem ipsum2</option>
+                                        <option value="lorem ipsum3" >lorem ipsum3</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="fieldWrap">
@@ -265,6 +251,7 @@
     <script src="js/custom.js"></script>
     <script src="js/custom2.js"></script>
     <script src="https://app.domainleads.io/public/js/right-panel.js"></script>
+    <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
 <script>
 // Activity circle chart 1 --------------------------------------
 
@@ -340,7 +327,7 @@ var bar = setInterval(progressBar, 10);
 <script>
 $(document).ready(function(){
 
-var optionScrollWidth;
+    var optionScrollWidth;
 
     $('.selectOption').each(function(){
         var thisVar = $(this), numberOfOptions = $(this).children('option').length;
@@ -446,32 +433,9 @@ var optionScrollWidth;
     });
 
 
-
-    $( "#datepicker" ).datepicker({
-        dateFormat: "dd mm yy",
-        showOn: "button",
-        buttonImage: "images/icon_calendar.png",
-        buttonImageOnly: true,
-    });
-
-    $( "#datepicker2" ).datepicker({
-        dateFormat: "dd mm yy",
-        showOn: "button",
-        buttonImage: "images/icon_calendar.png",
-        buttonImageOnly: true,
-    });
-
-    $(".dateHidden").change(function(){
-        var dateSelect = $(this).val().split(" ");
-        $(this).nextAll(".day").val(dateSelect[0]);
-        $(this).nextAll(".month").val(dateSelect[1]);
-        $(this).nextAll(".year").val(dateSelect[2]);
-    });
-
 // for custom dropdown
-            $('.selectpage').each(function(){
+    $('.selectpage').each(function(){
 
-    console.log('each executed', req_pagination);
     var thisInstance = $(this);
 
     var thisVal = $(this), numberOfOptions = $(this).children('option').length;
@@ -531,6 +495,9 @@ var optionScrollWidth;
         list.fadeOut(200);
     });
 });
+
+});
+
 </script>
 <!-- for dasboard page tab -->
 <script>

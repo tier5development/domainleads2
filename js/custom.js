@@ -19,7 +19,8 @@ $(document).ready(function(){
   });
 
 // for rightside panel
-  $(".rightPanTgl").click(function(){    
+  $(".rightPanTgl").click(function(){  
+      
     if($(this).hasClass("open")){
         $(this).removeClass("open");
         $(".rightPanel").removeClass("open");
