@@ -1,5 +1,5 @@
 <?php
-
+use DateTime;
 function generateDateRange($start_date,$end_date)
 {
     $dates = [];
@@ -53,6 +53,22 @@ function getQueryParamsCustom($arr) {
         $str .= strlen($str) > 0 ? '&'.$key.'='.$each : '?'.$key.'='.$each;
     }
     return $str;
+}
+
+function convertToMDY($date) {
+    if(DateTime::createFromFormat('d/m/Y', $date)) {
+        return DateTime::createFromFormat('d/m/Y', $date)->format('m-d-Y');
+    } else if(DateTime::createFromFormat('m/d/Y', $date)) {
+        return DateTime::createFromFormat('m/d/Y', $date)->format('m-d-Y');
+    } else if(DateTime::createFromFormat('Y/m/d', $date)) {
+        return DateTime::createFromFormat('Y/m/d', $date)->format('m-d-Y');
+    } else if(DateTime::createFromFormat('Y-m-d', $date)) {
+        return DateTime::createFromFormat('Y-m-d', $date)->format('m-d-Y');
+    } else if(DateTime::createFromFormat('d-m-Y', $date)) {
+        return DateTime::createFromFormat('d-m-Y', $date)->format('m-d-Y');
+    } else {
+        return $date;
+    }
 }
     
 ?>

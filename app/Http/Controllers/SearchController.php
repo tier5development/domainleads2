@@ -194,8 +194,8 @@ public function download_csv_single_page(Request $request)
       $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
       $reqData[$i]['country']    = $val['registrant_country'];
       $reqData[$i]['website']    = $val['domain_name'];
-      $reqData[$i]['domains_create_date'] = DateTime::createFromFormat('d/m/Y', $val['domains_create_date'])->format('m-d-Y');
-      $reqData[$i]['expiry_date']= DateTime::createFromFormat('d/m/Y', $val['expiry_date'])->format('m-d-Y');
+      $reqData[$i]['domains_create_date'] = convertToMDY($val['domains_create_date']);
+      $reqData[$i]['expiry_date']= convertToMDY($val['expiry_date']);
       $reqData[$i]['phone']      = str_replace('.', '-', $val['registrant_phone']);
       $reqData[$i]['email_id']   = $val['registrant_email'];
       $reqData[$i]['company']    = $val['registrant_company'];

@@ -89,7 +89,7 @@
         <td>
             <p>
                 @php
-                    $resultDate = DateTime::createFromFormat('d/m/Y', $each['domains_create_date'])->format('m-d-Y');
+                    $resultDate = convertToMDY($each['domains_create_date']);
                 @endphp
                 <span>{{$resultDate}}</span>
             </p>
@@ -98,7 +98,7 @@
         <td>
             <p>
                 @php
-                    $resultDate = DateTime::createFromFormat('d/m/Y', $each['expiry_date'])->format('m-d-Y');
+                    $resultDate = convertToMDY($each['expiry_date']);
                 @endphp
                 <span>{{$resultDate}}</span>
             </p>

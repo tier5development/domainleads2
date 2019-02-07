@@ -139,10 +139,10 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <p><span>{{DateTime::createFromFormat('Y-m-d', $each->domains_create_date)->format('m-d-Y')}}</span></p>
+                                            <p><span>{{convertToMDY($each->domains_create_date)}}</span></p>
                                         </td>
                                         <td>
-                                            <p><span>{{DateTime::createFromFormat('Y-m-d', $each->expiry_date)->format('m-d-Y')}}</span></p>
+                                            <p><span>{{convertToMDY($each->expiry_date)}}</span></p>
                                         </td>
                                         <td>
                                             <p><span class="wordBreak">{{$each->registrant_company}}</span></p>

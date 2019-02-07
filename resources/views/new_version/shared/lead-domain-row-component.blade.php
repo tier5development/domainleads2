@@ -94,7 +94,7 @@
         <p>
             <span>
                 @if($domainsInfo)
-                    {{DateTime::createFromFormat('Y-m-d', $domainsInfo->domains_create_date)->format('m-d-Y')}}
+                    {{convertToMDY($domainsInfo->domains_create_date)}}
                 @endif
             </span>
         </p>
@@ -104,7 +104,7 @@
         <p>
             <span>
                 @if($domainsInfo)
-                    {{DateTime::createFromFormat('Y-m-d', $domainsInfo->expiry_date)->format('m-d-Y')}}
+                    {{convertToMDY($domainsInfo->expiry_date)}}
                 @endif
             </span>
         </p>
