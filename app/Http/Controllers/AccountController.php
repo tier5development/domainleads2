@@ -20,38 +20,19 @@ class AccountController extends Controller
 	use StripeTrait;
 	public function updateCardDetails(Request $request) {
 		try {
-			DB::beginTransaction();
-			$user = Auth::user();
-			$stripeToken = $request->stripe_token;
-			$stripeDetails = StripeDetails::first();
-            $params = [
-                'email'     	=> 	$user->email,
-				'source'    	=> 	$stripeToken,
-				'name'			=>	$user->name,
-				'description'	=>	'Card updated from platform '.config('settings.APPLICATION-DOMAIN')
-            ];
-            $res = $this->createOrUpdateStripeCustomer($user, $params, $stripeDetails);
-            if($res['status']) {
-				DB::commit();
-                return response()->json([
-					'status' 	=> true,
-					'card'		=> $this->getCustomerDetails(Auth::user())['cards'],
-                    'message' 	=> 'Card updated successfully',
-                ]);
-            } else {
-				DB::commit();
-                return response()->json([
-					'status' 	=> false,
-                    'message' 	=> 'Card upddate failed.',
-                ]);
-            }
-        } catch(Throwable $e) {
-			DB::rollback();
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
+			$responseArray = $this->updateCard($request);
+			return response()->json($responseArray);
+		} catch(Throwable $e) {
+			return [
+				'status' 	=> false,
+				'message' 	=> 'Error : '.$e->getMessage(),
+			];
+		}
+	}
+
+	public function updateCardDetailsAndSubscribe(Request $request) {
+		$responseArray = $this->updateCard($request);
+
 	}
 
 	public function paymentInformation() {
@@ -66,71 +47,13 @@ class AccountController extends Controller
 
 	public function upgradePlan(Request $request) {
 		try {
-			$plan = $request->plan;
-			$stripeDetails = StripeDetails::first();
-			
-			// Check whether this plan exists in config or not.
-			if(!config('settings.PLAN.'.$plan)['name']) {
-				return response()->json([
-					'status' => false,
-					'cardUpdated' => true,
-					'message' => 'This plan does not exist.'
-				]);
-			}
-
-			$user = Auth::user();
-
-			$subscriptionId = $user->stripe_subscription_id;
-			$lastPlanId = $user->stripe_plan_id;
-			$wouldbePlanId = config('settings.PLAN.NAMEMAP'.$plan);
-			$currentPlanId = $user->user_type;
-
-			// check whether the user is having any subscription against him,
-			if(strlen($subscriptionId) > 0) {
-				// Check if user is in the same subscription plan
-				if($lastPlanId == $plan || $currentPlanId == $wouldbePlanId) {
-					return response()->json([
-						'status' 		=> 	true,
-						'cardUpdated' 	=> 	true,
-						'message' 		=>	'You are already on the plan that you are trying to subscribe.'
-					]);
-				}
-
-				// if yes upgrade user
-				StripeHelper::changeSubscription($stripeDetails, $subscriptionId, $plan);
-			}
-			
-			// if no then create a new subscription for the user.
-
-			// Check if the user has his card updated directly from stripe.
-			$stripeCustomerId = $user->stripe_customer_id;
-			$card = $this->getCustomerDetails($user, true, $stripeDetails)['cards'];
-			if(count($card) > 0) {
-				// So the user has card info updated with his account.
-				// So create a new subscription in his name.
-
-				$newSubscription = StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, $plan);
-				return response()->json([
-					'status' => true,
-					'cardUpdated' => true,
-					'message' => 'Success',
-					'newSubscription' => $newSubscription
-				]);
-
-			} else {
-				return response()->json([
-					'status' => false,
-					'cardUpdated' => false,
-					'message' => $e->getMessage(),
-				]);
-			}
-			$stripeCustomer = StripeHelper::retriveCustomer($stripeCustomerId, $stripeDetails);
-
+			$responseArray = $this->upgradeUser($request);
+			return response()->json($responseArray);
 		} catch(Throwable $e) {
 			return response()->json([
 				'status' => false,
-                'message' => $e->getMessage(),
-            ]);
+				'message' => $e->getMessage(),
+			]);
 		}
 	}
 
@@ -155,12 +78,13 @@ class AccountController extends Controller
 		}
 	}
 
-	public function  showMembershipPage() {
+	public function showMembershipPage() {
 		try {
 
 			$user = Auth::user();
-			// dd($user);
-			return view('new_version.auth.profile.membership', ['user' => $user]);
+			$stripeDetails = StripeDetails::first();
+			// dd($user)fupdateCardDetailsAndSubscribe;
+			return view('new_version.auth.profile.membership', ['user' => $user, 'stripeDetails' => $stripeDetails]);
 
 		} catch(Exception $e) {
 			// dd($e);

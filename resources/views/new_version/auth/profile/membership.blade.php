@@ -43,6 +43,7 @@
                         <div class="container">
                             <div class="eachPlanContainer clearfix">
                                 @foreach (config('settings.PLAN.NAMEMAP') as $key=>$item)
+                                    @php if($item == 2) continue; @endphp
                                     <div class="eachPlanOuter">
                                         <div class="eachPlan">
                                             <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
@@ -95,10 +96,70 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom.js"></script>
+    
     <!-- for dasboard page tab -->
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script type="text/javascript">
+        var username            =   "{{$user->name}}";
+        var email               =   "{{$user->email}}";
+        var publicKey           =   "{{$stripeDetails->public_key}}";
+        var userStoredImagePath =   "{{$user->image_path}}";
+
+        $(window).on('popstate', function() {
+            handler.close();
+        });
+
+        var handler = StripeCheckout.configure({
+            key: publicKey,
+            image: userStoredImagePath,
+            locale: 'auto',
+            token: function(token) {
+                $.ajax({
+                    url: "{{route('updateCardDetailsAndSubscribe')}}",
+                    data: {
+                        stripe_token    :   token.id,
+                        _token  :   "{{csrf_token()}}"
+                    },
+                    type :"post",
+                    beforeSend : function() {
+                        $('#loader-icon').show();
+                    }, success: function(resp) {
+                        console.log(resp);
+                        if(resp.status) {
+                            $('#loader-icon').hide();
+                            var last4 = response.card;
+                            var exp_month   = response.card['exp_month'];
+                            var exp_year    = response.card['exp_year'];
+                        } else {
+                            $('#loader-icon').hide();
+                        }
+                    }, error : function(err) {
+                        $('#loader-icon').hide();
+                        if(err.status == 401) {
+                            window.location.replace("{{route('loginPage')}}");
+                        }
+                        console.log(err.status);
+                    }
+                });
+            }
+        });
+
+        var openStripeForm = function() {
+            handler.open({
+                name        : username,
+                description : 'Update card and pay for subscription',
+                label       : 'Update Card Details',
+                email       : email
+            });
+        }
+    </script>
+
     <script>
 
+        
+
         var upgradePlan = function(t) {
+            console.log('in func');
             // If user has card info saved charge himright away, else show him stripe form.
             var plan = $(t).data('plan');
             $.ajax({
@@ -106,11 +167,19 @@
                 url     :   "{{route('upgradePlan')}}",
                 data    :   {_token: "{{csrf_token()}}", plan: plan},
                 beforeSend: function() {
+                    console.log('before load');
                     $('#loader-icon').show();
                 }, success: function(resp) {
                     $('#loader-icon').hide();
-                    if(resp.success) {
+                    console.log(resp);
+                    if(resp.status) {
                         // success
+                        if(resp.cardUpdated) {
+                            alert('Subscription successful');
+                        } else {
+                            console.log('modal open');
+                            openStripeForm();
+                        }
                     } else {
                         // card is not updated so open stripe modal
                     }
@@ -125,6 +194,9 @@
         }
 
         $(document).ready(function() {
+            // setTimeout(function() {
+            //     openStripeForm();
+            // }, 3000);
             Cookies.remove('username'); 
             // alert(Cookies.get('username')); 
         });

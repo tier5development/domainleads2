@@ -132,6 +132,7 @@ Route::get('/aa',function(){
             Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
             Route::get('payment-info', ['uses' => 'AccountController@paymentInformation', 'as' => 'paymentInformation']);
             Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
+            Route::post('update-card-details-pay', ['uses' => 'AccountController@updateCardDetailsAndSubscribe', 'as' => 'updateCardDetailsAndSubscribe']);
             Route::post('upgrade-plan', ['uses' => 'AccountController@upgradePlan', 'as'=>'upgradePlan']);
             Route::group(['middleware' => 'adminGroup'], function() {
                 Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);

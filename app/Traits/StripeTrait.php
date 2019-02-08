@@ -2,7 +2,17 @@
 namespace App\Traits;
 use App\User;
 use App\Helpers\StripeHelper;
+use Illuminate\Http\Request;
+use App\StripeDetails;
 use Log;
+use Hash;
+use Auth;
+use Session;
+use Exception;
+use App\Helpers\UserHelper;
+use \Carbon\Carbon;
+
+
     trait StripeTrait {
         /**
             * this function returns card logo for frontend i.e for a type of card it returns a css class
@@ -216,6 +226,106 @@ use Log;
             } else {
                 return $stripeBankData[0]->id;
                 // $source = $stripeBankData[0]->id;
+            }
+        }
+
+        public function updateCard(Request $request) {
+            try {
+                DB::beginTransaction();
+                $user           = Auth::user();
+                $stripeToken    = $request->stripe_token;
+                $stripeDetails  = StripeDetails::first();
+                $params = [
+                    'email'     	=> 	$user->email,
+                    'source'    	=> 	$stripeToken,
+                    'name'			=>	$user->name,
+                    'description'	=>	'Card updated from platform '.config('settings.APPLICATION-DOMAIN')
+                ];
+                $res = $this->createOrUpdateStripeCustomer($user, $params, $stripeDetails);
+                if($res['status']) {
+                    DB::commit();
+                    return [
+                        'status' 	=> true,
+                        'card'		=> $this->getCustomerDetails(Auth::user())['cards'],
+                        'message' 	=> 'Card updated successfully',
+                    ];
+                } else {
+                    DB::commit();
+                    return [
+                        'status' 	=> false,
+                        'message' 	=> 'Card upddate failed.',
+                    ];
+                }
+            } catch(Throwable $e) {
+                DB::rollback();
+                throw $e;
+            }
+        }
+
+        public function upgradeUser(Request $request) {
+            try {
+                $plan = $request->plan;
+                $stripeDetails = StripeDetails::first();
+                
+                // Check whether this plan exists in config or not.
+                if(!config('settings.PLAN.NAMEMAP')[$plan]) {
+                    return [
+                        'status' => false,
+                        'cardUpdated' => true,
+                        'message' => 'This plan does not exist.'
+                    ];
+                }
+    
+                $user = Auth::user();
+    
+                $subscriptionId = $user->stripe_subscription_id;
+                $lastPlanId = $user->stripe_plan_id;
+                $wouldbePlanId = config('settings.PLAN.NAMEMAP'.$plan);
+                $currentPlanId = $user->user_type;
+    
+                // check whether the user is having any subscription against him,
+                if(strlen($subscriptionId) > 0) {
+                    // Check if user is in the same subscription plan
+                    if($lastPlanId == $plan || $currentPlanId == $wouldbePlanId) {
+                        return response()->json([
+                            'status' 		=> 	true,
+                            'cardUpdated' 	=> 	true,
+                            'message' 		=>	'You are already on the plan that you are trying to subscribe.'
+                        ]);
+                    }
+    
+                    // if yes upgrade user
+                    StripeHelper::changeSubscription($stripeDetails, $subscriptionId, $plan);
+                }
+                
+                // if no then create a new subscription for the user.
+    
+                // Check if the user has his card updated directly from stripe.
+                $stripeCustomerId = $user->stripe_customer_id;
+                $card = $this->getCustomerDetails($user, true, $stripeDetails)['cards'];
+                if(count($card) > 0) {
+                    // So the user has card info updated with his account.
+                    // So create a new subscription in his name.
+    
+                    $newSubscription = StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, $plan);
+                    return [
+                        'status' => true,
+                        'cardUpdated' => true,
+                        'message' => 'Success',
+                        'newSubscription' => $newSubscription
+                    ];
+    
+                } else {
+                    return [
+                        'status' => true,
+                        'cardUpdated' => false,
+                        'message' => 'No card found.',
+                    ];
+                }
+                $stripeCustomer = StripeHelper::retriveCustomer($stripeCustomerId, $stripeDetails);
+    
+            } catch(Throwable $e) {
+                throw $e;
             }
         }
 	
