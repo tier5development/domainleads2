@@ -191,14 +191,32 @@ public function download_csv_single_page(Request $request)
     foreach($data as $i=>$val) {
       $name = explode(' ',$val['registrant_name']);
       $reqData[$i]['first_name'] = isset($name[0]) ? $name[0] : '';
+      $reqData[$i]['first_name'] = str_replace('=','\=',$reqData[$i]['first_name']);
+
       $reqData[$i]['last_name']  = isset($name[1]) ? $name[1] : '';
-      $reqData[$i]['country']    = $val['registrant_country'];
+      $reqData[$i]['last_name'] = str_replace('=','\=',$reqData[$i]['last_name']);
+      
+      $reqData[$i]['country']   = $val['registrant_country'];
+      $reqData[$i]['country']   = str_replace('=','\=',$reqData[$i]['country']);
+
       $reqData[$i]['website']    = $val['domain_name'];
+      $reqData[$i]['website']   = str_replace('=','\=',$reqData[$i]['website']);
+
       $reqData[$i]['domains_create_date'] = convertToMDY($val['domains_create_date']);
+      $reqData[$i]['domains_create_date'] = str_replace('=','\=',$reqData[$i]['domains_create_date']);
+
       $reqData[$i]['expiry_date']= convertToMDY($val['expiry_date']);
+      $reqData[$i]['expiry_date'] = str_replace('=','\=',$reqData[$i]['expiry_date']);
+
       $reqData[$i]['phone']      = str_replace('.', '-', $val['registrant_phone']);
-      $reqData[$i]['email_id']   = $val['registrant_email'];
+      $reqData[$i]['phone']      = str_replace('=', '\=', $reqData[$i]['phone']);
+
+      $reqData[$i]['email_id']    = $val['registrant_email'];
+      $reqData[$i]['email_id']    = str_replace('=', '\=', $reqData[$i]['email_id']);
+
       $reqData[$i]['company']    = $val['registrant_company'];
+      $reqData[$i]['company']    = str_replace('=', '\=', $reqData[$i]['company']);
+
     }
 
     // dd($reqData);
