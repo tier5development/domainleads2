@@ -62,8 +62,8 @@ class StripeHelper {
     public static function retriveCustomer($stripeCustomerId, $stripeDetails) {
         try {
             $apiSecretKey = $stripeDetails->private_key;
-            if ($apiSecretKey && strlen(trim($stripeCustomerId)) > 0) {
-                \Stripe\Stripe::setApiKey($apiSecretKey->private_key);
+            if (strlen($apiSecretKey) > 0 && strlen(trim($stripeCustomerId)) > 0) {
+                \Stripe\Stripe::setApiKey($apiSecretKey);
                 $retrievedCustomer = \Stripe\Customer::retrieve($stripeCustomerId);
                 return $retrievedCustomer;
             }
@@ -195,49 +195,6 @@ class StripeHelper {
         // }
     }
 
-    /**
-     * charge subscription for a customer
-     * @params
-     * admin -> admin instance
-     * stripeCustomer -> stripeCustomer instance
-     * subscriptionArr -> array of subscriptions
-     *  -> plan (a valid plan id)
-     *  -> optional trial_period_days (number of trial period days for this plan overriding)
-     */
-    public static function chargeSubscription($admin, $stripeCustomer, $subscriptionArr) {
-        // dd($subscriptionArr);
-        // $apiSecretKey = PaymentKeys::where('admin_id', $admin->id)->select('key_second')->first();
-        // if($apiSecretKey && strlen(trim($apiSecretKey->key_second)) > 0) {
-        //     // $stripe = Stripe::make($apiSecretKey->key_second);
-        //     \Stripe\Stripe::setApiKey($apiSecretKey->key_second);
-        //     $subscriptionStatusArr = [];
-        //     $successCount = 0;
-        //     $failedFlag = false;
-        //     foreach ($subscriptionArr as $key => $eachSubscription) {
-        //         try {
-        //             $subscription = \Stripe\Subscription::create($eachSubscription);
-        //             $subscriptionArray = json_decode(json_encode($subscription, true), true);
-        //             if($subscriptionArray['status'] == 'trialing' || $subscriptionArray['status'] == 'active') {
-        //                 $subscriptionStatusArr[$key]['status'] = true;
-        //                 $subscriptionStatusArr[$key]['message'] = 'Succeeded';
-        //                 $subscriptionStatusArr[$key]['subscription'] = $subscriptionArray;
-        //             }
-        //         } catch(\Exception $e) {
-        //             $subscriptionStatusArr[$key]['status'] = false;
-        //             $subscriptionStatusArr[$key]['message'] = $e->getMessage().' LINE : '.$e->getLine();
-        //             $subscriptionStatusArr[$key]['subscription'] = null;
-        //             $failedFlag = true;
-        //         }
-        //     }
-        //     return [
-        //         'status' => count($subscriptionStatusArr) > 0 && $failedFlag == false ? true : false, 
-        //         'subscriptionStatusArr' => $subscriptionStatusArr,
-        //         'message' => count($subscriptionStatusArr) > 0 && $failedFlag == false ? 'All subscriptions are paid successfully.' : 'All subscriptions are not paid successfully'];
-        // } else {
-        //     return ['status' => false, 'subscriptionStatusArr' => null, 'message' => 'no data found in payment keys'];
-        // }
-    }
-
     public static function fetchSubscriptionById($keySecond, $subscriptionId) {
         // if(strlen($keySecond) <= 0 || strlen($subscriptionId) <=0) {
         //     return ['status' => false, 'subscription' => null, 'message' => 'Incorrect parameters for fetchSubscriptionById.'];
@@ -283,24 +240,21 @@ class StripeHelper {
     //     "trial_period_days" => 10
     //   ]);
 
-    public static function createPlan($keySecond, $planArr) {
-        // if(strlen($keySecond) <= 0 || count($planArr) <= 0) {
-        //     return ['status' => false, 'plan' => null, 'planArr' => [], 'message' => 'Incorrect parameters for createPlan.'];
-        // } else {
-        //     try {
-        //         \Stripe\Stripe::setApiVersion("2018-10-31");
-        //         \Stripe\Stripe::setApiKey($keySecond);
-        //         $plan = \Stripe\Plan::create($planArr);
-        //         $planArr = json_decode(json_encode($plan, true), true);
-        //         if(count($planArr) == 0) {
-        //             return ['status' => false, 'plan' => $plan, 'planArr' => $planArr, 'message' => 'Cannot create stripe plans.'];
-        //         } else {
-        //             return ['status' => true, 'plan' => $plan, 'planArr' => $planArr, 'message' => 'Success.'];
-        //         }
-        //     } catch(\Exception $e) {
-        //         return ['status' => false, 'plan' => null, 'planArr' => [], 'message' => 'Error : '.$e->getMessage().' Line : '.$e->getLine()];
-        //     }
-        // }
+    public static function createPlan($stripeDetails, $planArr) {
+        try {
+            $privateKey = $stripeDetails->private_key;
+            \Stripe\Stripe::setApiVersion("2018-10-31");
+            \Stripe\Stripe::setApiKey($privateKey);
+            $plan = \Stripe\Plan::create($planArr);
+            $planArr = json_decode(json_encode($plan, true), true);
+            if(count($planArr) == 0) {
+                return ['status' => false, 'plan' => $plan, 'planArr' => $planArr, 'message' => 'Cannot create stripe plans.'];
+            } else {
+                return ['status' => true, 'plan' => $plan, 'planArr' => $planArr, 'message' => 'Success.'];
+            }
+        } catch(\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -331,13 +285,13 @@ class StripeHelper {
     }
 
     public static function createChargeWebhook($keySecond) {
-        // \Stripe\Stripe::setApiVersion("2018-10-31");
-        // \Stripe\Stripe::setApiKey($keySecond);
-        // $webhookObj = \Stripe\WebhookEndpoint::create([
-        //     "url" => config('settings.APP_HOST')."/api/v1/ach/charge-live-status",
-        //     "enabled_events" => ["charge.failed", "charge.succeeded", "charge.pending"]
-        // ]);
-        // return $webhookObj;
+        \Stripe\Stripe::setApiVersion("2018-10-31");
+        \Stripe\Stripe::setApiKey($keySecond);
+        $webhookObj = \Stripe\WebhookEndpoint::create([
+            "url" => config('settings.APPLICATION-DOMAIN')."/api/v1/charge-live-status",
+            "enabled_events" => ["charge.failed", "charge.succeeded", "charge.pending"]
+        ]);
+        return $webhookObj;
     }
 
     public static function deleteWebhook($keySecond, $hookId) {
@@ -373,6 +327,42 @@ class StripeHelper {
         // } catch(Throwable $e) {
         //     throw $e;
         // }
+    }
+
+    public function changeSubscription($stripeDetails, $subscriptionId, $planId) {
+        \Stripe\Stripe::setApiKey("sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc");
+        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+        \Stripe\Subscription::update($subscriptionId, [
+            'cancel_at_period_end' => false,
+            'items' => [
+                [
+                    'id' => $subscription->items->data[0]->id,
+                    'plan' => $planId,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * charge subscription for a customer
+     * @params
+     * admin -> admin instance
+     * stripeCustomer -> stripeCustomer instance
+     * subscriptionArr -> array of subscriptions
+     *  -> plan (a valid plan id)
+     *  -> optional trial_period_days (number of trial period days for this plan overriding)
+     */
+    public static function chargeSubscription($stripeDetails, $customerId, $planId, $trialPeriod = null) {
+        try {
+            $failedFlag = false;
+            \Stripe\Stripe::setApiKey($stripeDetails->private_key);
+            $sub['customer'] = $customerId;
+            $sub['items']['plan'] = $planId;
+            $subscription = \Stripe\Subscription::create($sub);
+            return $subscription;
+        } catch(\Exception $e) {
+            throw $e;
+        }
     }
 }
 ?>

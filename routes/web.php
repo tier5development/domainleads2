@@ -12,6 +12,9 @@
 */
 
 use App\LeadUser;
+use Zipper as Zipper;
+use App\Helpers\StripeHelper;
+use App\StripeDetails;
 
 Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
 Route::get('/signup', ['uses' => 'AccountController@signupPage', 'as' => 'signupPage']);
@@ -29,6 +32,29 @@ Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPass
 
 Route::get('/testfn',function() {
 
+    // $stripeDetails = StripeDetails::first();
+
+    // $stripeCustomer = StripeHelper::retriveCustomer('cus_EU793Ckd9vELb1' ,$stripeDetails);
+    // dd($stripeCustomer, json_decode(json_encode($stripeCustomer, true) ,true));
+    // \Stripe\Stripe::setApiKey($stripeDetails->private_key);
+    // $plans = \Stripe\Plan::all(["limit" => 10]);
+    // dd($plans);
+
+    // $plan = [
+    //     "amount" => 15000,
+    //     "interval" => "month",
+    //     "product" => [
+    //       "name" => "DL-TIER3"
+    //     ],
+    //     "currency" => "usd",
+    //     "id" => "dl-tier3"
+    // ];
+    // $obj = StripeHelper::createPlan($stripeDetails, $plan);
+    // dd($obj);
+
+    // $downloadDir = public_path();
+    // Zipper::make($downloadDir.'/zipFiles/'.'2019-02-07_proxies.zip')->extractTo($downloadDir.'/unzipFiles/');
+    // dd(11);
     // dd(country_codes());
     // // $x = true;
     // // dd(isset($x));
@@ -106,6 +132,7 @@ Route::get('/aa',function(){
             Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
             Route::get('payment-info', ['uses' => 'AccountController@paymentInformation', 'as' => 'paymentInformation']);
             Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
+            Route::post('upgrade-plan', ['uses' => 'AccountController@upgradePlan', 'as'=>'upgradePlan']);
             Route::group(['middleware' => 'adminGroup'], function() {
                 Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);
                 Route::post('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeysPost', 'as' => 'updatePaymentKeysPost']);

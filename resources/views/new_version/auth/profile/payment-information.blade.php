@@ -19,7 +19,7 @@
 
             <div class="leftPanel leadUnlock">
                 @include('new_version.shared.profile-panel-header')
-                @if($user->card_updated == 1 && count($cards) > 0 && isset($card['last4']) && isset($card['exp_month']) && isset($card['exp_year']))
+                @if($user->card_updated == 1 && count($card) > 0 && isset($card['last4']) && isset($card['exp_month']) && isset($card['exp_year']))
                     <div id="payment_info" class="eachItem">
                         <h2>My Payment Information</h2>
                         <p>You have added below card information to your account.</p>
@@ -34,7 +34,7 @@
                                     <h4>expiry (mm/yy)</h4>
                                     <h3>{{$card['exp_month']}}/{{$card['exp_year']}}</h3>
                                 </div>
-                                <button id="update-card-btn" type="submit" class="orangeBtn">update card</button>
+                                <button id="update-card-btn" class="orangeBtn">update card</button>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                                     <h2>Oops! we did not find any cards attached to your account.</h2>
                                     <p>Please provide your card information after clicking the update button.</p>
                                 </div>
-                                <button id="update-card-btn" type="submit" class="orangeBtn orangeBtnCentered">update card</button>
+                                <button id="update-card-btn" class="orangeBtn orangeBtnCentered">update card</button>
                             </div>
                         </div>
                     </div>
@@ -95,11 +95,15 @@
                     }, success: function(resp) {
                         console.log(resp);
                         if(resp.status) {
-                            
+                            $('#loader-icon').hide();
+                            var last4 = response.card;
+                            var exp_month   = response.card['exp_month'];
+                            var exp_year    = response.card['exp_year'];
                         } else {
-
+                            $('#loader-icon').hide();
                         }
                     }, error : function(err) {
+                        $('#loader-icon').hide();
                         if(err.status == 401) {
                             window.location.replace("{{route('loginPage')}}");
                         }

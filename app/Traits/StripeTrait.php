@@ -44,15 +44,20 @@ use Log;
             return $temp;
         }
 
-        public function getCustomerDetails($user) {
+        public function getCustomerDetails($user, $refresh = false, $stripeDetails = null) {
             if(!$user) return ['cards' => []];
-            $details = json_decode($user->stripe_customer_obj, true);
+            if($refresh == true && $stripeDetails) {
+                $details = json_decode(json_encode(StripeHelper::retriveCustomer($user->stripe_customer_id, $stripeDetails), true), true);
+            } else {
+                $details = json_decode($user->stripe_customer_obj, true);
+            }
+            
             $sourceData = $details['sources']['data'];
             $data['cards'] = [];
             if($sourceData) {
                 foreach($sourceData as $key => $eachCard) {
                     if ($eachCard['object'] == 'card') {
-                        $data['cards'][] = $this->getCardData($eachCard);
+                        $data['cards'] = $this->getCardData($eachCard);
                         break; // To check this is the default card or not.
                     }
                 }
@@ -207,17 +212,6 @@ use Log;
                 $customer->sources->create(["source" => $stripeBankAccountToken]);
                 $data = $customer->sources->all(['limit' => 1, 'object' => 'bank_account'])->data;
                 return $data[0]->id;
-                // $source = $btok_parsed['stripe_bank_account_token'];
-            } else {
-                return $stripeBankData[0]->id;
-                // $source = $stripeBankData[0]->id;
-            }
-        }
-
-        public function retriveBankIdForCustomer($customer) {
-            $stripeBankData = $customer->sources->all(['limit' => 1, 'object' => 'bank_account'])->data;
-            if(count($stripeBankData) == 0) {
-                return null;
                 // $source = $btok_parsed['stripe_bank_account_token'];
             } else {
                 return $stripeBankData[0]->id;

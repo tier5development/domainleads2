@@ -18,13 +18,18 @@ return [
         'PORT'      =>  3306
     ],
     'PLAN' => [
-        '1' => [50, 0], // unlock restriction, super admin 
-        '2' => [150,0],
-        '3' => [500, 0],
-        '4' => [-1, 0],
-        '5' => [-1, 1],
+        '1' => [50, 0, ['name' => 'dl-tier1']], // unlock restriction, super admin 
+        '2' => [150,0, ['name' => 'dl-tier-special']],
+        '3' => [500, 0, ['name' => 'dl-tier2']],
+        '4' => [-1, 0, ['name' => 'dl-tier3']],
+        '5' => [-1, 1, ['name' => 'admin']],
         'L1' => 3,
-        'L2' => 5
+        'L2' => 5,
+        'PUBLISHABLE' => [
+            '1' => [50, 50],  // unlock restriction, cost
+            '2' => [500, 197],
+            '4' => [-1, 500]
+        ]
     ]
 ];
 ?>

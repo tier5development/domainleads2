@@ -70,6 +70,7 @@ class WhoisProxy extends Command
           $downloadDir = public_path();
           $getDownloadData = file_get_contents($whoxyURL);
           file_put_contents($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip',$getDownloadData);
+          chmod($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip', 0777);
           Zipper::make($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip')->extractTo($downloadDir.'/unzipFiles/');
           $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'_whois-proxies-removed.csv';
           $getCSVFile  = fopen($csvFilePath , 'r');

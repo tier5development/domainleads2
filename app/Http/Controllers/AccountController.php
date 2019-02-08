@@ -34,13 +34,14 @@ class AccountController extends Controller
             if($res['status']) {
 				DB::commit();
                 return response()->json([
-                    'status' 	=> true,
+					'status' 	=> true,
+					'card'		=> $this->getCustomerDetails(Auth::user())['cards'],
                     'message' 	=> 'Card updated successfully',
                 ]);
             } else {
 				DB::commit();
                 return response()->json([
-                    'status' 	=> false,
+					'status' 	=> false,
                     'message' 	=> 'Card upddate failed.',
                 ]);
             }
@@ -57,9 +58,80 @@ class AccountController extends Controller
 		$data = [
 			'user' => Auth::user(),
 			'stripeDetails' => StripeDetails::first(),
-			'cards' => $this->getCustomerDetails(Auth::user())['cards']
+			'card' => $this->getCustomerDetails(Auth::user())['cards']
 		];
+		// dd($data);
 		return view('new_version.auth.profile.payment-information', $data);
+	}
+
+	public function upgradePlan(Request $request) {
+		try {
+			$plan = $request->plan;
+			$stripeDetails = StripeDetails::first();
+			
+			// Check whether this plan exists in config or not.
+			if(!config('settings.PLAN.'.$plan)['name']) {
+				return response()->json([
+					'status' => false,
+					'cardUpdated' => true,
+					'message' => 'This plan does not exist.'
+				]);
+			}
+
+			$user = Auth::user();
+
+			$subscriptionId = $user->stripe_subscription_id;
+			$lastPlanId = $user->stripe_plan_id;
+			$wouldbePlanId = config('settings.PLAN.NAMEMAP'.$plan);
+			$currentPlanId = $user->user_type;
+
+			// check whether the user is having any subscription against him,
+			if(strlen($subscriptionId) > 0) {
+				// Check if user is in the same subscription plan
+				if($lastPlanId == $plan || $currentPlanId == $wouldbePlanId) {
+					return response()->json([
+						'status' 		=> 	true,
+						'cardUpdated' 	=> 	true,
+						'message' 		=>	'You are already on the plan that you are trying to subscribe.'
+					]);
+				}
+
+				// if yes upgrade user
+				StripeHelper::changeSubscription($stripeDetails, $subscriptionId, $plan);
+			}
+			
+			// if no then create a new subscription for the user.
+
+			// Check if the user has his card updated directly from stripe.
+			$stripeCustomerId = $user->stripe_customer_id;
+			$card = $this->getCustomerDetails($user, true, $stripeDetails)['cards'];
+			if(count($card) > 0) {
+				// So the user has card info updated with his account.
+				// So create a new subscription in his name.
+
+				$newSubscription = StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, $plan);
+				return response()->json([
+					'status' => true,
+					'cardUpdated' => true,
+					'message' => 'Success',
+					'newSubscription' => $newSubscription
+				]);
+
+			} else {
+				return response()->json([
+					'status' => false,
+					'cardUpdated' => false,
+					'message' => $e->getMessage(),
+				]);
+			}
+			$stripeCustomer = StripeHelper::retriveCustomer($stripeCustomerId, $stripeDetails);
+
+		} catch(Throwable $e) {
+			return response()->json([
+				'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+		}
 	}
 
 	public function updatePaymentKeys() {
