@@ -88,11 +88,12 @@ class UserHelper {
             
             $usertype = $request->user_type;
             $user->user_type = $usertype;
+            $user->base_type = $usertype;
             if($user->save()) {
                 return response()->json([
-                    'status' => true,
-                    'message' => 'User Updated successfully',
-                    'email' => $user->email
+                    'status'    => true,
+                    'message'   => 'User Updated successfully',
+                    'email'     => $user->email
                 ]);
             } else {
                 return response()->json([
@@ -112,6 +113,7 @@ class UserHelper {
         try {
             $email = $request->email;
             $validator = Validator::make($request->all(), ['email' => 'email|max:255']);
+            $affiliateId = $request->affiliate_id;
             if($validator->fails()) {
                 return response()->json([
                     'status' => false,
@@ -152,8 +154,11 @@ class UserHelper {
             $newUser->email = $request->email;
             $newUser->password = Hash::make(123456);
             $newUser->user_type = $usertype;
+            if(strlen(trim($affiliateId)) > 0) {
+                $newUser->affiliate_id = $affiliateId;
+                $newUser->user_type = $usertype;
+            }
             $newUser->membership_status = 1;
-            $newUser->affiliate_id = $request->affiliate_id;
             if($newUser->save()) {
                 return response()->json([
                     'status' => true,

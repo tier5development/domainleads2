@@ -31,23 +31,9 @@ class AccountController extends Controller
 	}
 
 	public function updateCardDetailsAndSubscribe(Request $request) {
-		$responseArray = $this->updateCard($request);
-
-	}
-
-	public function paymentInformation() {
-		$data = [
-			'user' => Auth::user(),
-			'stripeDetails' => StripeDetails::first(),
-			'card' => $this->getCustomerDetails(Auth::user())['cards']
-		];
-		// dd($data);
-		return view('new_version.auth.profile.payment-information', $data);
-	}
-
-	public function upgradePlan(Request $request) {
 		try {
-			$responseArray = $this->upgradeUser($request);
+			$user = Auth::user();
+			$responseArray = $this->upgradeOrDowngrade($request);
 			return response()->json($responseArray);
 		} catch(Throwable $e) {
 			return response()->json([
@@ -55,6 +41,40 @@ class AccountController extends Controller
 				'message' => $e->getMessage(),
 			]);
 		}
+	}
+
+	public function upgradeOrDowngradePlan(Request $request) {
+		try {
+			$user = Auth::user();
+			$card = $this->getCustomerDetails($user, true);
+			Log::info('upgradeOrDowngradePlan : step 1');
+			if($user->card_updated && count($card) > 0) {
+				Log::info('upgradeOrDowngradePlan : step 2');
+				$responseArray = $this->upgradeOrDowngrade($request);
+				return response()->json($responseArray);
+			} else {
+				return response()->json([
+					'status' => true,
+					'cardUpdated' => false,
+					'message' => 'Card is not updated'
+				]);
+			}
+		} catch(Throwable $e) {
+			return response()->json([
+				'status' => false,
+				'message' => $e->getMessage().' LINE : '.$e->getLine(),
+			]);
+		}
+	}
+
+	public function paymentInformation() {
+		$data = [
+			'user' => Auth::user(),
+			'stripeDetails' => StripeDetails::first(),
+			'card' => $this->getCustomerDetails(Auth::user())['card']
+		];
+		// dd($data);
+		return view('new_version.auth.profile.payment-information', $data);
 	}
 
 	public function updatePaymentKeys() {
@@ -83,7 +103,6 @@ class AccountController extends Controller
 
 			$user = Auth::user();
 			$stripeDetails = StripeDetails::first();
-			// dd($user)fupdateCardDetailsAndSubscribe;
 			return view('new_version.auth.profile.membership', ['user' => $user, 'stripeDetails' => $stripeDetails]);
 
 		} catch(Exception $e) {

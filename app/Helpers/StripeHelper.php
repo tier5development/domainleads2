@@ -106,35 +106,29 @@ class StripeHelper {
      * @adminId is mandatory field
      * @returns stripe customer list in an array format, null if error or not retrived
      */
-    public static function customerList($adminId, $attributes = []) {
-        // try {
-            
-        //     $apiSecretKey = PaymentKeys::where('admin_id', $adminId)->select('key_second')->first();
-        //     if ($apiSecretKey) {
-        //         \Stripe\Stripe::setApiKey($apiSecretKey->key_second);
-        //         $customers = json_decode(json_encode(\Stripe\Customer::all($attributes), true), true);
-        //         return array_key_exists('data', $customers) ? $customers['data'] : null;
-        //     }
-        // } catch(\Exception $e) {
-        //     \Log::info('Stripe Helper - customerList : '.$e->getMessage());
-        //     return null;
-        // }
+    public static function customerList($stripeDetails, $attributes = []) {
+        try {
+            \Stripe\Stripe::setApiKey($stripeDetails->private_key);
+            $customers = json_decode(json_encode(\Stripe\Customer::all($attributes), true), true);
+            return array_key_exists('data', $customers) ? $customers['data'] : null;
+        } catch(\Exception $e) {
+            throw $e;
+        }
     }
 
-    public static function fetchUserWithEmail($adminId, $email) {
-        // if(strlen(trim($email)) == 0) {
-        //     return null;
-        // }
-        // try {
-        //     $customerList = self::customerList($adminId, ['email' => $email, 'limit' => 1]);
-        //     if($customerList == null) {
-        //         return null;
-        //     }
-        //     return $customerList[0];
-        // } catch(\Exception $e) {
-        //     \Log::info('Stripe Helper - createOrUpdateCustomerWithEmail : '.$e->getMessage());
-        //     return null;
-        // }
+    public static function fetchUserWithEmail($stripeDetails, $email) {
+        if(strlen(trim($email)) == 0) {
+            return null;
+        }
+        try {
+            $customerList = self::customerList($stripeDetails, ['email' => $email, 'limit' => 1]);
+            if($customerList == null) {
+                return null;
+            }
+            return $customerList[0];
+        } catch(\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -329,18 +323,23 @@ class StripeHelper {
         // }
     }
 
-    public function changeSubscription($stripeDetails, $subscriptionId, $planId) {
-        \Stripe\Stripe::setApiKey("sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc");
-        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
-        \Stripe\Subscription::update($subscriptionId, [
-            'cancel_at_period_end' => false,
-            'items' => [
-                [
-                    'id' => $subscription->items->data[0]->id,
-                    'plan' => $planId,
+    public static function changeSubscription($stripeDetails, $subscriptionId, $planId) {
+        try {
+            \Stripe\Stripe::setApiKey($stripeDetails->private_key);
+            $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            $obj = \Stripe\Subscription::update($subscriptionId, [
+                'cancel_at_period_end' => false,
+                'items' => [
+                    [
+                        'id' => $subscription->items->data[0]->id,
+                        'plan' => $planId,
+                    ],
                 ],
-            ],
-        ]);
+            ]);
+            return $obj;
+        } catch(\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -356,9 +355,14 @@ class StripeHelper {
         try {
             $failedFlag = false;
             \Stripe\Stripe::setApiKey($stripeDetails->private_key);
-            $sub['customer'] = $customerId;
-            $sub['items']['plan'] = $planId;
-            $subscription = \Stripe\Subscription::create($sub);
+            $array = [
+                'customer' => $customerId,
+                'items' => [[
+                    'plan' => $planId
+                ]]
+            ];
+            Log::info(' in chargeSubscription : ', $array);
+            $subscription = \Stripe\Subscription::create($array);
             return $subscription;
         } catch(\Exception $e) {
             throw $e;

@@ -32,6 +32,24 @@ Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPass
 
 Route::get('/testfn',function() {
 
+    
+    \Stripe\Stripe::setApiVersion("2018-10-31");
+    \Stripe\Stripe::setApiKey('sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc');
+    $array = [
+        'customer' => 'cus_EVYo4KHkcuISp4',
+        'items' => [[
+            'plan' => 'dl-tier2'
+        ]]
+    ];
+    $subscription = \Stripe\Subscription::create($array);
+    dd($subscription);
+
+
+    $arr[0] = 1;
+    $arr['abc'] = null;
+    unset($arr['abc']);
+    dd($arr);
+
     // $stripeDetails = StripeDetails::first();
 
     // $stripeCustomer = StripeHelper::retriveCustomer('cus_EU793Ckd9vELb1' ,$stripeDetails);
@@ -133,7 +151,7 @@ Route::get('/aa',function(){
             Route::get('payment-info', ['uses' => 'AccountController@paymentInformation', 'as' => 'paymentInformation']);
             Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
             Route::post('update-card-details-pay', ['uses' => 'AccountController@updateCardDetailsAndSubscribe', 'as' => 'updateCardDetailsAndSubscribe']);
-            Route::post('upgrade-plan', ['uses' => 'AccountController@upgradePlan', 'as'=>'upgradePlan']);
+            Route::post('change-plan', ['uses' => 'AccountController@upgradeOrDowngradePlan', 'as'=>'upgradeOrDowngradePlan']);
             Route::group(['middleware' => 'adminGroup'], function() {
                 Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);
                 Route::post('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeysPost', 'as' => 'updatePaymentKeysPost']);

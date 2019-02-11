@@ -54,5 +54,13 @@ function getQueryParamsCustom($arr) {
     }
     return $str;
 }
+
+function getPlanName($id) {
+    return config('settings.PLAN.'.$id)[2]['name'];
+}
+
+function getPlanNumber($name) {
+    return config('settings.PLAN.NAMEMAP.'.$name);
+}
     
 ?>

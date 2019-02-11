@@ -10,6 +10,7 @@
             <span></span>
         </div>
         
+        
         @include('new_version.section.user_panel_header', ['user' => $user])
         
         @include('new_version.shared.loader')
@@ -19,24 +20,13 @@
 
             <div class="leftPanel leadUnlock">
                 @include('new_version.shared.profile-panel-header')
-                    
-                <div id="profile_info" class="eachItem" style="display:none">
-                    <h2>Edit your profile information layout will be here.</h2>
-                    <p>some content</p>
+                <div id="ajax-msg-box" class="alertBox" style="display: none;">
+                    <p id="ajax-body" class="message-body-ajax"></p>
+                    <span class="close"></span>
                 </div>
-                
-                <div id="change _password" class="eachItem" style="display:none">
-                    <h2>Change your password layout will be here.</h2>
-                    <p>some text</p> 
-                </div>
-                
-                <div id="payment_info" class="eachItem" style="display:none">
-                    <h2>hfghfhfhfhf</h2>
-                    <p>Tokyo is the capital of Japan.</p>
-                </div>
-                
+                <br><br>
+
                 <div id="membership" class="eachItem">
-                        
                     <h2>your membership plan</h2>
                     <p>Upgrade or downgrade your membership plan anytime.</p>
                     <div class="plans">
@@ -59,11 +49,11 @@
                                             <span>Billed monthly, no set up fee.</span>
                                             
                                             @if($user->user_type == config('settings.PLAN.L').$item)
-                                                <button class="greyButton">current plan</button>
+                                                <a href="javascript:void(0)" id="plan-{{$item}}" data-plan='{{$item}}' class="button planBtn greyButton">current plan</a>
                                             @elseif($user->user_type > config('settings.PLAN.L').$item)
-                                                <a href="javascript:void(0)" class="button gradiant-green">downgrade</a>
+                                                <a href="javascript:void(0)" id="plan-{{$item}}" data-plan='{{$item}}' class="button planBtn gradiant-green">downgrade</a>
                                             @elseif($user->user_type < config('settings.PLAN.L').$item)                                                
-                                                <a href="javascript:void(0)" data-plan='{{$key}}' onclick="upgradePlan(this)" class="button gradiant-orange">get started</a>
+                                                <a href="javascript:void(0)" id="plan-{{$item}}" data-plan='{{$item}}' class="button planBtn gradiant-orange">get started</a>
                                             @endif
 
                                             <button class="viewMore1">View more</button>
@@ -104,41 +94,50 @@
         var email               =   "{{$user->email}}";
         var publicKey           =   "{{$stripeDetails->public_key}}";
         var userStoredImagePath =   "{{$user->image_path}}";
+        var planToUpgrade       =   null;
+        var currentPlan         =   "{{$user->user_type}}";
 
+        
         $(window).on('popstate', function() {
             handler.close();
         });
 
         var handler = StripeCheckout.configure({
-            key: publicKey,
-            image: userStoredImagePath,
+            key:    publicKey,
+            image:  userStoredImagePath,
             locale: 'auto',
             token: function(token) {
                 $.ajax({
                     url: "{{route('updateCardDetailsAndSubscribe')}}",
                     data: {
                         stripe_token    :   token.id,
-                        _token  :   "{{csrf_token()}}"
+                        _token          :   "{{csrf_token()}}",
+                        plan            :   planToUpgrade
                     },
                     type :"post",
                     beforeSend : function() {
                         $('#loader-icon').show();
-                    }, success: function(resp) {
+                    },  success: function(resp) {
                         console.log(resp);
                         if(resp.status) {
                             $('#loader-icon').hide();
-                            var last4 = response.card;
-                            var exp_month   = response.card['exp_month'];
-                            var exp_year    = response.card['exp_year'];
+                            if(resp.processComplete) {
+                                $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
+                                adjustNewButtons(resp.newPlan);
+                            } else {
+                                $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
+                            }
                         } else {
-                            $('#loader-icon').hide();
+                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
                         }
                     }, error : function(err) {
                         $('#loader-icon').hide();
                         if(err.status == 401) {
                             window.location.replace("{{route('loginPage')}}");
+                        } else if(err.status == 500) {
+                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text('Error occoured while updating card details.');
                         }
-                        console.log(err.status);
+                        console.log('came here 1 : ', err.status);
                     }
                 });
             }
@@ -155,17 +154,39 @@
     </script>
 
     <script>
-
+        
+        var adjustNewButtons = function(newPlan) {
+            newPlan = parseInt(newPlan);
+            // currentPlan holds the current plan the user is in.
+            $(".planBtn").removeClass("gradiant-green").removeClass("gradiant-orange").removeClass("greyButton");
+            currentPlan = newPlan;
+            for(var i = 1; i <= parseInt("{{count(config('settings.PLAN.NAMEMAP'))}}"); i++) {
+                var id = "#plan-"+i;
+                if(i < newPlan) {
+                    $(id).addClass("gradiant-green");
+                    $(id).text('downgrade');
+                } else if(i == newPlan) {
+                    $(id).addClass("greyButton");
+                    $(id).text('current plan');
+                } else {
+                    $(id).addClass("gradiant-orange");
+                    $(id).text('get started');
+                }
+            }
+        }
         
 
-        var upgradePlan = function(t) {
+        var changePlan = function(t) {
             console.log('in func');
             // If user has card info saved charge himright away, else show him stripe form.
-            var plan = $(t).data('plan');
+            planToUpgrade = $(t).data('plan');
+            if(planToUpgrade == currentPlan) {
+                return false;
+            }
             $.ajax({
                 type    :   "post",
-                url     :   "{{route('upgradePlan')}}",
-                data    :   {_token: "{{csrf_token()}}", plan: plan},
+                url     :   "{{route('upgradeOrDowngradePlan')}}",
+                data    :   {_token: "{{csrf_token()}}", plan: planToUpgrade},
                 beforeSend: function() {
                     console.log('before load');
                     $('#loader-icon').show();
@@ -173,32 +194,44 @@
                     $('#loader-icon').hide();
                     console.log(resp);
                     if(resp.status) {
-                        // success
-                        if(resp.cardUpdated) {
-                            alert('Subscription successful');
+                        if(resp.processComplete) {
+                            adjustNewButtons(resp.newPlan);
+                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
                         } else {
-                            console.log('modal open');
                             openStripeForm();
                         }
                     } else {
-                        // card is not updated so open stripe modal
+                        openStripeForm();
                     }
                 }, error: function(er) {
                     $('#loader-icon').hide();
                     if(er.status == 401) {
                         window.location.replace("{{route('loginPage')}}");
+                    } else if(er.status == 500) {
+                        $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text('Error occoured while subscriuption.');
                     }
+                    console.error('came here 2 : ', er.status);
                 }
             });
-            console.log(plan);
         }
 
+        // $(document).ready(function() {
+        //     // setTimeout(function() {
+        //     //     openStripeForm();
+        //     // }, 3000);
+        //     Cookies.remove('username'); 
+        //     // alert(Cookies.get('username')); 
+        // });
+
         $(document).ready(function() {
-            // setTimeout(function() {
-            //     openStripeForm();
-            // }, 3000);
-            Cookies.remove('username'); 
-            // alert(Cookies.get('username')); 
+            $('.close').click(function() {
+                $(this).parent().removeClass('error').removeClass('success').hide();
+                $(".message-body-ajax").text('');
+            });
+
+            $(".planBtn").on('click', function() {
+                changePlan(this);
+            });
         });
 
         function openItem(itemName) {
