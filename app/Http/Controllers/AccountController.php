@@ -15,9 +15,58 @@ use App\PasswordReset;
 use \Carbon\Carbon;
 use App\StripeDetails;
 use App\Traits\StripeTrait;
+
 class AccountController extends Controller
 {
 	use StripeTrait;
+
+	public function cancelMembership() {
+		$data['user'] = Auth::user();
+		$data['title'] = 'Cancel membership';
+		return view('new_version.auth.profile.cancel-membership', $data);
+	}
+
+	public function cancelMembershipPost(Request $request) {
+		try {
+
+			$user = Auth::user();
+			if(strlen(trim($user->affiliate_id)) > 0) {
+				return response()->json([
+					'status'	=> false,
+					'message' 	=> 'You can not directly cancel your membership as you are reffered from an affiliate chanel. In case you want to cancel your membership contact your service provider.'
+				]);
+			}
+
+			if(strlen(trim($user->stripe_subscription_id)) <= 0) {
+				return response()->json([
+					'status' 	=> false,
+					'message' 	=> 'Oops. We are unable to find your subscription id. Please contact your support with this issue.'
+				]);
+			}
+
+			$response = $this->cancelSubscription($stripeDetails, $user);
+			if($response['response']['status'] == 'canceled') {
+				// $user->delete();
+				return response()->json([
+					'status' 	=> true,
+					'message' 	=> 'Subscription cancelled successfully'
+				]);
+			} else {
+				return response()->json([
+					'status' 	=> false,
+					'message' 	=> 'Sorry we cannot cancel your subscription now. Please try again later.'
+				]);
+			}
+
+		} catch(Throwable $e) {
+			
+			return response()->json([
+				'status' 	=> false,
+				'message' 	=> 'Error : '.$e->getMessage()
+			]);
+		}
+	}
+
 	public function updateCardDetails(Request $request) {
 		try {
 			$responseArray = $this->updateCard($request);
@@ -100,9 +149,9 @@ class AccountController extends Controller
 
 	public function showMembershipPage() {
 		try {
-
-			$user = Auth::user();
-			$stripeDetails = StripeDetails::first();
+			$user 			=	Auth::user();
+			$stripeDetails 	= 	StripeDetails::first();
+			$plansArr 		= 	config('settings.PLAN.NAMEMAP');
 			return view('new_version.auth.profile.membership', ['user' => $user, 'stripeDetails' => $stripeDetails]);
 
 		} catch(Exception $e) {

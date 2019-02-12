@@ -32,7 +32,7 @@ Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPass
 
 Route::get('/testfn',function() {
 
-    
+    dd(getPlanNumber('dl-tier1'));
     \Stripe\Stripe::setApiVersion("2018-10-31");
     \Stripe\Stripe::setApiKey('sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc');
     $array = [
@@ -143,6 +143,10 @@ Route::get('/aa',function(){
     
     Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
 
+        
+
+        // Route::post('logout-user', ['uses'=>'AccountController@logoutUserPost', 'as' => 'logoutUserPost']);
+
         Route::group(['prefix' => 'profile'], function() {
             Route::get('/', ['uses' => 'AccountController@profile', 'as' => 'profile']);
             Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
@@ -152,6 +156,8 @@ Route::get('/aa',function(){
             Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
             Route::post('update-card-details-pay', ['uses' => 'AccountController@updateCardDetailsAndSubscribe', 'as' => 'updateCardDetailsAndSubscribe']);
             Route::post('change-plan', ['uses' => 'AccountController@upgradeOrDowngradePlan', 'as'=>'upgradeOrDowngradePlan']);
+            Route::get('cancel-membership', ['uses' => 'AccountController@cancelMembership', 'as'=>'cancelMembership']);
+            Route::post('cancel-membership', ['uses' => 'AccountController@cancelMembershipPost', 'as'=>'cancelMembershipPost']);
             Route::group(['middleware' => 'adminGroup'], function() {
                 Route::get('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeys', 'as' => 'updatePaymentKeys']);
                 Route::post('update-payment-keys', ['uses' => 'AccountController@updatePaymentKeysPost', 'as' => 'updatePaymentKeysPost']);

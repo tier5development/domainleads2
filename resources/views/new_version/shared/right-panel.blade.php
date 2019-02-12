@@ -26,12 +26,17 @@
     </div>
 </div>
  <script type="text/javascript">
- var getUsageGlobal = function() {
+ var getUsageGlobal = function(refresh = false) {
+    console.log('called getUsageGlobal');
     $.ajax({
             url : "{{route('totalLeadsUnlockedToday')}}",
             type: "POST",
             data: {_token: "{{csrf_token()}}"},
+            beforeSend: function() {
+                console.log('called 1 getUsageGlobal');
+            },
             success: function(r) {
+                console.log('got response getUsageGlobal');
                 $('#loader-icon').hide(); 
                 // console.log('response obt : ', r);
                 if(r.status) {
@@ -39,15 +44,23 @@
                         $('.container').addClass('level3User');
                     } else {
                         // $('.rightPanel').show();
-                        canvasObj.setCanvas();
-                        canvasObj.setCurve(r.leadsUnlocked, r.limit);
-                        canvasObj.drawProgressBar(10);
-                        $('#currentUnlockedCount').text(r.leadsUnlocked);
-                        $('#perDayLimitCount').text(r.limit);
-                        $('#tillDateCount').text(r.allLeadsUnlocked);
+                        $('.container').removeClass('level3User');
+                        if(refresh) {
+                            canvasObj.setCanvas();
+                            canvasObj.setCurve(r.leadsUnlocked, r.limit);
+                            canvasObj.refresh(10);
+                        } else {
+                            canvasObj.setCanvas();
+                            canvasObj.setCurve(r.leadsUnlocked, r.limit);
+                            canvasObj.drawProgressBar(10);
+                            $('#currentUnlockedCount').text(r.leadsUnlocked);
+                            $('#perDayLimitCount').text(r.limit);
+                            $('#tillDateCount').text(r.allLeadsUnlocked);
+                        }
                     }
                 }
             }, error: function(e) {
+                // console.log('got error getUsageGlobal');
                 if(e.status === 401) {
                     window.location.replace("{{route('home')}}");
                 }
@@ -55,8 +68,10 @@
             }
     });
  }
+ var refreshCanvas = function() {
+    getUsageGlobal(true);
+ }
  $(document).ready(function() {
     getUsageGlobal();
  });
-        
  </script>

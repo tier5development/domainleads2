@@ -32,33 +32,37 @@
                     <div class="plans">
                         <div class="container">
                             <div class="eachPlanContainer clearfix">
+                                
                                 @foreach (config('settings.PLAN.NAMEMAP') as $key=>$item)
-                                    @php if($item == 2) continue; @endphp
+                                    @php if($item[0] == 2) continue; @endphp
                                     <div class="eachPlanOuter">
                                         <div class="eachPlan">
+                                                
                                             <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
-                                            <h4>basic</h4>
+                                            <h4>{{$key}}</h4>
+                                            
                                             <ul class="features">
-                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item)[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item)[0]}} leads a day</li>
+                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
                                                 <li>location filters</li>
                                                 <li>keywords filters</li>
                                                 <li>TLD filters</li>
                                                 <li>lead exports</li>
                                             </ul>
-                                            <h3>${{config('settings.PLAN.PUBLISHABLE.'.$item)[1]}}</h3>
+                                            
+                                            <h3>${{config('settings.PLAN.PUBLISHABLE.'.$item[0])[1]}}</h3>
                                             <span>Billed monthly, no set up fee.</span>
                                             
-                                            @if($user->user_type == config('settings.PLAN.L').$item)
-                                                <a href="javascript:void(0)" id="plan-{{$item}}" data-plan='{{$item}}' class="button planBtn greyButton">current plan</a>
-                                            @elseif($user->user_type > config('settings.PLAN.L').$item)
-                                                <a href="javascript:void(0)" id="plan-{{$item}}" data-plan='{{$item}}' class="button planBtn gradiant-green">downgrade</a>
-                                            @elseif($user->user_type < config('settings.PLAN.L').$item)                                                
-                                                <a href="javascript:void(0)" id="plan-{{$item}}" data-plan='{{$item}}' class="button planBtn gradiant-orange">get started</a>
+                                            @if($user->user_type == config('settings.PLAN.L').$item[0])
+                                                <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
+                                            @elseif($user->user_type > config('settings.PLAN.L').$item[0])
+                                                <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
+                                            @elseif($user->user_type < config('settings.PLAN.L').$item[0])                                                
+                                                <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
                                             @endif
 
                                             <button class="viewMore1">View more</button>
                                             <ul class="viewMorePanel1">
-                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item)[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item)[0]}} leads a day,</li>
+                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day,</li>
                                                 <li>location filters,</li>
                                                 <li>keywords filters,</li>
                                                 <li>TLD filters,</li>
@@ -70,7 +74,7 @@
                             </div>
                         </div>
                     </div>
-                    <p>I want to <a href="#" class="cancelMembership">cancel my membership</a> now</p>
+                    <p>I want to <a href="{{route('cancelMembership')}}" class="cancelMembership">cancel my membership</a> now</p>
                 </div>
             </div>
 
@@ -124,6 +128,8 @@
                             if(resp.processComplete) {
                                 $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
                                 adjustNewButtons(resp.newPlan);
+                                console.log('calling refreshCanvas');
+                                refreshCanvas();
                             } else {
                                 $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
                             }
@@ -155,7 +161,8 @@
 
     <script>
         
-        var adjustNewButtons = function(newPlan) {
+        var adjustNewButtons = function(resp) {
+            var newPlan = resp.newPlan;
             newPlan = parseInt(newPlan);
             // currentPlan holds the current plan the user is in.
             $(".planBtn").removeClass("gradiant-green").removeClass("gradiant-orange").removeClass("greyButton");
@@ -173,6 +180,15 @@
                     $(id).text('get started');
                 }
             }
+            if(resp.status == true) {
+                $(".reusable-user-panel-header").empty();
+                $(".reusable-user-panel-header").append(resp.headerView);
+            }
+        }
+
+        var rebuildHeader = function() {
+            $('.panel-header-container-contains').empty();
+            // Calling ajax to render the header
         }
         
 
@@ -195,8 +211,11 @@
                     console.log(resp);
                     if(resp.status) {
                         if(resp.processComplete) {
-                            adjustNewButtons(resp.newPlan);
+                            adjustNewButtons(resp);
                             $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
+                            console.log('calling refreshCanvas');
+                            refreshCanvas();
+
                         } else {
                             openStripeForm();
                         }

@@ -368,5 +368,15 @@ class StripeHelper {
             throw $e;
         }
     }
+
+    public static function cancelSubscription($stripeDetails, $user) {
+        try {
+            \Stripe\Stripe::setApiKey($stripeDetails->private_key);
+            $subscription = \Stripe\Subscription::retrieve($user->stripe_subscription_id);
+            return $subscription->cancel();
+        } catch(\Exception $e) {
+            throw $e;
+        }
+    }
 }
 ?>

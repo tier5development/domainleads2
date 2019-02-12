@@ -4,7 +4,7 @@ use App\User;
 use App\Helpers\StripeHelper;
 use Illuminate\Http\Request;
 use App\StripeDetails;
-use Log, Hash, Auth, Session, Exception, Throwable, DB;
+use Log, Hash, Auth, Session, Exception, Throwable, DB, View;
 use App\Helpers\UserHelper;
 use \Carbon\Carbon;
 
@@ -315,7 +315,7 @@ use \Carbon\Carbon;
                             'status'            => false,
                             'cardUpdated'       => $user->card_updated == 1 ? true : false,
                             'processComplete'   => false,
-                            'newPlan'          => null,
+                            'newPlan'           => null,
                             'message'           => 'Please check if your card has enough balance and try again.'
                         ];
                     }
@@ -328,7 +328,8 @@ use \Carbon\Carbon;
                         'cardUpdated'       =>  $user->card_updated == 1 ? true : false,
                         'processComplete'   =>  true,
                         'newPlan'           =>  $user->user_type,
-                        'message'           =>  'Subscription changed to '.getPlanName($plan).' successfully!'
+                        'message'           =>  'Subscription changed to '.getPlanName($plan).' successfully!',
+                        'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render()
                     ];
 
                 } else {
@@ -382,6 +383,15 @@ use \Carbon\Carbon;
             $product = StripeHelper::createProduct($keySecond, $name);
             $productArray = json_decode(json_encode($product, true), true);
             return ['product' => $product, 'productArray' => $productArray];
+        }
+
+        public function cancelSubscription($stripeCustomer, $user) {
+            try {
+                $response = StripeHelper::cancelSubscription($stripeCustomer, $user);
+                return ['responseRaw' => $response, 'response' => json_decode(json_encode($response,true),true)];
+            } catch(Throwable $e) {
+                throw $e;
+            }
         }
     }
 ?>

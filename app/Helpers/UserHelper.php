@@ -26,7 +26,7 @@ class UserHelper {
                 
                 return ([
                     'status' => true,
-                    'leadsUnlocked' => $domainsUnlockedToday,
+                    'leadsUnlocked' => $limit > -1 && $domainsUnlockedToday > $limit ? $limit : $domainsUnlockedToday,
                     'allLeadsUnlocked' => $domainsUnlocked,
                     'limit' => $limit,
                     'session' => true,

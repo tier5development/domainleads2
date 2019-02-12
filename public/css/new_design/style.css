@@ -1259,6 +1259,12 @@ h1, h2, h3, h4, h5, h6, p{
 .mainBody .leftPanel .eachItem .eachPlanContainer{
 	margin: 0px;
 }
+.container.level3User .eachPlanContainer{
+	max-width: 100%;
+} 
+/* .container.level3User .eachPlanContainer .eachPlanOuter{
+
+} */
 .mainBody .leftPanel .eachItem .eachPlanOuter{
 	margin-bottom: 73px;
 }
@@ -1370,6 +1376,12 @@ h1, h2, h3, h4, h5, h6, p{
     right: 13px;
     transform: rotate(-135deg);
     transition: all 0.3s ease 0s;
+}
+.cancellationMemberShip .select-options li{
+	display: block;
+}
+#payment_info .select-options, #membership .select-options{
+	top: 66px;
 }
 .signUp .select-styled:after  {
 	top: 24px;

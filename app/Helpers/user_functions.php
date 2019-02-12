@@ -60,7 +60,18 @@ function getPlanName($id) {
 }
 
 function getPlanNumber($name) {
-    return config('settings.PLAN.NAMEMAP.'.$name);
+    return config('settings.PLAN.NAMEMAP.'.$name)[0];
+}
+
+function getCancelMembershipReasons() {
+    return [
+        'Bad onboarding',
+        'Buggy product',
+        'Bad support',
+        'Not a right fit',
+        'Price is too high',
+        'Others'
+    ];
 }
     
 ?>
