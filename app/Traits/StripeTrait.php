@@ -233,10 +233,10 @@ use \Carbon\Carbon;
             }
         }
 
-        public function updateCard(Request $request) {
+        public function updateCard(Request $request, $user = null) {
             try {
                 DB::beginTransaction();
-                $user           = Auth::user();
+                $user           = $user == null ? Auth::user() : $user;
                 $stripeToken    = $request->stripe_token;
                 $stripeDetails  = StripeDetails::first();
                 $params = [
@@ -272,10 +272,10 @@ use \Carbon\Carbon;
         }
 
         
-        public function upgradeOrDowngrade(Request $request) {
+        public function upgradeOrDowngrade(Request $request, $user = null) {
             try {
                 Log::info('subscribe -- came initial');
-                $user 				= Auth::user();
+                $user 				= $user != null ? $user : Auth::user();
                 $responseArray 		= $this->updateCard($request);
                 if($responseArray['status']) {
                     $plan 				    =   $request->plan;

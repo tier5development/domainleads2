@@ -385,87 +385,158 @@ class AccountController extends Controller
 		return redirect()->route('loginPage');
 	}
 
-	public function signupPost(Request $request) {
-		// dd('here');
-	  //print_r($request->all()); dd();
-	  // dd($request->all());
-	  $first_name=$request->first_name;
-	  $last_name=$request->last_name;
-	  $email=$request->email;
-	  $password=$request->password;
-	  $remember_token=$request->_token;
-	  $date=date('Y-m-d H:i:s');
+	// public function signupPost(Request $request) {
+		
+	//   $first_name=$request->first_name;
+	//   $last_name=$request->last_name;
+	//   $email=$request->email;
+	//   $password=$request->password;
+	//   $remember_token=$request->_token;
+	//   $date=date('Y-m-d H:i:s');
 	  
-	  $validator=Validator::make(
-	   $request->all(),
-	   array(
-	   'first_name'=>'required',
-		'last_name'=>'required',
-		 'email'=>'required|email',
-		  'password'=>'required',
-		   'c_password'=>'required | same:password'
-	   ), [
-		   'c_password.required' => 'Confirm password is required.',
-		   'c_password.same' => 'Confirm password should be same as password.'
-	   ]
-	  );
+	//   $validator=Validator::make(
+	//    $request->all(),
+	//    array(
+	//    'first_name'=>'required',
+	// 	'last_name'=>'required',
+	// 	 'email'=>'required|email',
+	// 	  'password'=>'required',
+	// 	   'c_password'=>'required | same:password'
+	//    ), [
+	// 	   'c_password.required' => 'Confirm password is required.',
+	// 	   'c_password.same' => 'Confirm password should be same as password.'
+	//    ]
+	//   );
 	  
-	  if($validator->fails()) {
-		  return redirect()->back()->withErrors($validator)->withInput();
-	  } 
-	  else {
+	//   if($validator->fails()) {
+	// 	  return redirect()->back()->withErrors($validator)->withInput();
+	//   } 
+	//   else {
 		  
-		  $id_email = DB::table('users')->select('email')->where('email',$email)->get();
-		  if(count($id_email) ==0)
-		  {
+	// 	  $id_email = DB::table('users')->select('email')->where('email',$email)->get();
+	// 	  if(count($id_email) ==0)
+	// 	  {
  
-			  $u = new User();
-			  $u->name = $first_name." ".$last_name;
-			  $u->email = $email;
-			  $u->password = Hash::make($password);
-			  $u->remember_token = $remember_token;
-			  $u->user_type = 1;
+	// 		  $u = new User();
+	// 		  $u->name = $first_name." ".$last_name;
+	// 		  $u->email = $email;
+	// 		  $u->password = Hash::make($password);
+	// 		  $u->remember_token = $remember_token;
+	// 		  $u->user_type = 1;
 			  
 			  
-			  if($u->save()) {
-				//   \Session::put('emailset',$email);
-				//   \Session::put('passset',$password);
-				//   $admin_users_email="work@tier5.us";
-				//   $user_name=$u->name;
-				//   $title="Thanks for sign up with DomainLeads";
-				//  $subject="DomainLeads Signup";
-				//  $content="Thanks for sign up with DomainLeads";
-				//  \Mail::send('emails.thankyou', ['title' => $title, 'content' => $content,'user_name'=>$user_name], function ($message)use ($admin_users_email,$email,$user_name,$subject)
-				//  {
-				// 	 $message->from($admin_users_email);
-				// 	 $message->to($email,$user_name);
-				// 	 $message->subject($subject);
-				//  });
-				//  \Mail::send('emails.accback', ['title' => $title, 'content' => $content,'user_name'=>$user_name,'email'=>$email], function ($message)use ($admin_users_email,$email,$user_name,$subject)
-				//  {
-				// 	 $message->from($email,$user_name);
-				// 	 $message->to($admin_users_email);
-				// 	 $message->subject($subject);
-				//  });
-				$userdata = ['email' => $email, 'password' => $password];
-				if (Auth::validate($userdata)) {
-					if (Auth::attempt($userdata)) {
-						return redirect('search');
-					} else {
-						return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
-					}
-				  } else {
-					return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
-				  }
-				return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
-			  }
-			  else {
-				 return \Response::json(array("msg"=>"error2" , "user_id"=>null));
-			 }
-		  }   
-		  return \Response::json(array("msg"=>"error3" , "user_id"=>null));
+	// 		  if($u->save()) {
+	// 			//   \Session::put('emailset',$email);
+	// 			//   \Session::put('passset',$password);
+	// 			//   $admin_users_email="work@tier5.us";
+	// 			//   $user_name=$u->name;
+	// 			//   $title="Thanks for sign up with DomainLeads";
+	// 			//  $subject="DomainLeads Signup";
+	// 			//  $content="Thanks for sign up with DomainLeads";
+	// 			//  \Mail::send('emails.thankyou', ['title' => $title, 'content' => $content,'user_name'=>$user_name], function ($message)use ($admin_users_email,$email,$user_name,$subject)
+	// 			//  {
+	// 			// 	 $message->from($admin_users_email);
+	// 			// 	 $message->to($email,$user_name);
+	// 			// 	 $message->subject($subject);
+	// 			//  });
+	// 			//  \Mail::send('emails.accback', ['title' => $title, 'content' => $content,'user_name'=>$user_name,'email'=>$email], function ($message)use ($admin_users_email,$email,$user_name,$subject)
+	// 			//  {
+	// 			// 	 $message->from($email,$user_name);
+	// 			// 	 $message->to($admin_users_email);
+	// 			// 	 $message->subject($subject);
+	// 			//  });
+	// 			$userdata = ['email' => $email, 'password' => $password];
+	// 			if (Auth::validate($userdata)) {
+	// 				if (Auth::attempt($userdata)) {
+	// 					return redirect('search');
+	// 				} else {
+	// 					return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
+	// 				}
+	// 			  } else {
+	// 				return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
+	// 			  }
+	// 			return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
+	// 		  }
+	// 		  else {
+	// 			 return \Response::json(array("msg"=>"error2" , "user_id"=>null));
+	// 		 }
+	// 	  }   
+	// 	  return \Response::json(array("msg"=>"error3" , "user_id"=>null));
 		  
-	  }
+	//   }
+	// }
+
+	public function signupPost(Request $request) {
+		
+		$fullName 		= 	$request->full_name;
+		$email			=	$request->email;
+		$password		=	$request->password;
+		$remember_token	=	$request->_token;
+		$date			=	date('Y-m-d H:i:s');
+		$affiliateId	=	$request->affiliate_id;
+		$plan			=	$request->plan;
+		$stripeToken	=	$request->stripe_token;
+		
+		$validator=Validator::make($request->all(), [
+			'full_name'	=>'required',
+			'email'		=>'required|email',
+			'password'	=>'required',
+				'c_password'=>'required | same:password'
+		], [
+			'c_password.required' => 'Confirm password is required.',
+			'c_password.same' => 'Confirm password should be same as password.'
+		]);
+		
+		if($validator->fails()) {
+			return redirect()->back()->withErrors($validator)->withInput();
+		} else {	
+			$id_email = Users::where('email',$email)->select('email')->first();
+			
+			if(!$id_email) {
+				$newUser 					= 	new User();
+				$newUser->name 				= 	$fullName;
+				$newUser->email 			= 	$email;
+				$newUser->password 			=	bcrypt($password);
+				$newUser->remember_token 	= 	$remember_token;
+				$newUser->user_type 		= 	$plan;
+				$newUser->affiliate_id		= 	$affiliateId;
+				$newUser->save();
+				$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
+				$newUser 					= 	$return['userUpdated'];
+				if($return['status'] == true) {
+
+					// The user got subscribed successfully
+					$userdata = ['email' => $email, 'password' => $password];
+					if (Auth::validate($userdata)) {
+						if (Auth::attempt($userdata)) {
+							return response()->json([
+								'status' => true,
+								'message' => 'Subscribed successfully.'
+							]);
+						} else {
+							return response()->json([
+								'status' => false,
+								'message' => 'Please check your email and password!'
+							]);
+						}
+					} else {
+						return redirect()->back()->with('error', 'Please check your email and password!');
+					}
+					
+				} else {
+
+					// Subscription failure
+					return response()->json([
+						'status' => false,
+						'message' => 'Subscription request is not placed. Try again later.'
+					]);
+				}
+			}
+			return response()->json([
+				'status' 	=> 	false,
+				'message' 	=>	'This email id already exists. Please try again'
+			]);
+		}
 	}
 
 	public function home() {
