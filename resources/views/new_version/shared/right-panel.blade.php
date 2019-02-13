@@ -17,7 +17,9 @@
             Upgrade your membership<br> to unlock more of your daily limit.
         </p>
         <p>
-            <button type="button" class="orangeBtn">Upgrade Now</button>
+            @if($user->user_type < config('settings.PLAN.HIGHEST-UPGRADABLE'))
+                <button type="button" class="orangeBtn" onclick=window.location.replace("{{route('showMembershipPage')}}")>Upgrade Now</button>
+            @endif
         </p>
     </div>
     <div class="tilldateContent">

@@ -73,5 +73,13 @@ function getCancelMembershipReasons() {
         'Others'
     ];
 }
+
+function getCardMonth($month) {
+    return sprintf("%02d", $month);
+}
+
+function getCardYear($year) {
+    return substr($year, -2);
+}
     
 ?>

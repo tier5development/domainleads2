@@ -5,11 +5,7 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use \App\User;
-use DB;
-use Hash;
-use Auth;
-use Session;
-use Mail, Log, Exception;
+use Mail, Log, Exception, View, Session, Auth, Hash, DB;
 use App\Helpers\UserHelper;
 use App\PasswordReset;
 use \Carbon\Carbon;
@@ -22,15 +18,19 @@ class AccountController extends Controller
 
 	public function cancelMembership() {
 		$data['user'] = Auth::user();
-		$data['title'] = 'Cancel membership';
-		return view('new_version.auth.profile.cancel-membership', $data);
+		if(strlen(trim($data['user']->affiliate_id)) > 0 && $data['user']->user_type > $data['user']->base_type) {
+			$data['title'] = 'Cancel membership';
+			return view('new_version.auth.profile.cancel-membership', $data);
+		} else {
+			return redirect()->back()->with('fail', 'You belong to an affiliate programme so cannot cancel your membership until you upgrade to next level plan. In case you are already in the highest plan please talk to your service provider.');
+		}
 	}
 
 	public function cancelMembershipPost(Request $request) {
 		try {
 
 			$user = Auth::user();
-			if(strlen(trim($user->affiliate_id)) > 0) {
+			if(strlen(trim($user->affiliate_id)) > 0 && $user->user_type <= $user->base_type) {
 				return response()->json([
 					'status'	=> false,
 					'message' 	=> 'You can not directly cancel your membership as you are reffered from an affiliate chanel. In case you want to cancel your membership contact your service provider.'
@@ -43,9 +43,15 @@ class AccountController extends Controller
 					'message' 	=> 'Oops. We are unable to find your subscription id. Please contact your support with this issue.'
 				]);
 			}
-
+			Log::info('level 1 cleared in cancel membership');
+			$stripeDetails = StripeDetails::first();
 			$response = $this->cancelSubscription($stripeDetails, $user);
 			if($response['response']['status'] == 'canceled') {
+				$user->left_because 		=	trim($request->reason);
+				$user->is_subscribed 		= 	0;
+				Auth::logout();
+				$user->delete();
+				Log::info('level 2 cleared in cancel membership : success');
 				// $user->delete();
 				return response()->json([
 					'status' 	=> true,
@@ -59,7 +65,7 @@ class AccountController extends Controller
 			}
 
 		} catch(Throwable $e) {
-			
+			Log::info('level 3 cleared in cancel membership : failed');
 			return response()->json([
 				'status' 	=> false,
 				'message' 	=> 'Error : '.$e->getMessage()
@@ -69,7 +75,11 @@ class AccountController extends Controller
 
 	public function updateCardDetails(Request $request) {
 		try {
-			$responseArray = $this->updateCard($request);
+			$user = Auth::user();
+			$responseArray 	= $this->updateCard($request);
+			$card = $this->getCustomerDetails($user, true);
+			$card = count($card) > 0 && isset($card['card']) ? $card['card'] : [];
+			$responseArray['html'] = View::make('new_version.shared.embeded-card', ['user' => $user, 'card' => $card])->render();
 			return response()->json($responseArray);
 		} catch(Throwable $e) {
 			return [
@@ -96,6 +106,7 @@ class AccountController extends Controller
 		try {
 			$user = Auth::user();
 			$card = $this->getCustomerDetails($user, true);
+			$card = count($card) > 0 && isset($card['card']) ? $card['card'] : [];
 			Log::info('upgradeOrDowngradePlan : step 1');
 			if($user->card_updated && count($card) > 0) {
 				Log::info('upgradeOrDowngradePlan : step 2');
@@ -117,10 +128,13 @@ class AccountController extends Controller
 	}
 
 	public function paymentInformation() {
+		$user = Auth::user();
+		$card = $this->getCustomerDetails($user, false);
+		$card = count($card) > 0 && isset($card['card']) ? $card['card'] : [];
 		$data = [
-			'user' => Auth::user(),
+			'user' => $user,
 			'stripeDetails' => StripeDetails::first(),
-			'card' => $this->getCustomerDetails(Auth::user())['card']
+			'card' => $card
 		];
 		// dd($data);
 		return view('new_version.auth.profile.payment-information', $data);
@@ -353,10 +367,12 @@ class AccountController extends Controller
 	}
 
 	public function signupPage() {
+		
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		return view('signup');
+		return view('new_version.auth.register');
+		// return view('signup');
 	}
 
 	public function profile() {

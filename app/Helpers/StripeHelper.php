@@ -92,7 +92,7 @@ class StripeHelper {
                     $updatedCustomer = $customer->save();
                     return $updatedCustomer;
                 } else {
-                    Log::info('came here 111');
+                    Log::info('-- no customer found --');
                     return null;
                 }
             }
@@ -109,8 +109,12 @@ class StripeHelper {
     public static function customerList($stripeDetails, $attributes = []) {
         try {
             \Stripe\Stripe::setApiKey($stripeDetails->private_key);
-            $customers = json_decode(json_encode(\Stripe\Customer::all($attributes), true), true);
-            return array_key_exists('data', $customers) ? $customers['data'] : null;
+            $customers = \Stripe\Customer::all($attributes);
+            $customersArr = json_decode(json_encode($customers, true), true);
+            return [
+                'customers' => $customers,
+                'customersArr' => $customersArr
+            ];
         } catch(\Exception $e) {
             throw $e;
         }
@@ -121,11 +125,7 @@ class StripeHelper {
             return null;
         }
         try {
-            $customerList = self::customerList($stripeDetails, ['email' => $email, 'limit' => 1]);
-            if($customerList == null) {
-                return null;
-            }
-            return $customerList[0];
+            return self::customerList($stripeDetails, ['email' => $email, 'limit' => 1]);
         } catch(\Exception $e) {
             throw $e;
         }

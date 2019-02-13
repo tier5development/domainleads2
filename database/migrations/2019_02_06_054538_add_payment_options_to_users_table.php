@@ -20,8 +20,9 @@ class AddPaymentOptionsToUsersTable extends Migration
             $table->string('stripe_subscription_id', 30)->index()->nullable()->after('stripe_plan_id')->comment('Stripe Subscription Id');
             $table->json('stripe_subscription_obj')->nullable()->after('stripe_subscription_id')->comment('Stripe Subscription Obj');
             $table->json('stripe_customer_obj')->nullable()->after('stripe_subscription_obj')->comment('Stripe Customer Obj');
-            $table->longText('downgraded_because')->nullable()->after('stripe_customer_obj')->comment('Reason why user chooses to downgrade.');
-            $table->unsignedSmallInteger('card_updated')->index()->nullable()->after('downgraded_because')->comment('Card updated information of user.'); 
+            $table->longText('left_because')->nullable()->after('stripe_customer_obj')->comment('Reason why user chooses to downgrade.');
+            $table->unsignedSmallInteger('card_updated')->index()->nullable()->after('left_because')->comment('Card updated information of user.');
+            $table->unsignedTinyInteger('is_subscribed')->default(0)->index()->after('card_updated')->comment('0 -> subscription failed(passed due, cancelled, or unpaid equivalent in stripe), 1-> trailing equivalent in stripe, 2-> active equivalent in stripe'); 
         });
     }
 
@@ -45,7 +46,9 @@ class AddPaymentOptionsToUsersTable extends Migration
             $table->dropColumn('card_updated');
             $table->dropColumn('stripe_subscription_obj');
             $table->dropColumn('stripe_customer_obj');
-            $table->dropColumn('downgraded_because');
+            $table->dropColumn('left_because');
+            $table->dropIndex(['is_subscribed']);
+            $table->dropColumn('is_subscribed');
         });
     }
 }

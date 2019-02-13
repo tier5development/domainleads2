@@ -20,11 +20,8 @@
 
             <div class="leftPanel leadUnlock">
                 @include('new_version.shared.profile-panel-header')
-                <div id="ajax-msg-box" class="alertBox" style="display: none;">
-                    <p id="ajax-body" class="message-body-ajax"></p>
-                    <span class="close"></span>
-                </div>
-                <br><br>
+
+                @include('new_version.shared.messages')
 
                 <div id="membership" class="eachItem">
                     <h2>your membership plan</h2>
@@ -38,7 +35,7 @@
                                     <div class="eachPlanOuter">
                                         <div class="eachPlan">
                                                 
-                                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
+                                        <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[2]}}">
                                             <h4>{{$key}}</h4>
                                             
                                             <ul class="features">
@@ -55,8 +52,10 @@
                                             @if($user->user_type == config('settings.PLAN.L').$item[0])
                                                 <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
                                             @elseif($user->user_type > config('settings.PLAN.L').$item[0])
-                                                <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
-                                            @elseif($user->user_type < config('settings.PLAN.L').$item[0])                                                
+                                                @if(strlen(trim($user->affiliate_id)) > 0 && $user->user_type > $user->base_type)
+                                                    <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
+                                                @endif
+                                            @elseif($user->user_type < config('settings.PLAN.L').$item[0])
                                                 <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
                                             @endif
 
@@ -74,7 +73,9 @@
                             </div>
                         </div>
                     </div>
-                    <p>I want to <a href="{{route('cancelMembership')}}" class="cancelMembership">cancel my membership</a> now</p>
+                    @if(strlen(trim($user->affiliate_id)) > 0 && $user->user_type > $user->base_type)
+                        <p>I want to <a href="{{route('cancelMembership')}}" class="cancelMembership">cancel my membership</a> now</p>    
+                    @endif
                 </div>
             </div>
 
@@ -209,19 +210,21 @@
                 }, success: function(resp) {
                     $('#loader-icon').hide();
                     console.log(resp);
-                    if(resp.status) {
-                        if(resp.processComplete) {
-                            adjustNewButtons(resp);
-                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
-                            console.log('calling refreshCanvas');
-                            refreshCanvas();
-
-                        } else {
-                            openStripeForm();
-                        }
+                    
+                    if(resp.processComplete) {
+                        adjustNewButtons(resp);
+                        $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
+                        console.log('calling refreshCanvas');
+                        refreshCanvas();
                     } else {
-                        openStripeForm();
+                        if(resp.allowFurther == true) {
+                            console.log('allowing further1');
+                            openStripeForm();
+                        } else {
+                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
+                        }
                     }
+                    
                 }, error: function(er) {
                     $('#loader-icon').hide();
                     if(er.status == 401) {
@@ -243,11 +246,6 @@
         // });
 
         $(document).ready(function() {
-            $('.close').click(function() {
-                $(this).parent().removeClass('error').removeClass('success').hide();
-                $(".message-body-ajax").text('');
-            });
-
             $(".planBtn").on('click', function() {
                 changePlan(this);
             });

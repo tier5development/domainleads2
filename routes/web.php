@@ -32,6 +32,7 @@ Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPass
 
 Route::get('/testfn',function() {
 
+    dd(substr(1516, -2));
     dd(getPlanNumber('dl-tier1'));
     \Stripe\Stripe::setApiVersion("2018-10-31");
     \Stripe\Stripe::setApiKey('sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc');

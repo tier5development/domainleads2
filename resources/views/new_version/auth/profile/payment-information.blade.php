@@ -17,41 +17,24 @@
         <section class="mainBody">
             @include('new_version.shared.right-panel')
 
+            @include('new_version.shared.messages')
+
             <div class="leftPanel leadUnlock">
                 @include('new_version.shared.profile-panel-header')
-                @if($user->card_updated == 1 && count($card) > 0 && isset($card['last4']) && isset($card['exp_month']) && isset($card['exp_year']))
-                    <div id="payment_info" class="eachItem">
-                        <h2>My Payment Information</h2>
-                        <p>You have added below card information to your account.</p>
-                        <div class="updateCardWrap">
-                            <p>credit card information</p>
-                            <div class="updateCard">
-                                <div class="cardInfo cardNumber">
-                                    <h4>card number</h4>
-                                    <h3>xxxx xxxx xxxx {{$card['last4']}}</h3>
-                                </div>
-                                <div class="cardInfo expiryDate">
-                                    <h4>expiry (mm/yy)</h4>
-                                    <h3>{{$card['exp_month']}}/{{$card['exp_year']}}</h3>
-                                </div>
-                                <button id="update-card-btn" class="orangeBtn">update card</button>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="innerContent clearfix">
-                        <div class="container customCont cancelDomain">
-                            <div class="col-sm-8 innerContentWrap">
-                                <div class="col-sm-12 createForm">
-                                    <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/sad-face.png" alt="domain cancel">
-                                    <h2>Oops! we did not find any cards attached to your account.</h2>
-                                    <p>Please provide your card information after clicking the update button.</p>
-                                </div>
-                                <button id="update-card-btn" class="orangeBtn orangeBtnCentered">update card</button>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+
+                <div id="ajax-msg-box" class="alertBox" style="display: none;">
+                    <p id="ajax-body" class="message-body-ajax"></p>
+                    <span class="close"></span>
+                </div>
+                <br><br>
+
+                <div id="embeded-card">
+                    @if($user->card_updated == 1 && count($card) > 0 && isset($card['last4']) && isset($card['exp_month']) && isset($card['exp_year']))
+                        @include('new_version.shared.embeded-card', ['user' => $user, 'card' => $card])
+                    @else
+                        @include('new_version.shared.ask-for-update-card')
+                    @endif
+                </div>
             </div>
 
             {{-- Include footer --}}
@@ -82,6 +65,7 @@
             key: publicKey,
             image: userStoredImagePath,
             locale: 'auto',
+            panelLabel: 'UPDATE',
             token: function(token) {
                 $.ajax({
                     url: "{{route('updateCardDetails')}}",
@@ -96,11 +80,11 @@
                         console.log(resp);
                         if(resp.status) {
                             $('#loader-icon').hide();
-                            var last4 = response.card;
-                            var exp_month   = response.card['exp_month'];
-                            var exp_year    = response.card['exp_year'];
+                            $('#embeded-card').empty().append(resp.html);
+                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
                         } else {
                             $('#loader-icon').hide();
+                            $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
                         }
                     }, error : function(err) {
                         $('#loader-icon').hide();

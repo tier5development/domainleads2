@@ -131,28 +131,29 @@ use \Carbon\Carbon;
                     'status' => false
                 ];
             }
-                
             //if this customer already exists update customer
             $customerDetails = self::prepareCustomerDetailsArray($arr);
-            $customerDetailsResponse = StripeHelper::updateCustomer($user->stripe_customer_id, $arr, $stripeDetails);
+            // Check if this customer already exists
+            $stripeCustomerDetails = StripeHelper::fetchUserWithEmail($stripeDetails, $user->email);
             
-            // dd(json_decode($customerDetailsResponse, true));
-            if(!is_object($customerDetailsResponse)) {
-                // customer present in db but not in stripe
+            $stripeCustomerId = $user->stripe_customer_id;
+            if(count($stripeCustomerDetails['customersArr']['data']) == 0) {
+                // Customer does not exist
                 return $this->createFreshStripeCustomer($user, $customerDetails, $stripeDetails);
+
             } else {
-                //update completed successfully
-                Log::info('updated customer : going to store response in db');
-                $user->stripe_customer_obj  =   json_encode($customerDetailsResponse, true);
-                $user->card_updated         =   count($customerDetailsResponse->sources->data) > 0 ? 1 : 0;
-                $user->stripe_customer_id   =   $customerDetailsResponse->id;
-                $user->save();
-                return [
-                    'message'				=> 'Success',
-                    'userUpdated'		    => $user,
-                    'status' 				=> true
-                ];
+                $stripeCustomerId = $stripeCustomerDetails['customers']->data[0]->id;
             }
+            $customerDetailsResponse = StripeHelper::updateCustomer($stripeCustomerId, $customerDetails , $stripeDetails);
+            $user->stripe_customer_obj  =   json_encode($customerDetailsResponse, true);
+            $user->card_updated         =   $customerDetailsResponse->sources !== null && count($customerDetailsResponse->sources->data) > 0 ? 1 : 0;
+            $user->stripe_customer_id   =   $customerDetailsResponse->id;
+            $user->save();
+            return [
+                'message'				=> 'Success',
+                'userUpdated'		    => $user,
+                'status' 				=> true
+            ];
         }
         
         public function createFreshStripeCustomer($user, $arr, $stripeDetails) {
@@ -253,12 +254,14 @@ use \Carbon\Carbon;
                     return [
                         'status' 	=> true,
                         'card'		=> $this->getCustomerDetails(Auth::user())['card'],
+                        'allowFurther' =>  true,
                         'message' 	=> 'Card updated successfully',
                     ];
                 } else {
                     DB::commit();
                     return [
                         'status' 	=> false,
+                        'allowFurther' =>  false,
                         'message' 	=> 'Card upddate failed.',
                     ];
                 }
@@ -288,13 +291,15 @@ use \Carbon\Carbon;
                         
                         // So this user came from a different platform like affiliates.
                         // This type of user should not be allowed to downgrade below the plan which their affiliate brought them into.
-                        if($plan <= $baseUserType) {
+                        Log::info(' plan :::: '.$plan.' baseUserType :::: '.$baseUserType);
+                        if($plan < $baseUserType) {
                             return [
                                 'status'            =>  false,
                                 'cardUpdated'       =>  $user->card_updated == 1 ? true : false,
+                                'allowFurther'      =>  false,
                                 'processComplete'   =>  false,
-                                'newPlan'          =>  null,
-                                'message' =>    $plan < $baseUserType
+                                'newPlan'           =>  null,
+                                'message'           =>  $plan < $baseUserType
                                     ? 'Since you are the member of affiliates programme you cannot downgrade directly beyond plan : '.getPlanName($baseUserType)
                                     : 'You already exist in the plan you want to upgrade to.'
                             ];
@@ -314,6 +319,7 @@ use \Carbon\Carbon;
                         return [
                             'status'            => false,
                             'cardUpdated'       => $user->card_updated == 1 ? true : false,
+                            'allowFurther'      => false,
                             'processComplete'   => false,
                             'newPlan'           => null,
                             'message'           => 'Please check if your card has enough balance and try again.'
@@ -322,13 +328,23 @@ use \Carbon\Carbon;
                     $user->stripe_subscription_id = $subscriptionData->id;
                     $user->stripe_subscription_obj = json_encode($subscriptionData, true);
                     $user->user_type = $plan;
+                    if($subscriptionData->status == 'cancelled' || $subscriptionData->status == 'unpaid' || $subscriptionData->status == 'past_due') {
+                        $user->is_subscribed = 0;
+                    } else if($subscriptionData->status == 'trialing') {
+                        $user->is_subscribed = 1;
+                    } else if($subscriptionData->status == 'active') {
+                        $user->is_subscribed = 2;
+                    }
                     $user->save();
                     return [
-                        'status'            =>  true,
+                        'status'            =>  $user->is_subscribed == 0 ? false : true,
                         'cardUpdated'       =>  $user->card_updated == 1 ? true : false,
                         'processComplete'   =>  true,
                         'newPlan'           =>  $user->user_type,
-                        'message'           =>  'Subscription changed to '.getPlanName($plan).' successfully!',
+                        'allowFurther'      =>  false,
+                        'message'           =>  $user->is_subscribed == 0 
+                            ? 'Subscription failed, Please check with your card balance.'
+                            : 'Subscription changed to '.getPlanName($plan).' successfully!',
                         'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render()
                     ];
 
