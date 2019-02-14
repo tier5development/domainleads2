@@ -34,7 +34,7 @@
                         </div>
                         <button type="submit" class="btn button gradiant-orange">login</button>
                         <span>Don't have an account?</span>
-                        <a href="{{config('settings.LANDING-DOMAIN')}}">register now!</a>
+                        <a href="{{route('signupPage')}}">register now!</a>
                     </form>
                 </div>
             </div>

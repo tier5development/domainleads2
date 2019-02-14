@@ -10,282 +10,260 @@
 
     <!-- inner content -->
     <div class="innerContent signUp clearfix">
-      <div class="container customCont">
-        <div class="innerContentWrap">
-            <form action="#">
-              <div class="leftSide">
-                  <h2>Get an account to unlock leads</h2>
-                  <h3>personal information</h3>
-                    <div class="fieldWrap">
-                      <input type="text" class="form-control" placeholder="full name">
-                      <input type="text" class="form-control" placeholder="email">
-                      <input type="text" class="form-control" placeholder="password">
-                    </div>
-                    <h3>credit card information</h3>
-                    <div class="fieldWrap clearfix">
-                      <div class="formRow">
-                          <div class="cardNum">
-                              <label for="">card number</label>
-                              <input type="text" class="form-control" name="" id="">
-                          </div>
-                          <div class="cvc">
-                              <label for="">CVC code</label>
-                              <input type="text" class="form-control" name="" id="">
-                          </div>
-                      </div>
-                      <div class="formRow">
-                          <div class="fieldCover">
-                              <label for="">expiry month</label>
-                              <div class="largeSelectBox">
-                                <select data-stopsubmit='1' class="selectpage" id="sort" name="sort">
-                                    <option value="01" >01</option>
-                                    <option value="02" >02</option>
-                                    <option value="03" >03</option>
-                                    <option value="04" >04</option>
-                                </select>
+        <div class="container customCont">
+            <div class="innerContentWrap">
+                <form action="#">
+                    <div class="leftSide">
+                        <h2>Get an account to unlock leads</h2>
+                        <h3>personal information</h3>
+                            <div class="fieldWrap">
+                                <input type="text" name="full_name" class="form-control" placeholder="full name">
+                                <input type="text" name="email" class="form-control" placeholder="email">
+                                <input type="text" name="password" class="form-control" placeholder="password">
                             </div>
-                          </div>
-                          <div class="fieldCover exp">
-                              <label for="">expiry year</label>
-                              <div class="largeSelectBox">
-                                <select data-stopsubmit='1' class="selectpage" id="sort" name="sort">
-                                    <option value="2019" >2019</option>
-                                    <option value="2020" >2020</option>
-                                    <option value="2021" >2021</option>
-                                    <option value="2022" >2022</option>
-                                </select>
+                        <h3>credit card information</h3>
+                        <div class="outcome">
+                            <div class="error"></div>
+                            <div class="success">
+                                Success! Your Stripe token is <span class="token"></span>
                             </div>
-                          </div>
-                      </div>
+                        </div>
+                        <div class="fieldWrap clearfix">
+                            <label>
+                                <span>Card number</span>
+                                <div id="card-number-element" class="field"></div>
+                                <span class="brand"><i class="pf pf-credit-card" id="brand-icon"></i></span>
+                            </label>
+                            <label>
+                                <span>CVC</span>
+                                <div id="card-cvc-element" class="field"></div>
+                            </label>
+                            <label>
+                                <span>Expiry date</span>
+                                <div id="card-expiry-element" class="field"></div>
+                            </label>
+                            
+                            {{-- <label>
+                                <span>Postal code</span>
+                                <input id="postal-code" name="postal_code" class="field" placeholder="90210" />
+                            </label> --}}
+                        </div>
+                        <div class="fieldWrap spaceTop">
+                            <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
+                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/cards.webp" alt="cards">
+                            <span>Have an account?</span>
+                            <a href="#">login now!</a>
+                        </div> 
                     </div>
-                    <div class="fieldWrap spaceTop">
-                      <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
-                      <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/cards.webp" alt="cards">
-                      <span>Have an account?</span>
-                      <a href="#">login now!</a>
-                    </div> 
-              </div>
-              <div class="rightSide">
-                  <h3>subcription plans</h3>
-                  <div class="fieldWrap">
-                    <label class="radioItem">basic
-                      <p>$47/m</p>
-                      <input type="radio" checked="checked" name="radio">
-                      <span class="checkmark"></span>
-                    </label>
-                    <label class="radioItem">pro
-                        <p>$97/m</p>
-                      <input type="radio" name="radio">
-                      <span class="checkmark"></span>
-                    </label>
-                    <label class="radioItem">agency
-                        <p>$197/m</p>
-                      <input type="radio" name="radio">
-                      <span class="checkmark"></span>
-                    </label>
-                  </div>
-                  <div class="cartWrap">
-                    <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/cart.png" alt="cart">
-                    <span>order total</span>
-                    <h4>$47/m</h4>
-                  </div>
-              </div>
-            </form>
+
+                    <div class="rightSide">
+                        <h3>subcription plans</h3>
+                        <div class="fieldWrap">
+                            @foreach (config('settings.PLAN.NAMEMAP') as $key => $item)
+                                @php 
+                                    if($item[0] == config('settings.PLAN.NON-DISPLAYABLE')) continue; 
+                                    $planAlias = config('settings.PLAN.PUBLISHABLE.'.$item[0])[3];
+                                    $planNum = $item[0];
+                                    $planAmount = config('settings.PLAN.PUBLISHABLE.'.$item[0])[1];
+                                @endphp
+                                <label class="radioItem">{{$planAlias}}
+                                    <p>${{$planAmount}}/m</p>
+                                    <input data-name="{{$planAlias}}" class="radio-selector" type="radio" value="{{$planNum}}" checked="checked" name="radio">
+                                    <span class="checkmark"></span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <div class="cartWrap" style="display: none;">
+                            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/cart.png" alt="cart">
+                            <span>order total</span>
+                            <h4 id="total-order-id"></h4>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
     @include('new_version.section.signin-footer')
   </section>
 
   
    <!-- footer -->
-  <footer class="footer clearboth">
-    <div class="container">
-      <div class="col-md-12 pull-left">
-        <span>&copy; 2017 Powered by Tier5</span>
-        <a href="#">privacy policy</a>
-        <a href="#">terms of use</a>
-      </div>
-    </div>
-  </footer>
+    <footer class="footer clearboth">
+        <div class="container">
+            <div class="col-md-12 pull-left">
+                <span>&copy; 2017 Powered by Tier5</span>
+                <a href="#">privacy policy</a>
+                <a href="#">terms of use</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/custom.js"></script>
-    <script src="js/custom2.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/bootstrap.min.js"></script>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
     <script>
-      $(document).ready(function(){
-      
-          var optionScrollWidth;
-      
-          $('.selectOption').each(function(){
-              var thisVar = $(this), numberOfOptions = $(this).children('option').length;
-      
-              thisVar.addClass('select-hidden'); 
-              thisVar.wrap('<div class="select"></div>');
-              thisVar.after(`
-              <div class="select-styled">
-                  <div class="tagContainer">
-                      <div class="tagArea">
-                          <div class="tagAreaInner"></div>
-                      </div>
-                  </div>
-                  <div class="tglBtn"></div>
-              </div>
-              `);
-      
-              var styledSelect = thisVar.next('div.select-styled');
-              //styledSelect.text(thisVar.children('option').eq(0).text());
-      
-              var $list = $('<ul />', {
-                  'class': 'select-options'
-              }).insertAfter(styledSelect);
-      
-              for (var i = 0; i < numberOfOptions; i++) {
-                  $('<li />', {
-                      text: thisVar.children('option').eq(i).text(),
-                      rel: thisVar.children('option').eq(i).val()
-                  }).appendTo($list);
-              }
-      
-              var $listItems = $list.children('li');
-      
-              styledSelect.click(function(e) {
-                  e.stopPropagation();
-                  //console.log('here1');
-                  $('div.select-styled.active').not(this).each(function(){
-                      $(this).removeClass('active').next('ul.select-options').fadeOut(200);
-                  });
-                  $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
-              });
-      
-              $listItems.click(function(e) {
-                  e.stopPropagation();
-                  //styledSelect.text($(this).text()).removeClass('active');
-                  $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
-                  $(this).hide();
-                  thisVar.val($(this).attr('rel'));
-                  $list.fadeOut(200);
-                  //console.log(thisVar.val());
-                  var tagAreaWidth = 0;
-                  $(".tagAreaInner p").each(function(){
-                      tagAreaWidth += $(this).outerWidth()+3;
-                  });
-                  $(".tagAreaInner").css("width", tagAreaWidth + "px");
-                  
-                  $(".select-styled p .cl").click(function(e){
-                      e.stopPropagation();
-                      var a = $(this).prev(".tagTxt").text();
-                      $(this).parent("p").remove();
-                      $('ul.select-options li').each(function(){
-                          if($(this).text() == a){
-                              $(this).show();
-                          }
-                      });
-                  });  
-              });
-              $(document).click(function(e) {
-                  styledSelect.removeClass('active');
-                  $list.fadeOut(200);
-              });
-      
-          var sc = 0;
-      
-          $('body').on('mousewheel', function(e) {
-              if($(e.target).closest(".select-styled").hasClass("select-styled")){
-                  return false;
-              // e.preventDefault();
-              // e.stopPropagation();
-              }
-          });
-      
-          $('.tagAreaInner').on('mousewheel', function(event) {
-              optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
-              if(event.deltaY == -1){
-                  if(sc > optionScrollWidth){
-                  sc = optionScrollWidth;
-              }
-                  sc += 10;
-              } 
-              else if(event.deltaY == 1){
-                  if(sc < 0){
-                  sc = 0;
-              }
-                  sc -= 10;
-              }
-                   
-              $(".tagArea").scrollLeft(sc);        
-          });
-          
-      
-              
-          });
+
+        var publicKey   =   "{{$stripeDetails->public_key}}";
+        var stripe = Stripe(publicKey);
+        var elements = stripe.elements();
+        var style = {
+        base: {
+                iconColor: '#666EE8',
+                color: '#31325F',
+                lineHeight: '40px',
+                fontWeight: 300,
+                fontFamily: 'Helvetica Neue',
+                fontSize: '15px',
+                border: '1px solid #000',
+
+                '::placeholder': {
+                color: '#CFD7E0',
+                },
+            },
+        };
+        
+
+        var cardNumberElement = elements.create('cardNumber', {
+            style: style
+        });
+        cardNumberElement.mount('#card-number-element');
+
+        var cardExpiryElement = elements.create('cardExpiry', {
+            style: style
+        });
+        cardExpiryElement.mount('#card-expiry-element');
+
+        var cardCvcElement = elements.create('cardCvc', {
+            style: style
+        });
+        cardCvcElement.mount('#card-cvc-element');
+
+        function setOutcome(result) {
+            var successElement = document.querySelector('.success');
+            var errorElement = document.querySelector('.error');
+            successElement.classList.remove('visible');
+            errorElement.classList.remove('visible');
+
+            if (result.token) {
+                // In this example, we're simply displaying the token
+                successElement.querySelector('.token').textContent = result.token.id;
+                successElement.classList.add('visible');
+
+            } else if (result.error) {
+                errorElement.textContent = result.error.message;
+                errorElement.classList.add('visible');
+            }
+        }
+        var cardBrandToPfClass = {
+            'visa': 'pf-visa',
+            'mastercard': 'pf-mastercard',
+            'amex': 'pf-american-express',
+            'discover': 'pf-discover',
+            'diners': 'pf-diners',
+            'jcb': 'pf-jcb',
+            'unknown': 'pf-credit-card',
+        }
+        function setBrandIcon(brand) {
+            var brandIconElement = document.getElementById('brand-icon');
+            var pfClass = 'pf-credit-card';
+            if (brand in cardBrandToPfClass) {
+                pfClass = cardBrandToPfClass[brand];
+            }
+            for (var i = brandIconElement.classList.length - 1; i >= 0; i--) {
+                brandIconElement.classList.remove(brandIconElement.classList[i]);
+            }
+            brandIconElement.classList.add('pf');
+            brandIconElement.classList.add(pfClass);
+        }
+
+        cardNumberElement.on('change', function(event) {
+            // Switch brand logo
+            try {
+                console.log('change : ', event.brand);
+
+                if (event.brand) {
+                    setBrandIcon(event.brand);
+                }
+                setOutcome(event);
+            } catch(err) {
+                console.error('our error : ',err);
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // var options = {
+            //     address_zip: document.getElementById('postal-code').value,
+            // };
+            stripe.createToken(cardNumberElement).then(setOutcome);
+        });
+
+        
+        
+
+        $(document).ready(function(){
       
       
-      // for custom dropdown
-          $('.selectpage').each(function(){
-      
-          var thisInstance = $(this);
-      
-          var thisVal = $(this), numberOfOptions = $(this).children('option').length;
-      
-          thisVal.addClass('select-hidden'); 
-          thisVal.wrap('<div class="select"></div>');
-          thisVal.after('<div class="select-styled"></div>');
-      
-          var styledSelect = thisVal.next('div.select-styled');
-          // styledSelect.text(thisVal.children('option').eq(0).text());
-          styledSelect.text(thisVal.children('option:selected').text());
-      
-          var list = $('<ul />', {
-              'class': 'select-options'
-          }).insertAfter(styledSelect);
-      
-          for (var i = 0; i < numberOfOptions; i++) {
-              $('<li />', {
-                  text: thisVal.children('option').eq(i).text(),
-                  rel: thisVal.children('option').eq(i).val()
-              }).appendTo(list);
-          };
-      
-          var listItems = list.children('li');
-          styledSelect.click(function(e) {
-              e.stopPropagation();
-              $('div.select-styled.active').not(this).each(function(){
-                  $(this).removeClass('active').next('ul.select-options').fadeOut(200);
-              });
-              $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
-          });
-      
-          listItems.click(function(e) {
-              e.stopPropagation();
-              console.log('clicked');
-              styledSelect.text($(this).text()).removeClass('active');
-              thisVal.val($(this).attr('rel'));
-              list.fadeOut(200);
-      
-              if(thisInstance.data('pagination') !== undefined) {
-                  req_pagination = thisVal.val();
-                  console.log('pagination', thisInstance.data('pagination'), thisVal.val());
-                  $('#pagination').val(thisVal.val());
-              }
-      
-              // Used for advanced-search-box
-              if(thisInstance.data('stopsubmit') === undefined) {
-                  console.log('not pagination', thisInstance.data('stopsubmit'));
-                  submitFormCustom(); 
-              }
-              // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));
-              // submitFormCustom();
-          });
-      
-          $(document).click(function() {
-              styledSelect.removeClass('active');
-              list.fadeOut(200);
-          });
-      });
+        // for custom dropdown
+        $('.selectpage').each(function(){
+            var thisInstance = $(this);
+            var thisVal = $(this), numberOfOptions = $(this).children('option').length;
+            thisVal.addClass('select-hidden'); 
+            thisVal.wrap('<div class="select"></div>');
+            thisVal.after('<div class="select-styled"></div>');
+            var styledSelect = thisVal.next('div.select-styled');
+            styledSelect.text(thisVal.children('option:selected').text());
+            var list = $('<ul />', {
+                'class': 'select-options'
+            }).insertAfter(styledSelect);
+            for (var i = 0; i < numberOfOptions; i++) {
+                $('<li />', {
+                    text: thisVal.children('option').eq(i).text(),
+                    rel: thisVal.children('option').eq(i).val()
+                }).appendTo(list);
+            };
+            var listItems = list.children('li');
+            styledSelect.click(function(e) {
+                e.stopPropagation();
+                $('div.select-styled.active').not(this).each(function(){
+                    $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+                });
+                $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+            });
+            listItems.click(function(e) {
+                e.stopPropagation();
+                console.log('clicked');
+                styledSelect.text($(this).text()).removeClass('active');
+                
+                list.fadeOut(200, 0, function() {
+                    thisVal.val($(this).attr('rel'));  
+                });
+        
+                if(thisInstance.data('pagination') !== undefined) {
+                    req_pagination = thisVal.val();
+                    console.log('pagination', thisInstance.data('pagination'), thisVal.val());
+                    $('#pagination').val(thisVal.val());
+                }
+        
+                // Used for advanced-search-box
+                if(thisInstance.data('stopsubmit') === undefined) {
+                    console.log('not pagination', thisInstance.data('stopsubmit'));
+                    submitFormCustom(); 
+                }
+                // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));
+                // submitFormCustom();
+            });
+        
+            $(document).click(function() {
+                styledSelect.removeClass('active');
+                list.fadeOut(200);
+            });
+        });
       
       });
       
@@ -294,174 +272,28 @@
     $(document).ready(function(){
 
         var optionScrollWidth;
+        // for responsive menu
 
-        $('.selectOption').each(function(){
-            var thisVar = $(this), numberOfOptions = $(this).children('option').length;
-
-            thisVar.addClass('select-hidden'); 
-            thisVar.wrap('<div class="select"></div>');
-            thisVar.after(`
-            <div class="select-styled">
-                <div class="tagContainer">
-                    <div class="tagArea">
-                        <div class="tagAreaInner"></div>
-                    </div>
-                </div>
-                <div class="tglBtn"></div>
-            </div>
-            `);
-
-            var styledSelect = thisVar.next('div.select-styled');
-            //styledSelect.text(thisVar.children('option').eq(0).text());
-
-            var $list = $('<ul />', {
-                'class': 'select-options'
-            }).insertAfter(styledSelect);
-
-            for (var i = 0; i < numberOfOptions; i++) {
-                $('<li />', {
-                    text: thisVar.children('option').eq(i).text(),
-                    rel: thisVar.children('option').eq(i).val()
-                }).appendTo($list);
-            }
-
-            var $listItems = $list.children('li');
-
-            styledSelect.click(function(e) {
-                e.stopPropagation();
-                //console.log('here1');
-                $('div.select-styled.active').not(this).each(function(){
-                    $(this).removeClass('active').next('ul.select-options').fadeOut(200);
-                });
-                $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
-            });
-
-            $listItems.click(function(e) {
-                e.stopPropagation();
-                //styledSelect.text($(this).text()).removeClass('active');
-                $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
-                $(this).hide();
-                thisVar.val($(this).attr('rel'));
-                $list.fadeOut(200);
-                //console.log(thisVar.val());
-                var tagAreaWidth = 0;
-                $(".tagAreaInner p").each(function(){
-                    tagAreaWidth += $(this).outerWidth()+3;
-                });
-                $(".tagAreaInner").css("width", tagAreaWidth + "px");
-                
-                $(".select-styled p .cl").click(function(e){
-                    e.stopPropagation();
-                    var a = $(this).prev(".tagTxt").text();
-                    $(this).parent("p").remove();
-                    $('ul.select-options li').each(function(){
-                        if($(this).text() == a){
-                            $(this).show();
-                        }
-                    });
-                });  
-            });
-            $(document).click(function(e) {
-                styledSelect.removeClass('active');
-                $list.fadeOut(200);
-            });
-
-        var sc = 0;
-
-        $('body').on('mousewheel', function(e) {
-            if($(e.target).closest(".select-styled").hasClass("select-styled")){
-                return false;
-            // e.preventDefault();
-            // e.stopPropagation();
-            }
+        $('.radio-selector').change(function(e) {
+            console.log('adkjhyfvk jyhf ', $(this).val(), $(this).data('name'));
         });
 
-        $('.tagAreaInner').on('mousewheel', function(event) {
-            optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
-            if(event.deltaY == -1){
-                if(sc > optionScrollWidth){
-                sc = optionScrollWidth;
-            }
-                sc += 10;
-            } 
-            else if(event.deltaY == 1){
-                if(sc < 0){
-                sc = 0;
-            }
-                sc -= 10;
-            }
-                
-            $(".tagArea").scrollLeft(sc);        
+        $('.menu-button').click(function() {
+            $('.bottomRight').addClass('pull');
         });
-        
-
-            
+        $('.menuClose').click(function() {
+            $('.bottomRight').removeClass('pull');
         });
-
-
-    // for custom dropdown
-        $('.selectpage').each(function(){
-
-        var thisInstance = $(this);
-
-        var thisVal = $(this), numberOfOptions = $(this).children('option').length;
-
-        thisVal.addClass('select-hidden'); 
-        thisVal.wrap('<div class="select"></div>');
-        thisVal.after('<div class="select-styled"></div>');
-
-        var styledSelect = thisVal.next('div.select-styled');
-        // styledSelect.text(thisVal.children('option').eq(0).text());
-        styledSelect.text(thisVal.children('option:selected').text());
-
-        var list = $('<ul />', {
-            'class': 'select-options'
-        }).insertAfter(styledSelect);
-
-        for (var i = 0; i < numberOfOptions; i++) {
-            $('<li />', {
-                text: thisVal.children('option').eq(i).text(),
-                rel: thisVal.children('option').eq(i).val()
-            }).appendTo(list);
-        };
-
-        var listItems = list.children('li');
-        styledSelect.click(function(e) {
-            e.stopPropagation();
-            $('div.select-styled.active').not(this).each(function(){
-                $(this).removeClass('active').next('ul.select-options').fadeOut(200);
-            });
-            $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
+        // for vier more toggle
+        $(".viewMore1").click(function() {
+            $(".viewMorePanel1").toggle();
         });
-
-        listItems.click(function(e) {
-            e.stopPropagation();
-            console.log('clicked');
-            styledSelect.text($(this).text()).removeClass('active');
-            thisVal.val($(this).attr('rel'));
-            list.fadeOut(200);
-
-            if(thisInstance.data('pagination') !== undefined) {
-                req_pagination = thisVal.val();
-                console.log('pagination', thisInstance.data('pagination'), thisVal.val());
-                $('#pagination').val(thisVal.val());
-            }
-
-            // Used for advanced-search-box
-            if(thisInstance.data('stopsubmit') === undefined) {
-                console.log('not pagination', thisInstance.data('stopsubmit'));
-                submitFormCustom(); 
-            }
-            // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));
-            // submitFormCustom();
+        $(".viewMore2").click(function() {
+            $(".viewMorePanel2").toggle();
         });
-
-        $(document).click(function() {
-            styledSelect.removeClass('active');
-            list.fadeOut(200);
+        $(".viewMore3").click(function() {
+            $(".viewMorePanel3").toggle();
         });
-    });
-
     });
 
     </script>

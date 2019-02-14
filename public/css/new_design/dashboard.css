@@ -217,6 +217,7 @@ input, select, textarea, button {
     transition: all 0.3s ease-in;
     font-size: 14px;
     color: #6c6c6c;
+    display: block;
 }
 .select-options li:hover {
     background: #f5f5f5;

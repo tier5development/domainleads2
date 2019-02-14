@@ -8,6 +8,7 @@
 
     <!-- Bootstrap -->
     <link href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/dashboard.css">
     <link href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/style.css" rel="stylesheet">
     <link rel="stylesheet" href="{{config('settings.APPLICATION-DOMAIN')}}/public/css/new_design/custom_msg.css">
     {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lity/2.3.1/lity.min.css"> --}}

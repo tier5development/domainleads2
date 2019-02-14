@@ -26,10 +26,19 @@ return [
         'L1' => 3,
         'L2' => 5,
         'PUBLISHABLE' => [
-            '1' => [50, 50],  // unlock restriction, cost
-            '2' => [500, 197],
-            '4' => [-1, 500]
-        ]
+            '1' => [50, 50, 'basic_plan.png','basic'],  // unlock restriction, cost, image, alias name
+            '3' => [500, 197, 'agency_plan.png','advanced'],
+            '4' => [-1, 500, 'pro_plan.png','pro']
+        ],
+        'NAMEMAP' => [
+            'dl-tier1' => ['1', 'basic_plan.png', 'basic'],
+            'dl-tier-special' => ['2','','special'],
+            'dl-tier2' => ['3', 'agency_plan.png', 'advanced'],
+            'dl-tier3' => ['4', 'pro_plan.png', 'pro']
+        ],
+        'HIGHEST-UPGRADABLE' => 4,
+        'LOWEST-DOWNGRADABLE' => 1,
+        'NON-DISPLAYABLE' => 2
     ]
 ];
 ?>

@@ -371,7 +371,8 @@ class AccountController extends Controller
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		return view('new_version.auth.register');
+		$stripeDetails = StripeDetails::first();
+		return view('new_version.auth.register', ['stripeDetails' => $stripeDetails]);
 		// return view('signup');
 	}
 

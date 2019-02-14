@@ -31,7 +31,7 @@
                             <div class="eachPlanContainer clearfix">
                                 
                                 @foreach (config('settings.PLAN.NAMEMAP') as $key=>$item)
-                                    @php if($item[0] == 2) continue; @endphp
+                                    @php if($item[0] == config('settings.PLAN.NON-DISPLAYABLE')) continue; @endphp
                                     <div class="eachPlanOuter">
                                         <div class="eachPlan">
                                                 
@@ -101,8 +101,8 @@
         var userStoredImagePath =   "{{$user->image_path}}";
         var planToUpgrade       =   null;
         var currentPlan         =   "{{$user->user_type}}";
-
         
+
         $(window).on('popstate', function() {
             handler.close();
         });
