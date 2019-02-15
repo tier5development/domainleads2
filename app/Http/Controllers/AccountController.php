@@ -163,6 +163,7 @@ class AccountController extends Controller
 
 	public function showMembershipPage() {
 		try {
+			
 			$user 			=	Auth::user();
 			$stripeDetails 	= 	StripeDetails::first();
 			$plansArr 		= 	config('settings.PLAN.NAMEMAP');

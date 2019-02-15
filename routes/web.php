@@ -142,7 +142,16 @@ Route::get('/aa',function(){
        
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
-    Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
+
+    Route::group(['middleware' => 'subscribedUserGroup'], function() {
+        Route::group(['prefix' => 'profile'], function() {
+            Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
+            Route::post('update-card-details-pay', ['uses' => 'AccountController@updateCardDetailsAndSubscribe', 'as' => 'updateCardDetailsAndSubscribe']);
+            Route::post('change-plan', ['uses' => 'AccountController@upgradeOrDowngradePlan', 'as'=>'upgradeOrDowngradePlan']);
+        });
+    });
+
+    Route::group(['middleware' => ['unsuspendedUserGroup', 'subscribedUserGroup']], function() {
 
         // Route::get('welcome', ['uses' => 'AccountController@checkFirstVisit', 'as' => 'checkFirstVisit']);
 
@@ -150,13 +159,13 @@ Route::get('/aa',function(){
 
         Route::group(['prefix' => 'profile'], function() {
             Route::get('/', ['uses' => 'AccountController@profile', 'as' => 'profile']);
-            Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);
+            
             Route::get('change-password', ['uses' => 'AccountController@changePassword', 'as' => 'changePassword']);
             Route::post('change-password', ['uses' => 'AccountController@changePasswordPost', 'as' => 'changePasswordPost']);
             Route::get('payment-info', ['uses' => 'AccountController@paymentInformation', 'as' => 'paymentInformation']);
             Route::post('update-card-details', ['uses' => 'AccountController@updateCardDetails', 'as' => 'updateCardDetails']);
-            Route::post('update-card-details-pay', ['uses' => 'AccountController@updateCardDetailsAndSubscribe', 'as' => 'updateCardDetailsAndSubscribe']);
-            Route::post('change-plan', ['uses' => 'AccountController@upgradeOrDowngradePlan', 'as'=>'upgradeOrDowngradePlan']);
+            
+           
             Route::get('cancel-membership', ['uses' => 'AccountController@cancelMembership', 'as'=>'cancelMembership']);
             Route::post('cancel-membership', ['uses' => 'AccountController@cancelMembershipPost', 'as'=>'cancelMembershipPost']);
             Route::group(['middleware' => 'adminGroup'], function() {
