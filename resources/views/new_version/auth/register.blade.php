@@ -8,45 +8,48 @@
     <!-- header -->
     @include('new_version.section.header_menu')
 
+    @include('new_version.shared.loader')
     <!-- inner content -->
     <div class="innerContent signUp clearfix">
         <div class="container customCont">
             <div class="innerContentWrap">
-                <form action="#">
+                
+                
+                <form method="post" action="{{route('signupPost')}}" id="registration_form">
                     <div class="leftSide">
                         <h2>Get an account to unlock leads</h2>
+                        @include('new_version.shared.messages')
                         <h3>personal information</h3>
-                            <div class="fieldWrap">
-                                <input type="text" name="full_name" class="form-control" placeholder="full name">
-                                <input type="text" name="email" class="form-control" placeholder="email">
-                                <input type="text" name="password" class="form-control" placeholder="password">
-                            </div>
-                        <h3>credit card information</h3>
-                        <div class="outcome">
-                            <div class="error"></div>
-                            <div class="success">
-                                Success! Your Stripe token is <span class="token"></span>
-                            </div>
+                        <div class="fieldWrap">
+                            {{-- <div class="fieldWrap small error">
+                                
+                                <input type="text" name="full_name" id="full_name" class="form-control" placeholder="full name">
+                                <div id="fname_err" class="errorMsg">Some error is there.</div>
+                            </div> --}}
+
+                            <input type="text" name="full_name" class="form-control" placeholder="full name">
+                            <input type="email" name="email" class="form-control" placeholder="email">
+                            <input type="password" name="password" class="form-control" placeholder="password">
+                            <input type="password" name="c_password" class="form-control" placeholder="confirm password">
                         </div>
+
+                        <h3>Card Information</h3>
                         <div class="fieldWrap clearfix">
-                            <label>
-                                <span>Card number</span>
-                                <div id="card-number-element" class="field"></div>
-                                <span class="brand"><i class="pf pf-credit-card" id="brand-icon"></i></span>
-                            </label>
-                            <label>
-                                <span>CVC</span>
-                                <div id="card-cvc-element" class="field"></div>
-                            </label>
-                            <label>
-                                <span>Expiry date</span>
-                                <div id="card-expiry-element" class="field"></div>
-                            </label>
-                            
-                            {{-- <label>
-                                <span>Postal code</span>
-                                <input id="postal-code" name="postal_code" class="field" placeholder="90210" />
-                            </label> --}}
+                            <div class="cardBackground clearfix">
+                                <label>
+                                    <span>Card number</span>
+                                    <div id="card-number-element" class="field"></div>
+                                    <span class="brand"><i class="pf pf-credit-card" id="brand-icon"></i></span>
+                                </label>
+                                <label id="custom_cvc">
+                                    <span>CVC</span>
+                                    <div id="card-cvc-element" class="field"></div>
+                                </label>
+                                <label id="custom_expiry">
+                                    <span>Expiry date</span>
+                                    <div id="card-expiry-element" class="field"></div>
+                                </label>
+                            </div>
                         </div>
                         <div class="fieldWrap spaceTop">
                             <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
@@ -68,17 +71,19 @@
                                 @endphp
                                 <label class="radioItem">{{$planAlias}}
                                     <p>${{$planAmount}}/m</p>
-                                    <input data-name="{{$planAlias}}" class="radio-selector" type="radio" value="{{$planNum}}" checked="checked" name="radio">
+                                    <input data-amt="{{$planAmount}}" class="radio-selector" type="radio" value="{{$planNum}}" checked="checked" name="plan">
                                     <span class="checkmark"></span>
                                 </label>
                             @endforeach
                         </div>
-                        <div class="cartWrap" style="display: none;">
+                        <div class="cartWrap">
                             <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/cart.png" alt="cart">
                             <span>order total</span>
                             <h4 id="total-order-id"></h4>
                         </div>
                     </div>
+                    <input type="hidden" name="stripe_token" value="" id="stripe_token_field">
+                    {{csrf_field()}}
                 </form>
             </div>
         </div>
@@ -107,26 +112,31 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <script>
-
         var publicKey   =   "{{$stripeDetails->public_key}}";
-        var stripe = Stripe(publicKey);
-        var elements = stripe.elements();
+        var stripe      = Stripe(publicKey);
+        var elements    = stripe.elements();
         var style = {
-        base: {
-                iconColor: '#666EE8',
-                color: '#31325F',
-                lineHeight: '40px',
-                fontWeight: 300,
-                fontFamily: 'Helvetica Neue',
+            base: {
+                color: '#6c6c6c',
                 fontSize: '15px',
-                border: '1px solid #000',
-
+                fontWeight:'700',
+                fontFamily: 'Courier', //Avenir LT Std 55 Roman
+                fontSmoothing: 'antialiased',
+                letterSpacing: '2px',
                 '::placeholder': {
-                color: '#CFD7E0',
+                color: '#CFD7DF',
+                },
+            },
+            empty: {
+                fontSize: '12px',
+            },
+            invalid: {
+                color: '#eb1c26',
+                ':focus': {
+                color: '#eb1c26',
                 },
             },
         };
-        
 
         var cardNumberElement = elements.create('cardNumber', {
             style: style
@@ -144,21 +154,30 @@
         cardCvcElement.mount('#card-cvc-element');
 
         function setOutcome(result) {
-            var successElement = document.querySelector('.success');
-            var errorElement = document.querySelector('.error');
-            successElement.classList.remove('visible');
-            errorElement.classList.remove('visible');
-
-            if (result.token) {
-                // In this example, we're simply displaying the token
-                successElement.querySelector('.token').textContent = result.token.id;
-                successElement.classList.add('visible');
-
-            } else if (result.error) {
-                errorElement.textContent = result.error.message;
-                errorElement.classList.add('visible');
+            if (result.error) {
+                return {
+                    status  : false,
+                    id  : null,
+                    message : result.error.message,
+                    obj : result
+                }
+            } else if(result.token) {
+                return {
+                    status  : true,
+                    id  : result.token.id,
+                    message : 'Success',
+                    obj : result
+                }
+            } else {
+                return {
+                    status  : null,
+                    id  : null,
+                    message : 'Error',
+                    obj : result
+                }
             }
         }
+
         var cardBrandToPfClass = {
             'visa': 'pf-visa',
             'mastercard': 'pf-mastercard',
@@ -168,6 +187,7 @@
             'jcb': 'pf-jcb',
             'unknown': 'pf-credit-card',
         }
+        
         function setBrandIcon(brand) {
             var brandIconElement = document.getElementById('brand-icon');
             var pfClass = 'pf-credit-card';
@@ -182,119 +202,97 @@
         }
 
         cardNumberElement.on('change', function(event) {
-            // Switch brand logo
             try {
-                console.log('change : ', event.brand);
-
                 if (event.brand) {
                     setBrandIcon(event.brand);
                 }
                 setOutcome(event);
             } catch(err) {
-                console.error('our error : ',err);
+                console.error('card change error : ',err);
             }
         });
 
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // var options = {
-            //     address_zip: document.getElementById('postal-code').value,
-            // };
-            stripe.createToken(cardNumberElement).then(setOutcome);
-        });
+        function validateEmail(email){
+            var reg = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm;
+            return reg.test(email);
+        }
 
-        
-        
+        function nameValidation(name) {
+            var reg = /^[A-Za-z.\s_-]+$/;
+            return reg.test(name);
+        }
+
+        var submitPaymentForm = function(resp) {
+            console.log(resp);
+        }
+
+        // document.querySelector('form').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        //     stripe.createToken(cardNumberElement).then(setOutcome);
+        // });
 
         $(document).ready(function(){
-      
-      
-        // for custom dropdown
-        $('.selectpage').each(function(){
-            var thisInstance = $(this);
-            var thisVal = $(this), numberOfOptions = $(this).children('option').length;
-            thisVal.addClass('select-hidden'); 
-            thisVal.wrap('<div class="select"></div>');
-            thisVal.after('<div class="select-styled"></div>');
-            var styledSelect = thisVal.next('div.select-styled');
-            styledSelect.text(thisVal.children('option:selected').text());
-            var list = $('<ul />', {
-                'class': 'select-options'
-            }).insertAfter(styledSelect);
-            for (var i = 0; i < numberOfOptions; i++) {
-                $('<li />', {
-                    text: thisVal.children('option').eq(i).text(),
-                    rel: thisVal.children('option').eq(i).val()
-                }).appendTo(list);
-            };
-            var listItems = list.children('li');
-            styledSelect.click(function(e) {
-                e.stopPropagation();
-                $('div.select-styled.active').not(this).each(function(){
-                    $(this).removeClass('active').next('ul.select-options').fadeOut(200);
+
+            $(window).bind("pageshow", function(event) {
+                $("#loader-icon").hide();
+            });
+
+            $("#loader-icon").hide();
+
+            var optionScrollWidth;
+            // for responsive menu
+
+            (function() {
+                var amt = $(".radio-selector:checked").data('amt');
+                $("#total-order-id").text('$'+amt+'/m');
+            })();
+
+            $('.radio-selector').change(function(e) {
+                var amt = $(this).data('amt');
+                $("#total-order-id").text('$'+amt+'/m');
+            });
+
+            $('.menu-button').click(function() {
+                $('.bottomRight').addClass('pull');
+            });
+
+            $('.menuClose').click(function() {
+                $('.bottomRight').removeClass('pull');
+            });
+            // for vier more toggle
+
+            $(".viewMore1").click(function() {
+                $(".viewMorePanel1").toggle();
+            });
+
+            $(".viewMore2").click(function() {
+                $(".viewMorePanel2").toggle();
+            });
+
+            $(".viewMore3").click(function() {
+                $(".viewMorePanel3").toggle();
+            });
+
+            $('#advanced-search-btn').on('click', function(e) {
+                e.preventDefault();
+                // var name = $('input[name=rbnNumber]:checked').val()
+
+                stripe.createToken(cardNumberElement).then(setOutcome).then(function(resp) {
+                    if(!resp.status) {
+                        // Show error message
+                        console.log('error detected : ', resp);
+                        return false;
+                    } else if(resp.status && typeof resp.id != null ) {
+                        console.log('success detected : ', resp);
+                        // Trigger form submit
+                        $("#stripe_token_field").val(resp.id);
+                        $("#registration_form").submit();
+                        $("#loader-icon").show();
+                    }
                 });
-                $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
-            });
-            listItems.click(function(e) {
-                e.stopPropagation();
-                console.log('clicked');
-                styledSelect.text($(this).text()).removeClass('active');
-                
-                list.fadeOut(200, 0, function() {
-                    thisVal.val($(this).attr('rel'));  
-                });
-        
-                if(thisInstance.data('pagination') !== undefined) {
-                    req_pagination = thisVal.val();
-                    console.log('pagination', thisInstance.data('pagination'), thisVal.val());
-                    $('#pagination').val(thisVal.val());
-                }
-        
-                // Used for advanced-search-box
-                if(thisInstance.data('stopsubmit') === undefined) {
-                    console.log('not pagination', thisInstance.data('stopsubmit'));
-                    submitFormCustom(); 
-                }
-                // console.log('afsdckhjtaykj kjfy', thisInstance.data('stopsubmit'));
-                // submitFormCustom();
-            });
-        
-            $(document).click(function() {
-                styledSelect.removeClass('active');
-                list.fadeOut(200);
+                // console.log('stripe : ', stripe_token);
             });
         });
-      
-      });
-      
-      </script>
-      <script>
-    $(document).ready(function(){
-
-        var optionScrollWidth;
-        // for responsive menu
-
-        $('.radio-selector').change(function(e) {
-            console.log('adkjhyfvk jyhf ', $(this).val(), $(this).data('name'));
-        });
-
-        $('.menu-button').click(function() {
-            $('.bottomRight').addClass('pull');
-        });
-        $('.menuClose').click(function() {
-            $('.bottomRight').removeClass('pull');
-        });
-        // for vier more toggle
-        $(".viewMore1").click(function() {
-            $(".viewMorePanel1").toggle();
-        });
-        $(".viewMore2").click(function() {
-            $(".viewMorePanel2").toggle();
-        });
-        $(".viewMore3").click(function() {
-            $(".viewMorePanel3").toggle();
-        });
-    });
 
     </script>
   </body>

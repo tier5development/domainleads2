@@ -469,6 +469,7 @@ class AccountController extends Controller
 
 	public function signupPost(Request $request) {
 		
+		// dd($request->all());
 		$fullName 		= 	$request->full_name;
 		$email			=	$request->email;
 		$password		=	$request->password;
@@ -482,7 +483,7 @@ class AccountController extends Controller
 			'full_name'	=>'required',
 			'email'		=>'required|email',
 			'password'	=>'required',
-				'c_password'=>'required | same:password'
+			'c_password'=>'required | same:password'
 		], [
 			'c_password.required' => 'Confirm password is required.',
 			'c_password.same' => 'Confirm password should be same as password.'
@@ -491,7 +492,7 @@ class AccountController extends Controller
 		if($validator->fails()) {
 			return redirect()->back()->withErrors($validator)->withInput();
 		} else {	
-			$id_email = Users::where('email',$email)->select('email')->first();
+			$id_email = User::where('email', $email)->select('email')->first();
 			
 			if(!$id_email) {
 				$newUser 					= 	new User();
@@ -503,22 +504,16 @@ class AccountController extends Controller
 				$newUser->affiliate_id		= 	$affiliateId;
 				$newUser->save();
 				$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
-				$newUser 					= 	$return['userUpdated'];
+				$newUser 					= 	$return['user'];
 				if($return['status'] == true) {
 
 					// The user got subscribed successfully
 					$userdata = ['email' => $email, 'password' => $password];
 					if (Auth::validate($userdata)) {
 						if (Auth::attempt($userdata)) {
-							return response()->json([
-								'status' => true,
-								'message' => 'Subscribed successfully.'
-							]);
+							return redirect('search')->with('first_visit', 'Yes');
 						} else {
-							return response()->json([
-								'status' => false,
-								'message' => 'Please check your email and password!'
-							]);
+							return redirect()->back()->with('error', 'Please check your email and password!')->withErrors($validator)->withInput();
 						}
 					} else {
 						return redirect()->back()->with('error', 'Please check your email and password!');
@@ -527,18 +522,22 @@ class AccountController extends Controller
 				} else {
 
 					// Subscription failure
-					return response()->json([
-						'status' => false,
-						'message' => 'Subscription request is not placed. Try again later.'
-					]);
+					return redirect()->back()->with('error', 'Your subscription is not successful! Please check if your card has enough balance.');
 				}
 			}
-			return response()->json([
-				'status' 	=> 	false,
-				'message' 	=>	'This email id already exists. Please try again'
-			]);
+			return redirect()->back()->with('error', 'This email id already exists. Please try again');
 		}
 	}
+
+	// public function checkFirstVisit() {
+	// 	$user = Auth::user();
+	// 	if($user->first_visit == 0) {
+	// 		return redirect('search');
+	// 	}
+	// 	$user->first_visit = 1;
+	// 	$user->save();
+	// 	return view('new_version.welcome');
+	// }
 
 	public function home() {
 		if(\Auth::check()) {
@@ -584,7 +583,7 @@ class AccountController extends Controller
 			return redirect()->back()->with('error', 'Please check your email and password!');
 		  }
 		}
-	} catch(\Exception $e) {
+	} catch(\Throwable $e) {
 		return redirect()->back()->with('error', 'ERROR : '.$e->getMessage());
 	}
   }

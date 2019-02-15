@@ -116,7 +116,7 @@ Route::get('/verify_domains','Maintainance@verify_domains');
 Route::get('/tstt','Maintainance@each_domain_verification');
 
 
-Route::get('/wb',function(){
+Route::get('/wb',function() {
     $x = \App\Wordpress_env::all();
 });
 
@@ -144,7 +144,7 @@ Route::get('/aa',function(){
     
     Route::group(['middleware' => 'unsuspendedUserGroup'], function() {
 
-        
+        // Route::get('welcome', ['uses' => 'AccountController@checkFirstVisit', 'as' => 'checkFirstVisit']);
 
         // Route::post('logout-user', ['uses'=>'AccountController@logoutUserPost', 'as' => 'logoutUserPost']);
 

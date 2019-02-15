@@ -256,6 +256,7 @@ use \Carbon\Carbon;
                         'card'		=> $this->getCustomerDetails(Auth::user())['card'],
                         'allowFurther' =>  true,
                         'message' 	=> 'Card updated successfully',
+                        'user'      =>  $user
                     ];
                 } else {
                     DB::commit();
@@ -263,6 +264,7 @@ use \Carbon\Carbon;
                         'status' 	=> false,
                         'allowFurther' =>  false,
                         'message' 	=> 'Card upddate failed.',
+                        'user'      =>  $user
                     ];
                 }
             } catch(Throwable $e) {
@@ -276,7 +278,8 @@ use \Carbon\Carbon;
             try {
                 Log::info('subscribe -- came initial');
                 $user 				= $user != null ? $user : Auth::user();
-                $responseArray 		= $this->updateCard($request);
+                $responseArray 		= $this->updateCard($request, $user);
+                
                 if($responseArray['status']) {
                     $plan 				    =   $request->plan;
                     $currentUserType 	    =   $user->user_type;
@@ -301,7 +304,8 @@ use \Carbon\Carbon;
                                 'newPlan'           =>  null,
                                 'message'           =>  $plan < $baseUserType
                                     ? 'Since you are the member of affiliates programme you cannot downgrade directly beyond plan : '.getPlanName($baseUserType)
-                                    : 'You already exist in the plan you want to upgrade to.'
+                                    : 'You already exist in the plan you want to upgrade to.',
+                                'user'              =>  $user
                             ];
                         }
                     }
@@ -322,7 +326,8 @@ use \Carbon\Carbon;
                             'allowFurther'      => false,
                             'processComplete'   => false,
                             'newPlan'           => null,
-                            'message'           => 'Please check if your card has enough balance and try again.'
+                            'message'           => 'Please check if your card has enough balance and try again.',
+                            'user'              =>  $user
                         ];
                     }
                     $user->stripe_subscription_id = $subscriptionData->id;
@@ -345,7 +350,8 @@ use \Carbon\Carbon;
                         'message'           =>  $user->is_subscribed == 0 
                             ? 'Subscription failed, Please check with your card balance.'
                             : 'Subscription changed to '.getPlanName($plan).' successfully!',
-                        'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render()
+                        'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render(),
+                        'user'              =>  $user
                     ];
 
                 } else {

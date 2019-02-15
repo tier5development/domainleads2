@@ -252,6 +252,11 @@ h1, h2, h3, h4, h5, h6, p{
 	display: flex;
     justify-content: center;
 }
+/* .innerContent{
+	margin: -92px 0;
+	display: flex;
+    justify-content: center;
+} */
 .customCont{
 	max-width: 803px;
 }
@@ -1321,7 +1326,7 @@ h1, h2, h3, h4, h5, h6, p{
 	color: #c6c6c6;
 	display: block;
 	margin-bottom: 5px;
-	text-align: left;
+	text-align: center;
 	text-transform: capitalize;
 }
 
@@ -1526,9 +1531,35 @@ h1, h2, h3, h4, h5, h6, p{
 	font-family: 'Avenir LT Std 65 Medium';
 	color: #6c6c6c;
 	font-size: 17px;
-	margin-bottom: 30px;
+	margin-bottom: 20px;
 	box-shadow: none;
 } 
+.signUp .leftSide input[type="email"]{
+	border: 1px solid #dbdbdb;
+	background: #fff;
+	border-radius: 3px;
+	padding: 13px;
+	height: 50px;
+	width: 100%;
+	font-family: 'Avenir LT Std 65 Medium';
+	color: #6c6c6c;
+	font-size: 17px;
+	margin-bottom: 20px;
+	box-shadow: none;
+}
+.signUp .leftSide input[type="password"]{
+	border: 1px solid #dbdbdb;
+	background: #fff;
+	border-radius: 3px;
+	padding: 13px;
+	height: 50px;
+	width: 100%;
+	font-family: 'Avenir LT Std 65 Medium';
+	color: #6c6c6c;
+	font-size: 17px;
+	margin-bottom: 20px;
+	box-shadow: none;
+}
 .signUp .leftSide .cardNum input[type="text"], .signUp .leftSide .cvc input[type="text"]{
 	margin-bottom: 20px;
 }
@@ -1600,10 +1631,15 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .signUp .rightSide .cartWrap{
     position: absolute;
-    content: '';
     bottom: 260px;
     right: 0;
     left: 0;
+}
+.innerContentWrap form{
+	width: 100%;
+    display: inline-block;
+    height: auto;
+    position: relative;
 }
 .signUp .rightSide .cartWrap span{
 	color: #59e0b4;
@@ -1696,16 +1732,17 @@ h1, h2, h3, h4, h5, h6, p{
 .signUp .innerContentWrap .leftSide{
        width: 436px;
        padding: 37px;
-       float: left;
+	   float: left;
 }
 .signUp .innerContentWrap .rightSide{
-       width: calc(100% - 436px);
-       background-color: #1FBEC5;
-       border-radius: 0 10px 10px 0;
-       float: right;
-       padding: 97px 29px 39px 39px;
-       min-height: 854px;
-       position: relative;
+	width: 43%;
+    background-color: #1FBEC5;
+    border-radius: 0 10px 10px 0;
+    padding: 97px 29px 58px 39px;
+    position: absolute;
+    height: calc(100% + 7px);
+    right: 0;
+    top: 0;
 }
 #payment_info .select-options, #membership .select-options{
        top: 66px;
@@ -1725,6 +1762,47 @@ h1, h2, h3, h4, h5, h6, p{
 	text-decoration: underline;	
 	text-transform: capitalize;
 }
+.cardBackground{
+	border-radius: 10px;
+	padding: 40px 20px;
+	margin-bottom: 30px;
+	background-image: url('../../../public/images/cc_graphic.png');
+	background-size: cover;
+
+}
+.cardBackground label{
+	margin-bottom: 15px !important;
+	letter-spacing: 1px;
+	border-bottom: 2px dotted #d4d6d8;
+	margin-bottom: 10px;
+}
+.cardBackground label#custom_cvc{
+	float:left; 
+	width:35%; 
+	margin-right:15px;
+	margin-top:10px;
+	margin-bottom: 0px !important;
+}
+.cardBackground label#custom_expiry{
+	float:left; 
+	width:calc(100% - 43%); 
+	margin-top:10px;
+	margin-bottom: 0px !important;
+}
+.cardBackground label:last-child{
+	margin-bottom: 0px !important;
+}
+.cardBackground span{
+	color: #b6bdc5 !important;
+	text-align: left !important;
+	font-family: 'Avenir LT Std 85 Heavy';
+	font-size: 11px !important;
+	font-weight: 400;
+
+
+}
+
+
 /*responsive*/
 @media screen and (max-width: 1600px) {
 	
@@ -2627,8 +2705,9 @@ h1, h2, h3, h4, h5, h6, p{
 		display: none;
 	}
 	.container{
+		position: relative;
 		width: 100%;
-		margin: 0px auto;
+		margin: 0px;
 	}
 	.signUp .leftSide, .signUp .rightSide{
 		text-align: left;
@@ -2697,6 +2776,15 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.innerContent{
 		margin: 12px 0 60px  0;
+	}
+	.innerContentWrap{
+		box-shadow: none;
+	}
+	.signUp .innerContentWrap .rightSide{
+		border-radius: 5px;
+	}
+	.signUp .rightSide .cartWrap{
+		border-radius:0 5px 5px 0; 
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 594px) {
