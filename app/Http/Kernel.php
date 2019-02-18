@@ -43,6 +43,10 @@ class Kernel extends HttpKernel
             \Illuminate\Auth\Middleware\Authenticate::class,
             \App\Http\Middleware\SubscribedUser::class,
         ],
+        'pendingSubscription' => [
+            \Illuminate\Auth\Middleware\Authenticate::class,
+            \App\Http\Middleware\UnsubscribedUser::class,
+        ],
         'adminGroup' => [
             \Illuminate\Auth\Middleware\Authenticate::class,
             \App\Http\Middleware\AdminUser::class,

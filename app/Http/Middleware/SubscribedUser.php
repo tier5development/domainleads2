@@ -15,15 +15,20 @@ class SubscribedUser
      */
     public function handle(Request $request, Closure $next)
     {
-        //dd(1);
-        
         if(Auth::check()) {
-            
-            if(Auth::user()->is_subscribed == 0) {
-                if(\Request::route()->getName() != 'showMembershipPage') {
-                    return redirect()->route('showMembershipPage')->with('fail', 'Your subscription seems to have failed. Please select a subscription plan to continue.');
+            /**
+             * 1 -> trialing
+             * 2 -> active
+             * 3 -> past_due
+             * 4 -> unpaid
+             * 5 -> canceled
+             */
+            $user = Auth::user();
+            if($user->is_subscribed != config('settings.SUBSCRIPTIONS.active') && $user->is_subscribed != config('settings.SUBSCRIPTIONS.trailing')) {
+                if(in_array(\Request::route()->getName(), config('routeSettings.subscribedUserGroup'))) {
+                    return $next($request);
                 } else {
-                    return $next($request);        
+                    return redirect()->route('showMembershipPage')->with('fail', 'Your subscription seems to have failed. Please select a subscription plan to continue.');
                 }
             }
             return $next($request);

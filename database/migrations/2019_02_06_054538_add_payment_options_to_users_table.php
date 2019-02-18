@@ -22,9 +22,12 @@ class AddPaymentOptionsToUsersTable extends Migration
             $table->json('stripe_customer_obj')->nullable()->after('stripe_subscription_obj')->comment('Stripe Customer Obj');
             $table->longText('left_because')->nullable()->after('stripe_customer_obj')->comment('Reason why user chooses to downgrade.');
             $table->unsignedSmallInteger('card_updated')->index()->nullable()->after('left_because')->comment('Card updated information of user.');
-            $table->unsignedTinyInteger('is_subscribed')->default(0)->index()->after('card_updated')->comment('0 -> subscription failed(passed due, cancelled, or unpaid equivalent in stripe), 1-> trailing equivalent in stripe, 2-> active equivalent in stripe');
+            // $table->unsignedTinyInteger('is_subscribed')->default(0)->index()->after('card_updated')->comment('0 -> subscription failed(passed due, cancelled, or unpaid equivalent in stripe), 1-> trailing equivalent in stripe, 2-> active equivalent in stripe');
+            $table->enum('is_subscribed', config('settings.SUBSCRIPTIONS'))->index()->default(2)->nullable()->comment('1->trialing, 2->active, 3->past_due, 4->unpaid, 5->canceled');
             $table->enum('first_visit', [0,1])->after('is_subscribed')->default(1)->comment('0 -> first visit, 1-> multivisit');
             $table->enum('email_verified', [0,1])->after('first_visit')->default(1)->comment('0 -> email not verified, 1-> email verified');
+            $table->string('stripe_failed_invoice_id', 30)->index()->nullable()->after('email_verified')->comment('Stores the last failed invoice for this customer from stripe.');
+            $table->json('stripe_failed_invoice_obj')->nullable()->after('stripe_failed_invoice_id')->comment('Stores the entire customer object from stripe.');
         });
     }
 
@@ -53,6 +56,9 @@ class AddPaymentOptionsToUsersTable extends Migration
             $table->dropColumn('is_subscribed');
             $table->dropColumn('first_visit');
             $table->dropColumn('email_verified');
+            $table->dropIndex(['stripe_failed_invoice_id']);
+            $table->dropColumn('stripe_failed_invoice_id');
+            $table->dropColumn('stripe_failed_invoice_obj');
         });
     }
 }

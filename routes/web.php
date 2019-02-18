@@ -143,6 +143,12 @@ Route::get('/aa',function(){
     Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
     
 
+    Route::group(['middleware' => 'pendingSubscription'], function() {
+        Route::group(['prefix' => 'failed-subscription'], function() {
+            Route::get('/pay-now', ['uses' => 'AccountController@failedSubscription', 'as' => 'failedSubscription']);
+        });
+    });
+
     Route::group(['middleware' => 'subscribedUserGroup'], function() {
         Route::group(['prefix' => 'profile'], function() {
             Route::get('membership', ['uses' => 'AccountController@showMembershipPage', 'as' => 'showMembershipPage']);

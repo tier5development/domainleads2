@@ -333,23 +333,24 @@ use \Carbon\Carbon;
                     $user->stripe_subscription_id = $subscriptionData->id;
                     $user->stripe_subscription_obj = json_encode($subscriptionData, true);
                     $user->user_type = $plan;
-                    if($subscriptionData->status == 'cancelled' || $subscriptionData->status == 'unpaid' || $subscriptionData->status == 'past_due') {
-                        $user->is_subscribed = 0;
-                    } else if($subscriptionData->status == 'trialing') {
-                        $user->is_subscribed = 1;
-                    } else if($subscriptionData->status == 'active') {
-                        $user->is_subscribed = 2;
-                    }
+                    $user->is_subscribed = config('settings.SUBSCRIPTIONS.'.$subscriptionData->status);
+                    // if($subscriptionData->status == 'cancelled' || $subscriptionData->status == 'unpaid' || $subscriptionData->status == 'past_due') {
+                    //     $user->is_subscribed = 0;
+                    // } else if($subscriptionData->status == 'trialing') {
+                    //     $user->is_subscribed = 1;
+                    // } else if($subscriptionData->status == 'active') {
+                    //     $user->is_subscribed = 2;
+                    // }
                     $user->save();
                     return [
-                        'status'            =>  $user->is_subscribed == 0 ? false : true,
+                        'status'            =>  $user->is_subscribed == 1 || $user->is_subscribed == 2 ? true : false,
                         'cardUpdated'       =>  $user->card_updated == 1 ? true : false,
                         'processComplete'   =>  true,
                         'newPlan'           =>  $user->user_type,
                         'allowFurther'      =>  false,
-                        'message'           =>  $user->is_subscribed == 0 
-                            ? 'Subscription failed, Please check with your card balance.'
-                            : 'Subscription changed to '.getPlanName($plan).' successfully!',
+                        'message'           =>  $user->is_subscribed == 1 || $user->is_subscribed == 2
+                            ? 'Subscription changed to '.getPlanName($plan).' successfully!'
+                            : 'Subscription failed, Please check with your card balance.',
                         'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render(),
                         'user'              =>  $user
                     ];

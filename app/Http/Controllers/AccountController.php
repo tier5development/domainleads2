@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use \App\User;
-use Mail, Log, Exception, View, Session, Auth, Hash, DB;
+use Mail, Log, Exception, View, Session, Auth, Hash, DB, Throwable;
 use App\Helpers\UserHelper;
 use App\PasswordReset;
 use \Carbon\Carbon;
@@ -15,6 +15,20 @@ use App\Traits\StripeTrait;
 class AccountController extends Controller
 {
 	use StripeTrait;
+
+
+	public function failedSubscription() {
+		$user = Auth::user();
+		return view('new_version.auth.failed-subscription', ['user' => $user]);
+	}
+
+	public function clearFailedSubscription(Request $request) {
+		try {
+
+		} catch(Throwable $e) {
+
+		}
+	}
 
 	public function cancelMembership() {
 		$data['user'] = Auth::user();
@@ -48,7 +62,7 @@ class AccountController extends Controller
 			$response = $this->cancelSubscription($stripeDetails, $user);
 			if($response['response']['status'] == 'canceled') {
 				$user->left_because 		=	trim($request->reason);
-				$user->is_subscribed 		= 	0;
+				$user->is_subscribed 		= 	config('settings.SUBSCRIPTION.'.$response['response']['status']);
 				Auth::logout();
 				$user->delete();
 				Log::info('level 2 cleared in cancel membership : success');
@@ -467,6 +481,8 @@ class AccountController extends Controller
 		  
 	//   }
 	// }
+
+
 
 	public function signupPost(Request $request) {
 		
