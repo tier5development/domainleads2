@@ -296,7 +296,7 @@ class UserHelper {
                     'email'     =>  $email
                 ], 200);
             }
-            $user->suspended = '1';
+            $user->suspended = '0';
             $user->save();
             return response()->json([
                 'status'    => true,
