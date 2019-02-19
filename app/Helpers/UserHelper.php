@@ -110,12 +110,15 @@ class UserHelper {
 
     public static function createUser(Request $request) {
         try {
-            $email = $request->email;
-            $validator = Validator::make($request->all(), ['email' => 'email|max:255']);
+            $email          =   $request->email;
+            $affiliateId    =   $request->affiliate_id;
+            $name           =   $request->name;
+            $validator      =   Validator::make($request->all(), ['email' => 'required|email|max:255']);
+
             if($validator->fails()) {
                 return response()->json([
-                    'status' => false,
-                    'message' => $validator->errors()->first('email')
+                    'status'    =>  false,
+                    'message'   =>  $validator->errors()->first('email')
                 ], 200);
             }
             if(User::where('email', $email)->first()) {
@@ -137,28 +140,24 @@ class UserHelper {
                 }
             }
 
-            // Check for suspended user
-            if(User::where('email', $email.'_suspended')->first()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'This email is already registered but suspended!'
-                ], 200);
-            }
-
             $newUser = new User();
-            $newUser->name = $request->has('name') && strlen(trim($request->name)) > 0 
-                                ? $request->name
-                                : explode('@',$request->email)[0];
-            $newUser->email = $request->email;
-            $newUser->password = Hash::make(123456);
+            $newUser->name      = strlen(trim($name)) > 0 
+                                ? $name
+                                : explode('@',$email)[0];
+            $newUser->email     = $email;
+            $newUser->password  = Hash::make(123456);
             $newUser->user_type = $usertype;
             $newUser->membership_status = 1;
-            $newUser->affiliate_id = $request->affiliate_id;
+            if(strlen($affiliateId) > 0) {
+                $newUser->base_type = $usertype;
+            }
+            $newUser->affiliate_id = $affiliateId;
+
             if($newUser->save()) {
                 return response()->json([
-                    'status' => true,
-                    'message' => 'User Created successfully',
-                    'email' =>  $newUser->email
+                    'status'    =>  true,
+                    'message'   =>  'User Created successfully',
+                    'email'     =>  $newUser->email
                 ]);
             } else {
                 return response()->json([
