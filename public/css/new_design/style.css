@@ -1525,7 +1525,7 @@ h1, h2, h3, h4, h5, h6, p{
 	border: 1px solid #dbdbdb;
 	background: #fff;
 	border-radius: 3px;
-	padding: 13px;
+	padding: 13px 35px 13px 13px;
 	height: 50px;
 	width: 100%;
 	font-family: 'Avenir LT Std 65 Medium';
@@ -1778,7 +1778,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .cardBackground label#custom_cvc{
 	float:left; 
-	width:35%; 
+	width:34%; 
 	margin-right:15px;
 	margin-top:10px;
 	margin-bottom: 0px !important;
@@ -2719,10 +2719,11 @@ h1, h2, h3, h4, h5, h6, p{
 		width: 100%;
 		padding: 0px;
 		border-radius: 0px;
-		min-height: auto;
 		position: absolute;
-		bottom: 250px;
 		left: 0;
+		bottom: 260px !important;
+		top: auto;
+		height: 141px;
 	}
 	.signUp .leftSide .spaceTop{
 		margin-top: 250px;
@@ -2742,7 +2743,7 @@ h1, h2, h3, h4, h5, h6, p{
 		position: initial;
 		background: #32a3aa;
 		padding: 30px;
-		min-height: 168px;
+		min-height: 131px;
 	}
 	.signUp .rightSide .cartWrap img{
 		width: 60px;
@@ -2785,6 +2786,12 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.signUp .rightSide .cartWrap{
 		border-radius:0 5px 5px 0; 
+	}
+	.signUp .leftSide .fieldWrap{
+		padding: 0px;
+	}
+	.profileFormArea .formHeading{
+		margin-bottom: 40px;
 	}
 }
 @media only screen and (min-width : 320px) and (max-width : 594px) {

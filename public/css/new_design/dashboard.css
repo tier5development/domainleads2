@@ -1756,7 +1756,10 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .container.level3User .rightPanTgl {
     display: none;
 }
-
+.userImg{
+    position: absolute;
+    left: -29px;
+}
 
 }
 

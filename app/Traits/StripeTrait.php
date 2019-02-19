@@ -372,32 +372,26 @@ use \Carbon\Carbon;
             return $charge;
         }
 
-        public function createChargeHook($admin) {
+        public function createChargeHook($stripeDetails) {
             try {
-                $paymentKeys = $admin->payment_keys;
-                if($paymentKeys && strlen($paymentKeys->key_second) > 0) {
-                    $secondKey 	= $paymentKeys->key_second;
-                    $webhook 	= StripeHelper::createChargeWebhook($secondKey);
+                $strDetails = StripeDetails::first();
+                $allWebhooks = StripeHelper::retriveAllWebhooks($strDetails->private_key);
+                foreach($allWebhooks as $key => $each) {
+                    StripeHelper::deleteWebhook($strDetails->private_key, $each->id);
+                }
+                $stripeArray = StripeHelper::createChargeWebhook($strDetails->private_key);
+                if(isset($stripeArray['subscription']) && isset($stripeArray['invoice'])) {
                     return [
                         'status'			=>	true,
                         'message' 			=> 	'Webhooks configured successfully.',
-                        'stripeWebhookObj' 	=>	$webhook,
-                        'stripeWebhook' 	=> 	json_decode(json_encode($webhook, true), true)
-                    ];
-                } else {
-                    return [
-                        'status'			=>	false,
-                        'message' 			=> 'No payment keys found for this admin.',
-                        'stripeWebhookObj' 	=> null,
-                        'stripeWebhook' 	=> null
+                        'webhooks' 	        =>	$stripeArray
                     ];
                 }
-            } catch(\Exception $e) {
+            } catch(Throwable $e) {
                 return [
-                    'status' 			=> false,
-                    'message'			=> $e->getMessage(),
-                    'stripeWebhookObj' 	=> null,
-                    'stripeWebhook' 	=> null,
+                    'status' 			=>  false,
+                    'message'			=>  $e->getMessage(),
+                    'webhooks'          =>  []
                 ];
             }
         }

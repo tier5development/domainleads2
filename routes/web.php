@@ -30,71 +30,17 @@ Route::get('/reset-password/{e_token}', ['uses' => 'AccountController@resetPassw
 
 Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPasswordExternalPost', 'as' => 'resetPasswordExternalPost']);
 
-Route::get('/testfn',function() {
+Route::get('/testfn', function() {
+    // Create webhook
 
-    dd(substr(1516, -2));
-    dd(getPlanNumber('dl-tier1'));
-    \Stripe\Stripe::setApiVersion("2018-10-31");
-    \Stripe\Stripe::setApiKey('sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc');
-    $array = [
-        'customer' => 'cus_EVYo4KHkcuISp4',
-        'items' => [[
-            'plan' => 'dl-tier2'
-        ]]
-    ];
-    $subscription = \Stripe\Subscription::create($array);
-    dd($subscription);
+    $strDetails = StripeDetails::first();
 
+    $allWebhooks = StripeHelper::retriveAllWebhooks($strDetails->private_key);
+    foreach($allWebhooks as $key => $each) {
+        StripeHelper::deleteWebhook($strDetails->private_key, $each->id);
+    }
 
-    $arr[0] = 1;
-    $arr['abc'] = null;
-    unset($arr['abc']);
-    dd($arr);
-
-    // $stripeDetails = StripeDetails::first();
-
-    // $stripeCustomer = StripeHelper::retriveCustomer('cus_EU793Ckd9vELb1' ,$stripeDetails);
-    // dd($stripeCustomer, json_decode(json_encode($stripeCustomer, true) ,true));
-    // \Stripe\Stripe::setApiKey($stripeDetails->private_key);
-    // $plans = \Stripe\Plan::all(["limit" => 10]);
-    // dd($plans);
-
-    // $plan = [
-    //     "amount" => 15000,
-    //     "interval" => "month",
-    //     "product" => [
-    //       "name" => "DL-TIER3"
-    //     ],
-    //     "currency" => "usd",
-    //     "id" => "dl-tier3"
-    // ];
-    // $obj = StripeHelper::createPlan($stripeDetails, $plan);
-    // dd($obj);
-
-    // $downloadDir = public_path();
-    // Zipper::make($downloadDir.'/zipFiles/'.'2019-02-07_proxies.zip')->extractTo($downloadDir.'/unzipFiles/');
-    // dd(11);
-    // dd(country_codes());
-    // // $x = true;
-    // // dd(isset($x));
-
-    // $x = 'abcde.io.aksdf.com';
-    // dd(customMaskDomain($x));
-
-    // $email = '2000yd.com@wix-domains.com';
-    // // $email = 'work@tier5.us';
-    // // dd(1);
-    // $email = 'jacke1688@outlook.com';
-    // // dd(filter_var($email, FILTER_VALIDATE_EMAIL));
-    // dd(preg_match('/^.+@.+$/i', $email));
-    // // $v = custom_curl_errors();
-    // // dd($v);
-
-    // // $x = LeadUser::updateOrCreate([
-    // //         ['registrant_email' => 'support@dropcatch.comop', 'domain_name' => 'afinarte.com'],
-    // //         ['registrant_fname' => 'adsj', 'registrant_country' => 'Some Country']
-    // // ]);
-    // // dd($x);
+    dd(StripeHelper::createChargeWebhook($strDetails->private_key));
 });
 
 // Route::get('/aaa',function(){

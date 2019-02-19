@@ -20,17 +20,26 @@
                         <h2>Get an account to unlock leads</h2>
                         @include('new_version.shared.messages')
                         <h3>personal information</h3>
-                        <div class="fieldWrap">
-                            {{-- <div class="fieldWrap small error">
-                                
+                        <div class="eachFieldWrap">
+                            <div class="fieldWrap small success">    
                                 <input type="text" name="full_name" id="full_name" class="form-control" placeholder="full name">
-                                <div id="fname_err" class="errorMsg">Some error is there.</div>
-                            </div> --}}
-
-                            <input type="text" name="full_name" class="form-control" placeholder="full name">
-                            <input type="email" name="email" class="form-control" placeholder="email">
-                            <input type="password" name="password" class="form-control" placeholder="password">
-                            <input type="password" name="c_password" class="form-control" placeholder="confirm password">
+                            </div>
+                            <div class="fieldWrap small error">    
+                                <input type="email" name="email" class="form-control" placeholder="email">
+                                <div id="fname_err" class="errorMsg">Some error dfsdfss there.</div>
+                            </div>
+                            <div class="fieldWrap small error">    
+                                <input type="password" name="password" class="form-control" placeholder="password">
+                                <div id="fname_err" class="errorMsg">Some error 44646446 there.</div>
+                            </div>
+                            <div class="fieldWrap small error">    
+                                <input type="password" name="password" class="form-control" placeholder="password">
+                                <div id="fname_err" class="errorMsg">Some error 1213 there.</div>
+                            </div>
+                            {{-- <input type="text" name="full_name" class="form-control" placeholder="full name"> --}}
+                            {{-- <input type="email" name="email" class="form-control" placeholder="email">
+                            <input type="password" name="password" class="form-control" placeholder="password"> --}}
+                            {{-- <input type="password" name="c_password" class="form-control" placeholder="confirm password"> --}}
                         </div>
 
                         <h3>Card Information</h3>

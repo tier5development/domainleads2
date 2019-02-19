@@ -279,13 +279,25 @@ class StripeHelper {
     }
 
     public static function createChargeWebhook($keySecond) {
-        \Stripe\Stripe::setApiVersion("2018-10-31");
-        \Stripe\Stripe::setApiKey($keySecond);
-        $webhookObj = \Stripe\WebhookEndpoint::create([
-            "url" => config('settings.APPLICATION-DOMAIN')."/api/v1/charge-live-status",
-            "enabled_events" => ["charge.failed", "charge.succeeded", "charge.pending"]
-        ]);
-        return $webhookObj;
+        try {
+            \Stripe\Stripe::setApiVersion("2018-10-31");
+            \Stripe\Stripe::setApiKey($keySecond);
+            $subscriptionObj = \Stripe\WebhookEndpoint::create([
+                "url" => route('customerSubscriptionDeleted'),
+                "enabled_events" => config('settings.WEBHOOKS.SUBSCRIPTION')
+            ]);
+
+            $invoiceObj = \Stripe\WebhookEndpoint::create([
+                "url" => route('customerInvoicePaymentFailed'),
+                "enabled_events" => config('settings.WEBHOOKS.INVOICE')
+            ]);
+            return [
+                'subscription'  =>  $subscriptionObj,
+                'invoice'       =>  $invoiceObj
+            ];    
+        } catch(Throwable $e) {
+            throw $e;
+        }
     }
 
     public static function deleteWebhook($keySecond, $hookId) {

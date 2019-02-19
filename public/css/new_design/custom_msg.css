@@ -23,8 +23,15 @@
     font-size: 14px;
     top: 0;
     transform: translateY(-100%);
+    margin-top: 5px;
     }
-
+    .fieldWrap.success input[type="text"]{
+        border-color: #3ebec5 !important;
+        background-image: url('../../../public/images/checked.png');
+        background-position: 95% 48%;
+        background-repeat: no-repeat;
+    }
+    
     .alertBox{
         padding: 14px 20px 12px;
         font-size: 16px;
@@ -72,4 +79,27 @@
         }
         .alertBox .close:after {
         transform: rotate(-45deg);
+        }
+        .signUp .leftSide .fieldWrap.error input{
+            margin-top: 50px;
+        }
+        .signUp .fieldWrap.error .errorMsg {
+            width: 84%;
+        }
+        /* responsive */
+        @media only screen and (max-width : 767px) {
+            .signUp .leftSide .fieldWrap.error{
+                width: 100%;
+            }
+            .signUp .fieldWrap.error .errorMsg{
+                width: 100%;
+            }
+        }
+        @media only screen and (min-width: 595px) and (max-width : 767px) {
+            .signUp .leftSide .fieldWrap.error{
+                width: 100%;
+            }
+            .signUp .fieldWrap.error .errorMsg{
+                width: 100%;
+            }
         }

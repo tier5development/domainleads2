@@ -169,8 +169,13 @@ class AccountController extends Controller
 			$stripeDetails->public_key = $publicKey;
 			$stripeDetails->private_key = $privateKey;
 			$stripeDetails->save();
-			return redirect()->back()->with('success', 'Stripe Keys set up successfully.');
-		} catch(\Excepption $e) {
+			$obj = $this->createChargeHook($stripeDetails);
+			if($obj['status']) {
+				return redirect()->back()->with('success', 'Stripe Keys set and webhooks setup successfully.');
+			} else {
+				return redirect()->back()->with('success', $obj['message']);
+			}
+		} catch(Throwable $e) {
 			return redirect()->back()->with('fail', 'Error : '.$e->getMessage());
 		}
 	}
