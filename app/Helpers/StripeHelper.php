@@ -283,12 +283,12 @@ class StripeHelper {
             \Stripe\Stripe::setApiVersion("2018-10-31");
             \Stripe\Stripe::setApiKey($keySecond);
             $subscriptionObj = \Stripe\WebhookEndpoint::create([
-                "url" => route('customerSubscriptionDeleted'),
+                "url" =>   'http://8271b9da.ngrok.io/api/stripe/customer-subscription-updated', // route('customerSubscriptionDeleted'), // 'http://42d21ff8.ngrok.io/api/stripe/customer-subscription-updated' 
                 "enabled_events" => config('settings.WEBHOOKS.SUBSCRIPTION')
             ]);
 
             $invoiceObj = \Stripe\WebhookEndpoint::create([
-                "url" => route('customerInvoicePaymentFailed'),
+                "url" =>   'http://8271b9da.ngrok.io/api/stripe/customer-invoice-payment_failed', // route('customerInvoicePaymentFailed'), // 'http://8271b9da.ngrok.io/api/stripe/customer-invoice-payment_failed',
                 "enabled_events" => config('settings.WEBHOOKS.INVOICE')
             ]);
             return [

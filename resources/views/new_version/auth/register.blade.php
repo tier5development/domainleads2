@@ -14,43 +14,40 @@
         <div class="container customCont">
             <div class="innerContentWrap">
                 
-                
                 <form method="post" action="{{route('signupPost')}}" id="registration_form">
+                    <input type="hidden" name="affiliate_id" id="affiliate_id">
                     <div class="leftSide">
                         <h2>Get an account to unlock leads</h2>
                         @include('new_version.shared.messages')
                         <h3>personal information</h3>
-                        <div class="eachFieldWrap">
-                            <div class="fieldWrap small success">    
-                                <input type="text" name="full_name" id="full_name" class="form-control" placeholder="full name">
+                        <div class="eachFieldWrap small">
+                            <div class="fieldWrap small">    
+                            <input type="text" name="full_name" id="full_name" class="form-control" placeholder="full name" value="{{old('full_name')}}">
+                                <div id="fullname_err" class="errorMsg"></div>
                             </div>
-                            <div class="fieldWrap small error">    
-                                <input type="email" name="email" class="form-control" placeholder="email">
-                                <div id="fname_err" class="errorMsg">Some error dfsdfss there.</div>
+                            <div class="fieldWrap small">    
+                                <input type="email" name="email" class="form-control" placeholder="email" value="{{old('email')}}">
+                                <div id="email_err" class="errorMsg"></div>
                             </div>
-                            <div class="fieldWrap small error">    
+                            <div class="fieldWrap small">    
                                 <input type="password" name="password" class="form-control" placeholder="password">
-                                <div id="fname_err" class="errorMsg">Some error 44646446 there.</div>
+                                <div id="password_err" class="errorMsg"></div>
                             </div>
-                            <div class="fieldWrap small error">    
-                                <input type="password" name="password" class="form-control" placeholder="password">
-                                <div id="fname_err" class="errorMsg">Some error 1213 there.</div>
+                            <div class="fieldWrap small">    
+                                <input type="password" name="cpassword" class="form-control" placeholder="confirm password">
+                                <div id="cpassword_err" class="errorMsg"></div>
                             </div>
-                            {{-- <input type="text" name="full_name" class="form-control" placeholder="full name"> --}}
-                            {{-- <input type="email" name="email" class="form-control" placeholder="email">
-                            <input type="password" name="password" class="form-control" placeholder="password"> --}}
-                            {{-- <input type="password" name="c_password" class="form-control" placeholder="confirm password"> --}}
                         </div>
 
                         <h3>Card Information</h3>
                         <div class="fieldWrap clearfix">
-                            <div class="cardBackground clearfix">
-                                <label>
+                            <div class="cardBackground clearfix"> <!-- vibrate -->
+                                <label id="custom_card" > 
                                     <span>Card number</span>
                                     <div id="card-number-element" class="field"></div>
                                     <span class="brand"><i class="pf pf-credit-card" id="brand-icon"></i></span>
                                 </label>
-                                <label id="custom_cvc">
+                                <label id="custom_cvc"> <!-- redline -->
                                     <span>CVC</span>
                                     <div id="card-cvc-element" class="field"></div>
                                 </label>
@@ -61,10 +58,10 @@
                             </div>
                         </div>
                         <div class="fieldWrap spaceTop">
-                            <button id="advanced-search-btn" type="submit" class="orangeBtn">get an account</button>
+                            <button id="register-btn" type="submit" class="orangeBtn">get an account</button>
                             <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/cards.webp" alt="cards">
                             <span>Have an account?</span>
-                            <a href="#">login now!</a>
+                            <a href="{{route('loginPage')}}">login now!</a>
                         </div> 
                     </div>
 
@@ -102,15 +99,7 @@
 
   
    <!-- footer -->
-    <footer class="footer clearboth">
-        <div class="container">
-            <div class="col-md-12 pull-left">
-                <span>&copy; 2017 Powered by Tier5</span>
-                <a href="#">privacy policy</a>
-                <a href="#">terms of use</a>
-            </div>
-        </div>
-    </footer>
+   @include('section.footer_menu')
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -122,8 +111,13 @@
 
     <script>
         var publicKey   =   "{{$stripeDetails->public_key}}";
-        var stripe      = Stripe(publicKey);
-        var elements    = stripe.elements();
+        var stripe      =   Stripe(publicKey);
+        var elements    =   stripe.elements();
+
+        var cardErrorNumberArray     = ['card_declined', 'expired_card', 'incorrect_number', 'invalid_number', 'invalid_card_type'];
+        var cardErrorCsvArray        = ['incorrect_cvc', 'invalid_csv'];
+        var cardErrorExpiryArray     = ['invalid_expiry_year', 'invalid_expiry_month'];// invalid_expiry_year_past
+
         var style = {
             base: {
                 color: '#6c6c6c',
@@ -211,15 +205,57 @@
         }
 
         cardNumberElement.on('change', function(event) {
-            try {
-                if (event.brand) {
-                    setBrandIcon(event.brand);
-                }
-                setOutcome(event);
-            } catch(err) {
-                console.error('card change error : ',err);
+            // if (event.brand) {
+            //     setBrandIcon(event.brand);
+            // }
+            if(typeof event.error != 'undefined') {
+                showCardErr();
+            } else {
+                clearCardErr();
+            }
+            // setOutcome(event);
+        });
+
+        
+        cardExpiryElement.on('change', function(event) {
+            if(typeof event.error != 'undefined') {
+                showExpiryErr();
+            } else {
+                clearExpiryErr();
             }
         });
+
+        cardCvcElement.on('change', function(event) {
+            if(typeof event.error != 'undefined') {
+                showCsvErr();
+            } else {
+                clearCsvErr();
+            }
+        });
+
+        var showCardErr = function() {
+            $("#custom_card").addClass('redline');
+        }
+
+        var clearCardErr = function() {
+            $("#custom_card").removeClass('redline');
+        }
+
+        var showCsvErr = function() {
+            $("#custom_cvc").addClass('redline');
+        }
+        
+        var clearCsvErr = function() {
+            $("#custom_cvc").removeClass('redline');
+        }
+
+        var showExpiryErr = function() {
+            $("#custom_expiry").addClass('redline');
+        }
+        
+        var clearExpiryErr = function() {
+            $("#custom_expiry").removeClass('redline');
+        }
 
         function validateEmail(email){
             var reg = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/igm;
@@ -231,19 +267,110 @@
             return reg.test(name);
         }
 
+        var passValidation = function(pass) {
+            var reg = /^.{6,}$/;
+            return reg.test(pass);
+        }
+
         var submitPaymentForm = function(resp) {
             console.log(resp);
         }
 
-        // document.querySelector('form').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-        //     stripe.createToken(cardNumberElement).then(setOutcome);
-        // });
+        var validateEmailField = function() {
+            var email = $('#registration_form input[name=email]').val();
+            if(validateEmail(email) == false) {
+                $('#email_err').text('*Invalid Email Provided.');
+                $('#email_err').parent().addClass('error').removeClass('success');
+                // $('#customerDetailsAchForm input[name=email]').focus();
+                return false;
+            } else {
+                $('#email_err').text('');
+                $('#email_err').parent().removeClass('error').addClass('success');
+                return true;
+            }
+        }
+
+        var validateNameField = function () {
+            
+            var name = $('#registration_form input[name=full_name]').val();
+            if(name.trim().length == 0 || nameValidation(name) == false) {
+                // $('#customerDetailsAchForm input[name=firstName]').focus();
+                $('#fullname_err').text('*Please provide a valid name.');
+                $('#fullname_err').parent().addClass('error').removeClass('success');
+                return false;
+            } else {
+                $('#fullname_err').text('');
+                $('#fullname_err').parent().removeClass('error').addClass('success');
+                return true;
+            }
+        }
+
+        var validatePasswordField = function() {
+            var password = $('#registration_form input[name=password]').val();
+            if(password.trim().length == 0 || passValidation(password) == false) {
+                // $('#customerDetailsAchForm input[name=firstName]').focus();
+                $('#password_err').text('*Password should be minimun 6 characters.');
+                $('#password_err').parent().addClass('error').removeClass('success');
+                return false;
+            } else {
+                $('#password_err').text('');
+                $('#password_err').parent().removeClass('error').addClass('success');
+                return true;
+            }
+        }
+
+        var validateConfirmPasswordField = function() {
+            var password = $('#registration_form input[name=password]').val();
+            var cpassword = $('#registration_form input[name=cpassword]').val();
+            if(password !== cpassword) {
+                // $('#customerDetailsAchForm input[name=firstName]').focus();
+                $('#cpassword_err').text('*Confirm password should be same as password.');
+                $('#cpassword_err').parent().addClass('error').removeClass('success');
+                return false;
+            } else {
+                $('#cpassword_err').text('');
+                $('#cpassword_err').parent().removeClass('error').addClass('success');
+                return true;
+            }
+        }
+
+        var clearOutCardError = function() {
+            setTimeout(function() {
+                $('.cardBackground').removeClass('vibrate');
+            }, 5000);
+        }
 
         $(document).ready(function(){
 
             $(window).bind("pageshow", function(event) {
                 $("#loader-icon").hide();
+            });
+
+            // setTimeout(() => {
+            //     $('.cardBackground').removeClass('vibrate').addClass('vibrate');
+            // }, 3000);
+
+            $('#registration_form input').bind({
+                blur: function(evt) {
+                var name = $(this).attr('name');
+                console.log('input name : ', name);
+                    switch(name) {
+                        case 'email'        : return validateEmailField();
+                        case 'full_name'    : return validateNameField();
+                        case 'password'     : return validatePasswordField();
+                        case 'cpassword'    : return validateConfirmPasswordField();
+                        default             : return true; 
+                    }
+                },
+                keypress: function(evt) {
+                    var name = $(this).attr('name');
+                    if(name == 'full_name') {
+                        // Not allowing any numeric value in name field
+                        var charCode = (evt.which) ? evt.which : evt.keyCode;
+                        return (charCode >= 48 && charCode <= 57) ? false : true;
+                    }
+                    return true;
+                }
             });
 
             $("#loader-icon").hide();
@@ -282,21 +409,33 @@
                 $(".viewMorePanel3").toggle();
             });
 
-            $('#advanced-search-btn').on('click', function(e) {
+            $('#register-btn').on('click', function(e) {
                 e.preventDefault();
+                $("#loader-icon").show();
                 // var name = $('input[name=rbnNumber]:checked').val()
 
                 stripe.createToken(cardNumberElement).then(setOutcome).then(function(resp) {
                     if(!resp.status) {
                         // Show error message
-                        console.log('error detected : ', resp);
-                        return false;
-                    } else if(resp.status && typeof resp.id != null ) {
-                        console.log('success detected : ', resp);
+                        // invalid_number, invalid_expiry_year, invalid_expiry_month, invalid_cvc
+                        if(typeof resp.obj !== undefined && typeof resp.obj.error !== undefined && typeof resp.obj.error.code !== undefined) {
+                            $("#loader-icon").hide();
+                            var code = resp.obj.error.code;
+                            console.log('error code : ', code);
+                            $('.cardBackground').removeClass('vibrate').addClass('vibrate');
+                            clearOutCardError();
+                        }
+                    }  else if(resp.status && typeof resp.id != null ) {
+                        console.log('stripe success detected : ', resp);
                         // Trigger form submit
                         $("#stripe_token_field").val(resp.id);
+                        if(Cookies.get('affiliate_id') != undefined) {
+                            $("#affiliate_id").val(Cookies.get('affiliate_id'));
+                        }
                         $("#registration_form").submit();
-                        $("#loader-icon").show();
+                    } else {
+                        $("#loader-icon").hide();
+                        console.log('stripe -some error occoured- : ', resp);
                     }
                 });
                 // console.log('stripe : ', stripe_token);

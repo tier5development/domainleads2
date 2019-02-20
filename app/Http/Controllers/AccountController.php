@@ -523,7 +523,10 @@ class AccountController extends Controller
 				$newUser->password 			=	bcrypt($password);
 				$newUser->remember_token 	= 	$remember_token;
 				$newUser->user_type 		= 	$plan;
-				$newUser->affiliate_id		= 	$affiliateId;
+				if(strlen(trim($affiliateId)) > 0) {
+					$newUser->affiliate_id		= 	$affiliateId;
+				}
+				$newUser->is_hooked 		=	'0';
 				$newUser->save();
 				$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
 				$newUser 					= 	$return['user'];
@@ -565,9 +568,9 @@ class AccountController extends Controller
 		if(\Auth::check()) {
 			return redirect('search');
 		}
-		return redirect('login');
+		// return redirect('login');
 		// return view('new_version.landing-pages.home');
-		// return view('home');
+		return view('home');
 	}
 
     public function login(Request $request) {

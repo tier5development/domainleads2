@@ -14,18 +14,18 @@ class UserManagementController extends Controller
     public function customerSubscriptionUpdated(Request $request) {
         try {
             sleep(3);
-
+            Log::info('subscription request : ', $request->all());
         } catch(Throwable $e) {
-
+            Log::info('subscription request ERROR :::: '.$e->getMessage());
         }
     }
 
     public function customerInvoicePaymentFailed(Request $request) {
         try {
             sleep(3);
-
+            Log::info('invoice request : ', $request->all());
         } catch(Throwable $e) {
-            
+            Log::info('invoice request ERROR :::: '.$e->getMessage());
         }
     }
 }

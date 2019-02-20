@@ -16,6 +16,7 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function createUser(Request $request) {
+        $request['is_hooked'] = '1';
         return UserHelper::createUser($request);
     }
 

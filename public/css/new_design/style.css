@@ -559,7 +559,7 @@ h1, h2, h3, h4, h5, h6, p{
 	padding: 180px 0px 84px 0px;
 }
 .majorBenefits .benefits {
-	background: url('public/images/major_banefit_img.png') no-repeat;
+	background: url('../../../images/major_banefit_img.png') no-repeat;
 	height: 400px;
 	background-position: top left;
 	padding-bottom: 0;
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 /*take a look*/
 .takeLook{
-	background: url('public/images/take_a_look_banner.png') no-repeat;
+	background: url('../../../images/take_a_look_banner.png') no-repeat;
 	background-position: top center;
 	background-size: contain;
 	padding-top: 0;
@@ -624,7 +624,7 @@ h1, h2, h3, h4, h5, h6, p{
     right: 0;
     margin: 0px auto;
     content: '';
-    background: url('public/images/play.png') no-repeat;
+    background: url('../../../images/play.png') no-repeat;
     height: 128px;
     width: 128px;
 }
@@ -652,7 +652,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .leadConversion .lead_conversion_imgWrap{
 	position: relative;
-	background: url('public/images/lead_conversion_bg.png') no-repeat;
+	background: url('../../../images/lead_conversion_bg.png') no-repeat;
 	background-size: contain;
 	background-position: left -55px top -23px;
 }
@@ -1032,7 +1032,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 /*footer*/
 .mainFooter{
-	background-image: url('public/images/footer_bg.png');
+	background-image: url('../../../images/footer_bg.png');
 	text-align: center;
 	padding: 56px 0px;
 }
@@ -1149,22 +1149,22 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .cardArea .card1 .cardContainer .cardFront .cardIcon {
-	background-image: url("public/images/icon_usp_filter_blue.png");
+	background-image: url("../../../images/icon_usp_filter_blue.png");
 }
 .cardArea .card1 .cardContainer .cardBack .cardIcon {
-	background-image: url("public/images/icon_usp_filter_white@2x.png");
+	background-image: url("../../../images/icon_usp_filter_white@2x.png");
 }
 .cardArea .card2 .cardContainer .cardFront .cardIcon {
-	background-image: url("public/images/icon_usp_verfied_phone_blue.png");
+	background-image: url("../../../images/icon_usp_verfied_phone_blue.png");
 }
 .cardArea .card2 .cardContainer .cardBack .cardIcon {
-	background-image: url("public/images/icon_usp_verfied_phone_white.png");
+	background-image: url("../../../images/icon_usp_verfied_phone_white.png");
 }
 .cardArea .card3 .cardContainer .cardFront .cardIcon {
-	background-image: url("public/images/icon_usp_crm_blue.png");
+	background-image: url("../../../images/icon_usp_crm_blue.png");
 }
 .cardArea .card3 .cardContainer .cardBack .cardIcon {
-	background-image: url("public/images/icon_usp_crm_white.png");
+	background-image: url("../../../images/icon_usp_crm_white.png");
 }
 
 .slideContainer {
@@ -1798,11 +1798,39 @@ h1, h2, h3, h4, h5, h6, p{
 	font-family: 'Avenir LT Std 85 Heavy';
 	font-size: 11px !important;
 	font-weight: 400;
-
-
+}
+.vibrate {
+	border: 1px solid transparent;
+	animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	perspective: 1000px;
+	transition: 0.3s;
+}
+.cardBackground .redline{
+	border-bottom: 2px dotted #eb1c26;
 }
 
-
+	@keyframes shake {
+	10%, 90% {
+	transform: translate3d(-1px, 0, 0);
+	}
+	
+	20%, 80% {
+	  transform: translate3d(2px, 0, 0);
+	}
+	
+	30%, 50%, 70% {
+	  transform: translate3d(-4px, 0, 0);
+	}
+	
+	40%, 60% {
+	  transform: translate3d(4px, 0, 0);
+	}
+}
+.Checkout.is-desktop .ModalContainer{
+	margin-left: 50px !important;
+}
 /*responsive*/
 @media screen and (max-width: 1600px) {
 	

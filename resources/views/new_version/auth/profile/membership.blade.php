@@ -73,7 +73,7 @@
                             </div>
                         </div>
                     </div>
-                    @if(strlen(trim($user->affiliate_id)) > 0 && $user->user_type > $user->base_type)
+                    @if($user->allowedToCancelMembership())
                         <p>I want to <a href="{{route('cancelMembership')}}" class="cancelMembership">cancel my membership</a> now</p>    
                     @endif
                 </div>
@@ -101,11 +101,6 @@
         var userStoredImagePath =   "{{$user->image_path}}";
         var planToUpgrade       =   null;
         var currentPlan         =   "{{$user->user_type}}";
-        
-
-        $(window).on('popstate', function() {
-            handler.close();
-        });
 
         var handler = StripeCheckout.configure({
             key:    publicKey,
@@ -158,9 +153,6 @@
                 email       : email
             });
         }
-    </script>
-
-    <script>
         
         var adjustNewButtons = function(resp) {
             var newPlan = resp.newPlan;
@@ -187,11 +179,10 @@
             }
         }
 
-        var rebuildHeader = function() {
-            $('.panel-header-container-contains').empty();
-            // Calling ajax to render the header
-        }
-        
+        // var rebuildHeader = function() {
+        //     $('.panel-header-container-contains').empty();
+        //     // Calling ajax to render the header
+        // }
 
         var changePlan = function(t) {
             console.log('in func');
@@ -237,21 +228,7 @@
             });
         }
 
-        // $(document).ready(function() {
-        //     // setTimeout(function() {
-        //     //     openStripeForm();
-        //     // }, 3000);
-        //     Cookies.remove('username'); 
-        //     // alert(Cookies.get('username')); 
-        // });
-
-        $(document).ready(function() {
-            $(".planBtn").on('click', function() {
-                changePlan(this);
-            });
-        });
-
-        function openItem(itemName) {
+        var openItem = function(itemName) {
             var i;
             var x = document.getElementsByClassName("eachItem");
             for (i = 0; i < x.length; i++) {
@@ -259,6 +236,16 @@
             }
             document.getElementById(itemName).style.display = "block";  
         }
+
+        $(document).ready(function() {
+            $(".planBtn").on('click', function() {
+                changePlan(this);
+            });
+        });
+
+        $(window).on('popstate', function() {
+            handler.close();
+        });
     </script>
 </body>
 </html>

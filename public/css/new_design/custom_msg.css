@@ -25,13 +25,15 @@
     transform: translateY(-100%);
     margin-top: 5px;
     }
-    .fieldWrap.success input[type="text"]{
-        border-color: #3ebec5 !important;
-        background-image: url('../../../public/images/checked.png');
-        background-position: 95% 48%;
-        background-repeat: no-repeat;
+    .fieldWrap.success .form-control {
+        background: url('../../../public/images/checked.png') no-repeat right 10px center !important;
+        border: 1px solid #3ec0c7 !important;
     }
-    
+    .fieldWrap.success input[type="password"].form-control {
+        background: url('../../../public/images/lock.png') no-repeat right 10px center !important;
+        border: 1px solid #3ec0c7 !important;
+    }
+
     .alertBox{
         padding: 14px 20px 12px;
         font-size: 16px;
@@ -60,11 +62,11 @@
         display: inline-block;
         }
         .alertBox .close {
-            position: relative;
-            float: right;
-            width: calc(100% - 90%);
-            height: 14px;
-            cursor: pointer;
+        position: relative;
+        float: right;
+        width: calc(100% - 90%);
+        height: 14px;
+        cursor: pointer;
         }
         .alertBox .close:before,
         .alertBox .close:after {

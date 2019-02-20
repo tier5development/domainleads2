@@ -28,6 +28,7 @@ class AddPaymentOptionsToUsersTable extends Migration
             $table->enum('email_verified', [0,1])->after('first_visit')->default(1)->comment('0 -> email not verified, 1-> email verified');
             $table->string('stripe_failed_invoice_id', 30)->index()->nullable()->after('email_verified')->comment('Stores the last failed invoice for this customer from stripe.');
             $table->json('stripe_failed_invoice_obj')->nullable()->after('stripe_failed_invoice_id')->comment('Stores the entire customer object from stripe.');
+            $table->enum('is_hooked', [0,1])->index()->after('stripe_failed_invoice_obj')->comment('1->if user came directly from affiliates platorm');
         });
     }
 
@@ -59,6 +60,9 @@ class AddPaymentOptionsToUsersTable extends Migration
             $table->dropIndex(['stripe_failed_invoice_id']);
             $table->dropColumn('stripe_failed_invoice_id');
             $table->dropColumn('stripe_failed_invoice_obj');
+            $table->dropIndex(['is_hooked']);
+            $table->dropColumn('is_hooked');
         });
     }
 }
+ 
