@@ -30,7 +30,11 @@ Route::get('/reset-password/{e_token}', ['uses' => 'AccountController@resetPassw
 
 Route::post('/reset-password/{e_token}', ['uses' => 'AccountController@resetPasswordExternalPost', 'as' => 'resetPasswordExternalPost']);
 
+Route::get('/verify-email', ['uses' => 'AccountController@verifyEmail', 'as' => 'verifyEmail']);
+
 Route::get('/testfn', function() {
+
+    return route('verifyEmail', ['id' => 12]);
     // Create webhook
 
     $strDetails = StripeDetails::first();

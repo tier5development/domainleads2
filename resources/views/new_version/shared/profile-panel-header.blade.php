@@ -1,10 +1,12 @@
 <div class="tab">
     <button onclick=window.location.replace("{{route('profile')}}") class="singleItem prof-info">profile information</button>
     <button onclick=window.location.replace("{{route('changePassword')}}") class="singleItem prof-change-password">change password</button>
-    <button onclick=window.location.replace("{{route('paymentInformation')}}") class="singleItem prof-payment-info">payment information</button>
+    @if($user->user_type != config('settings.ADMIN-NUM'))
+        <button onclick=window.location.replace("{{route('paymentInformation')}}") class="singleItem prof-payment-info">payment information</button>
+    @endif
     <button onclick=window.location.replace("{{route('showMembershipPage')}}") class="singleItem prof-membership">membership</button>
     @if($user->user_type == config('settings.ADMIN-NUM'))
-        <button onclick=window.location.replace("{{route('updatePaymentKeys')}}") class="singleItem prof-membership">stripe keys</button>
+        <button onclick=window.location.replace("{{route('updatePaymentKeys')}}") class="singleItem update-keys">stripe keys</button>
     @endif
 </div>
 
@@ -31,6 +33,11 @@
             case 'membership' : 
             $('.tab>button').removeClass('active');
             $('.prof-membership').addClass('active');
+            break;
+
+            case 'update-payment-keys' : 
+            $('.tab>button').removeClass('active');
+            $('.update-keys').addClass('active');
             break;
 
             default: 

@@ -35,8 +35,8 @@
                               <div class="col-sm-12 createForm">
                                 <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/icon_success.png" alt="domain cancel">
                                 <h2>Congratulation <span>{{$user->name}}!</span></h2><br>
-                                <p>You have succesfully signed up for your Domain Leads Account.<br><br>Please check your email to activate your account.</p><br>
-                                <p>Continue to domainleads. <a href="{{route('search')}}" class="greenBtn">Search Domains</a></p><br>
+                                <p>You have succesfully signed up for your Domain Leads Account.<br><br>Please check your email to validate your email account.</p><br>
+                                <p>Continue to domainleads. <a href="{{route('search')}}" class="greenBtn anchor-btn">Search Domains</a></p><br>
                             </div>
                           </div>
                         </div>

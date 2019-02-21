@@ -12,11 +12,9 @@
                 @include('new_version.shared.profile-panel-header')
                 <h2 class="editProfileHeading">Change your password below</h2>
                 <div class="profileFormArea">
-
-                    {{-- Error or Success Message --}}
-                    @include('new_version.shared.messages')
-                    
                     <form action="{{route('changePasswordPost')}}" method="POST" class="change-password form-group" id="changePasswordForm">
+                        {{-- Error or Success Message --}}
+                        @include('new_version.shared.messages')
                         <div class="formRow">
                             <div class="fieldWrap">
                                 <input type="password" name="o_pass" id="o_pass" placeholder="Current Password">

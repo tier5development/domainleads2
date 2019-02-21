@@ -11,15 +11,16 @@ use App\PasswordReset;
 use \Carbon\Carbon;
 use App\StripeDetails;
 use App\Traits\StripeTrait;
+use App\Traits\EmailTrait;
 
 class AccountController extends Controller
 {
-	use StripeTrait;
-
+	use StripeTrait, EmailTrait;
 
 	public function failedSubscription() {
 		$user = Auth::user();
-		return view('new_version.auth.failed-subscription', ['user' => $user]);
+		$stripeDetails = StripeDetails::first();
+		return view('new_version.auth.failed-subscription', ['user' => $user, 'stripeDetails' => $stripeDetails]);
 	}
 
 	public function clearFailedSubscription(Request $request) {
@@ -406,6 +407,35 @@ class AccountController extends Controller
 		return redirect()->route('loginPage');
 	}
 
+	public function verifyEmail(Request $request) {
+		$id = $request->id;
+		$paramUser = User::find($id);
+		if(!$paramUser) {
+			return redirect('home');
+		}
+		if(Auth::check()) {
+			$user = Auth::user();
+			if($user->id !== $id) {
+				return redirect('home');
+			}
+			if($user->email_verified == 0) {
+				$user->email_verified = '1';
+				$user->save();
+				return view('new_version.verification.email-verification', ['user' => $user]);
+			} else {
+				return redirect('home');
+			}
+		} else {
+			if($paramUser->email_verified == 0) {
+				$paramUser->email_verified = '1';
+				$paramUser->save();
+				return view('new_version.verification.email-verification', ['user' => $paramUser]);
+			} else {
+				return redirect('home');
+			}
+		}
+	}
+
 	// public function signupPost(Request $request) {
 		
 	//   $first_name=$request->first_name;
@@ -491,66 +521,78 @@ class AccountController extends Controller
 
 	public function signupPost(Request $request) {
 		
-		// dd($request->all());
-		$fullName 		= 	$request->full_name;
-		$email			=	$request->email;
-		$password		=	$request->password;
-		$remember_token	=	$request->_token;
-		$date			=	date('Y-m-d H:i:s');
-		$affiliateId	=	$request->affiliate_id;
-		$plan			=	$request->plan;
-		$stripeToken	=	$request->stripe_token;
-		
-		$validator=Validator::make($request->all(), [
-			'full_name'	=>'required',
-			'email'		=>'required|email',
-			'password'	=>'required',
-			'c_password'=>'required | same:password'
-		], [
-			'c_password.required' => 'Confirm password is required.',
-			'c_password.same' => 'Confirm password should be same as password.'
-		]);
-		
-		if($validator->fails()) {
-			return redirect()->back()->withErrors($validator)->withInput();
-		} else {	
-			$id_email = User::where('email', $email)->select('email')->first();
+		try {
+
+			DB::beginTransaction();
+			$fullName 		= 	$request->full_name;
+			$email			=	$request->email;
+			$password		=	$request->password;
+			$remember_token	=	$request->_token;
+			$date			=	date('Y-m-d H:i:s');
+			$affiliateId	=	$request->affiliate_id;
+			$plan			=	$request->plan;
+			$stripeToken	=	$request->stripe_token;
 			
-			if(!$id_email) {
-				$newUser 					= 	new User();
-				$newUser->name 				= 	$fullName;
-				$newUser->email 			= 	$email;
-				$newUser->password 			=	bcrypt($password);
-				$newUser->remember_token 	= 	$remember_token;
-				$newUser->user_type 		= 	$plan;
-				if(strlen(trim($affiliateId)) > 0) {
-					$newUser->affiliate_id		= 	$affiliateId;
-				}
-				$newUser->is_hooked 		=	'0';
-				$newUser->save();
-				$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
-				$newUser 					= 	$return['user'];
-				if($return['status'] == true) {
-
-					// The user got subscribed successfully
-					$userdata = ['email' => $email, 'password' => $password];
-					if (Auth::validate($userdata)) {
-						if (Auth::attempt($userdata)) {
-							return redirect('search')->with('first_visit', 'Yes');
-						} else {
-							return redirect()->back()->with('error', 'Please check your email and password!')->withErrors($validator)->withInput();
-						}
-					} else {
-						return redirect()->back()->with('error', 'Please check your email and password!');
+			$validator=Validator::make($request->all(), [
+				'full_name'	=>'required',
+				'email'		=>'required|email',
+				'password'	=>'required',
+				'cpassword'=>'required | same:password'
+			], [
+				'cpassword.required' => 'Confirm password is required.',
+				'cpassword.same' => 'Confirm password should be same as password.'
+			]);
+			
+			if($validator->fails()) {
+				return redirect()->back()->withErrors($validator)->withInput();
+			} else {	
+				$id_email = User::where('email', $email)->select('email')->first();
+				
+				if(!$id_email) {
+					$newUser 					= 	new User();
+					$newUser->name 				= 	$fullName;
+					$newUser->email 			= 	$email;
+					$newUser->password 			=	bcrypt($password);
+					$newUser->remember_token 	= 	$remember_token;
+					$newUser->user_type 		= 	$plan;
+					if(strlen(trim($affiliateId)) > 0) {
+						$newUser->affiliate_id		= 	$affiliateId;
 					}
-					
-				} else {
+					$newUser->is_hooked 		=	'0';
+					$newUser->email_verified	= 	'0';
+					$newUser->save();
+					$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
+					$newUser 					= 	$return['user'];
 
-					// Subscription failure
-					return redirect()->back()->with('error', 'Your subscription is not successful! Please check if your card has enough balance.');
+					if($return['status'] == true) {
+
+						// The user got subscribed successfully
+						$userdata = ['email' => $email, 'password' => $password];
+						if (Auth::validate($userdata)) {
+							if (Auth::attempt($userdata)) {
+								DB::commit();
+								return redirect('search')->with('first_visit', 'Yes');
+							} else {
+								DB::rollback();
+								return redirect()->back()->with('error', 'Please check your email and password!')->withErrors($validator)->withInput();
+							}
+						} else {
+							DB::rollback();
+							return redirect()->back()->with('error', 'Please check your email and password!');
+						}
+						
+					} else {
+						DB::rollback();
+						// Subscription failure
+						return redirect()->back()->with('error', 'Your subscription is not successful! Please check if your card has enough balance.');
+					}
 				}
+				DB::rollback();
+				return redirect()->back()->with('error', 'This email id already exists. Please try again');
 			}
-			return redirect()->back()->with('error', 'This email id already exists. Please try again');
+		} catch(Throwable $e) {
+			DB::rollback();
+			return redirect()->back()->with('error', $e->getMessage());
 		}
 	}
 
@@ -565,12 +607,9 @@ class AccountController extends Controller
 	// }
 
 	public function home() {
-		if(\Auth::check()) {
-			return redirect('search');
-		}
-		// return redirect('login');
-		// return view('new_version.landing-pages.home');
-		return view('home');
+		$stripeDetails 	= 	StripeDetails::first();
+		$user = Auth::check() ? Auth::user() : null;
+		return view('home', ['user' => $user, 'stripeDetails' => $stripeDetails]);
 	}
 
     public function login(Request $request) {

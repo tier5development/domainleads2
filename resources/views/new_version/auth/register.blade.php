@@ -114,9 +114,9 @@
         var stripe      =   Stripe(publicKey);
         var elements    =   stripe.elements();
 
-        var cardErrorNumberArray     = ['card_declined', 'expired_card', 'incorrect_number', 'invalid_number', 'invalid_card_type'];
-        var cardErrorCsvArray        = ['incorrect_cvc', 'invalid_csv'];
-        var cardErrorExpiryArray     = ['invalid_expiry_year', 'invalid_expiry_month'];// invalid_expiry_year_past
+        // var cardErrorNumberArray     = ['card_declined', 'expired_card', 'incorrect_number', 'invalid_number', 'invalid_card_type'];
+        // var cardErrorCsvArray        = ['incorrect_cvc', 'invalid_csv'];
+        // var cardErrorExpiryArray     = ['invalid_expiry_year', 'invalid_expiry_month'];// invalid_expiry_year_past
 
         var style = {
             base: {
@@ -340,15 +340,36 @@
             }, 5000);
         }
 
+        var submitRegistrationForm = function () {
+            if(checkRegistrationForm()) { 
+                $("#registration_form").submit();
+                return true;
+            } else {
+                $("#loader-icon").hide();
+                return false;
+            }
+        }
+
+        var checkRegistrationForm = function() {
+            if(validateNameField() && validateEmailField() && validatePasswordField() && validateConfirmPasswordField()) {
+                // Ready to submit form
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         $(document).ready(function(){
 
             $(window).bind("pageshow", function(event) {
                 $("#loader-icon").hide();
             });
 
-            // setTimeout(() => {
-            //     $('.cardBackground').removeClass('vibrate').addClass('vibrate');
-            // }, 3000);
+            console.log('plan :: ', Cookies.get('plan'));
+            if(Cookies.get('plan') != 'undefined') {
+                console.log('executing in here');
+                $("#registration_form input[name=plan][value=" + Cookies.get('plan') + "]").prop('checked', 'checked');
+            }
 
             $('#registration_form input').bind({
                 blur: function(evt) {
@@ -412,13 +433,10 @@
             $('#register-btn').on('click', function(e) {
                 e.preventDefault();
                 $("#loader-icon").show();
-                // var name = $('input[name=rbnNumber]:checked').val()
-
                 stripe.createToken(cardNumberElement).then(setOutcome).then(function(resp) {
                     if(!resp.status) {
                         // Show error message
-                        // invalid_number, invalid_expiry_year, invalid_expiry_month, invalid_cvc
-                        if(typeof resp.obj !== undefined && typeof resp.obj.error !== undefined && typeof resp.obj.error.code !== undefined) {
+                        if(typeof resp.obj !== 'undefined' && typeof resp.obj.error !== 'undefined' && typeof resp.obj.error.code !== 'undefined') {
                             $("#loader-icon").hide();
                             var code = resp.obj.error.code;
                             console.log('error code : ', code);
@@ -432,7 +450,7 @@
                         if(Cookies.get('affiliate_id') != undefined) {
                             $("#affiliate_id").val(Cookies.get('affiliate_id'));
                         }
-                        $("#registration_form").submit();
+                        submitRegistrationForm();
                     } else {
                         $("#loader-icon").hide();
                         console.log('stripe -some error occoured- : ', resp);

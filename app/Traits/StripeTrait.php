@@ -101,13 +101,13 @@ use \Carbon\Carbon;
             ];
             
             if(isset($arr['source']) && $arr['source'] != null) {
-                Log::info('in source if');
+                // Log::info('in source if');
                 $detailsArr['source'] = $arr['source'];
             } else {
-                Log::info('in source else');
+                // Log::info('in source else');
                 unset($detailsArr['source']);
             }
-            Log::info('final array : ', $detailsArr);
+            // Log::info('final array : ', $detailsArr);
             return $detailsArr;
         }
 
@@ -159,7 +159,7 @@ use \Carbon\Carbon;
         public function createFreshStripeCustomer($user, $arr, $stripeDetails) {
             
             try {
-                Log::info('in createFreshStripeCustomer : create fresh stripe customer');
+                // Log::info('in createFreshStripeCustomer : create fresh stripe customer');
                 if(!array_key_exists('email', $arr) || !isset($arr['email'])) {
                     return [
                         'message'       => 'Inappropriate parameters',
@@ -190,35 +190,7 @@ use \Carbon\Carbon;
             }
         }
 
-        /**
-         * Purpose : To update our db with stripe (public available functions)
-         * Author : Tier5 LLC [akash@tier5.in]
-         * @params
-         * 	1> stripeCustomerId : stripe customer id as given by stripe for an user
-         *  2> adminDetails : admin object to which customer is attached
-         * 
-         * @response boolean response
-         */
-        public static function updateOurDbWithStripe($adminDetails, $stripeCustomerId) {
-            try {
-                $stripeCustomer = json_encode(StripeHelper::retriveCustomer($adminDetails->id, $stripeCustomerId), true);
-                $stripeObjArr 	= json_decode($stripeCustomer, true);
-                if($stripeCustomer == 'null') {
-                    return false;
-                }
-                $customer = StripeCustomer::where('admin_id', $adminDetails->id)->where('stripe_customer_id', $stripeCustomerId)->first();
-                $customer->previous_object = $customer->recent_object;
-                $customer->recent_object   = $stripeCustomer;
-                $customer->card_updated    = count($stripeObjArr['sources']['data']) > 0 ? 1 : 0;
-                $customer->save();
-                self::createOrUpdateStripeCustomerDetails($customer->id);
-                return true;
-            } catch(\Exception $e) {
-                \Log::info('error in updateOurDbWithStripe'.$e->getMessage());
-                return false;
-            }
-        }
-
+        
         public function retriveCustomerWithSource($customer, $stripeBankAccountToken) {
             $stripeBankData = $customer->sources->all(['limit' => 1, 'object' => 'bank_account'])->data;
             $source  		= null;
@@ -276,7 +248,7 @@ use \Carbon\Carbon;
         
         public function upgradeOrDowngrade(Request $request, $user = null) {
             try {
-                Log::info('subscribe -- came initial');
+                // Log::info('subscribe -- came initial');
                 $user 				= $user != null ? $user : Auth::user();
                 $responseArray 		= $this->updateCard($request, $user);
                 
@@ -289,12 +261,12 @@ use \Carbon\Carbon;
                     $existingSubscriptionId =   $user->stripe_subscription_id;
                     $userFeedback 		    =   $request->feedback;
                     $stripeCustomerId       =   $user->stripe_customer_id;
-                    Log::info('subscribe -- going to condition');
+                    // Log::info('subscribe -- going to condition');
                     if(strlen(trim($user->affiliate_id)) > 0) {
                         
                         // So this user came from a different platform like affiliates.
                         // This type of user should not be allowed to downgrade below the plan which their affiliate brought them into.
-                        Log::info(' plan :::: '.$plan.' baseUserType :::: '.$baseUserType);
+                        // Log::info(' plan :::: '.$plan.' baseUserType :::: '.$baseUserType);
                         if($plan < $baseUserType) {
                             return [
                                 'status'            =>  false,

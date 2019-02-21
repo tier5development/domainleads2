@@ -1831,6 +1831,10 @@ h1, h2, h3, h4, h5, h6, p{
 .Checkout.is-desktop .ModalContainer{
 	margin-left: 50px !important;
 }
+.anchor-btn {
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
 /*responsive*/
 @media screen and (max-width: 1600px) {
 	

@@ -21,8 +21,12 @@
         }
         return null;
     }
-    $(document).ready(function() {
-        
+
+    var savePlan = function(plan) {
+        Cookies.set('plan', plan);
+    }
+
+    $(document).ready(function() {    
         var old_affiliate_id = Cookies.get('affiliate_id');
         var affiliate_id = getUrlParams('affiliate_id');
         console.log('ready : ', affiliate_id, Cookies.get('affiliate_id'));

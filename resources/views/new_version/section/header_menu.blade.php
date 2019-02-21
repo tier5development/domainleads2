@@ -19,7 +19,11 @@
                     <ul>
                         <li><a href="#">lead conversion</a></li>
                         <li><a href="#">pricing</a></li>
-                        <a href="{{route('loginPage')}}" class="button gradiant-orange">login</a>
+                        @if(Auth::check())
+                            <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a>
+                        @else
+                            <a href="{{route('loginPage')}}" class="button gradiant-orange">login</a>
+                        @endif
                     </ul>
                 </nav>
             @endif

@@ -21,11 +21,12 @@
                 @include('new_version.shared.profile-panel-header')
 
                 {{-- Error or Success Message --}}
-                @include('new_version.shared.messages')
+                
                 
                 <h2 class="editProfileHeading">Update your stripe keys below.</h2>
                 <div class="profileFormArea">
                     <form action="{{route('updatePaymentKeysPost')}}" method="POST" id="updateStripeDetails">
+                        @include('new_version.shared.messages')
                         <div class="formRow">
                             <div class="fieldWrap">
                                 <input type="text" name="public_key" id="public_key" placeholder="strip public key" value="{{isset($stripeDetails) ? $stripeDetails->public_key : ''}}">
@@ -94,10 +95,15 @@
                 e.preventDefault();
                 var obj = checkStripeForm();
                 if(obj.flag) {
+                    $("#loader-icon").show();
                     $('#updateStripeDetails').submit();
                 }
                 console.log('error found so not submitting the form.')
             });
+        });
+
+        $(window).bind("pageshow", function(event) {
+            $("#loader-icon").hide();
         });
 
         function openItem(itemName) {
