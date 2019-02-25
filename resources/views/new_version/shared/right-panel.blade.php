@@ -28,9 +28,12 @@
     </div>
 </div>
  <script type="text/javascript">
- var getUsageGlobal = function(refresh = false) {
+ $(document).ready(function() {
     $('.container').addClass('level3User');
-    console.log('called getUsageGlobal');
+ });
+ var getUsageGlobal = function(refresh = false) {
+    
+    // console.log('called getUsageGlobal');
     $.ajax({
             url : "{{route('totalLeadsUnlockedToday')}}",
             type: "POST",
