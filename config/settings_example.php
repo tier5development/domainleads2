@@ -1,5 +1,6 @@
 <?php
 return [
+    'ADMIN-EMAIL' => 'work@tier5.us',
     'ISLIVE' => false,
     'LIMIT-PER-DAY' => 50,
     'LANDING-DOMAIN' => 'http://domainleads.local',
@@ -39,6 +40,24 @@ return [
         'HIGHEST-UPGRADABLE' => 4,
         'LOWEST-DOWNGRADABLE' => 1,
         'NON-DISPLAYABLE' => 2
+    ],
+    'SUBSCRIPTIONS' => [
+        'trialing'  =>  1,
+        'active'    =>  2,
+        'past_due'  =>  3,
+        'unpaid'    =>  4,
+        'canceled'  =>  5
+    ],
+    'WEBHOOKS' => [
+        'SUBSCRIPTION' => [
+            'customer.subscription.created',
+            'customer.subscription.deleted',
+            'customer.subscription.updated',
+            'customer.subscription.trial_will_end'
+        ], 'INVOICE' => [
+            'invoice.payment_failed',
+            'invoice.payment_succeeded'
+        ]
     ]
 ];
 ?>
