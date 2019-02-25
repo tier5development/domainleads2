@@ -13,4 +13,3 @@ Homestead.yaml
 
 /.vagrant
 config/settings.php
-config/routeSettings.php
