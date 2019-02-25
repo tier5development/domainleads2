@@ -29,6 +29,7 @@
 </div>
  <script type="text/javascript">
  var getUsageGlobal = function(refresh = false) {
+    $('.container').addClass('level3User');
     console.log('called getUsageGlobal');
     $.ajax({
             url : "{{route('totalLeadsUnlockedToday')}}",
@@ -43,7 +44,7 @@
                 // console.log('response obt : ', r);
                 if(r.status) {
                     if(r.limit == -1) {
-                        $('.container').addClass('level3User');
+                        // $('.container').addClass('level3User');
                     } else {
                         // $('.rightPanel').show();
                         $('.container').removeClass('level3User');
