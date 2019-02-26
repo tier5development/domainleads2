@@ -13,7 +13,7 @@
         @include('new_version.shared.loader')
         <section class="mainBody">
 
-            <div class="dont-show-all">
+            <div class="dont-show-all" id="dont-show-all" style="display: none;">
                 <div class="innerContent clearfix">
                     <div class="container customCont cancelDomain">
                         <div class="col-sm-8 innerContentWrap">
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="show-all" style="display: none;">
+            <div class="show-all" id="show-all">
                 @include('new_version.shared.right-panel')
                 
                 <div class="leftPanel leadUnlock">
