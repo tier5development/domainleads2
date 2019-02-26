@@ -1,7 +1,7 @@
 <header class="dashHeader">
     
         <div class="headerLeft">
-            <a href=""><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/logo.png" alt=""></a>
+            <a href="{{route('home')}}"><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/logo.png" alt=""></a>
         </div>
         <div class="headerRight">
             <div class="heaverNav">
