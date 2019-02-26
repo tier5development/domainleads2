@@ -52,7 +52,7 @@
                                             @if($user->user_type == config('settings.PLAN.L').$item[0])
                                                 <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
                                             @elseif($user->user_type > config('settings.PLAN.L').$item[0])
-                                                @if(strlen(trim($user->affiliate_id)) > 0 && $user->user_type > $user->base_type)
+                                                @if($user->isDowngradable())
                                                     <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
                                                 @endif
                                             @elseif($user->user_type < config('settings.PLAN.L').$item[0])

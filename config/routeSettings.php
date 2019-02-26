@@ -5,6 +5,9 @@ return [
     ],
     'subscribedUserGroup' => [
         'showMembershipPage', 'updateCardDetailsAndSubscribe', 'upgradeOrDowngradePlan','logout'
+    ],
+    'cancelMembership' => [
+        'cancelMembership', 'cancelMembershipPost'
     ]
 ];
 ?>

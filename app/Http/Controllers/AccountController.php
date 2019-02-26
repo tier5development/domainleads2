@@ -43,12 +43,8 @@ class AccountController extends Controller
 
 	public function cancelMembership() {
 		$data['user'] = Auth::user();
-		if(strlen(trim($data['user']->affiliate_id)) > 0 && $data['user']->user_type > $data['user']->base_type) {
-			$data['title'] = 'Cancel membership';
-			return view('new_version.auth.profile.cancel-membership', $data);
-		} else {
-			return redirect()->back()->with('fail', 'You belong to an affiliate programme so cannot cancel your membership until you upgrade to next level plan. In case you are already in the highest plan please talk to your service provider.');
-		}
+		$data['title'] = 'Cancel membership';
+		return view('new_version.auth.profile.cancel-membership', $data);
 	}
 
 	public function cancelMembershipPost(Request $request) {
@@ -141,6 +137,7 @@ class AccountController extends Controller
 				return response()->json([
 					'status' => true,
 					'cardUpdated' => false,
+					'allowFurther' =>  true,
 					'message' => 'Card is not updated'
 				]);
 			}

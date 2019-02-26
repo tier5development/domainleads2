@@ -42,5 +42,11 @@ class User extends Authenticatable
         }
         return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
     }
-    
+
+    public function isDowngradable() {
+        if(strlen(trim($this->affiliate_id)) == 0) {
+            return true;
+        }
+        return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
+    }
 }
