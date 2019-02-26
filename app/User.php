@@ -37,6 +37,9 @@ class User extends Authenticatable
     }
 
     public function allowedToCancelMembership() {
+        if(strlen(trim($this->affiliate_id)) == 0) {
+            return true;
+        }
         return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
     }
     
