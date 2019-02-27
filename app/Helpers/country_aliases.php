@@ -10,6 +10,7 @@ function custom_country_aliases() {
         'uk' => 'United Kingdom',
         'de' => 'Germany',
         'de (germany)' => 'Germany',
+        'germany (de)' => 'Germany',
         'australia (au)' => 'Australia',
         '(au) australia' => 'Australia',
         'aust' => 'Australia',
