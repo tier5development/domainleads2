@@ -1773,6 +1773,9 @@ public function download_csv_single_page(Request $request)
     private function search_algo(Request $request)
     {
       $start = microtime(true);
+      if($request->has('registrant_country')) {
+        $request['registrant_country'] = getCountryName($request->registrant_country);
+      }
       $this->setVariables($request); //initiating MY VARIABLES
       $leads = $this->checkMetadata_Search($request);//----------check in the metadata table
       $array = $this->leadsPerPage_Search($leads);
@@ -1790,19 +1793,11 @@ public function download_csv_single_page(Request $request)
                  ,'domains_create_date'=>$request->domains_create_date
                  ,'domains_create_date2'=>$request->domains_create_date2];
         $phone_type_array = $this->phone_type_array;
-        $domains = $this->domainsPerPage_Search($request, $param,$this->phone_type_array ,$leads_string);
-        $data=$this->domains_output_Search($data,$domains);
+        $domains  = $this->domainsPerPage_Search($request, $param,$this->phone_type_array ,$leads_string);
+        $data     = $this->domains_output_Search($data,$domains);
       }
 
-
-      //$user_id = \Auth::user()->id;
-      //$users_array = LeadUser::where('user_id',$user_id)->pluck('registrant_email')->toArray();
-      //$users_array = array_flip($users_array);
-      //$obj_array = Wordpress_env::where('user_id',$user_id)->pluck('registrant_email')->toArray();
-      //$obj_array = array_flip($obj_array);
-
       $end = microtime(true)-$start;
-
       $return =  [ 'record'         => $data,
               'page'                => 1,
               'meta_id'             => $this->meta_id,

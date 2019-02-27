@@ -96,5 +96,10 @@ function getCardMonth($month) {
 function getCardYear($year) {
     return substr($year, -2);
 }
+
+function getCountryName($countryName) {
+    $smallCountryName = strtolower(trim($countryName));
+    return isset(custom_country_aliases()[$smallCountryName]) ? ucwords(custom_country_aliases()[$smallCountryName]) : ucwords($smallCountryName);
+}
     
 ?>

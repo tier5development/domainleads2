@@ -278,7 +278,6 @@ private function destroy()
     return $str;
   }
 
-
   public function make_query($low , $high , $record, $created_at, $updated_at,$domains_count)
   {
     $str = '';
@@ -293,6 +292,7 @@ private function destroy()
 
       $str .= "NULL,'".$rec."','".$ext."','0',NULL,NULL,'".$rg_em."'";
     } else {
+      
       for($i = $low ; $i<= $high ; $i++) {
         $x = !isset($record[$i]) ? " " : $record[$i];
         $rec = str_replace($this->search, $this->replace, $x);
@@ -307,8 +307,9 @@ private function destroy()
               $str .= "NULL , '".$rec."' ,";
             }
         } else if($i != $high) {
-          if($i == 18)  $str  .= "'".$rec."' , 'yes' ," ;
-          else          $str  .= "'".$rec."'," ;
+          if($i == 18) $str .= "'".$rec."' , 'yes' ,";
+          else if($i == 16) $str .= "'".getCountryName($rec)."',";
+          else $str .= "'".$rec."'," ;
         } else {
           $str  .= "'".$rec."','".$created_at."' , '".$updated_at."'";
           if($low != 10)
