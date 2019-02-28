@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * This function resolves all the error prone impure country name from db to pure country names
+ */
 function custom_country_aliases() {
     return [
         'united states of america' => 'United States',

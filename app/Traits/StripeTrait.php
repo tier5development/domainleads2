@@ -190,7 +190,6 @@ use \Carbon\Carbon;
             }
         }
 
-        
         public function retriveCustomerWithSource($customer, $stripeBankAccountToken) {
             $stripeBankData = $customer->sources->all(['limit' => 1, 'object' => 'bank_account'])->data;
             $source  		= null;
@@ -205,6 +204,15 @@ use \Carbon\Carbon;
             }
         }
 
+        /**
+         * This function updates the user card.
+         * Dependency : Called from Controller.
+         * @param : Illuminate\Http\Request, and user table instance
+         * @return : 
+         * responseRaw : rawResponse From stripe
+         * response : array format response interpretation from stripe
+         * status, user, message
+         */
         public function updateCard(Request $request, $user = null) {
             try {
                 DB::beginTransaction();
@@ -245,7 +253,15 @@ use \Carbon\Carbon;
             }
         }
 
-        
+        /**
+         * This function upgrades or downgrades the user.
+         * Dependency : Called from Controller.
+         * @param : Illuminate\Http\Request, and user table instance
+         * @return : 
+         * responseRaw : rawResponse From stripe
+         * response : array format response interpretation from stripe
+         * status, user, message
+         */
         public function upgradeOrDowngrade(Request $request, $user = null) {
             try {
                 // Log::info('subscribe -- came initial');
@@ -344,6 +360,15 @@ use \Carbon\Carbon;
             return $charge;
         }
 
+        /**
+         * This function creates charge hooks.
+         * Dependency : Called from Controller.
+         * @param : stripeDetails, and user table instance
+         * @return : 
+         * responseRaw : rawResponse From stripe
+         * response : array format response interpretation from stripe
+         * status, user, message
+         */
         public function createChargeHook($stripeDetails) {
             try {
                 $strDetails = StripeDetails::first();
@@ -374,9 +399,18 @@ use \Carbon\Carbon;
             return ['product' => $product, 'productArray' => $productArray];
         }
 
-        public function cancelSubscription($stripeCustomer, $user) {
+        /**
+         * This function cancels subscriptions.
+         * Dependency : Called from Controller.
+         * @param : stripeDetails, and user table instance
+         * @return : 
+         * responseRaw : rawResponse From stripe
+         * response : array format response interpretation from stripe
+         * status, user, message
+         */
+        public function cancelSubscription($stripeDetails, $user) {
             try {
-                $response = StripeHelper::cancelSubscription($stripeCustomer, $user);
+                $response = StripeHelper::cancelSubscription($stripeDetails, $user);
                 return ['responseRaw' => $response, 'response' => json_decode(json_encode($response,true),true)];
             } catch(Throwable $e) {
                 throw $e;
@@ -384,6 +418,13 @@ use \Carbon\Carbon;
         }
 
 
+        /**
+         * This function clears failed invoices.
+         * Dependency : Called from Controller.
+         * @param : Illuminate\Http\Request, and user table instance
+         * @return : 
+         * status, user, message
+         */
         public function clearFailedInvoice($request, $user) {
             try {
                 $updatedCard = $this->updateCard($request, $user);

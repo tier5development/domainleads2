@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * This function resolves all 2 digit short form country to country Full Names
+ */
 function country_codes() { 
     $countries = array(
         'AF' => 'Afghanistan',

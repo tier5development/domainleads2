@@ -192,7 +192,6 @@ class StripeHelper {
         return $webhooks;
     }
 
-
     public static function retriveWebhook($keySecond, $hookId) {
         \Stripe\Stripe::setApiVersion("2018-10-31");
         \Stripe\Stripe::setApiKey($keySecond);
@@ -200,6 +199,12 @@ class StripeHelper {
         return $webhook;
     }
 
+    /**
+     * Creates a charge webhook to know about runtime stripe information about the user.
+     * @param
+     * keySecond : stripe secret key for admin
+     * @return array of subscription and invoice
+     */
     public static function createChargeWebhook($keySecond) {
         try {
             \Stripe\Stripe::setApiVersion("2018-10-31");
@@ -222,6 +227,14 @@ class StripeHelper {
         }
     }
 
+
+    /**
+     * charge a failed invoice again
+     * @param
+     * stripeDetails : StripeDetails table instance
+     * invoiceId : stripe invoice id
+     * @return invoice instance
+     */
     public static function chargeFailedInvoice($stripeDetails, $invoiceId) {
         try {
             \Stripe\Stripe::setApiKey($stripeDetails->private_key);
@@ -233,6 +246,14 @@ class StripeHelper {
         }
     }
 
+    /**
+     * delete webhook
+     * @param
+     * keySecond : secret key
+     * hookId : hookId 
+     * 
+     * @return deleted endpoint instance
+     */
     public static function deleteWebhook($keySecond, $hookId) {
         \Stripe\Stripe::setApiVersion("2018-10-31");
         \Stripe\Stripe::setApiKey($keySecond);
@@ -241,6 +262,15 @@ class StripeHelper {
         return $endpoint;
     }
 
+    /**
+     * change subscription for a customer
+     * @params
+     * admin -> admin instance
+     * stripeCustomer -> stripeCustomer instance
+     * subscriptionArr -> array of subscriptions
+     *  -> plan (a valid plan id)
+     *  -> optional trial_period_days (number of trial period days for this plan overriding)
+     */
     public static function changeSubscription($stripeDetails, $subscriptionId, $planId) {
         try {
             \Stripe\Stripe::setApiKey($stripeDetails->private_key);
@@ -262,12 +292,13 @@ class StripeHelper {
 
     /**
      * charge subscription for a customer
-     * @params
-     * admin -> admin instance
-     * stripeCustomer -> stripeCustomer instance
-     * subscriptionArr -> array of subscriptions
-     *  -> plan (a valid plan id)
-     *  -> optional trial_period_days (number of trial period days for this plan overriding)
+     * @param
+     * stripeDetails : StripeDetaiil table instance
+     * customerId : customer id from stripe
+     * planId : plan ID from stripe
+     * trialPeriod : trial period (optional)
+     * @return
+     * subscription object from stripe
      */
     public static function chargeSubscription($stripeDetails, $customerId, $planId, $trialPeriod = null) {
         try {
@@ -279,6 +310,10 @@ class StripeHelper {
                     'plan' => $planId
                 ]]
             ];
+
+            if($trialPeriod != null) {
+                $array['trial_period_days'] = $trialPeriod;
+            }
             Log::info('in chargeSubscription : ', $array);
             $subscription = \Stripe\Subscription::create($array);
             return $subscription;
@@ -287,6 +322,14 @@ class StripeHelper {
         }
     }
 
+    /**
+     * cancel subscription for a customer
+     * @param
+     * stripeDetails : StripeDetaiil table instance
+     * user : user table instance
+     * @return
+     * subscription canceled instance
+     */
     public static function cancelSubscription($stripeDetails, $user) {
         try {
             \Stripe\Stripe::setApiKey($stripeDetails->private_key);

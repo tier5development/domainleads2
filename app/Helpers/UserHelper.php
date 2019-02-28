@@ -11,6 +11,15 @@ class UserHelper {
 
     /**
      * Function called in to get usage matrix data
+     * Dependency : This function is used to get the usage data for a particular user. -1 if it is unlimited.
+     * @param : none
+     * @return : 
+     *  status : boolean,
+     *  leadsUnlocked : leads unlocked today,
+     *  allLeadsUnlocked : all leads unlocked till date,
+     *  limit : limitation according to plan, (check settings for better understanding)
+     *  session : boolean,
+     *  message : Message for user
      */
     public static function getUsageMatrix() {
         try {
@@ -54,6 +63,18 @@ class UserHelper {
         }
     }
 
+    /**
+     * Function to edit user 
+     * Dependency : Called by the api from affiliates as well as admin panel
+     * @param : request 
+     *  email : user email,
+     *  user_type : plan type of user (check config/settings and users table for better understanding)
+     * @return
+     *  status : boolean, 
+     *  message : user friendly message,
+     *  email : email of the user
+     */
+    
     public static function editUser(Request $request) {
         try {
             $email = $request->email;
@@ -88,7 +109,7 @@ class UserHelper {
             
             $usertype = $request->user_type;
             $user->user_type = $usertype;
-            $user->base_type = $usertype;
+            // $user->base_type = $usertype;
             if($user->save()) {
                 return response()->json([
                     'status'    => true,
@@ -109,6 +130,19 @@ class UserHelper {
         }
     }
 
+    /**
+     * Function to create user 
+     * Dependency : Called by the api from affiliates as well as admin panel
+     * @param : request 
+     *  email : user email,
+     *  affiliate_id : affiliate who is responsible for this user
+     *  name : user name
+     *  user_type : optional default 1 (check config/settings and users table for better understanding)
+     * @return
+     *  status : boolean, 
+     *  message : user friendly message,
+     *  email : email of the user
+     */
     public static function createUser(Request $request) {
         try {
             $email          =   $request->email;
@@ -178,6 +212,16 @@ class UserHelper {
         }
     }
 
+    /**
+     * Function to delete user 
+     * Dependency : Called by the api from affiliates as well as admin panel
+     * @param : request 
+     *  id : user id (only if comming from our admin panel),
+     *  email : if request comes from affiliates platform
+     * @return
+     *  status : boolean, 
+     *  message : user friendly message,
+     */
     public static function deleteUser(Request $request) {
         try {
             
@@ -229,6 +273,16 @@ class UserHelper {
         }
     }
 
+    /**
+     * Function to suspend user 
+     * Dependency : Called by the api from affiliates as well as admin panel
+     * @param : request 
+     *  email : user email
+     * @return
+     *  status : boolean, 
+     *  message : user friendly message,
+     *  email : user email suspended
+     */
     public static function suspendUser(Request $request) {
         try {
             
@@ -273,6 +327,16 @@ class UserHelper {
         }
     }
 
+    /**
+     * Function to unsuspend user 
+     * Dependency : Called by the api from affiliates as well as admin panel
+     * @param : request 
+     *  email : user email
+     * @return
+     *  status : boolean, 
+     *  message : user friendly message,
+     *  email : user email unsuspended
+     */
     public static function unsuspendUser(Request $request) {
         try {
             
@@ -317,6 +381,15 @@ class UserHelper {
         }
     }
 
+    /**
+     * Hybrid function which is called from our platform to suspend unsespended users and vice versa.
+     * @param : request 
+     *  email : user email
+     * @return
+     *  status : boolean, 
+     *  message : user friendly message,
+     *  email : user email unsuspended
+     */
     public static function suspendOrUnsuspendUser(Request $request, $strict = false) {
         try {
             if($request->has('id')) {
