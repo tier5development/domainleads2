@@ -25,9 +25,11 @@
                             <p>Welcome to Domain Leads. Start your domain search right here.</p>
                         </div>
                     @endif
+                    @include('new_version.shared.messages')
                 </div>
                 {{-- Search form lies here --}}
 
+                
                 @if(Session::has('first_visit'))
                     <div class="innerContent" style="margin: -20px;">
                         <div class="container customCont cancelDomain signUpConfirmation">

@@ -20,7 +20,7 @@ use \App\CSV;
 use \App\SearchMetadata;
 use DB;
 use Hash;
-use Auth, View, Response, Log;
+use Auth, View, Response, Log, Throwable;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
@@ -126,26 +126,32 @@ public function print_csv($leads,$type)
 
 public function download_csv_single_page(Request $request)
 {
-  
-  $type = 'csv';
-  $phone_type_array = array();
-  if(isset($request->cell) && $request->cell != null)
-    array_push($phone_type_array, 'Cell Number');
-  if(isset($request->landline) && $request->landline != null)
-    array_push($phone_type_array, 'Landline');
-  $start = microtime(true);
-  if($request->has('exportAllLeads') && strlen($request->exportAllLeads) > 0 && $request->exportAllLeads == 'Export All Leads') {
-    $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
-  } else {
-    $limit = $request->totalPagination;
-    $offset = $request->currentPage;
-    $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, $limit, $offset);
+  try {
+    if(!$request->has('meta_id')) {
+      return redirect()->back()->with('fail', 'No records found to export.');
+    }
+    $type = 'csv';
+    $phone_type_array = array();
+    if(isset($request->cell) && $request->cell != null)
+      array_push($phone_type_array, 'Cell Number');
+    if(isset($request->landline) && $request->landline != null)
+      array_push($phone_type_array, 'Landline');
+    $start = microtime(true);
+    if($request->has('exportAllLeads') && strlen($request->exportAllLeads) > 0 && $request->exportAllLeads == 'Export All Leads') {
+      $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
+    } else {
+      $limit = $request->totalPagination;
+      $offset = $request->currentPage;
+      $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, $limit, $offset);
+    }
+    return Excel::create('domainleads', function($excel) use ($reqData) {
+      $excel->sheet('mySheet', function($sheet) use ($reqData){
+        $sheet->fromArray($reqData);
+      });
+    })->download($type);
+  } catch(Throwable $e) {
+    return redirect()->back()->with('fail', 'Error : '.$e->getMessage());
   }
-  return Excel::create('domainleads', function($excel) use ($reqData) {
-    $excel->sheet('mySheet', function($sheet) use ($reqData){
-      $sheet->fromArray($reqData);
-    });
-  })->download($type);
 }
 
   private function all_lead_domains_set(Request $request,$phone_type_array,$meta_id, $limit = null, $offset = null)
