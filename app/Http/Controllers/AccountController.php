@@ -225,7 +225,7 @@ class AccountController extends Controller
 			$user = Auth::user();
 			$user->name = $name;
 			$user->save();
-			return redirect()->back()->with('success', 'Password updated successfully!');
+			return redirect()->back()->with('success', 'Profile updated successfully!');
 
 		} catch(Exception $e) {
 			return redirect()->back()->with('fail', 'ERROR : '.$e->getMessages().' LINE : '.$e->getLine());
