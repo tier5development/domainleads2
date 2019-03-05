@@ -36,7 +36,7 @@
                                         <div class="eachPlan">
                                                 
                                         <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[2]}}">
-                                            <h4>{{$key}}</h4>
+                                            <h4>{{$item[2]}}</h4>
                                             
                                             <ul class="features">
                                                 <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
