@@ -640,7 +640,6 @@ class AccountController extends Controller
 		{
 		  if (Auth::validate($userdata)) {
 			if (Auth::attempt($userdata)) {
-
 				$user = Auth::user();
 				if($user->suspended == 1) {
 					Auth::logout();
@@ -658,24 +657,7 @@ class AccountController extends Controller
 		return redirect()->back()->with('error', 'ERROR : '.$e->getMessage());
 	}
   }
-  public function regredirect(){
-		
-		$userdata = array(
-		'email' => \Session::get('emailset'),
-		'password' => \Session::get('passset')
-		);
-		
-			if (Auth::validate($userdata)) {
-				if (Auth::attempt($userdata)) {
-					return redirect()->route('search');
-				}
-			} 
-			else 
-			{
-				return "error1";
-			}
-		
-  }
+ 
 
   public function logout() 
   {

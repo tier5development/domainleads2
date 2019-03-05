@@ -29,19 +29,22 @@
 
                 <div class="dataTableArea">
                     <div class="dataTableHeader">
+                        
                         <div class="unlockInfo">
                             <strong>{{isset($domains) ? $domains->total() : 0}}</strong> result{{$domains->total() > 1 ? 's':''}} found against your search!
                         </div>
 
                         <div class="dataTableHeaderRight">
+
                             <form method="POST" action = "{{route('downloadUnlockedLeads')}}" id="downloadCsvForm">
                                 <button type="submit" class="greenBtn">Download CSV</button>
                                 <input type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}">
                                 {{csrf_field()}}
                             </form>
+
                             <form id="unlockedLeadsForm" class="" action="{{route('myUnlockedLeadsPost')}}" method="POST">
                                 <div class="dateArea">
-                                    <div class="date">
+                                    <div class="date" title="Search with date of unlock">
                                         <input id="filterDate" class="dateHiddenField" type="hidden" name = "date" value="{{Request::has('date') ? Request::get('date') : null}}" style="display:none;">
                                         <input type="text" class="month" placeholder="mm">
                                         <input type="text" class="day" placeholder="dd">
@@ -50,10 +53,8 @@
                                 </div>
                                 <input type="hidden" name = "perpage" id="perpageVal" value="{{Request::has('perpage') ? Request::get('perpage') : null}}">
                                 <button type="submit" class="orangeBtn">Filter</button>
-                                
                                 {{csrf_field()}}
                             </form>
-                            
                             
                             <div class="pageViewControl">
                                 <label for="">SHOW:</label>
@@ -65,8 +66,9 @@
                                         <option {{Request::has('perpage') && Request::get('perpage') == 100 ? 'selected' : ''}} value="100">100 per page</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> 
                         </div>
+
                     </div>
                     
                     {{-- All leads unlocked goes here --}}

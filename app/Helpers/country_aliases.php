@@ -8,6 +8,7 @@ function custom_country_aliases() {
         'united states of america' => 'United States',
         'u.s.a' => 'United States',
         'u.s.a.' => 'United States',
+        'usa' => 'United States',
         'great britain' => 'United Kingdom',
         'great britain (uk)' => 'United Kingdom',
         'uk' => 'United Kingdom',
@@ -27,6 +28,12 @@ function custom_country_aliases() {
         'boston, ma 02110' => 'United States',
         'ca (canada)' => 'Canada',
         '(canada) ca' => 'Canada',
+        'brasil' => 'Brazil',
+        'bulgar' => 'Bulgaria',
+        'ch (switzerland)' => 'Switzerland',
+        '(switzerland) ch' => 'Switzerland',
+        'cn (china)' => 'China',
+        'china (cn)' => 'China',
     ];
 }
 

@@ -107,13 +107,12 @@
                 var reason  =   $("#drop-down-reasons option:selected").text();
                 var reasonOther = $("#reason-specified").val().trim();
                 // console.log(value, reason, reasonOther);
-                // return false;
+                
                 if( (reason.toLowerCase() == 'others' && reasonOther.length == 0) || value < 0 ) {
                     $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text('Please help us to serve the community with better experience in the future and give us your feedback.');
                     return false;
                 }
                 
-                return false;
                 if(reasonOther.length > 0) {
                     reason = reasonOther;
                 }
