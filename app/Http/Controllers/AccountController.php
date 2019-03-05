@@ -208,7 +208,7 @@ class AccountController extends Controller
 			return view('new_version.auth.change-password', compact('user'));
 			// return view('change-password', compact('user'));
 		}
-		return redirect('home');
+		return redirect()->route('home');
 	}
 
 	public function updateUserInfo(Request $request) {
@@ -415,22 +415,23 @@ class AccountController extends Controller
 	}
 
 	public function verifyEmail(Request $request) {
+		
 		$id = $request->id;
 		$paramUser = User::find($id);
 		if(!$paramUser) {
-			return redirect('home');
+			return redirect()->route('home');
 		}
 		if(Auth::check()) {
 			$user = Auth::user();
-			if($user->id !== $id) {
-				return redirect('home');
+			if($user->id != $id) {
+				return redirect()->route('home');
 			}
 			if($user->email_verified == 0) {
 				$user->email_verified = '1';
 				$user->save();
 				return view('new_version.verification.email-verification', ['user' => $user]);
 			} else {
-				return redirect('home');
+				return redirect()->route('home');
 			}
 		} else {
 			if($paramUser->email_verified == 0) {
@@ -438,96 +439,12 @@ class AccountController extends Controller
 				$paramUser->save();
 				return view('new_version.verification.email-verification', ['user' => $paramUser]);
 			} else {
-				return redirect('home');
+				return redirect()->route('home');
 			}
 		}
 	}
 
-	// public function signupPost(Request $request) {
-		
-	//   $first_name=$request->first_name;
-	//   $last_name=$request->last_name;
-	//   $email=$request->email;
-	//   $password=$request->password;
-	//   $remember_token=$request->_token;
-	//   $date=date('Y-m-d H:i:s');
-	  
-	//   $validator=Validator::make(
-	//    $request->all(),
-	//    array(
-	//    'first_name'=>'required',
-	// 	'last_name'=>'required',
-	// 	 'email'=>'required|email',
-	// 	  'password'=>'required',
-	// 	   'c_password'=>'required | same:password'
-	//    ), [
-	// 	   'c_password.required' => 'Confirm password is required.',
-	// 	   'c_password.same' => 'Confirm password should be same as password.'
-	//    ]
-	//   );
-	  
-	//   if($validator->fails()) {
-	// 	  return redirect()->back()->withErrors($validator)->withInput();
-	//   } 
-	//   else {
-		  
-	// 	  $id_email = DB::table('users')->select('email')->where('email',$email)->get();
-	// 	  if(count($id_email) ==0)
-	// 	  {
- 
-	// 		  $u = new User();
-	// 		  $u->name = $first_name." ".$last_name;
-	// 		  $u->email = $email;
-	// 		  $u->password = Hash::make($password);
-	// 		  $u->remember_token = $remember_token;
-	// 		  $u->user_type = 1;
-			  
-			  
-	// 		  if($u->save()) {
-	// 			//   \Session::put('emailset',$email);
-	// 			//   \Session::put('passset',$password);
-	// 			//   $admin_users_email="work@tier5.us";
-	// 			//   $user_name=$u->name;
-	// 			//   $title="Thanks for sign up with DomainLeads";
-	// 			//  $subject="DomainLeads Signup";
-	// 			//  $content="Thanks for sign up with DomainLeads";
-	// 			//  \Mail::send('emails.thankyou', ['title' => $title, 'content' => $content,'user_name'=>$user_name], function ($message)use ($admin_users_email,$email,$user_name,$subject)
-	// 			//  {
-	// 			// 	 $message->from($admin_users_email);
-	// 			// 	 $message->to($email,$user_name);
-	// 			// 	 $message->subject($subject);
-	// 			//  });
-	// 			//  \Mail::send('emails.accback', ['title' => $title, 'content' => $content,'user_name'=>$user_name,'email'=>$email], function ($message)use ($admin_users_email,$email,$user_name,$subject)
-	// 			//  {
-	// 			// 	 $message->from($email,$user_name);
-	// 			// 	 $message->to($admin_users_email);
-	// 			// 	 $message->subject($subject);
-	// 			//  });
-	// 			$userdata = ['email' => $email, 'password' => $password];
-	// 			if (Auth::validate($userdata)) {
-	// 				if (Auth::attempt($userdata)) {
-	// 					return redirect('search');
-	// 				} else {
-	// 					return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
-	// 				}
-	// 			  } else {
-	// 				return redirect()->back()->with('error', 'PLEASE CHECK YOUR EMAIL AND PASSWORD! ');
-	// 			  }
-	// 			return \Response::json(array("msg"=>"success" , "user_id"=>$u->id));
-	// 		  }
-	// 		  else {
-	// 			 return \Response::json(array("msg"=>"error2" , "user_id"=>null));
-	// 		 }
-	// 	  }   
-	// 	  return \Response::json(array("msg"=>"error3" , "user_id"=>null));
-		  
-	//   }
-	// }
-
-
-
-	public function signupPost(Request $request) {
-		
+	public function signupPost(Request $request) {	
 		try {
 
 			DB::beginTransaction();
@@ -541,10 +458,10 @@ class AccountController extends Controller
 			$stripeToken	=	$request->stripe_token;
 			
 			$validator=Validator::make($request->all(), [
-				'full_name'	=>'required',
-				'email'		=>'required|email',
-				'password'	=>'required',
-				'cpassword'=>'required | same:password'
+				'full_name'	=>	'required',
+				'email'		=>	'required|email',
+				'password'	=>	'required',
+				'cpassword'	=>	'required | same:password'
 			], [
 				'cpassword.required' => 'Confirm password is required.',
 				'cpassword.same' => 'Confirm password should be same as password.'
@@ -554,7 +471,6 @@ class AccountController extends Controller
 				return redirect()->back()->withErrors($validator)->withInput();
 			} else {	
 				$id_email = User::where('email', $email)->select('email')->first();
-				
 				if(!$id_email) {
 					$newUser 					= 	new User();
 					$newUser->name 				= 	$fullName;
@@ -577,6 +493,9 @@ class AccountController extends Controller
 						$userdata = ['email' => $email, 'password' => $password];
 						if (Auth::validate($userdata)) {
 							if (Auth::attempt($userdata)) {
+								$this->sendFirstEmailOnSuccessfulRegistration($newUser);
+								$this->sendAcknowledgeMailToAdmin($newUser);
+								$this->sendEmailConfirmation($newUser);
 								DB::commit();
 								return redirect('search')->with('first_visit', 'Yes');
 							} else {

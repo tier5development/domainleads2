@@ -62,7 +62,13 @@ trait EmailTrait {
                 $message->subject($subject);
             });
 
+            if(count(Mail::failures()) > 0) {
+                Log::info('Sent email for email verification failed');
+                return ['status' => false, 'Mail was not sucessfully sent. Please try again'];
+            }
+            return ['status' => true, 'Mail was sucessfully sent.'];
         } catch(Throwable $e) {
+            Log::info('Sent email for email verification failed as : '.$e->getMessage());
             throw $e;
         }
     }
@@ -87,10 +93,12 @@ trait EmailTrait {
             });
 
             if(count(Mail::failures()) > 0){
+                Log::info(' sent email for confirmation failed ');
                 return ['status' => false, 'Mail was not sucessfully sent. Please try again'];
             }
             return ['status' => true, 'Mail was sucessfully sent.'];
         } catch(Throwable $e) {
+            Log::info(' sent email for confirmation failed : '.$e->getMessage());
             throw $e;
         }
     }
@@ -114,11 +122,13 @@ trait EmailTrait {
                 $message->to($adminEmail);
                 $message->subject($subject);
             });
-            if(count(Mail::failures()) > 0){
+            if(count(Mail::failures()) > 0) {
+                Log::info(' sent email for admin acknowledgement failed ');
                 return ['status' => false, 'Mail was not sucessfully sent. Please try again'];
             }
             return ['status' => true, 'Mail was sucessfully sent.'];
         } catch(Throwable $e) {
+            Log::info(' sent email for admin acknowledgement failed : '.$e->getMessage());
             throw $e;
         }
     }
