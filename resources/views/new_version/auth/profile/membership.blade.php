@@ -116,6 +116,7 @@
                     },
                     type :"post",
                     beforeSend : function() {
+                        $('.alertBox').find('.close').trigger('click');
                         $('#loader-icon').show();
                     },  success: function(resp) {
                         console.log(resp);
@@ -186,6 +187,7 @@
 
         var changePlan = function(t) {
             console.log('in func');
+            $('.alertBox').find('.close').trigger('click');
             // If user has card info saved charge himright away, else show him stripe form.
             planToUpgrade = $(t).data('plan');
             if(planToUpgrade == currentPlan) {
@@ -215,7 +217,6 @@
                             $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
                         }
                     }
-                    
                 }, error: function(er) {
                     $('#loader-icon').hide();
                     if(er.status == 401) {

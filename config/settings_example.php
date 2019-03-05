@@ -1,6 +1,8 @@
 <?php
 return [
     'ADMIN-EMAIL' => 'work@tier5.us',
+    'PRODUCT' => 'Domainleads',
+    'AFFILIATE-HOOK' => 'http://192.168.1.33:8080',
     'ISLIVE' => false,
     'LIMIT-PER-DAY' => 50,
     'LANDING-DOMAIN' => 'http://domainleads.local',
@@ -57,6 +59,8 @@ return [
         ], 'INVOICE' => [
             'invoice.payment_failed',
             'invoice.payment_succeeded'
+        ], 'CUSTOMER' => [
+            'customer.deleted'
         ]
     ]
 ];

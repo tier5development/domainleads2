@@ -210,18 +210,24 @@ class StripeHelper {
             \Stripe\Stripe::setApiVersion("2018-10-31");
             \Stripe\Stripe::setApiKey($keySecond);
             $subscriptionObj = \Stripe\WebhookEndpoint::create([
-                "url" =>   route('customerSubscriptionDeleted'), // route('customerSubscriptionDeleted'), // 'http://42d21ff8.ngrok.io/api/stripe/customer-subscription-updated' 
+                "url" =>   'http://fa2c6a6b.ngrok.io/api/stripe/customer-subscription-updated', // route('customerSubscriptionDeleted'), // 'http://fa2c6a6b.ngrok.io/api/stripe/customer-subscription-updated' 
                 "enabled_events" => config('settings.WEBHOOKS.SUBSCRIPTION')
             ]);
 
             $invoiceObj = \Stripe\WebhookEndpoint::create([
-                "url" =>   route('customerInvoicePaymentFailed'), // route('customerInvoicePaymentFailed'), // 'http://8271b9da.ngrok.io/api/stripe/customer-invoice-payment_failed',
+                "url" =>   'http://fa2c6a6b.ngrok.io/api/stripe/customer-invoice-payment_failed', // route('customerInvoicePaymentFailed'), // 'http://fa2c6a6b.ngrok.io/api/stripe/customer-invoice-payment_failed',
                 "enabled_events" => config('settings.WEBHOOKS.INVOICE')
+            ]);
+
+            $customerObj = \Stripe\WebhookEndpoint::create([
+                "url" =>   'http://fa2c6a6b.ngrok.io/api/stripe/customer-deleted', // route('customerDeleted'), // 'http://fa2c6a6b.ngrok.io/api/stripe/customer-invoice-payment_failed',
+                "enabled_events" => config('settings.WEBHOOKS.CUSTOMER')
             ]);
             return [
                 'subscription'  =>  $subscriptionObj,
-                'invoice'       =>  $invoiceObj
-            ];    
+                'invoice'       =>  $invoiceObj,
+                'customer'      =>  $customerObj
+            ];
         } catch(Throwable $e) {
             throw $e;
         }

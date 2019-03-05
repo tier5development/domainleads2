@@ -322,14 +322,8 @@ use \Carbon\Carbon;
                     $user->stripe_subscription_obj = json_encode($subscriptionData, true);
                     $user->user_type = $plan;
                     $user->is_subscribed = config('settings.SUBSCRIPTIONS.'.$subscriptionData->status);
-                    // if($subscriptionData->status == 'cancelled' || $subscriptionData->status == 'unpaid' || $subscriptionData->status == 'past_due') {
-                    //     $user->is_subscribed = 0;
-                    // } else if($subscriptionData->status == 'trialing') {
-                    //     $user->is_subscribed = 1;
-                    // } else if($subscriptionData->status == 'active') {
-                    //     $user->is_subscribed = 2;
-                    // }
                     $user->save();
+                    Log::info('User saved : cust id '.$user->stripe_customer_id);
                     return [
                         'status'            =>  $user->is_subscribed == 1 || $user->is_subscribed == 2 ? true : false,
                         'cardUpdated'       =>  $user->card_updated == 1 ? true : false,

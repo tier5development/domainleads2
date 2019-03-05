@@ -38,8 +38,12 @@ class SubscribedUser
                     return $next($request);
                 }
             } else if($user->is_subscribed == config('settings.SUBSCRIPTIONS.canceled')) {
-                Auth::logout();
-                return redirect()->route('loginPage')->with('fail', 'Your subscription is canceled!');
+                // work+sukojumi@tier5.us
+                if(\Request::route()->getName() == 'showMembershipPage' || \Request::route()->getName() == 'updateCardDetailsAndSubscribe' || \Request::route()->getName() == 'upgradeOrDowngradePlan') {
+                    return $next($request);
+                } else {
+                    return redirect()->route('showMembershipPage')->with('fail', 'Oops! Your subscription seems to have been canceled. Please choose a subscription to continue.');
+                }
             }
             return $next($request);
         }

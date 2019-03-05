@@ -15,6 +15,32 @@
 // use Zipper as Zipper;
 // use App\Helpers\StripeHelper;
 // use App\StripeDetails;
+use App\User;
+
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+
+Route::get('tstrt', function() {
+    $user = User::where('stripe_customer_id', 'cus_EdxoKkhcLgdqWp')->first();
+    dd($user);
+    $client = new Client(); //GuzzleHttp\Client
+    $result = $client->post('http://192.168.1.33:8080/hooks/sales', [
+        'form_params' => [
+                "product_name" 		 		 => "DL",
+                "ammount"  	 		 	 	 => 100, 
+                "payment_type" 		 		 => 1,
+                "trial_period" 		 		 => 0,
+                "date_registered"  			 => "2018-03-01",
+                "affiliateId" 		    	 => "1005199996",
+                "email"  					 => "sail27@email.com"
+        ]
+    ])->getBody()->getContents();
+    $res = str_replace("\n", "", $result);
+    $res = json_decode($res);
+    dd($res);
+    dd($res->payload->saleId);
+    dd(json_decode(json_encode(str_replace("\n", "", $result), true), true));
+});
 
 Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
 Route::get('/signup', ['uses' => 'AccountController@signupPage', 'as' => 'signupPage']);

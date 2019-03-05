@@ -44,4 +44,10 @@ Route::group(['prefix' => 'stripe', 'namespace' => 'Stripe'], function() {
      * from stripe webhooks
      */
     Route::any('customer-invoice-payment_failed', ['uses' => 'StripeWebhooksController@customerInvoicePaymentFailed', 'as' => 'customerInvoicePaymentFailed']);
+
+    /**
+     * Listens customer.deleted from stripe
+     * from stripe webhooks
+     */
+    Route::any('customer-deleted', ['uses' => 'StripeWebhooksController@customerDeleted', 'as' => 'customerDeleted']);
 });

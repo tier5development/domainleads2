@@ -49,4 +49,13 @@ class User extends Authenticatable
         }
         return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
     }
+
+    /**
+     * This update is called when a sale is registered
+     */
+    public function updateSale($res) {
+        $user = $this;
+        $user->sale_id = $res->payLoad->saleId;
+        $user->save();
+    }
 }
