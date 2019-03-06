@@ -40,14 +40,18 @@ class User extends Authenticatable
         if(strlen(trim($this->affiliate_id)) == 0) {
             return true;
         }
-        return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
+        // else we only care if this user is attached to stripe
+        return strlen(trim($this->stripe_customer_id)) > 0 ? true : false;
+        // return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
     }
 
     public function isDowngradable() {
         if(strlen(trim($this->affiliate_id)) == 0) {
             return true;
         }
-        return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
+        // else we only care if this user is attached to stripe
+        return strlen(trim($this->stripe_customer_id)) > 0 ? true : false;
+        // return strlen(trim($this->affiliate_id)) > 0 && $this->user_type > $this->base_type && $this->is_hooked == '1' ? true : false;
     }
 
     /**
@@ -55,7 +59,7 @@ class User extends Authenticatable
      */
     public function updateSale($res) {
         $user = $this;
-        $user->sale_id = $res->payLoad->saleId;
+        $user->sale_id = $res->payload->saleId;
         $user->save();
     }
 }

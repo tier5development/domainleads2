@@ -486,9 +486,8 @@ class AccountController extends Controller
 					$newUser->save();
 					$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
 					$newUser 					= 	$return['user'];
-
 					if($return['status'] == true) {
-
+						DB::commit();	
 						// The user got subscribed successfully
 						$userdata = ['email' => $email, 'password' => $password];
 						if (Auth::validate($userdata)) {
@@ -496,7 +495,7 @@ class AccountController extends Controller
 								$this->sendFirstEmailOnSuccessfulRegistration($newUser);
 								$this->sendAcknowledgeMailToAdmin($newUser);
 								$this->sendEmailConfirmation($newUser);
-								DB::commit();
+								
 								return redirect('search')->with('first_visit', 'Yes');
 							} else {
 								DB::rollback();
@@ -506,7 +505,6 @@ class AccountController extends Controller
 							DB::rollback();
 							return redirect()->back()->with('error', 'Please check your email and password!');
 						}
-						
 					} else {
 						DB::rollback();
 						// Subscription failure

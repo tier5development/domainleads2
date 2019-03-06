@@ -149,7 +149,7 @@ class UserHelper {
             $affiliateId    =   $request->affiliate_id;
             $name           =   $request->name;
             $validator      =   Validator::make($request->all(), ['email' => 'required|email|max:255']);
-
+            $isHooked       =   $request->has('is_hooked') ? (string)$request->is_hooked : '0';
             if($validator->fails()) {
                 return response()->json([
                     'status'    =>  false,
@@ -190,7 +190,8 @@ class UserHelper {
             if(strlen($affiliateId) > 0) {
                 $newUser->base_type = $usertype;
             }
-            $newUser->affiliate_id = $affiliateId;
+            $newUser->affiliate_id  =   $affiliateId;
+            $newUser->is_hooked     =   $isHooked;
 
             if($newUser->save()) {
                 return response()->json([

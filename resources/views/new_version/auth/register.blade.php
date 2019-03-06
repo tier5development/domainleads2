@@ -447,6 +447,7 @@
                         console.log('stripe success detected : ', resp);
                         // Trigger form submit
                         $("#stripe_token_field").val(resp.id);
+                        console.log('affiliate_id', Cookies.get('affiliate_id'));
                         if(Cookies.get('affiliate_id') != undefined) {
                             $("#affiliate_id").val(Cookies.get('affiliate_id'));
                         }

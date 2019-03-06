@@ -41,7 +41,8 @@ return [
         ],
         'HIGHEST-UPGRADABLE' => 4,
         'LOWEST-DOWNGRADABLE' => 1,
-        'NON-DISPLAYABLE' => 2
+        'NON-DISPLAYABLE' => 2,
+        'BASIC-TRIAL-PERIOD' => 14,
     ],
     'SUBSCRIPTIONS' => [
         'trialing'  =>  1,

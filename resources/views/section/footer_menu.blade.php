@@ -26,11 +26,12 @@
         Cookies.set('plan', plan);
     }
 
-    $(document).ready(function() {    
+    $(document).ready(function() {
+        console.log('i am getting executed');
         var old_affiliate_id = Cookies.get('affiliate_id');
         var affiliate_id = getUrlParams('affiliate_id');
-        console.log('ready : ', affiliate_id, Cookies.get('affiliate_id'));
-        if(old_affiliate_id == 'undefined') {
+        console.log('ready : ', affiliate_id, Cookies.get('affiliate_id'), old_affiliate_id == undefined);
+        if(old_affiliate_id == undefined) {
             if(affiliate_id != null) {
                 Cookies.set('affiliate_id', affiliate_id, { expires: 7 });
                 console.log('af id : ', Cookies.get('affiliate_id'));

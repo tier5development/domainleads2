@@ -30,13 +30,15 @@ trait AffiliatesTrait {
      */
     public function registerSale($type, $user, $trial = 0) {
         try {
-            Log::info('in registerSale , '.$type);
+            
+            Log::info('**** IN registerSale **** '.$type);
             $plan = $user->user_type;
-            $amount = config('settings.PLAN.PUBLISHABLE'.$plan)[1];
+            $amount = config('settings.PLAN.PUBLISHABLE.'.$plan)[1];
             $url = '/hooks/sales';
             $client = new Client();
             switch($type) {
                 case 'created' : 
+                Log::info('url : '.config('settings.AFFILIATE-HOOK').$url);
                     $result = $client->post(config('settings.AFFILIATE-HOOK').$url, [
                         'form_params' => [
                                 "product_name"      => config('settings.PRODUCT'),
@@ -78,7 +80,7 @@ trait AffiliatesTrait {
                     $result = $client->post(config('settings.AFFILIATE-HOOK').$url, [
                         'form_params' => [
                                 "saleId"            => $user->sale_id,
-                                "is_active" 		=> true
+                                "is_active" 		=> false
                         ]
                     ])->getBody()->getContents();
                     break;

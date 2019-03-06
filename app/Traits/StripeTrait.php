@@ -301,7 +301,8 @@ use \Carbon\Carbon;
                     // We expect there is a subscription id accross this user, and this users card is already updated.
                     if(strlen(trim($subscriptionId)) == 0) {
                         // Create a new subscription.
-                        $subscriptionData   =   StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, getPlanName($plan));
+                        $trialPeriod = $plan == 1 ? config('settings.PLAN.BASIC-TRIAL-PERIOD') : null;
+                        $subscriptionData   =   StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, getPlanName($plan), $trialPeriod);
                     } else {
                         // Upgrade user to a new subscription.
                         $subscriptionData	= 	StripeHelper::changeSubscription($stripeDetails, $subscriptionId, getPlanName($plan));
@@ -322,6 +323,7 @@ use \Carbon\Carbon;
                     $user->stripe_subscription_obj = json_encode($subscriptionData, true);
                     $user->user_type = $plan;
                     $user->is_subscribed = config('settings.SUBSCRIPTIONS.'.$subscriptionData->status);
+                    $user->base_type    = '0'; // as we track this user in stripe the user can downgrade to the minimal plan.
                     $user->save();
                     Log::info('User saved : cust id '.$user->stripe_customer_id);
                     return [

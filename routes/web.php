@@ -21,8 +21,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
 Route::get('tstrt', function() {
-    $user = User::where('stripe_customer_id', 'cus_EdxoKkhcLgdqWp')->first();
-    dd($user);
+    // $plan = 1;
+    // dd(config('settings.PLAN.PUBLISHABLE.'.$plan)[1]);
+    // \Stripe\Stripe::setApiKey("sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc");
+
+    // $x = \Stripe\Plan::retrieve('dl-tier1');
+    // dd($x);
+
+    // dd(\Carbon\Carbon::now()->format('Y-m-d'));
+    // $user = User::where('stripe_customer_id', 'cus_EdxoKkhcLgdqWp')->first();
+    // dd($user);
     $client = new Client(); //GuzzleHttp\Client
     $result = $client->post('http://192.168.1.33:8080/hooks/sales', [
         'form_params' => [
@@ -32,12 +40,12 @@ Route::get('tstrt', function() {
                 "trial_period" 		 		 => 0,
                 "date_registered"  			 => "2018-03-01",
                 "affiliateId" 		    	 => "1005199996",
-                "email"  					 => "sail27@email.com"
+                "email"  					 => "sail41@email.com"
         ]
     ])->getBody()->getContents();
     $res = str_replace("\n", "", $result);
     $res = json_decode($res);
-    dd($res);
+    // dd($res);
     dd($res->payload->saleId);
     dd(json_decode(json_encode(str_replace("\n", "", $result), true), true));
 });
