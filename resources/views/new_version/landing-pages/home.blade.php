@@ -17,7 +17,7 @@
                 <h2>Let's face the reality</h2>
                 <h3>without the leads there is no bussiness </h3>
                 <p>The major hitch every vendor and affiliate faces is getting fresh leads which you can connect with.We have ensured that detailed information about your leads is available to you,like which is the best number to contact your leads. </p>
-                <a href="#" class="button gradiant-orange">unlock your leads</a>
+                <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
             </div>
             
             <div class="bannerContainer">
@@ -86,17 +86,17 @@
             <div class="slide slide1 active">
               <h2 class="heading">Powerful Filters</h2>
               <p class="headingInfo">Easily filter by TDL, Location, Registered Date, Valid contact info and much more. Search specific domains quickly.</p>
-              <a href="#">get started <i class="fas fa-long-arrow-alt-right"></i></a>
+              <a href="{{route('signupPage')}}">get started <i class="fas fa-long-arrow-alt-right"></i></a>
             </div>
             <div class="slide slide2">
               <h2 class="heading">Verified Phone Numbers</h2>
               <p class="headingInfo">All our leads are Verified phone Numbers and you can see what they are using, a cell phone or a land-line number.</p>
-              <a href="#">get started <i class="fas fa-long-arrow-alt-right"></i></a>
+              <a href="{{route('signupPage')}}">get started <i class="fas fa-long-arrow-alt-right"></i></a>
             </div>
             <div class="slide slide3">
               <h2 class="heading">User-friendly CRM</h2>
               <p class="headingInfo">Not only do we offer fresh and high-quality leads, we also ensure that it’s user-friendly CRM. You can easily unlock your leads and explore.</p>
-              <a href="#">get started <i class="fas fa-long-arrow-alt-right"></i></a>
+              <a href="{{route('signupPage')}}">get started <i class="fas fa-long-arrow-alt-right"></i></a>
             </div>
           </div>
           
@@ -140,7 +140,7 @@
             <p class="headingInfo">Our leads have opted in and typically convert for <br>the following services</p>
             <span>10.2m+</span>
             <p>Leads unlocked in our platform</p>
-            <a href="#" class="button gradiant-orange">unlock your leads</a>
+            <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
           </div>
         </div>
       </div>
@@ -153,7 +153,23 @@
         <h2 class="heading">What our <span>users</span> say?</h2>
         <p class="headingInfo">Design Firms, Development Firms, Digital Marketing Agencies, are using our<br> system to get new clients and sell their services. See how they like it.</p>
         <div class="userImages">
-          <div class="tooltip userImg1 round">
+
+          @foreach ($reviews as $key => $review)
+            <div class="tooltip userImg{{$key+1}} round {{$key+1 > 7 ? 'showLeft' : ($key+1 >= 9 && $key+1 <= 11 ? 'showBottom' : '')}}">
+              <div class="userImgContainer">
+                <img src="{{$review->img}}" alt="user1">
+              </div>
+              <div class="arrow-left">
+                <span class="tooltiptext">
+                  <p>{{$review->review}}</p>
+                  <h3>{{$review->name}}</h3>
+                  <h6>Partner - Tier5 Affiliates</h6>
+                </span>
+              </div>
+            </div>    
+          @endforeach
+
+          {{-- <div class="tooltip userImg1 round">
             <div class="userImgContainer">
                 <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/Profile_circle@2x.png" alt="user1">
             </div>
@@ -308,7 +324,7 @@
                 <h6>founder - skybound digital</h6>
               </span>
             </div>
-          </div>
+          </div> --}}
         </div>
 
         <div class="reviewSlider">
@@ -354,54 +370,42 @@
       <h2 class="heading">Pick a plan & start unlocking your leads</h2>
       <p class="headingInfo">Your business boosts right from here</p>
       <div class="eachPlanContainer">
-        <div class="eachPlanOuter">
-          <div class="eachPlan">
-            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png">
-            <h4>basic</h4>
-            <ul>
-              <li>50 leads a day</li>
-              <li>location filters</li>
-              <li>keywords filters</li>
-              <li>TLD filters</li>
-              <li>lead exports</li>
-            </ul>
-            <h3>$47</h3>
-            <span>Billed monthly, no set up fee.</span>
-            <a href="#" class="button gradiant-orange">get started</a>
+        @foreach (config('settings.PLAN.NAMEMAP') as $key => $item)
+        @php if($item[0] == config('settings.PLAN.NON-DISPLAYABLE')) continue; @endphp
+          <div class="eachPlanOuter">
+            <div class="eachPlan">
+              {{-- <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png"> --}}
+              <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[2]}}">
+              <h4>{{$item[2]}}</h4>
+              <ul>
+                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
+                <li>location filters</li>
+                <li>keywords filters</li>
+                <li>TLD filters</li>
+                <li>lead exports</li>
+              </ul>
+              <h3>${{config('settings.PLAN.PUBLISHABLE.'.$item[0])[1]}}</h3>
+              <span>Billed monthly, no set up fee.</span>
+
+              @if($user != null)
+                @if($user->user_type == config('settings.PLAN.L').$item[0])
+                    <a href="{{route('showMembershipPage')}}") data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
+                @elseif($user->user_type > config('settings.PLAN.L').$item[0])
+                    @if($user->isDowngradable())
+                        <a href="{{route('showMembershipPage')}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
+                    @endif
+                @elseif($user->user_type < config('settings.PLAN.L').$item[0])
+                    <a href="{{route('showMembershipPage')}}") data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
+                @endif
+              @else
+                <a onclick="savePlan('{{$item[0]}}')" href="{{route('signupPage')}}" class="button gradiant-orange">get started</a>
+              @endif
+              {{-- <a onclick="savePlan('{{$item[0]}}')" href="{{route('signupPage')}}" class="button gradiant-orange">get started</a> --}}
+            </div>
           </div>
-        </div>
-        <div class="eachPlanOuter">
-          <div class="eachPlan">
-            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/pro_plan.png">
-            <h4>pro</h4>
-            <ul>
-              <li>50 leads a day</li>
-              <li>location filters</li>
-              <li>keywords filters</li>
-              <li>TLD filters</li>
-              <li>lead exports</li>
-            </ul>
-            <h3>$97</h3>
-            <span>Billed monthly, no set up fee.</span>
-            <a href="#" class="button gradiant-orange">get started</a>
-          </div>
-        </div>
-        <div class="eachPlanOuter">
-          <div class="eachPlan">
-            <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/agency_plan.png">
-            <h4>agency</h4>
-            <ul>
-              <li>50 leads a day</li>
-              <li>location filters</li>
-              <li>keywords filters</li>
-              <li>TLD filters</li>
-              <li>lead exports</li>
-            </ul>
-            <h3>$197</h3>
-            <span>Billed monthly, no set up fee.</span>
-            <a href="#" class="button gradiant-orange">get started</a>
-          </div>
-        </div>
+        @endforeach
+        
+
       </div>
     </div>
   </section>
