@@ -174,18 +174,12 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class, // needed for web sockets
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-
         App\Providers\HelperServiceProvider::class,
-
         Chumper\Zipper\ZipperServiceProvider::class,
-
-         Maatwebsite\Excel\ExcelServiceProvider::class,
-
-
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -235,13 +229,10 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         //'MyHelper' => \App\Helpers\ph_no_validate::class,
-
-        'Zipper' => 'Chumper\Zipper\Zipper',
-
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Zipper'    => 'Chumper\Zipper\Zipper',
+        'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
         'Input'     => Illuminate\Support\Facades\Input::class,
-
-
+        'Pusher'    => Pusher\Pusher::class,
     ],
 
 ];

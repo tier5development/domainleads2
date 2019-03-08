@@ -138,8 +138,18 @@
           <div class="sideText">
             <h2 class="heading">lead conversion</h2>
             <p class="headingInfo">Our leads have opted in and typically convert for <br>the following services</p>
-            <span>10.2m+</span>
-            <p>Leads unlocked in our platform</p>
+            <span id="leadsUnlocked">{{$socketMeta->leads_unlocked}}</span>
+            <p>Leads unlocked in our platform</p><br>
+
+            <span id="totalDomains">{{$socketMeta->total_domains}}</span>
+            <p>Domains in our platform</p><br>
+            
+            <span id="totalUsers">{{$socketMeta->total_users}}</span>
+            <p>Users in our platform</p><br>
+
+            <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
+            <p>Leads added last day</p>
+            
             <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
           </div>
         </div>
@@ -428,7 +438,49 @@
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/lity-2.3.1.min.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+    {{-- <script src="//js.pusher.com/3.1/pusher.min.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.4.0/pusher.js"></script>
     <script>
+
+      // var io = require('socket.io')(80);
+      // var cfg = require('./config.json');
+      // var tw = require('node-tweet-stream')(cfg);
+      // tw.track('socket.io');
+      // tw.track('javascript');
+      // tw.on('tweet', function(tweet){
+      //   io.emit('tweet', tweet);
+      // });
+
+      // const socket = io("http://localhost:8000/socket.io/")
+      // io.set('origins', 'with-credentials:false');
+      // setInterval(() => {
+      //     socket.emit("info", "notice sent")
+      // }, 2000);
+      // socket.on("info", (msg) => {
+      //   console.log("socket msg : ", msg);
+      // });
+      console.log('going to enable pusher');
+      var pusher = new Pusher('1e7402944563afbc3b76', {
+        authTransport: 'ajax',
+        encrypted: true,
+        cluster: 'us3'
+      });
+      setTimeout(() => {
+        console.log(pusher);  
+      }, 3000);
+
+      var channel = pusher.subscribe('usage-info');
+
+      channel.bind('App\\Events\\UsageInfo', function(data) {
+        console.log('Event Data received', data);
+        document.getElementById('leadsUnlocked').textContent = data.leadsUnlocked;
+        document.getElementById('totalDomains').textContent = data.totalDomains;
+        document.getElementById('totalUsers').textContent = data.totalUsers;
+        document.getElementById('leadsAddedLastDay').textContent = data.leadsAddedLastDay;
+      });
+
       $(document).ready(function(){
         var hoverFlag = false;
         var counter = 1;
@@ -479,20 +531,6 @@
             //console.log(moveImg);
             lastScrollTop = st;
           });
-
-        // $(".userImages .tooltip")
-
-          // if($(window).width() <= 767){
-          //   var reviewLoop = 0;
-          //   setInterval(function(){
-          //     $(".userImages .tooltip.userImg1").css("margin-top",reviewLoop+"px");
-              
-          //     reviewLoop = reviewLoop-206;
-          //     if(reviewLoop == -2472){
-          //       reviewLoop = 0;
-          //     }
-          //   },2000);
-          // }
           
           var countReview = 0;
           var counterSlid = 0;

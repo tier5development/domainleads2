@@ -23,4 +23,5 @@
     @if(config('settings.ISLIVE') == true)
         <meta name="description" content="Latest registered domains available.">
     @endif
+    <meta name="csrf-token" content="{{csrf_token()}}">
 </head>

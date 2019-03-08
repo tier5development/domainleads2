@@ -13,6 +13,7 @@ use App\StripeDetails;
 use App\Traits\StripeTrait;
 use App\Traits\EmailTrait;
 use App\Review;
+use App\SocketMeta;
 class AccountController extends Controller
 {
 	use StripeTrait, EmailTrait;
@@ -534,6 +535,7 @@ class AccountController extends Controller
 		$data['stripeDetails']	=	StripeDetails::first();
 		$data['user'] 			= 	Auth::check() ? Auth::user() : null;
 		$data['reviews'] 		= 	Review::take(13)->get();
+		$data['socketMeta']		= 	SocketMeta::first();
 		return view('new_version.landing-pages.home', $data);
 	}
 

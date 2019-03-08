@@ -7,6 +7,8 @@ use App\User;
 use App\LeadUser;
 use \Carbon\Carbon, Hash, Validator, Auth;
 use App\Helpers\UserHelper;
+use App\SocketMeta;
+use App\Events\UsageInfo;
 class UserHelper {
 
     /**
@@ -194,6 +196,12 @@ class UserHelper {
             $newUser->is_hooked     =   $isHooked;
 
             if($newUser->save()) {
+
+                $socketMeta = SocketMeta::first();
+                $socketMeta->total_users++;
+                $socketMeta->save();
+                event(new UsageInfo());
+
                 return response()->json([
                     'status'    =>  true,
                     'message'   =>  'User Created successfully',
@@ -256,6 +264,12 @@ class UserHelper {
             }
             
             if($deleteInfo > 0) {
+
+                $socketMeta = SocketMeta::first();
+                $socketMeta->total_users--;
+                $socketMeta->save();
+                event(new UsageInfo());
+
                 return response()->json([
                     'status' => true,
                     'message' => 'User Deleted successfully'

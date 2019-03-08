@@ -21,6 +21,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
 Route::get('tstrt', function() {
+    event(new App\Events\UsageInfo());
+    dd('emitted');
     // $plan = 1;
     // dd(config('settings.PLAN.PUBLISHABLE.'.$plan)[1]);
     // \Stripe\Stripe::setApiKey("sk_test_DNWnAEwDLv6BD7Z6E2X1sWBc");
