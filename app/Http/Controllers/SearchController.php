@@ -29,6 +29,8 @@ use Input, DateTime;
 use Illuminate\Pagination\Paginator;
 use \Carbon\Carbon as Carbon;
 use App\Helpers\UserHelper;
+use App\SocketMeta;
+use App\Events\UsageInfo;
 
 class SearchController extends Controller
 {
@@ -390,6 +392,10 @@ public function download_csv_single_page(Request $request)
         $data->unlocked_num++;
         if($data->save() && $leaduser->save())
         {
+          $socketMeta = SocketMeta::first();
+          $socketMeta->leads_unlocked++;
+          $socketMeta->save();
+          event(new UsageInfo());
           // Compose a view to render the html
           $usageMatrix = UserHelper::getUsageMatrix();
           $country_codes = country_codes();
@@ -487,6 +493,12 @@ public function download_csv_single_page(Request $request)
         $data->unlocked_num++;
         if($data->save() && $leaduser->save())
         {
+
+          $socketMeta = SocketMeta::first();
+          $socketMeta->leads_unlocked++;
+          $socketMeta->save();
+          event(new UsageInfo());
+
           $array = array();
           $array['leadsUnlocked'] = $count + 1;
           $array['status'] = true;

@@ -27,6 +27,8 @@ use Illuminate\Http\Request;
 use \App\CSV;
 use \App\Lead;
 use \App\EachDomain;
+use App\SocketMeta;
+use App\Events\UsageInfo;
 
 use App\Helpers\ImportCsvHelper;
 use Log, PharData;
@@ -107,6 +109,10 @@ class ImportExport extends Controller
         $obj->status            = 2;
         $obj->query_time        = $end;
         $obj->save();
+        $socketMeta = SocketMeta::first();
+        $socketMeta->leads_added_last_day = $leads_inserted;
+        $socketMeta->save();
+        event(new UsageInfo());
 
         return \Response::json(array('TOTAL TIME TAKEN:'=>$end." seconds",
                                   'leads_inserted'=>$leads_inserted,

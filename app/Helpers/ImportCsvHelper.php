@@ -24,7 +24,8 @@ use Zipper;
 use Excel;
 use App\Jobs\ImportCsv;
 use Session;
-
+use App\SocketMeta;
+use App\Events\UsageInfo;
 class ImportCsvHelper {
 
 public $Area_state = array();
@@ -121,6 +122,11 @@ private function destroy()
         $obj->status            = 2;
         $obj->query_time        = $end;
         $obj->save();
+
+        $socketMeta = SocketMeta::first();
+        $socketMeta->leads_added_last_day = $leads_inserted;
+        $socketMeta->save();
+        event(new UsageInfo());
 
         return \Response::json(array('TOTAL TIME TAKEN:'=>$end." seconds",
                                   'leads_inserted'=>$leads_inserted,

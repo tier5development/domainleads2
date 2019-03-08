@@ -14,6 +14,7 @@ use App\Traits\StripeTrait;
 use App\Traits\EmailTrait;
 use App\Review;
 use App\SocketMeta;
+use App\Events\UsageInfo;
 class AccountController extends Controller
 {
 	use StripeTrait, EmailTrait;
@@ -73,6 +74,10 @@ class AccountController extends Controller
 				$user->is_subscribed 		= 	config('settings.SUBSCRIPTION.'.$response['response']['status']);
 				Auth::logout();
 				$user->delete();
+				$socketMeta = SocketMeta::first();
+                $socketMeta->total_users--;
+                $socketMeta->save();
+                event(new UsageInfo());
 				Log::info('level 2 cleared in cancel membership : success');
 				// $user->delete();
 				return response()->json([

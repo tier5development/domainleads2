@@ -8,7 +8,8 @@ use App\User;
 use \Carbon\Carbon, Hash, Validator, Log, Throwable, DB;
 use App\Helpers\UserHelper;
 use App\Traits\AffiliatesTrait;
-
+use App\SocketMeta;
+use App\Events\UsageInfo;
 class StripeWebhooksController extends Controller 
 {
     use AffiliatesTrait;
@@ -126,6 +127,10 @@ class StripeWebhooksController extends Controller
             $user = User::where('stripe_customer_id', $customerId)->first();
             if($user) {
                 $user->delete();
+                $socketMeta = SocketMeta::first();
+                $socketMeta->total_users--;
+                $socketMeta->save();
+                event(new UsageInfo());
                 Log::info('User deleted successfully');    
             }
             DB::commit();
