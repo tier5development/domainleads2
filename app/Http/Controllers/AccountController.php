@@ -490,6 +490,9 @@ class AccountController extends Controller
 					$newUser->is_hooked 		=	'0';
 					$newUser->email_verified	= 	'0';
 					$newUser->save();
+
+					
+
 					$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
 					$newUser 					= 	$return['user'];
 					if($return['status'] == true) {
@@ -501,7 +504,10 @@ class AccountController extends Controller
 								$this->sendFirstEmailOnSuccessfulRegistration($newUser);
 								$this->sendAcknowledgeMailToAdmin($newUser);
 								$this->sendEmailConfirmation($newUser);
-								
+								$socketMeta = SocketMeta::first();
+								$socketMeta->total_users++;
+								$socketMeta->save();
+								event(new UsageInfo());
 								return redirect('search')->with('first_visit', 'Yes');
 							} else {
 								DB::rollback();

@@ -10,27 +10,18 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-
-// use App\LeadUser;
-// use App\EachDomain;
-// use App\User;
-// use App\Lead;
 use App\SocketMeta;
-use \Carbon\Carbon;
 class UsageInfo implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    // public $leadsUnlocked;
-    // public $totalDomains;
-    // public $totalUsers;
-    // public $leadsAddedLastDay;
     /**
      * Create a new event instance.
      *
      * @return void
      */
+    public $socketMeta;
     public function __construct() {
+        $this->socketMeta = SocketMeta::first();
         // $this->leadsUnlocked        =   LeadUser::count();
         // $this->totalDomains         =   EachDomain::count();
         // $this->totalUsers           =   User::count();
@@ -50,10 +41,10 @@ class UsageInfo implements ShouldBroadcastNow
 
     public function broadcastWith() {
         return [
-            'leadsUnlocked'     =>  $this->leadsUnlocked,
-            'totalDomains'      =>  $this->totalDomains,
-            'totalUsers'        =>  $this->totalUsers,
-            'leadsAddedLastDay' =>  $this->leadsAddedLastDay
+            'leadsUnlocked'     =>  $this->socketMeta->leads_unlocked,
+            'totalDomains'      =>  $this->socketMeta->total_domains,
+            'totalUsers'        =>  $this->socketMeta->total_users,
+            'leadsAddedLastDay' =>  $this->socketMeta->leads_added_last_day
         ];
     }
 }
