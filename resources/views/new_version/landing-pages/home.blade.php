@@ -149,7 +149,7 @@
 
             <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
             <p>Leads added last day</p>
-            
+
             <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
           </div>
         </div>
@@ -443,38 +443,14 @@
     {{-- <script src="//js.pusher.com/3.1/pusher.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.4.0/pusher.js"></script>
     <script>
-
-      // var io = require('socket.io')(80);
-      // var cfg = require('./config.json');
-      // var tw = require('node-tweet-stream')(cfg);
-      // tw.track('socket.io');
-      // tw.track('javascript');
-      // tw.on('tweet', function(tweet){
-      //   io.emit('tweet', tweet);
-      // });
-
-      // const socket = io("http://localhost:8000/socket.io/")
-      // io.set('origins', 'with-credentials:false');
-      // setInterval(() => {
-      //     socket.emit("info", "notice sent")
-      // }, 2000);
-      // socket.on("info", (msg) => {
-      //   console.log("socket msg : ", msg);
-      // });
-      console.log('going to enable pusher');
-      var pusher = new Pusher('1e7402944563afbc3b76', {
+      
+      var pusher = new Pusher("{{config('broadcasting.connections.pusher.key')}}", {
         authTransport: 'ajax',
-        encrypted: true,
-        cluster: 'us3'
+        encrypted: {{config('broadcasting.connections.pusher.options.encrypted')}},
+        cluster: "{{config('broadcasting.connections.pusher.options.cluster')}}"
       });
-      setTimeout(() => {
-        console.log(pusher);  
-      }, 3000);
-
       var channel = pusher.subscribe('usage-info');
-
       channel.bind('App\\Events\\UsageInfo', function(data) {
-        console.log('Event Data received', data);
         document.getElementById('leadsUnlocked').textContent = data.leadsUnlocked;
         document.getElementById('totalDomains').textContent = data.totalDomains;
         document.getElementById('totalUsers').textContent = data.totalUsers;
