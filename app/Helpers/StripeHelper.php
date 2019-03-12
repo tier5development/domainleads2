@@ -317,7 +317,7 @@ class StripeHelper {
                 ]]
             ];
 
-            if($trialPeriod != null) {
+            if($trialPeriod != null && $trialPeriod > 0) {
                 $array['trial_period_days'] = $trialPeriod;
             }
             Log::info('in chargeSubscription : ', $array);
