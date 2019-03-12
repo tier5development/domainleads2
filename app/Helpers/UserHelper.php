@@ -88,6 +88,7 @@ class UserHelper {
             if($validator->fails()) {
                 return response()->json([
                     'status' => false,
+                    'http_code' => 400,
                     'message' => $validator->errors()->first('email').' '.$validator->errors()->first('user_type')
                 ], 200);
             }
@@ -99,11 +100,13 @@ class UserHelper {
                 if(!$user) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => 'This user does not exist.'
                     ], 200);
                 } else {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => 'This user is suspended. Please unsuspend this user to proceed with further actions!'
                     ], 200);
                 }
@@ -115,18 +118,21 @@ class UserHelper {
             if($user->save()) {
                 return response()->json([
                     'status'    => true,
+                    'http_code' => 200,
                     'message'   => 'User Updated successfully',
                     'email'     => $user->email
                 ]);
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Cannot connect to database, Try again later'
+                    'http_code' => 400,
+                    'message' => 'Cannot connect to database, Try again later.'
                 ]);
             }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => false,
+                'http_code' => 400,
                 'message' => 'ERROR : '.$e->getMessage(). ' LINE : '.$e->getLine()
             ], 200);
         }
@@ -155,12 +161,14 @@ class UserHelper {
             if($validator->fails()) {
                 return response()->json([
                     'status'    =>  false,
+                    'http_code' =>  400,
                     'message'   =>  $validator->errors()->first('email')
                 ], 200);
             }
             if(User::where('email', $email)->first()) {
                 return response()->json([
                     'status' => false,
+                    'http_code' => 400,
                     'message' => 'This email is already registered!'
                 ], 200);
             }
@@ -170,6 +178,7 @@ class UserHelper {
                 if(!is_numeric($request->user_type) || $request->user_type < 1 || $request->user_type > config('settings.PLAN.L1') + 1) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => 'Invalid user type provided, user types should be in between 1 and '.(config('settings.PLAN.L1') + 1)
                     ], 200);
                 } else {
@@ -204,18 +213,21 @@ class UserHelper {
 
                 return response()->json([
                     'status'    =>  true,
+                    'http_code' =>  200,
                     'message'   =>  'User Created successfully',
                     'email'     =>  $newUser->email
                 ]);
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Cannot connect to database, Try again later'
+                    'http_code' => 400,
+                    'message' => 'Cannot connect to database, Try again later.'
                 ]);
             }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => false,
+                'http_code' => 400,
                 'message' => 'ERROR : '.$e->getMessage(). ' LINE : '.$e->getLine()
             ], 200);
         }
@@ -238,6 +250,7 @@ class UserHelper {
                 if(!\Auth::check()) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => 'You are not authenticated!'
                     ], 200);
                 }
@@ -247,6 +260,7 @@ class UserHelper {
                 if($validator->fails()) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => $validator->errors()->first('id')
                     ], 200);
                 }
@@ -257,6 +271,7 @@ class UserHelper {
                 if($validator->fails()) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => $validator->errors()->first('email')
                     ], 200);
                 }
@@ -272,17 +287,20 @@ class UserHelper {
 
                 return response()->json([
                     'status' => true,
+                    'http_code' => 200,
                     'message' => 'User Deleted successfully'
                 ], 200);
             } else {
                 return response()->json([
                     'status' => false,
+                    'http_code' => 400,
                     'message' => 'No such user or user alredy deleted!'
                 ], 200);
             }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => false,
+                'http_code' => 400,
                 'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
             ], 200);
         }
@@ -306,6 +324,7 @@ class UserHelper {
             if($validator->fails()) {
                 return response()->json([
                     'status'    => false,
+                    'http_code' => 400,
                     'message'   => $validator->errors()->first('email'),
                     'email'     => $email
                 ], 200);
@@ -315,6 +334,7 @@ class UserHelper {
             if(!$user) {
                 return response()->json([
                     'status'    => false,
+                    'http_code' => 400,
                     'message'   => 'This user may have been deleted!',
                     'email'     => $email
                 ], 200);
@@ -322,6 +342,7 @@ class UserHelper {
             if($user->suspended == '1') {
                 return response()->json([
                     'status'    => false,
+                    'http_code' => 400,
                     'message'   => 'This user is already suspended!',
                     'email'     => $user->email
                 ], 200);
@@ -330,6 +351,7 @@ class UserHelper {
             $user->save();
             return response()->json([
                 'status'    => true,
+                'http_code' => 200,
                 'message'   => 'User suspended successfully!',
                 'email'     => $user->email
             ], 200);
@@ -337,6 +359,7 @@ class UserHelper {
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'http_code' => 400,
                 'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
             ], 200);
         }
@@ -360,6 +383,7 @@ class UserHelper {
             if($validator->fails()) {
                 return response()->json([
                     'status' => false,
+                    'http_code' => 400,
                     'message' => $validator->errors()->first('email'),
                     'email' => $email
                 ], 200);
@@ -369,6 +393,7 @@ class UserHelper {
             if(!$user) {
                 return response()->json([
                     'status'    => false,
+                    'http_code' => 400,
                     'message'   => 'This user is not present or may have been deleted!',
                     'email'     => $email
                 ], 200);
@@ -376,6 +401,7 @@ class UserHelper {
             if($user->suspended == '0') {
                 return response()->json([
                     'status'    => false,
+                    'http_code' => 400,
                     'message'   => 'This user is already unsuspended!',
                     'email'     =>  $email
                 ], 200);
@@ -384,6 +410,7 @@ class UserHelper {
             $user->save();
             return response()->json([
                 'status'    => true,
+                'http_code' => 200,
                 'message'   => 'User unsuspended successfully!',
                 'email'     => $user->email
             ]);
@@ -391,6 +418,7 @@ class UserHelper {
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'http_code' => 400,
                 'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
             ], 200);
         }
@@ -411,6 +439,7 @@ class UserHelper {
                 if(!\Auth::check()) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => 'You are not authenticated!'
                     ], 200);
                 }
@@ -419,6 +448,7 @@ class UserHelper {
                 if($validator->fails()) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => $validator->errors()->first('id')
                     ], 200);
                 }
@@ -429,6 +459,7 @@ class UserHelper {
                 if($validator->fails()) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => $validator->errors()->first('email')
                     ], 200);
                 }
@@ -436,6 +467,7 @@ class UserHelper {
                 if(!$user) {
                     return response()->json([
                         'status' => false,
+                        'http_code' => 400,
                         'message' => 'No such user or user is already suspended!'
                     ], 200);
                 }
@@ -445,12 +477,14 @@ class UserHelper {
             $user->save();
             return response()->json([
                 'status'    => true,
+                'http_code' => 200,
                 'message'   => $user->suspended == 1 ? 'User suspended successfully!' : 'User unsuspended successfully!',
                 'email'     => $user->email
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
+                'http_code' => 400,
                 'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
             ], 200);
         }

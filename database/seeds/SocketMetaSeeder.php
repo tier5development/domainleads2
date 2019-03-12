@@ -6,7 +6,9 @@ use App\Lead;
 use App\User;
 use App\LeadUser;
 use App\EachDomain;
+use App\CSV;
 use \Carbon\Carbon;
+
 class SocketMetaSeeder extends Seeder
 {
     /**
@@ -21,7 +23,7 @@ class SocketMetaSeeder extends Seeder
         $socketMeta->leads_unlocked = LeadUser::count();;
         $socketMeta->total_domains = EachDomain::count();;
         $socketMeta->total_users = User::count();;
-        $socketMeta->leads_added_last_day = Lead::where('created_at', Carbon::yesterday())->count();
+        $socketMeta->leads_added_last_day = CSV::orderBy('id', 'desc')->first()->leads_inserted;
         $socketMeta->save();
     }
 }
