@@ -199,6 +199,9 @@ class AccountController extends Controller
 			
 			$user 			=	Auth::user();
 			$stripeDetails 	= 	StripeDetails::first();
+			if(!$stripeDetails) {
+				return redirect()->back()->with('fail', 'Administrator Stripe Credentials Not Found! Aborting.');
+			}
 			$plansArr 		= 	config('settings.PLAN.NAMEMAP');
 			return view('new_version.auth.profile.membership', ['user' => $user, 'stripeDetails' => $stripeDetails]);
 

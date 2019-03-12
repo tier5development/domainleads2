@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSettingsSeeder::class);
         $this->call(UserPermissionsSeeder::class);
         $this->call(createReviewsSeeder::class);
+        $this->call(SocketMetaSeeder::class);
     }
 }
