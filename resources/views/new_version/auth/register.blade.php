@@ -439,7 +439,10 @@
                         if(typeof resp.obj !== 'undefined' && typeof resp.obj.error !== 'undefined' && typeof resp.obj.error.code !== 'undefined') {
                             $("#loader-icon").hide();
                             var code = resp.obj.error.code;
-                            console.log('error code : ', code);
+                            var cardMessage = resp.obj.error.message;
+                            alert(cardMessage);
+                            // console.log('error code : ', code);
+                            // cardNumberElement.fireEvent("on", "change");
                             $('.cardBackground').removeClass('vibrate').addClass('vibrate');
                             clearOutCardError();
                         }
