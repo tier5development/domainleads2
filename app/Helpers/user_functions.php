@@ -102,6 +102,11 @@ function getPlanName($id) {
 function getPlanNumber($name) {
     return config('settings.PLAN.NAMEMAP.'.$name)[0];
 }
+
+function getPlanFriendlyName($id) {
+    // $planId = getPlanName($id);
+    return ucwords(config('settings.PLAN.PUBLISHABLE.'.$id)[3]);
+}
 /**
  * Gets array of reasons for leaving our platform
  */

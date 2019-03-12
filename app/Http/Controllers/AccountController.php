@@ -518,16 +518,16 @@ class AccountController extends Controller
 							}
 						} else {
 							DB::rollback();
-							return redirect()->back()->with('error', 'Please check your email and password!');
+							return redirect()->back()->with('error', 'Please check your email and password!')->withInput();
 						}
 					} else {
 						DB::rollback();
 						// Subscription failure
-						return redirect()->back()->with('error', 'Your subscription is not successful! Please check if your card has enough balance.');
+						return redirect()->back()->with('error', 'Your subscription is not successful! Please check if your card has enough balance.')->withInput();
 					}
 				}
 				DB::rollback();
-				return redirect()->back()->with('error', 'This email id already exists. Please try again');
+				return redirect()->back()->with('error', 'This email id already exists. Please try again')->withInput();
 			}
 		} catch(Throwable $e) {
 			DB::rollback();

@@ -291,7 +291,7 @@ use \Carbon\Carbon;
                                 'processComplete'   =>  false,
                                 'newPlan'           =>  null,
                                 'message'           =>  $plan < $baseUserType
-                                    ? 'Since you are the member of affiliates programme you cannot downgrade directly beyond plan : '.getPlanName($baseUserType)
+                                    ? 'Since you are the member of affiliates programme you cannot downgrade directly beyond plan : '.getPlanFriendlyName($baseUserType)
                                     : 'You already exist in the plan you want to upgrade to.',
                                 'user'              =>  $user
                             ];
@@ -334,7 +334,7 @@ use \Carbon\Carbon;
                         'newPlan'           =>  $user->user_type,
                         'allowFurther'      =>  false,
                         'message'           =>  $user->is_subscribed == 1 || $user->is_subscribed == 2
-                            ? 'Subscription changed to '.getPlanName($plan).' successfully!'
+                            ? 'Subscription changed to '.getPlanFriendlyName($plan).' successfully!'
                             : 'Subscription failed, Please check with your card balance.',
                         'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render(),
                         'user'              =>  $user
