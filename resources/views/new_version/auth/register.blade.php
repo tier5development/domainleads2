@@ -440,9 +440,11 @@
                             $("#loader-icon").hide();
                             var code = resp.obj.error.code;
                             var cardMessage = resp.obj.error.message;
-                            alert(cardMessage);
-                            // console.log('error code : ', code);
-                            // cardNumberElement.fireEvent("on", "change");
+                            if(code == 'card_declined') {
+                                alert(cardMessage);
+                            } else {
+                                console.error('Stripe Error Says : ', cardMessage);
+                            }
                             $('.cardBackground').removeClass('vibrate').addClass('vibrate');
                             clearOutCardError();
                         }
