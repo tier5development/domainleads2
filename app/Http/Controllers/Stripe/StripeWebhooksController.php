@@ -15,9 +15,9 @@ class StripeWebhooksController extends Controller
     use AffiliatesTrait;
 
     public function customerSubscriptionUpdated(Request $request) {
-        sleep(5);
+        // sleep(5);
         try {
-            DB::beginTransaction();
+            // // DB::beginTransaction();
             $data               =   json_decode(json_encode($request->all(), true), true);
             $customerId         =   trim($data['data']['object']['customer']);
             $subscriptionId     =   $data['data']['object']['id'];
@@ -74,16 +74,16 @@ class StripeWebhooksController extends Controller
             } else {
                 Log::info('subscription hook : no user cust id : '.$customerId.' subscriptionId : '.$subscriptionId.' status : '.$status.' type : '.$type);
             }
-            DB::commit();
+            // // DB::commit();
         } catch(Throwable $e) {
-            DB::rollback();
+            // // DB::rollback();
             Log::info('subscription request ERROR :::: '.$e->getMessage().' line : '.$e->getLine());
         }
     }
 
     public function customerInvoicePaymentFailed(Request $request) {
         try {
-            DB::beginTransaction();
+            // DB::beginTransaction();
             $data           =   json_decode(json_encode($request->all(), true), true);
             $customerId     =   trim($data['data']['object']['customer']);
             $invoiceId      =   $data['data']['object']['id'];
@@ -112,16 +112,16 @@ class StripeWebhooksController extends Controller
                     Log::info('invoice hook :  user : '.$user->id.' customer id : '.$customerId.' invoice id '.$invoiceId.' status : '.$status);
                 }
             }
-            DB::commit();
+            // DB::commit();
         } catch(Throwable $e) {
-            DB::rollback();
+            // DB::rollback();
             Log::info('invoice request ERROR :::: '.$e->getMessage());
         }
     }
 
     public function customerDeleted(Request $request) {
         try {
-            DB::beginTransaction();
+            // DB::beginTransaction();
             $data           =   json_decode(json_encode($request->all(), true), true);
             $customerId     =   $data['data']['object']['id'];
             $user = User::where('stripe_customer_id', $customerId)->first();
@@ -133,9 +133,9 @@ class StripeWebhooksController extends Controller
                 event(new UsageInfo());
                 Log::info('User deleted successfully');    
             }
-            DB::commit();
+            // DB::commit();
         } catch(Throwable $e) {
-            DB::rollback();
+            // DB::rollback();
             Log::info(' ERROR : '.$e->getMessage().' line : '.$e->getLine());
         }
     }
