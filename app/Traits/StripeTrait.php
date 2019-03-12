@@ -302,7 +302,8 @@ use \Carbon\Carbon;
                     if(strlen(trim($subscriptionId)) == 0) {
                         // Create a new subscription.
                         $trialPeriod = $plan == 1 ? config('settings.PLAN.BASIC-TRIAL-PERIOD') : null;
-                        $subscriptionData   =   StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, getPlanName($plan), $trialPeriod);
+                        // $subscriptionData   =   StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, getPlanName($plan), $trialPeriod);
+                        $subscriptionData   =   StripeHelper::chargeSubscription($stripeDetails, $stripeCustomerId, getPlanName($plan));
                     } else {
                         // Upgrade user to a new subscription.
                         $subscriptionData	= 	StripeHelper::changeSubscription($stripeDetails, $subscriptionId, getPlanName($plan));
