@@ -173,7 +173,7 @@
                 <span class="tooltiptext">
                   <p>{{$review->review}}</p>
                   <h3>{{$review->name}}</h3>
-                  <h6>Partner - Tier5 Affiliates</h6>
+                  {{-- <h6>Partner - Tier5 Affiliates</h6> --}}
                 </span>
               </div>
             </div>    
