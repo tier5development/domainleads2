@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('whois:proxy')->dailyAt('2:00')->withoutOverlapping();
+        $schedule->command('whois:proxy')->dailyAt('8:00')->withoutOverlapping();
         $schedule->command('whois:expired-domains')->dailyAt('5:00')->withoutOverlapping();
         \Log::info(date('Y-m-d',time())); 
     }
