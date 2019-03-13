@@ -930,6 +930,10 @@ private function destroy()
         $csvObj->status           = 2;
         $csvObj->query_time       = $endTime;
         $csvObj->save();
+        $socketMeta = SocketMeta::first();
+        $socketMeta->leads_added_last_day = $leads_inserted;
+        $socketMeta->save();
+        event(new UsageInfo());
 
         /**
          * Free up memory by deleting the files stored by unzipping
@@ -955,75 +959,5 @@ private function destroy()
       \Log::info('from :: Error ::: '.$e->getMessage());
     }
   }
-
-//   public function fill_csv_table_default()
-//   {
-//       // $dates_array = array();
-//       // $leads_array = Lead::pluck('registrant_email','created_at')->toArray();
-//       // foreach($leads_array as $key=>$val)
-//       // {
-//       //     $temp = explode(" ", $key);
-//       //     if(!isset($dates_array[$temp[0]]))
-//       //     {
-//       //         $dates_array[$temp[0]] = 'done';
-//       //     }
-//       // }
-
-//   }
-  
-//   public function importExcelNew(Request $request) {
-//     //dd($request);
-//     if ($request->hasFile('import_file')) {
-
-//         $old_name = $request->file('import_file')->getClientOriginalName();
-//         //dd($old_name);
-//         Session::put('old_name',$old_name);
-
-//         Session::save();
-
-//         $csv_file = $request->file('import_file');
-
-//         $extension =$csv_file->getClientOriginalExtension();
-
-//         $destinationPath = 'storage/uploads/';   // upload path
-
-//         $new_name = rand(111111111,999999999).'.'.$extension; // renameing image
-//         $csv_file->move($destinationPath, $new_name); // uploading file to given path
-
-//         //\Log::info($new_name);
-
-//         $count_rows = count(Excel::load('storage/uploads/'.$new_name, function($reader) {})->get());
-
-//         //\Log::info($count_rows);
-
-//         if ($count_rows < 10000) {
-//           Excel::load('storage/uploads/'.$new_name, function($reader) {
-
-//             //echo "<pre>";
-//             //print_r($reader->toArray());
-//             $this->importEachRow($reader->toArray());
-
-//           });
-//         } else {
-//             Excel::filter('chunk')->load('storage/uploads/'.$new_name)->chunk(10000, function($results)
-//             {
-//                 //echo "<pre>";
-//                 //print_r($results->toArray());
-//                 $this->importEachRow($results->toArray());
-//             });
-//         }
-
-//         return redirect()->back()->with('msg', 'Your File is uploading...');
-//     } else {
-//         return redirect()->back()->with('fail', 'Sorry No file found!');
-//     }
-//   }
-
-//   public function importEachRow($arr = NULL) {
-//     //dd($arr);
-//     if (count($arr)) {
-//       $this->dispatch(new ImportCsv($arr));
-//     }
-//   }
 }
 ?>

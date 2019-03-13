@@ -8,6 +8,8 @@ use \App\Lead;
 use \App\EachDomain;
 use \App\CSV;
 use Zipper;
+use App\SocketMeta;
+use App\Events\UsageInfo;
 
 use App\Helpers\ImportCsvHelper;
 
@@ -93,6 +95,10 @@ class WhoisProxy extends Command
           $csvObj->status             = 2;
           $csvObj->query_time         = $endTime;
           $csvObj->save();
+          $socketMeta = SocketMeta::first();
+          $socketMeta->leads_added_last_day = $leads_inserted;
+          $socketMeta->save();
+          event(new UsageInfo());
           unlink($csvFilePath);
           unlink($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip');
           unset($import);

@@ -53,11 +53,6 @@ class ImportExport extends Controller
   }
 
   public function importBulkZip(Request $request) {
-    // dd($request->all());
-    // $file = $request->file('import_file');
-    // dd($file->geT)
-    // $phar = new PharData('myphar.tar');
-    // dd($file);
     $upload = $request->file('import_file');
     if($upload == null) {
       return redirect()->back()->with('error', 'Please select a tar.gz file');
