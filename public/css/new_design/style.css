@@ -7,7 +7,7 @@ body{
 	background: url('../../../public/images/bg-main.jpg') #fff no-repeat;
 	background-position: top center;
 	width: 100%;
-    position: relative;		
+    position: relative;
 }
 
 /*fonts*/
@@ -1032,7 +1032,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 /*footer*/
 .mainFooter{
-	background-image: url('../../../images/footer_bg.png');
+	background-image: url('../../../public/images/footer_bg.png');
 	text-align: center;
 	padding: 56px 0px;
 }
