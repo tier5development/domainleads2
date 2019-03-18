@@ -148,7 +148,7 @@
             <p>Users in our platform</p><br>
 
             <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
-            <p>Leads added last day</p>
+            <p>Leads added yesterday</p>
 
             <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
           </div>
