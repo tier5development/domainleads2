@@ -17,11 +17,11 @@ class UserManagementController extends Controller
      */
     public function createUser(Request $request) {
         $request['is_hooked'] = '1';
-        return UserHelper::createUser($request);
+        return $this->responseJsonDecoder(UserHelper::createUser($request));
     }
 
     public function editUser(Request $request) {
-        return UserHelper::editUser($request);
+        return $this->responseJsonDecoder(UserHelper::editUser($request));
     }
 
     /**
@@ -30,7 +30,7 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function deleteUser(Request $request) {
-        return UserHelper::deleteUser($request);
+        return $this->responseJsonDecoder(UserHelper::deleteUser($request));
     }
 
     /**
@@ -39,7 +39,7 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function suspendUser(Request $request) {
-        return UserHelper::suspendUser($request);
+        return $this->responseJsonDecoder(UserHelper::suspendUser($request));
     }
 
     /**
@@ -48,7 +48,7 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function unsuspendUser(Request $request) {
-        return UserHelper::unsuspendUser($request);
+        return $this->responseJsonDecoder(UserHelper::unsuspendUser($request));
     }
 
     /**
@@ -57,7 +57,11 @@ class UserManagementController extends Controller
      * @return json 
      */
     public function allSuspendedUser() {
-        $users = User::where('email', 'LIKE', '%_suspended%')->select('name','email')->get();
+        $users = User::where('suspended', '1')->select('name','email')->get();
         return response()->json(['status' => true, 'total' => $users->count() ,'users' => $users], 200);
+    }
+
+    private function responseJsonDecoder($responseJson) {
+        return response()->json(["data" => json_decode($responseJson->content(), true)]);
     }
 }
