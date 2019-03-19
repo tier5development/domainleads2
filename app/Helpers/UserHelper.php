@@ -95,21 +95,19 @@ class UserHelper {
 
             $user = User::where('email', $email)->first();
             if(!$user) {
-                //This user is not present. Got to check if the unsuspended flag is raised or not
-                $user = User::where('email', $email.'_suspended')->first();
-                if(!$user) {
-                    return response()->json([
-                        'status' => false,
-                        'http_code' => 400,
-                        'message' => 'This user does not exist.'
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'http_code' => 400,
-                        'message' => 'This user is suspended. Please unsuspend this user to proceed with further actions!'
-                    ], 200);
-                }
+                return response()->json([
+                    'status' => false,
+                    'http_code' => 400,
+                    'message' => 'This user does not exist or may have been deleted!'
+                ], 200);
+            }
+
+            if($user->suspended == 1) {
+                return response()->json([
+                    'status' => false,
+                    'http_code' => 400,
+                    'message' => 'This user is suspended. Please unsuspend this user to proceed with further actions!'
+                ], 200);
             }
             
             $usertype = $request->user_type;
