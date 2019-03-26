@@ -887,9 +887,10 @@ private function destroy()
         return \Response::json(['insertion_time' =>  'null', 'message' =>  'Improper arguments, function parameters cannot be null', 'status'  =>  500]);
       }
       
-      $startTime = microtime(true);  
+      CSV::where("status", 1)->delete();
+      $startTime = microtime(true);
       $checkFileExist = CSV::where('file_name',$currentDate.".csv")->first();
-      if($checkFileExist == null) 
+      if($checkFileExist == null)
       {
         $downloadDir = public_path();
         $getDownloadData = file_get_contents($whoxyURLexpired);
