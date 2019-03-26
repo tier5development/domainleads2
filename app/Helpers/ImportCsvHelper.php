@@ -552,7 +552,7 @@ private function destroy()
       $loop_time = array();
       $tm1 = microtime(true);
 
-      ini_set("memory_limit","15G");
+      // ini_set("memory_limit","15G");
       set_time_limit(30000);
       ini_set('max_execution_time', '0');
       ini_set('max_input_time', '0');
