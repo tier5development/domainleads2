@@ -43,14 +43,10 @@
             {{-- Right panel of dashboard comes here --}}
             @include('new_version.shared.right-panel')
 
-            <footer class="footer mobileOnly">
-                &copy; 2017 Powered by Tier5 <span><a href="">Privacy Policy</a> / <a href="">Terms of Use</a></span>
-            </footer>
+            @include('new_version.shared.dashboard-footer', ['class' => 'footer mobileOnly'])
         </section>
 
-        <footer class="footer">
-            &copy; 2017 Powered by Tier5 <a href="">Privacy Policy</a> / <a href="">Terms of Use</a>
-        </footer>
+        @include('new_version.shared.dashboard-footer', ['class' => 'footer'])
     </div>
 
 

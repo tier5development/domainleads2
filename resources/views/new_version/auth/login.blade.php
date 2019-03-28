@@ -40,18 +40,12 @@
             </div>
         </div>
     </div>
+    <br><br>
     <!-- footer -->
-    <div class="footer clearfix">
-      <div class="container">
-        <div class="col-md-12 pull-left">
-          <span>&copy; 2017 Powered by Tier5</span>
-          <a href="#">privacy policy</a>
-          <a href="#">terms of use</a>
-        </div>
-      </div>
-    </div>
+    @include('section.footer_menu')
   </section>
-  @include('new_version.shared.sticky-note')
+  
+  {{-- @include('new_version.shared.sticky-note') --}}
   <!-- sticky text -->
   {{-- <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
     <div id="popup">

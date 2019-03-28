@@ -43,7 +43,7 @@
         </div>
     </div>
     <!-- footer -->
-    <div class="footer clearfix">
+    {{-- <div class="footer clearfix">
       <div class="container">
         <div class="col-md-12 pull-left">
           <span>&copy; 2017 Powered by Tier5</span>
@@ -51,9 +51,12 @@
           <a href="#">terms of use</a>
         </div>
       </div>
-    </div>
+    </div> --}}
   </section>
-  @include('new_version.shared.sticky-note')
+
+  @include('section.footer_menu')
+
+  {{-- @include('new_version.shared.sticky-note') --}}
   <!-- sticky text -->
   {{-- <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
     <div id="popup">
