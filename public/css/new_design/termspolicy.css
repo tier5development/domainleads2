@@ -1,0 +1,115 @@
+
+.container-policies {
+    max-width: 1205px;
+    margin: 30px auto 0;
+    background: #fff;
+    padding: 50px;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.ppTacPage strong {
+    font-family: 'Avenir LT Std 95 Black';
+}
+.ppTacPage a {
+    color: #28C3C2;
+    text-decoration: underline;
+    word-break: break-all;
+}
+.ppTacPage ul {
+    list-style: none;
+}
+.ppTacPage h1 {
+    font-family: 'Avenir LT Std 95 Black';
+    font-size: 25px;
+    margin-bottom: 40px;
+}
+.ppTacPage h2 {
+    font-family: 'Avenir LT Std 95 Black';
+    font-size: 16px;
+    color: #28C3C2;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+.ppTacPage h3 {
+    font-size: 16px;
+    font-family: 'Avenir LT Std 95 Black';
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
+.ppTacPage h4 {
+    font-size: 13px;
+    font-family: 'Avenir LT Std 95 Black';
+    margin-left: 80px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.ppTacPage p {
+    font-size: 13px;
+    line-height: 18px;
+    margin-bottom: 10px;
+}
+.ppTacPage ul li p {
+    margin-left: 40px;
+}
+/* added not for exception of margin left */
+.ppTacPage ul:not(.listUnderH2) li p {
+margin-left: 40px;
+}
+/* added not for exception of margin left */
+.ppTacPage h3 + p {
+    margin-left: 40px;
+} 
+.ppTacPage h4 + p {
+    margin-left: 80px;
+}
+.ppTacPage .listUnderH2 {
+    font-size: 13px;
+    list-style: outside;
+    margin: 20px 0 20px 30px;
+}
+.ppTacPage .listUnderH2 li {
+    margin-bottom: 10px;
+}
+.ppTacPage .listUnderH2 li p {
+    margin-left: 0;
+}
+.ppTacPage .listUnderH3 {
+    font-size: 13px;
+    list-style: outside;
+    margin: 20px 0 20px 65px;
+}
+.ppTacPage .listUnderH3 li {
+    margin-bottom: 10px;
+}
+.ppTacPage .listUnderH4 {
+    font-size: 13px;
+    list-style: outside;
+    margin: 20px 0 20px 120px;
+}
+.ppTacPage .listUnderH4 li {
+    margin-bottom: 10px;
+}
+.ppTacPage .paraUnderH4 {
+    margin-left: 80px;
+}
+.ppTacPage .gdprList {
+    margin: 25px 0;
+}
+
+/**Responsive */
+@media screen and (max-width: 1205px) {
+    .container-policies {
+        margin-left: 10px;
+        margin-right: 10px;
+    }  
+}
+
+@media screen and (max-width: 480px) {
+    .container-policies {
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 20px;
+    }  
+}

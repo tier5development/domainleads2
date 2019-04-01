@@ -559,7 +559,7 @@ h1, h2, h3, h4, h5, h6, p{
 	padding: 180px 0px 84px 0px;
 }
 .majorBenefits .benefits {
-	background: url('../../../images/major_banefit_img.png') no-repeat;
+	background: url('../../../public/images/major_banefit_img.png') no-repeat;
 	height: 400px;
 	background-position: top left;
 	padding-bottom: 0;
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 /*take a look*/
 .takeLook{
-	background: url('../../../images/take_a_look_banner.png') no-repeat;
+	background: url('../../../public/images/take_a_look_banner.png') no-repeat;
 	background-position: top center;
 	background-size: contain;
 	padding-top: 0;
@@ -624,7 +624,7 @@ h1, h2, h3, h4, h5, h6, p{
     right: 0;
     margin: 0px auto;
     content: '';
-    background: url('../../../images/play.png') no-repeat;
+    background: url('../../../public/images/play.png') no-repeat;
     height: 128px;
     width: 128px;
 }
@@ -652,7 +652,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .leadConversion .lead_conversion_imgWrap{
 	position: relative;
-	background: url('../../../images/lead_conversion_bg.png') no-repeat;
+	background: url('../../../public/images/lead_conversion_bg.png') no-repeat;
 	background-size: contain;
 	background-position: left -55px top -23px;
 }
@@ -1149,22 +1149,22 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .cardArea .card1 .cardContainer .cardFront .cardIcon {
-	background-image: url("../../../images/icon_usp_filter_blue.png");
+	background-image: url("../../../public/images/icon_usp_filter_blue.png");
 }
 .cardArea .card1 .cardContainer .cardBack .cardIcon {
-	background-image: url("../../../images/icon_usp_filter_white@2x.png");
+	background-image: url("../../../public/images/icon_usp_filter_white@2x.png");
 }
 .cardArea .card2 .cardContainer .cardFront .cardIcon {
-	background-image: url("../../../images/icon_usp_verfied_phone_blue.png");
+	background-image: url("../../../public/images/icon_usp_verfied_phone_blue.png");
 }
 .cardArea .card2 .cardContainer .cardBack .cardIcon {
-	background-image: url("../../../images/icon_usp_verfied_phone_white.png");
+	background-image: url("../../../public/images/icon_usp_verfied_phone_white.png");
 }
 .cardArea .card3 .cardContainer .cardFront .cardIcon {
-	background-image: url("../../../images/icon_usp_crm_blue.png");
+	background-image: url("../../../public/images/icon_usp_crm_blue.png");
 }
 .cardArea .card3 .cardContainer .cardBack .cardIcon {
-	background-image: url("../../../images/icon_usp_crm_white.png");
+	background-image: url("../../../public/images/icon_usp_crm_white.png");
 }
 
 .slideContainer {
