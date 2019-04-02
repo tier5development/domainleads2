@@ -21,7 +21,6 @@
                 @include('new_version.shared.profile-panel-header')
 
                 @include('new_version.shared.messages')
-                <br><br>
 
                 <div id="embeded-card">
                     @if($user->card_updated == 1 && count($card) > 0 && isset($card['last4']) && isset($card['exp_month']) && isset($card['exp_year']))

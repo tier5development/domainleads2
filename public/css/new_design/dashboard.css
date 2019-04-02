@@ -338,6 +338,7 @@ input, select, textarea, button {
     background: url("/public/images/icon_camera_green.png") no-repeat;
     overflow: hidden;
     cursor: pointer;
+    display: none;
 }
 .displayPic .changePic input {
     opacity: 0;
@@ -1346,7 +1347,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     text-align: center;
     margin: -10px 70px 0 0;
 }
-
 .profileTip figure {
     padding-top: 35px;
 }
@@ -1355,7 +1355,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     color: #585858;
     padding: 20px 15px 0;
 }
-
 .displayPic {
     width: 185px;
     height: 123px;
@@ -1364,13 +1363,18 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.displayPic:hover .changePic{
+    display: block;
+    transition: 0.3s;
 }
 .displayPicContainer {
     width: 185px;
     height: 123px;
     box-shadow: inset 0 0 25px rgba(0,0,0,0.2);
 }
-
 .profileFormArea {
     max-width: 630px;
     margin-top: 30px;

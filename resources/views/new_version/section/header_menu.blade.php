@@ -20,10 +20,12 @@
                         <li><a href="#" class="lead-conversion">lead conversion</a></li>
                         <li><a href="#" class="pricing">pricing</a></li>
                         @if(Auth::check())
-                            <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a>
+                            {{-- <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a> --}}
+                            @include('new_version.shared.user-settings-dropdown', ['user' => $user])
                         @else
                             <a href="{{route('loginPage')}}" class="button gradiant-orange">login</a>
                         @endif
+                        
                     </ul>
                 </nav>
             @endif

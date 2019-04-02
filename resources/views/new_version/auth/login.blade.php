@@ -40,11 +40,10 @@
             </div>
         </div>
     </div>
-    <br><br>
-    <!-- footer -->
-    @include('section.footer_menu')
   </section>
-  
+
+   <!-- footer -->
+   @include('new_version.section.signin-footer')
   {{-- @include('new_version.shared.sticky-note') --}}
   <!-- sticky text -->
   {{-- <div class="stickyBox" id="stickyBoxWrap" style="display: none;">

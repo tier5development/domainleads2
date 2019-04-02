@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+stickyBoxWrap<!DOCTYPE html>
 <html lang="en">
     <!-- head -->
     @include('new_version.section.head')
@@ -9,8 +9,8 @@
     <section class="banner">
     
         <!-- header -->
-        @include("new_version.section.header_menu")
-        
+        {{-- @include("new_version.section.header_menu") --}}
+        @include('new_version.section.user_panel_header', ['user' => isset(Auth::check()) ? $user : null])
         <!-- inner content -->
         <div class="container" id="bannercaptionWrap">
             <div class="bannerCaption">

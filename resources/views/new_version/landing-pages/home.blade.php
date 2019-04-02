@@ -11,6 +11,8 @@
         <!-- header -->
         @include("new_version.section.header_menu")
         
+        {{-- @include('new_version.section.user_panel_header', ['user' => $user]) --}}
+        
         <!-- inner content -->
         <div class="container" id="bannercaptionWrap">
             <div class="bannerCaption">
