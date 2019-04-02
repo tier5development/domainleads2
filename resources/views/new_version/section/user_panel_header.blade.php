@@ -1,4 +1,4 @@
-<header class="dashHeader">
+user_panel_header<header class="dashHeader">
     
         <div class="headerLeft">
             <a href="{{route('home')}}"><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/logo.png" alt=""></a>

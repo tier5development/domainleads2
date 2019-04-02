@@ -1,6 +1,6 @@
 body{
 	margin: 0px auto;
-	padding: 0px;
+	padding: 0px;AccountController@cancelMembership
 	color: #8b8b8b;
 	font-family: 'Avenir LT Std 55 Roman';
 	font-size: 15px;
@@ -1328,6 +1328,13 @@ h1, h2, h3, h4, h5, h6, p{
 	margin-bottom: 5px;
 	text-align: center;
 	text-transform: capitalize;
+}
+.cancellationMemberShip label{
+	text-align: left;
+}
+.cancellationMemberShip .fieldWrap{
+	width: 400px;
+	margin: 0px auto;
 }
 
 .InputElement{
