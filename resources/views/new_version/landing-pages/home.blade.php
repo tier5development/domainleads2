@@ -140,18 +140,25 @@
           <div class="sideText">
             <h2 class="heading">lead conversion</h2>
             <p class="headingInfo">Our leads have opted in and typically convert for <br>the following services</p>
-            <span id="leadsUnlocked">{{$socketMeta->leads_unlocked}}</span>
-            <p>Leads unlocked in our platform</p><br>
-
-            <span id="totalDomains">{{$socketMeta->total_domains}}</span>
-            <p>Domains in our platform</p><br>
-            
-            <span id="totalUsers">{{$socketMeta->total_users}}</span>
-            <p>Users in our platform</p><br>
-
-            <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
-            <p>Leads added yesterday</p>
-
+            <div class="leadWrap">
+              <div class="leadInfoWrap">
+                <span id="leadsUnlocked">{{$socketMeta->leads_unlocked}}</span>
+                <p>Leads unlocked</p>
+              </div>
+              <div class="leadInfoWrap">
+                <span id="totalDomains">{{$socketMeta->total_domains}}</span>
+                <p>Domains</p><br>
+              </div>
+              <div class="leadInfoWrap">
+                <span id="totalUsers">{{$socketMeta->total_users}}</span>
+                <p>Users</p><br>
+              </div>
+              <div class="leadInfoWrap">
+                <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
+                <p>Leads added yesterday</p>
+              </div>
+              <div class="clear"></div>
+            </div>
             <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
           </div>
         </div>
@@ -228,7 +235,7 @@
     <div class="container">
       <h2 class="heading">Pick a plan & start unlocking your leads</h2>
       <p class="headingInfo">Your business boosts right from here</p>
-      <div class="eachPlanContainer">
+      <div class="eachPlanContainer clearfix">
         @foreach (config('settings.PLAN.NAMEMAP') as $key => $item)
         @php if($item[0] == config('settings.PLAN.NON-DISPLAYABLE')) continue; @endphp
           <div class="eachPlanOuter">
@@ -237,7 +244,7 @@
               <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[2]}}">
               <h4>{{$item[2]}}</h4>
               <ul>
-                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
+                <li class="fontBold">{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
                 <li>location filters</li>
                 <li>keywords filters</li>
                 <li>TLD filters</li>
@@ -262,8 +269,9 @@
               {{-- <a onclick="savePlan('{{$item[0]}}')" href="{{route('signupPage')}}" class="button gradiant-orange">get started</a> --}}
             </div>
           </div>
+          
         @endforeach
-        
+        <div class="clear"></div>
 
       </div>
     </div>

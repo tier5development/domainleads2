@@ -98,7 +98,6 @@ th {
     text-align: inherit;
 }
 a {
-    text-decoration: none;
     -webkit-text-decoration-skip: objects;
 }
 ul{
@@ -276,6 +275,7 @@ input, select, textarea, button {
     color: #fff;
     font-size: 12px;
     font-family: 'Avenir LT Std 85 Heavy';
+    text-decoration: none;
 }
 .userNameArea {
     float: right;
@@ -377,6 +377,7 @@ input, select, textarea, button {
     display: block;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     position: relative;
+    text-decoration: none;
 }
 .profileMenu ul li a:after {
     content: "";
@@ -923,6 +924,8 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     display: inline-block;
     width: 100%;
     padding: 0 50px;
+    position: fixed;
+    bottom: 0px;
 }
 .footer a {
     display: inline-block;
@@ -1482,9 +1485,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 
 @media screen and (max-width: 1600px) {
-.container {
-    margin: 0 20px;
-}
 }
 
 @media screen and (max-width: 1520px) {

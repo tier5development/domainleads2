@@ -62,10 +62,10 @@
 
                                             <button class="viewMore1">View more</button>
                                             <ul class="viewMorePanel1">
-                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day,</li>
-                                                <li>location filters,</li>
-                                                <li>keywords filters,</li>
-                                                <li>TLD filters,</li>
+                                                <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
+                                                <li>location filters</li>
+                                                <li>keywords filters</li>
+                                                <li>TLD filters</li>
                                                 <li>lead exports</li>
                                             </ul>
                                         </div>
@@ -96,6 +96,13 @@
     <!-- for dasboard page tab -->
     <script src="https://checkout.stripe.com/checkout.js"></script>
     <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('.viewMore1').click(function() {
+                console.log('viewMore : ', $(this).closest('ul'))
+                $(this).next('ul').slideToggle(); //addClass('abcde')
+            })
+        })
         var username            =   "{{$user->name}}";
         var email               =   "{{$user->email}}";
         var publicKey           =   "{{$stripeDetails->public_key}}";

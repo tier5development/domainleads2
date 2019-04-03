@@ -83,6 +83,15 @@ body{
 	font-weight: normal;
 	src: local('Avenir LT Std 95 Black Oblique'), url('../../../public/fonts/AvenirLTStd-BlackOblique.woff') format('woff');
 }
+table {
+    border-collapse: collapse;
+}
+th {
+    text-align: inherit;
+}
+a {
+    -webkit-text-decoration-skip: objects;
+}
 ul{
 	margin: 0px;
 	padding: 0px;
@@ -142,6 +151,10 @@ h1, h2, h3, h4, h5, h6, p{
 .header nav ul .button{
 	margin-left: 28px;
 }
+.banner .header .menu ul .button{
+	box-shadow: 17px 5px 70px 1px rgba(0,0,0,0.4);
+}
+
 /*.header nav ul, .header nav a{
 	float: right;
 }*/
@@ -153,6 +166,7 @@ h1, h2, h3, h4, h5, h6, p{
 	padding: 14px 0;
 	transition: 0.5s;
 	position: relative;
+	text-decoration: none;
 }
 .header nav ul li a:before{
 	position: absolute;
@@ -166,11 +180,11 @@ h1, h2, h3, h4, h5, h6, p{
 	transition: 0.5s;
 	background-color: #e95311;
 }
-.header nav ul li:hover a:before, .header nav ul li.active a:before{
+.header nav ul li:hover a:before, .header nav ul li.active a:before, .header nav ul li:focus a:before{
 	width: 100%;
 	transition: 0.5s;
+	text-decoration: none;
 }
-
 .header .bottomRight .menuClose, .header .menu-button {
 	display: none;
 }
@@ -191,7 +205,8 @@ h1, h2, h3, h4, h5, h6, p{
 	/* transition: 0.5s; */
 }
 .gradiant-orange:hover{
-	background: linear-gradient( to left, #e96f11, #e95311);;
+	background: linear-gradient( to left, #e96f11, #e95311);
+	color: #fff;
 }
 .gradiant-green{
 	background: linear-gradient(to right, #3cbec1, #48e4b3);
@@ -266,7 +281,7 @@ h1, h2, h3, h4, h5, h6, p{
     background-image: url('../../../public/images/bg_popup.png');
     background-repeat: no-repeat;
     background-position: 134% 0%;
-    box-shadow: 0px 18px 80px -13px #777777;
+    box-shadow: 0px 18px 80px -13px rgba(0,0,0,0.2);
     float: none;
     height: 100%;
     margin: 0px auto;
@@ -276,12 +291,12 @@ h1, h2, h3, h4, h5, h6, p{
 	padding: 37px 15px;
 }
 .createForm form{
-	padding: 70px 20px 0px 20px;
+	padding: 40px 20px 0px 20px;
 }
 .createForm h2{
 	color: #6c6c6c;
 	font-size: 25px;
-	margin: 0px;
+	margin: 0px 0px 30px 0px;
 }
 
 .createForm form input{
@@ -297,13 +312,16 @@ h1, h2, h3, h4, h5, h6, p{
     width: 100%;
     font-size: 15px;
     letter-spacing: 2px;
-	margin: 60px 0px 30px 0px;
+	margin: 27px 0px 30px 0px;
 }
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus{
 	outline: none;
 }
 .createForm form .form-group{
 	margin-bottom: 30px;
+}
+.createForm form .form-group.shortMargin{
+	margin-bottom: 15px;
 }
 .createForm form .form-group.nameField{
 	padding-right: 10px;
@@ -478,16 +496,6 @@ h1, h2, h3, h4, h5, h6, p{
     padding: 0px 7px;
     position: relative;
 }
-.footer a:after{
-	position: absolute;
-	right: -5px;
-	top: -2px;
-	content: '/';
-	color: #8b8b8b;
-}
-.footer a:last-child:after{
-	content: normal;
-}
 
 /*landing page*/
 /*bannercaption section*/
@@ -496,7 +504,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .bannerCaption{
 	text-align: center;
-	padding: 50px 0;
+	padding: 50px 0 0 0;
 	color: #fff;
 	max-width: 818px;
 	margin: 0px auto;
@@ -531,6 +539,7 @@ h1, h2, h3, h4, h5, h6, p{
 	position: relative;
 	max-width: 814px;
 	margin: 0 auto;
+	margin-bottom: 110px;
 }
 .bannerContainer .bannerImgMid img, 
 .bannerContainer .bannerImgLeft img, 
@@ -563,9 +572,12 @@ h1, h2, h3, h4, h5, h6, p{
 	height: 400px;
 	background-position: top left;
 	padding-bottom: 0;
-	}
-.sideText{
+}
+.majorBenefits .sideText{
 	margin-top: 70px;
+}
+.sideText{
+	margin-bottom: 100px;
 }
 .sideText h4{
 	color: #1fbec5;
@@ -584,6 +596,8 @@ h1, h2, h3, h4, h5, h6, p{
 .headingInfo{
 	font-family: 'Avenir LT Std 65 Medium';
 	margin-bottom: 75px;
+	color: #8B8B8B;
+	margin-bottom: 62px;
 }
 .sideText a{
 	text-transform: capitalize;
@@ -610,8 +624,12 @@ h1, h2, h3, h4, h5, h6, p{
 	background-size: contain;
 	padding-top: 0;
 }
+.takeLook .sideText{
+	margin-top: 200px;
+}
 .takeLook a img{
 	max-width: 100%;
+	margin-left: 50px;
 }
 .takeLook a{
 	position: relative;
@@ -621,7 +639,7 @@ h1, h2, h3, h4, h5, h6, p{
     top: -40px;
     bottom: 0;
     left: 0;
-    right: 0;
+    right: -70px;
     margin: 0px auto;
     content: '';
     background: url('../../../public/images/play.png') no-repeat;
@@ -642,12 +660,21 @@ h1, h2, h3, h4, h5, h6, p{
     color: #fff;
    	font-family: 'Avenir LT Std 45 Book';	
 }
+.leadConversion .leadWrap{
+	display: block;
+	margin-bottom: 32px;
+}
+.leadConversion .leadInfoWrap{
+	float: left;
+	width: 230px;
+	margin-bottom: 20px;
+}
 .leadConversion .sideText p{
-	margin-bottom: 62px;
+	color: #8B8B8B;
 }
 .leadConversion .sideText span{
 	color: #1fbec5;
-	font-size: 60px;
+	font-size: 34px;
 	font-family: 'Avenir LT Std 95 Black';
 }
 .leadConversion .lead_conversion_imgWrap{
@@ -693,7 +720,7 @@ h1, h2, h3, h4, h5, h6, p{
 	position: absolute;
 	top: 160px;
 	left: 0px;
-	box-shadow: 0px 0px 50px 0px #777571;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
 .userSay .userImages .userImg4{ 
 	position: absolute;
@@ -711,7 +738,7 @@ h1, h2, h3, h4, h5, h6, p{
 	position: absolute;
 	top: 70px;
     left: 45%;
-	box-shadow: 0px 0px 50px 0px #777571;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
 .userSay .userImages .userImg7{
 	position: absolute;
@@ -735,7 +762,7 @@ h1, h2, h3, h4, h5, h6, p{
 	position: absolute;
 	top: -20px;
     left: 90%;
-	box-shadow: 0px 0px 50px 0px #777571;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
 .userSay .userImages .userImg11{
 	position: absolute;
@@ -747,7 +774,7 @@ h1, h2, h3, h4, h5, h6, p{
 	position: absolute;
 	top: 262px;
     left: 95%;
-	box-shadow: 0px 0px 50px 0px #777571;
+	box-shadow: 0px 0px 50px 0px #ffe2b8;
 }
 .userSay .userImages .userImg13{
 	position: absolute;
@@ -1005,7 +1032,11 @@ h1, h2, h3, h4, h5, h6, p{
 .plans .eachPlan ul li{
 	margin-bottom: 26px;
 	display: block;
-	line-height: 15px;	
+	line-height: 15px;
+	color: #8D8D8D;	
+}
+.plans .eachPlan ul li.fontBold{
+	font-weight: 900;
 }
 .plans .eachPlan ul li:last-child{
 	margin-bottom: 61px;
@@ -1021,11 +1052,12 @@ h1, h2, h3, h4, h5, h6, p{
 	display: block;
 }
 .plans .eachPlan .button{
-	display: inline-block;
+	display: none;
     font-size: 15px;
     text-transform: capitalize;
     padding: 19px 28px;
-    margin-top: 66px;
+	margin-top: 66px;
+	transition: 0.3s;
 }
 .viewMore1, .viewMore2, .viewMore3, .viewMorePanel1, .viewMorePanel2, .viewMorePanel3{
 	display:none;
@@ -1209,9 +1241,6 @@ h1, h2, h3, h4, h5, h6, p{
 }  
 .mainBody .leftPanel .tab{
 	margin-bottom: 67px;
-}
-.btn.focus, .btn:focus, .btn:hover, a:focus, a:hover{
-	color:#fff;
 }
 .mainBody .leftPanel .singleItem{
 	color: #8b8b8b;
@@ -1842,6 +1871,17 @@ h1, h2, h3, h4, h5, h6, p{
 	padding-top: 2%;
 	padding-bottom: 2%;
 }
+.banner .header .menu .userNameArea{
+    margin-top: -12px;
+}
+.banner .header .menu .userNameArea .profileMenu ul li{
+	margin: 0px;
+	height: 50px;
+    line-height: 21px;
+}
+.banner .header .menu .userNameArea .profileMenu ul li:hover a:before{
+	content: normal;
+}
 /*responsive*/
 @media screen and (max-width: 1600px) {
 	
@@ -1851,9 +1891,6 @@ h1, h2, h3, h4, h5, h6, p{
 		width: 1170px;
 	}
 	.noWidth {
-		width: auto;
-	}
-	.eachPlanOuter{
 		width: auto;
 	}
 }
@@ -1882,9 +1919,6 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 }
 @media screen and (max-width: 1170px) {
-	.container {
-		width: 970px;
-	}
 	.cardArea {
 		padding-left: 0;
 	}
@@ -2661,8 +2695,9 @@ h1, h2, h3, h4, h5, h6, p{
 		left: 10px;
 	}
 	.plans .eachPlan .viewMorePanel1 li, .plans .eachPlan .viewMorePanel2 li, .plans .eachPlan .viewMorePanel3 li{
-		display: inline;
 		font-size: 14px;
+		margin-bottom: 10px;
+		color: #fff;
 	}
 	.footer.mobileOnly span{
 		display: block;
@@ -2877,7 +2912,7 @@ h1, h2, h3, h4, h5, h6, p{
 		content: normal;
 	}
 	.viewMore1, .viewMore2, .viewMore3{
-		bottom: 44px;
+		bottom: 24px;
 	}
 	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
 		bottom: 3px;
@@ -2898,9 +2933,16 @@ h1, h2, h3, h4, h5, h6, p{
 		left: 154px;
 	}
 	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
-		left: 242px;
-		top: 70px;
-		background: #fff;
+		left: 160px;
+		top: 160px;
+		background: linear-gradient(to right, #3cbec1, #48e4b3);
+		min-height: 135px;
+		border-radius: 5px;
+		z-index: 999;
+		padding: 10px;
+	}
+	.plans .eachPlan ul li:last-child{
+		margin-bottom: 0px;
 	}
 	
 }

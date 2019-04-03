@@ -12,7 +12,7 @@
         <div class="container customCont">
             <div class="col-sm-8 col-xs-12 innerContentWrap">
                 <div class="col-md-6 col-sm-7 createForm">
-                    <h2>Login</h2><br>
+                    <h2>Login</h2>
                     {{-- Error or Success Message --}}
                     @include('new_version.shared.messages')
                     
@@ -20,7 +20,7 @@
                         <div class="form-group">
                             <input name="email" type="email" class="form-control" placeholder="email">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group shortMargin">
                             <input name="password" type="password" class="form-control" id="" placeholder="*********">
                         </div>
                         <div class="forgot clearfix">
