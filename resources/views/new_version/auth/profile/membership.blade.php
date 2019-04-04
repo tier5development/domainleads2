@@ -83,9 +83,6 @@
             {{-- Include footer --}}
             @include('new_version.shared.dashboard-footer-mobile')
         </section>
-
-       {{-- Include footer --}}
-       @include('new_version.shared.dashboard-footer')
     </div>
 
     
@@ -99,8 +96,8 @@
 
         $(document).ready(function() {
             $('.viewMore1').click(function() {
-                console.log('viewMore : ', $(this).closest('ul'))
-                $(this).next('ul').slideToggle(); //addClass('abcde')
+                // console.log('viewMore : ', $(this).closest('ul'))
+                $(this).next('.viewMorePanel1').slideToggle(); //addClass('abcde')
             })
         })
         var username            =   "{{$user->name}}";

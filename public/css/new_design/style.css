@@ -1016,6 +1016,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 .plans .eachPlan:hover .button{
 	display: inline-block;
+	text-decoration: none;
 }
 .plans .eachPlan img{
 	margin-bottom: 30px;
@@ -1759,7 +1760,7 @@ h1, h2, h3, h4, h5, h6, p{
     border: 2px solid #fff;
 }
 .signUp .rightSide .fieldWrap label p{
-       float: right;
+    float: right;
     color: #fff;
     font-size: 22px;
     letter-spacing: 2px;
@@ -1892,6 +1893,12 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.noWidth {
 		width: auto;
+	}
+	#membership .eachPlanOuter{
+		width: 20.33%;
+	}
+	.rightPanel{
+		width: 288px;
 	}
 }
 @media only screen and (min-width : 1200px) and (max-width : 1645px) {
@@ -2297,6 +2304,9 @@ h1, h2, h3, h4, h5, h6, p{
 	.container {
 		width: 750px;
 	}
+	.takeLook a:before{
+		right: 0px;
+	}
 }
 @media screen and (max-width: 589px) {
 	.bannerContainer {
@@ -2612,10 +2622,11 @@ h1, h2, h3, h4, h5, h6, p{
 	.mainBody .leftPanel .singleItem:before{
 		bottom: 0px;
 	}
-	.mainBody .leftPanel .eachItem .eachPlanOuter{
+	.mainBody .leftPanel .eachItem .eachPlanOuter, .plans .eachPlanOuter{
 		border: 1px solid #DBE6E9;
 		background-color: #FBFEFF;
 		border-radius: 10px;
+		margin-bottom: 18px;
 	}
 	.plans .container{
 		margin: 0px auto;
@@ -2676,6 +2687,7 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.eachItem .plans .eachPlan .button {
 		margin-top: 0px;
+		text-decoration: none;
 	}
 	.viewMore1, .viewMore2, .viewMore3{
 		display:inline-block;
@@ -2691,8 +2703,13 @@ h1, h2, h3, h4, h5, h6, p{
 	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
 		display: none;
 		position: absolute;
-		bottom: 10px;
-		left: 10px;
+		left: 230px;
+		top: 160px;
+		background: linear-gradient(to right, #3cbec1, #48e4b3);
+		max-height: 135px;
+		border-radius: 5px;
+		z-index: 999;
+		padding: 10px;
 	}
 	.plans .eachPlan .viewMorePanel1 li, .plans .eachPlan .viewMorePanel2 li, .plans .eachPlan .viewMorePanel3 li{
 		font-size: 14px;
@@ -2867,6 +2884,16 @@ h1, h2, h3, h4, h5, h6, p{
 	.profileFormArea .formHeading{
 		margin-bottom: 40px;
 	}
+	.takeLook a img{
+		margin-left: 0px;
+	}
+	.leadConversion .lead_conversion_imgWrap{
+		margin-bottom: 100px;
+	}
+	.leadConversion .leadInfoWrap{
+		width: 100%;
+		float: none;
+	}
 }
 @media only screen and (min-width : 320px) and (max-width : 594px) {
 	.signUp .leftSide .fieldCover.exp {
@@ -2906,7 +2933,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 @media only screen and (min-width : 320px) and (max-width : 560px) {
 	.footer {
-		display: none;
+		bottom: -360px;
 	}
 	.footer.mobileOnly a:after{
 		content: normal;
@@ -2940,6 +2967,7 @@ h1, h2, h3, h4, h5, h6, p{
 		border-radius: 5px;
 		z-index: 999;
 		padding: 10px;
+		max-width: 118px;
 	}
 	.plans .eachPlan ul li:last-child{
 		margin-bottom: 0px;
@@ -2960,12 +2988,15 @@ h1, h2, h3, h4, h5, h6, p{
 	.plans .eachPlan{
 		padding: 10px;
 	}
+	.footer {
+		bottom: -160px;
+	}
 	.plans .eachPlan img{
 		width: 20%;
 		height: auto;
 	}
 	.plans .eachPlan h3, .plans .eachPlan span, .viewMore1, .viewMore2, .viewMore3{
-		left: 98px;
+		left: 78px;
 	}
 	.plans .eachPlan h3{
 		top: 24px;
@@ -2980,7 +3011,7 @@ h1, h2, h3, h4, h5, h6, p{
 	}
 	.plans .eachPlan h4{
 		font-size: 14px;
-		left: 100px;
+		left: 80px;
 	}
 	.viewMore1, .viewMore2, .viewMore3{
 		bottom: 4px;
@@ -2988,10 +3019,11 @@ h1, h2, h3, h4, h5, h6, p{
 	.plans .eachPlan .viewMorePanel1, .plans .eachPlan .viewMorePanel2, .plans .eachPlan .viewMorePanel3{
 		background-color: #fff;
 		bottom: 20px;
-		left: 143px;
-		top: 3px;
+		left: 79px;
+		top: 93px;
 	}
 	.signUp .leftSide .cardNum, .signUp .leftSide .cvc, .signUp .leftSide .fieldCover, .signUp .leftSide .fieldCover.exp{
 		width: 100%;
 	}
+
 }

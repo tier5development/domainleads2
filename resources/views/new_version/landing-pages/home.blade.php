@@ -147,11 +147,11 @@
               </div>
               <div class="leadInfoWrap">
                 <span id="totalDomains">{{$socketMeta->total_domains}}</span>
-                <p>Domains</p><br>
+                <p>Domains</p>
               </div>
               <div class="leadInfoWrap">
                 <span id="totalUsers">{{$socketMeta->total_users}}</span>
-                <p>Users</p><br>
+                <p>Users</p>
               </div>
               <div class="leadInfoWrap">
                 <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
@@ -243,30 +243,37 @@
               {{-- <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/basic_plan.png"> --}}
               <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[2]}}">
               <h4>{{$item[2]}}</h4>
-              <ul>
-                <li class="fontBold">{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
-                <li>location filters</li>
-                <li>keywords filters</li>
-                <li>TLD filters</li>
-                <li>lead exports</li>
-              </ul>
-              <h3>${{config('settings.PLAN.PUBLISHABLE.'.$item[0])[1]}}</h3>
-              <span>Billed monthly, no set up fee.</span>
+                  
+                  <ul class="features">
+                    <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
+                    <li>location filters</li>
+                    <li>keywords filters</li>
+                    <li>TLD filters</li>
+                    <li>lead exports</li>
+                  </ul>
+                      
+                  <h3>${{config('settings.PLAN.PUBLISHABLE.'.$item[0])[1]}}</h3>
+                  <span>Billed monthly, no set up fee.</span>
+                  
+                  @if($user->user_type == config('settings.PLAN.L').$item[0])
+                      <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
+                  @elseif($user->user_type > config('settings.PLAN.L').$item[0])
+                  
+                      @if($user->isDowngradable())
+                          <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
+                      @endif
+                  @elseif($user->user_type < config('settings.PLAN.L').$item[0])
+                      <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
+                  @endif
 
-              @if($user != null)
-                @if($user->user_type == config('settings.PLAN.L').$item[0])
-                    <a href="{{route('showMembershipPage')}}") data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
-                @elseif($user->user_type > config('settings.PLAN.L').$item[0])
-                    @if($user->isDowngradable())
-                        <a href="{{route('showMembershipPage')}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
-                    @endif
-                @elseif($user->user_type < config('settings.PLAN.L').$item[0])
-                    <a href="{{route('showMembershipPage')}}") data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
-                @endif
-              @else
-                <a onclick="savePlan('{{$item[0]}}')" href="{{route('signupPage')}}" class="button gradiant-orange">get started</a>
-              @endif
-              {{-- <a onclick="savePlan('{{$item[0]}}')" href="{{route('signupPage')}}" class="button gradiant-orange">get started</a> --}}
+                  <button class="viewMore1">View more</button>
+                  <ul class="viewMorePanel1">
+                      <li>{{config('settings.PLAN.PUBLISHABLE.'.$item[0])[0] < 0 ? 'UNLIMITED' : config('settings.PLAN.PUBLISHABLE.'.$item[0])[0]}} leads a day</li>
+                      <li>location filters</li>
+                      <li>keywords filters</li>
+                      <li>TLD filters</li>
+                      <li>lead exports</li>
+                  </ul>
             </div>
           </div>
           
@@ -300,7 +307,12 @@
     {{-- <script src="//js.pusher.com/3.1/pusher.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.4.0/pusher.js"></script>
     <script>
-      
+      $(document).ready(function() {
+            $('.viewMore1').click(function() {
+                // console.log('viewMore : ', $(this).closest('ul'))
+                $(this).next('.viewMorePanel1').slideToggle(); //addClass('abcde')
+            })
+        })
       var pusher = new Pusher("{{config('broadcasting.connections.pusher.key')}}", {
         authTransport: 'ajax',
         encrypted: {{config('broadcasting.connections.pusher.options.encrypted')}},

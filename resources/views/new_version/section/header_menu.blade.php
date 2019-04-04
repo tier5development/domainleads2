@@ -19,7 +19,7 @@
                     <ul>
                         <li><a href="#" class="lead-conversion">lead conversion</a></li>
                         <li><a href="#" class="pricing">pricing</a></li>
-                        @if(Auth::check())
+                        @if(Auth::check() && isset($user))
                             {{-- <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a> --}}
                             @include('new_version.shared.user-settings-dropdown', ['user' => $user])
                         @else

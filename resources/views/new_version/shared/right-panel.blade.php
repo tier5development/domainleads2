@@ -80,4 +80,9 @@
  $(document).ready(function() {
     getUsageGlobal();
  });
+ $(document).ready(function() {
+    $('.rightPanTgl').click(function() {
+     $('.rightPanel').toggle(); 
+    })
+});
  </script>

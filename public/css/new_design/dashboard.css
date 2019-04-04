@@ -442,7 +442,7 @@ input, select, textarea, button {
 }
 
 .leftPanel {
-    width: 70%;
+    width: calc(100% - 368px);
     float: left;
     padding: 0 45px;
 }
@@ -793,7 +793,7 @@ input, select, textarea, button {
 }
 
 .rightPanel {
-    width: 28%;
+    width: 368px;
     float: right;
     margin: 30px 0;
     padding: 0 15px 0 45px;
@@ -924,8 +924,9 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     display: inline-block;
     width: 100%;
     padding: 0 50px;
-    position: fixed;
+    position: absolute;
     bottom: 0px;
+    left: 0;
 }
 .footer a {
     display: inline-block;
@@ -1456,7 +1457,6 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     padding-top: 10px;
     margin-bottom: 16px;
 }
-
 .rightPanTgl {
     display: none;
 }
@@ -1535,6 +1535,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .datatable table {
     width: 875px;
 }
+
 }
 
 @media screen and (max-width: 1300px) {
@@ -1762,9 +1763,14 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 .userImg{
     position: absolute;
-    left: -29px;
+    right: -30px;
+    top: -120px;
 }
-
+.profileMenu {
+    left: inherit;
+    right: -30px;
+    top: -120px;
+}
 }
 
 @media screen and (max-width: 560px) {
