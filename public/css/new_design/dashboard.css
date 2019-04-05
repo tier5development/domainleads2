@@ -338,7 +338,9 @@ input, select, textarea, button {
     background: url("/public/images/icon_camera_green.png") no-repeat;
     overflow: hidden;
     cursor: pointer;
-    display: none;
+}
+.displayPic .changeProPic{
+    cursor: pointer;
 }
 .displayPic .changePic input {
     opacity: 0;
@@ -1031,7 +1033,8 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 .pageViewControl .select-options {
     top: 24px;
-    border-color: #6c6c6c;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
     border-radius: 0;
 }
 .pageViewControl .select-options li {
@@ -1456,6 +1459,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
     float: right;
     padding-top: 10px;
     margin-bottom: 16px;
+    text-decoration: none;
 }
 .rightPanTgl {
     display: none;

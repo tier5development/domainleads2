@@ -170,13 +170,9 @@
             @include('new_version.shared.right-panel')
             
             {{-- Include common footer --}}
-            @include('new_version.shared.dashboard-footer', ['class' => 'footer mobileOnly'])
+            @include('new_version.shared.dashboard-footer', ['class' => 'footer'])
             
         </section>
-
-        
-
-        @include('new_version.shared.dashboard-footer', ['class' => 'footer'])
     </div>
 
     
