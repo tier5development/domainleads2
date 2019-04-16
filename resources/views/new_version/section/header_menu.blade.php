@@ -19,6 +19,7 @@
                     <ul>
                         <li><a href="#leadconversion" class="lead-conversion">lead conversion</a></li>
                         <li><a href="#pricing" class="pricing">pricing</a></li>
+                        <li><a href="{{route('supportPage')}}" class="pricing">support</a></li>
                         @if(Auth::check() && isset($user))
                             {{-- <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a> --}}
                             @include('new_version.shared.user-settings-dropdown', ['user' => $user])
