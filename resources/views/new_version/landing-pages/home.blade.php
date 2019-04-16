@@ -133,7 +133,7 @@
 
   
   <!-- lead conversion -->
-  <section class="leadConversion genSection">
+  <section id="leadconversion" class="leadConversion genSection">
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
@@ -237,7 +237,7 @@
     </div>
   </section>
 
-  <section class="plans spaceSection">
+  <section id="pricing" class="plans spaceSection">
     <div class="container">
       <h2 class="heading">Pick a plan & start unlocking your leads</h2>
       <p class="headingInfo">Your business boosts right from here</p>

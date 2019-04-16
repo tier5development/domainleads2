@@ -17,8 +17,8 @@
                 <nav class="menu clearfix">
                     <a href="javascript:void(0);" class="menuClose"><i class="fas fa-arrow-right"></i></a>
                     <ul>
-                        <li><a href="#" class="lead-conversion">lead conversion</a></li>
-                        <li><a href="#" class="pricing">pricing</a></li>
+                        <li><a href="#leadconversion" class="lead-conversion">lead conversion</a></li>
+                        <li><a href="#pricing" class="pricing">pricing</a></li>
                         @if(Auth::check() && isset($user))
                             {{-- <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a> --}}
                             @include('new_version.shared.user-settings-dropdown', ['user' => $user])
@@ -34,11 +34,22 @@
     </div>
 
     <script type="text/javascript">
+        var locationTLD = "{{config('settings.LOCATION_TLD')}}"
         $(".pricing").click(function() {
-            $('html,body').animate({scrollTop: $(".plans").offset().top+80},'slow');
+            var urltld = window.location.href.split(locationTLD)
+            if(urltld[1] == '') {
+                // do nothing
+            } else {
+                window.location.replace("{{config('settings.LANDING-DOMAIN')}}"+"#pricing")
+            }
         });
         $(".lead-conversion").click(function() {
-            $('html,body').animate({scrollTop: $(".leadConversion").offset().top},'slow');
+            var urltld = window.location.href.split(locationTLD)
+            if(urltld[1] == '') {
+                // do nothing
+            } else {
+                window.location.replace("{{config('settings.LANDING-DOMAIN')}}"+"#leadconversion")
+            }
         });
     </script>
   </header>
