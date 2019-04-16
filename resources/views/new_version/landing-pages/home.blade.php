@@ -10,7 +10,7 @@
     
         <!-- header -->
         @include("new_version.section.header_menu")
-        
+              
         {{-- @include('new_version.section.user_panel_header', ['user' => $user]) --}}
         
         <!-- inner content -->
@@ -35,6 +35,8 @@
             </div>
         </div>
     </section>
+
+    
   <!-- major benefits -->
   <section class="majorBenefits genSection">
     <div class="container">
@@ -107,6 +109,7 @@
       </div>
     </div>
   </section>
+  
   <!-- take a look -->
   <section class="takeLook genSection">
     <div class="container">
@@ -127,6 +130,8 @@
       
     </div>
   </section>
+
+  
   <!-- lead conversion -->
   <section class="leadConversion genSection">
     <div class="container">
@@ -165,6 +170,7 @@
       </div>
     </div>
   </section>
+  
   <!-- users say -->
   <section class="userSay comSection">
     <div class="container">
@@ -255,15 +261,17 @@
                   <h3>${{config('settings.PLAN.PUBLISHABLE.'.$item[0])[1]}}</h3>
                   <span>Billed monthly, no set up fee.</span>
                   
-                  @if($user->user_type == config('settings.PLAN.L').$item[0])
-                      <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
-                  @elseif($user->user_type > config('settings.PLAN.L').$item[0])
+                  @if( isset($user) && $user->user_type == config('settings.PLAN.L').$item[0])
+                      <a href="{{route('showMembershipPage')}}" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
+                  @elseif(isset($user) && $user->user_type > config('settings.PLAN.L').$item[0])
                   
                       @if($user->isDowngradable())
-                          <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
+                          <a href="{{route('showMembershipPage')}}" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
                       @endif
-                  @elseif($user->user_type < config('settings.PLAN.L').$item[0])
-                      <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
+                  @elseif(isset($user) && $user->user_type < config('settings.PLAN.L').$item[0])
+                      <a href="{{route('showMembershipPage')}}" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
+                  @else
+                    <a href="{{route('signupPage')}}" onclick="savePlan('{{$item[0]}}')" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
                   @endif
 
                   <button class="viewMore1">View more</button>
@@ -283,8 +291,10 @@
       </div>
     </div>
   </section>
-  
+
   @include('section.footer_menu')
+
+  
   <!-- sticky text -->
   <!-- <div class="stickyBox" id="stickyBoxWrap" style="display: none;">
     <div id="popup">

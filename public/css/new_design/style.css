@@ -610,11 +610,6 @@ h1, h2, h3, h4, h5, h6, p{
 	margin-left: 18px;
 	font-size: 20px;
     vertical-align: middle;
-    transition: all 0.3s;
-}
-.sideText a:hover i{
-	padding-left: 10px;
-	transition: all 0.3s;
 }
 
 /*take a look*/
@@ -630,6 +625,7 @@ h1, h2, h3, h4, h5, h6, p{
 .takeLook a img{
 	max-width: 100%;
 	margin-left: 50px;
+	outline: none;
 }
 .takeLook a{
 	position: relative;
@@ -1109,7 +1105,7 @@ h1, h2, h3, h4, h5, h6, p{
 	perspective: 300px;
 }
 .cardArea li.active {
-	transform: rotateX(-180deg);
+	transform: rotateX(360deg);
 	width: 360px;
 	height: 70px;
 	margin: 0px 0 -14px 30px;
@@ -2519,6 +2515,7 @@ h1, h2, h3, h4, h5, h6, p{
 	.header .bottomRight.pull{
 		transform: translateX(0);
 		padding: 0 50px;
+		z-index: 9999;
 	}
 	.header .bottomRight .menuClose, .header .menu-button {
 		display: inline-block;
