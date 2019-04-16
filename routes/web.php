@@ -52,8 +52,11 @@ Route::get('tstrt', function() {
     dd(json_decode(json_encode(str_replace("\n", "", $result), true), true));
 });
 
+
+Route::get('support', ['uses' => 'PublicContentController@supportPage', 'as' => 'supportPage']);
 Route::get('privacy-policy', ['uses' => 'PublicContentController@privacyPolicy', 'as' => 'privacyPolicy']);
 Route::get('terms-of-use', ['uses' => 'PublicContentController@termsOfUse', 'as' => 'termsOfUse']);
+
 
 Route::get('/login', ['uses' => 'AccountController@loginPage', 'as' => 'loginPage']);
 Route::get('/signup', ['uses' => 'AccountController@signupPage', 'as' => 'signupPage']);

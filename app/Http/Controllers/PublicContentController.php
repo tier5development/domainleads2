@@ -13,4 +13,8 @@ class PublicContentController extends Controller
     public function termsOfUse() {
         return view("new_version.landing-pages.terms-of-use");
     }
+
+    public function supportPage() {
+        return view("new_version.landing-pages.supportPage");
+    }
 }
