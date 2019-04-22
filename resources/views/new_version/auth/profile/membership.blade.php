@@ -2,6 +2,24 @@
 <html lang="en">
     @include('new_version.section.user_panel_head', ['title' => 'Membership'])
     
+    @if(config('settings.ISLIVE') == true)
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f.fbq)f.fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1544020915892734');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1544020915892734&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+    @endif
 <body>
     <div class="container noWidth">
         <div class="rightPanTgl">   
@@ -25,7 +43,9 @@
 
                 <div id="membership" class="eachItem">
                     <h2>your membership plan</h2>
-                    <p>Upgrade or downgrade your membership plan anytime.</p>
+                    <p>Upgrade or downgrade your membership plan anytime.
+
+                    </p>
                     <div class="plans">
                         <div class="container">
                             <div class="eachPlanContainer clearfix">
@@ -53,9 +73,10 @@
                                                 <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn greyButton">current plan</a>
                                             @elseif($user->user_type > config('settings.PLAN.L').$item[0])
                                             
-                                                @if($user->isDowngradable())
-                                                    <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
-                                                @endif
+                                            @if($user->isDowngradable())
+                                                <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-green">downgrade</a>
+                                            @endif
+
                                             @elseif($user->user_type < config('settings.PLAN.L').$item[0])
                                                 <a href="javascript:void(0)" id="plan-{{$item[0]}}" data-plan='{{$item[0]}}' class="button planBtn gradiant-orange">get started</a>
                                             @endif
@@ -103,6 +124,8 @@
         var planToUpgrade       =   null;
         var currentPlan         =   "{{$user->user_type}}";
 
+        console.log(' JOSN :: JSON :: ', "{{json_encode(config('settings.PLAN.NAMEMAP'), true)}}")
+
         var handler = StripeCheckout.configure({
             key:    publicKey,
             image:  userStoredImagePath,
@@ -120,13 +143,11 @@
                         $('.alertBox').find('.close').trigger('click');
                         $('#loader-icon').show();
                     },  success: function(resp) {
-                        console.log(resp);
                         if(resp.status) {
                             $('#loader-icon').hide();
                             if(resp.processComplete) {
                                 $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
-                                adjustNewButtons(resp.newPlan);
-                                console.log('calling refreshCanvas');
+                                adjustNewButtons(resp);
                                 refreshCanvas();
                             } else {
                                 $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);
@@ -141,7 +162,6 @@
                         } else if(err.status == 500) {
                             $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text('Error occoured while updating card details.');
                         }
-                        console.log('came here 1 : ', err.status);
                     }
                 });
             }
@@ -157,10 +177,23 @@
         }
         
         var adjustNewButtons = function(resp) {
-            var newPlan = resp.newPlan;
-            newPlan = parseInt(newPlan);
+            console.log('resp ::: ', resp)
+            var newPlan         = resp.newPlan;
+            newPlan             = parseInt(newPlan);
+            var lastAmount      = resp.lastAmount;
+            var currentAmount   = resp.currentAmount;
             // currentPlan holds the current plan the user is in.
             $(".planBtn").removeClass("gradiant-green").removeClass("gradiant-orange").removeClass("greyButton");
+            if(currentAmount > lastAmount && "{{config('settings.ISLIVE') == true}}") {
+                fbq('track', 'Purchase', {
+                    value: currentAmount,
+                    currency: 'USD',
+                });
+            }
+
+            
+
+            // Updating currentPlan with the new plan user opted in.
             currentPlan = newPlan;
             for(var i = 1; i <= parseInt("{{count(config('settings.PLAN.NAMEMAP'))}}"); i++) {
                 var id = "#plan-"+i;
@@ -187,7 +220,6 @@
         // }
 
         var changePlan = function(t) {
-            console.log('in func');
             $('.alertBox').find('.close').trigger('click');
             // If user has card info saved charge himright away, else show him stripe form.
             planToUpgrade = $(t).data('plan');
@@ -199,20 +231,15 @@
                 url     :   "{{route('upgradeOrDowngradePlan')}}",
                 data    :   {_token: "{{csrf_token()}}", plan: planToUpgrade},
                 beforeSend: function() {
-                    console.log('before load');
                     $('#loader-icon').show();
                 }, success: function(resp) {
                     $('#loader-icon').hide();
-                    console.log(resp);
-                    
                     if(resp.processComplete) {
                         adjustNewButtons(resp);
                         $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('success').show().find('.message-body-ajax').text(resp.message);
-                        console.log('calling refreshCanvas');
                         refreshCanvas();
                     } else {
                         if(resp.allowFurther == true) {
-                            console.log('allowing further1');
                             openStripeForm();
                         } else {
                             $('#ajax-msg-box').removeClass('success').removeClass('error').addClass('error').show().find('.message-body-ajax').text(resp.message);

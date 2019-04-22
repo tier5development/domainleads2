@@ -51,6 +51,14 @@
 
                 
                 @if(Session::has('first_visit'))
+                    @if(config('settings.ISLIVE') == true)
+                        <script>
+                            fbq('track', 'Purchase', {
+                                value: "{{config('settings.PLAN.PUBLISHABLE.'.$user->user_type)[1]}}",
+                                currency: 'USD',
+                            });
+                        </script>
+                    @endif
                     <div class="innerContent" style="margin: -20px;">
                         <div class="container customCont cancelDomain signUpConfirmation">
                           <div class="col-sm-8 innerContentWrap">

@@ -216,9 +216,10 @@ use \Carbon\Carbon;
         public function updateCard(Request $request, $user = null) {
             try {
                 DB::beginTransaction();
-                $user           = $user == null ? Auth::user() : $user;
-                $stripeToken    = $request->stripe_token;
-                $stripeDetails  = StripeDetails::first();
+                $user           =   $user == null ? Auth::user() : $user;
+                $stripeToken    =   $request->stripe_token;
+                $stripeDetails  =   StripeDetails::first();
+                $lastAmount     =   config('settings.PLAN.PUBLISHABLE.'.$user->user_type)[1];
                 $params = [
                     'email'     	=> 	$user->email,
                     'source'    	=> 	$stripeToken,
@@ -232,19 +233,23 @@ use \Carbon\Carbon;
                 if($res['status']) {
                     DB::commit();
                     return [
-                        'status' 	=> true,
-                        'card'		=> $this->getCustomerDetails(Auth::user())['card'],
-                        'allowFurther' =>  true,
-                        'message' 	=> 'Card updated successfully',
-                        'user'      =>  $user
+                        'status' 	    =>  true,
+                        'card'		    =>  $this->getCustomerDetails(Auth::user())['card'],
+                        'allowFurther'  =>  true,
+                        'message' 	    =>  'Card updated successfully',
+                        'user'          =>  $user,
+                        'lastAmount'    =>  $lastAmount,
+                        'currentAmount' =>  $lastAmount,
                     ];
                 } else {
                     DB::commit();
                     return [
-                        'status' 	=> false,
-                        'allowFurther' =>  false,
-                        'message' 	=> 'Card upddate failed.',
-                        'user'      =>  $user
+                        'status' 	    =>  false,
+                        'allowFurther'  =>  false,
+                        'message' 	    =>  'Card upddate failed.',
+                        'user'          =>  $user,
+                        'lastAmount'    =>  $lastAmount,
+                        'currentAmount' =>  $lastAmount,
                     ];
                 }
             } catch(Throwable $e) {
@@ -265,8 +270,9 @@ use \Carbon\Carbon;
         public function upgradeOrDowngrade(Request $request, $user = null) {
             try {
                 // Log::info('subscribe -- came initial');
-                $user 				= $user != null ? $user : Auth::user();
-                $responseArray 		= $this->updateCard($request, $user);
+                $user 	        =   $user != null ? $user : Auth::user();
+                $responseArray  =   $this->updateCard($request, $user);
+                $lastAmount     =   config('settings.PLAN.PUBLISHABLE.'.$user->user_type)[1];
                 
                 if($responseArray['status']) {
                     $plan 				    =   $request->plan;
@@ -293,7 +299,9 @@ use \Carbon\Carbon;
                                 'message'           =>  $plan < $baseUserType
                                     ? 'Since you are the member of affiliates programme you cannot downgrade directly beyond plan : '.getPlanFriendlyName($baseUserType)
                                     : 'You already exist in the plan you want to upgrade to.',
-                                'user'              =>  $user
+                                'user'              =>  $user,
+                                'lastAmount'        =>  $lastAmount,
+                                'currentAmount'     =>  config('settings.PLAN.PUBLISHABLE.'.$user->user_type)[1],
                             ];
                         }
                     }
@@ -311,13 +319,15 @@ use \Carbon\Carbon;
 
                     if(!is_object($subscriptionData)) {
                         return [
-                            'status'            => false,
-                            'cardUpdated'       => $user->card_updated == 1 ? true : false,
-                            'allowFurther'      => false,
-                            'processComplete'   => false,
-                            'newPlan'           => null,
-                            'message'           => 'Please check if your card has enough balance and try again.',
-                            'user'              =>  $user
+                            'status'            =>  false,
+                            'cardUpdated'       =>  $user->card_updated == 1 ? true : false,
+                            'allowFurther'      =>  false,
+                            'processComplete'   =>  false,
+                            'newPlan'           =>  null,
+                            'message'           =>  'Please check if your card has enough balance and try again.',
+                            'user'              =>  $user,
+                            'lastAmount'        =>  $lastAmount,
+                            'currentAmount'     =>  config('settings.PLAN.PUBLISHABLE.'.$user->user_type)[1],
                         ];
                     }
                     $user->stripe_subscription_id = $subscriptionData->id;
@@ -337,9 +347,10 @@ use \Carbon\Carbon;
                             ? 'Subscription changed to '.getPlanFriendlyName($plan).' successfully!'
                             : 'Subscription failed, Please check with your card balance.',
                         'headerView'        =>  View::make('new_version.shared.reusable-user-panel-header', ['user' => $user])->render(),
-                        'user'              =>  $user
+                        'user'              =>  $user,
+                        'lastAmount'        =>  $lastAmount,
+                        'currentAmount'     =>  config('settings.PLAN.PUBLISHABLE.'.$user->user_type)[1],
                     ];
-
                 } else {
                     return $responseArray;
                 }
