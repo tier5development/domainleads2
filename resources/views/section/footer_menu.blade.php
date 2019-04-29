@@ -29,7 +29,7 @@
     $(document).ready(function() {
         console.log('i am getting executed');
         var old_affiliate_id = Cookies.get('affiliate_id');
-        var affiliate_id = getUrlParams('affiliate_id');
+        var affiliate_id = getUrlParams('aid');
         console.log('ready : ', affiliate_id, Cookies.get('affiliate_id'), old_affiliate_id == undefined);
         if(old_affiliate_id == undefined) {
             if(affiliate_id != null) {
