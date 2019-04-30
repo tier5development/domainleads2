@@ -455,15 +455,15 @@ class AccountController extends Controller
 
 	public function signupPost(Request $request) {	
 		try {
-
+			
 			DB::beginTransaction();
-			$fullName 		= 	$request->full_name;
+			$fullName		= 	$request->full_name;
 			$email			=	$request->email;
 			$password		=	$request->password;
 			$remember_token	=	$request->_token;
-			$date			=	date('Y-m-d H:i:s');
+			$date				=	date('Y-m-d H:i:s');
 			$affiliateId	=	$request->affiliate_id;
-			$plan			=	$request->plan;
+			$plan				=	$request->plan;
 			$stripeToken	=	$request->stripe_token;
 			
 			$validator=Validator::make($request->all(), [
@@ -475,29 +475,26 @@ class AccountController extends Controller
 				'cpassword.required' => 'Confirm password is required.',
 				'cpassword.same' => 'Confirm password should be same as password.'
 			]);
-			
 			if($validator->fails()) {
 				return redirect()->back()->withErrors($validator)->withInput();
-			} else {	
+				DB::rollback();
+			} else {
 				$id_email = User::where('email', $email)->select('email')->first();
 				if(!$id_email) {
-					$newUser 					= 	new User();
-					$newUser->name 				= 	$fullName;
-					$newUser->email 			= 	$email;
-					$newUser->password 			=	bcrypt($password);
-					$newUser->remember_token 	= 	$remember_token;
-					$newUser->user_type 		= 	$plan;
+					$newUser 							=	new User();
+					$newUser->name 				=	$fullName;
+					$newUser->email 			=	$email;
+					$newUser->password 		=	bcrypt($password);
+					$newUser->remember_token	=	$remember_token;
+					$newUser->user_type 			=	$plan;
 					if(strlen(trim($affiliateId)) > 0) {
-						$newUser->affiliate_id		= 	$affiliateId;
+						$newUser->affiliate_id		=	$affiliateId;
 					}
-					$newUser->is_hooked 		=	'0';
-					$newUser->email_verified	= 	'0';
+					$newUser->is_hooked 			=	'0';
+					$newUser->email_verified	=	'0';
 					$newUser->save();
-
-					
-
-					$return 					= 	$this->upgradeOrDowngrade($request, $newUser);
-					$newUser 					= 	$return['user'];
+					$return		=	$this->upgradeOrDowngrade($request, $newUser);
+					$newUser	=	$return['user'];
 					if($return['status'] == true) {
 						DB::commit();	
 						// The user got subscribed successfully
@@ -513,11 +510,9 @@ class AccountController extends Controller
 								event(new UsageInfo());
 								return redirect('search')->with('first_visit', 'Yes');
 							} else {
-								DB::rollback();
 								return redirect()->back()->with('error', 'Please check your email and password!')->withErrors($validator)->withInput();
 							}
 						} else {
-							DB::rollback();
 							return redirect()->back()->with('error', 'Please check your email and password!')->withInput();
 						}
 					} else {
