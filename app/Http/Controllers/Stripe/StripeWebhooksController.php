@@ -48,20 +48,6 @@ class StripeWebhooksController extends Controller
                     $this->registerSale($ptype, $user, $trial);
                 }
 
-                if($status == 'trialing' || $status == 'active') {
-                    if(strlen($user->sale_id) > 0) {
-                        $this->registerSale('created', $user, $trial);
-                        Log::info('subscription hook : user : '.$user->id.' status : '.$status.' registering created');
-                    } else {
-                        $this->registerSale('updated', $user, $trial);
-                        Log::info('subscription hook : user : '.$user->id.' status : '.$status.' registering updated');
-                    }
-                } else if($status == 'unpaid' || $status == 'canceled' || $status == 'past_due') {
-                    $this->registerSale('inactive', $user, $trial);
-                    Log::info('subscription hook : user : '.$user->id.' status : '.$status.' registering inactive');
-                }
-                
-
                 if($status == 'canceled') {
                     $user->stripe_plan_id = null;
                     $user->stripe_subscription_id = null;
