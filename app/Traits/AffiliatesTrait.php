@@ -38,8 +38,8 @@ trait AffiliatesTrait {
             $client = new Client();
             switch($type) {
                 case 'created' : 
-                Log::info('url : '.config('settings.AFFILIATE-HOOK').$url);
-                    $result = $client->post(config('settings.AFFILIATE-HOOK').$url, [
+                Log::info('url : '.config('settings.AFFILIATE-HOOK'));
+                    $result = $client->post(config('settings.AFFILIATE-HOOK'), [
                         'form_params' => [
                                 "product_name"      => config('settings.PRODUCT'),
                                 "ammount"  	 	    => $amount,
@@ -59,7 +59,7 @@ trait AffiliatesTrait {
                     }
                     break;
                 case 'updated' : 
-                    $result = $client->post(config('settings.AFFILIATE-HOOK').$url, [
+                    $result = $client->post(config('settings.AFFILIATE-HOOK'), [
                         'form_params' => [
                                 "saleId"            => $user->sale_id,
                                 "product_name" 		=> config('settings.PRODUCT'),
@@ -69,7 +69,7 @@ trait AffiliatesTrait {
                     ])->getBody()->getContents();
                     break;
                 case 'active' : 
-                    $result = $client->post(config('settings.AFFILIATE-HOOK').$url, [
+                    $result = $client->post(config('settings.AFFILIATE-HOOK'), [
                         'form_params' => [
                                 "saleId"            => $user->sale_id,
                                 "is_active" 		=> true
@@ -77,7 +77,7 @@ trait AffiliatesTrait {
                     ])->getBody()->getContents();
                     break;
                 case 'inactive' : 
-                    $result = $client->post(config('settings.AFFILIATE-HOOK').$url, [
+                    $result = $client->post(config('settings.AFFILIATE-HOOK'), [
                         'form_params' => [
                                 "saleId"            => $user->sale_id,
                                 "is_active" 		=> false
