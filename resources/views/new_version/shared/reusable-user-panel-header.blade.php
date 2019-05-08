@@ -15,6 +15,12 @@
     </li>
     @endif
 
+    <li>
+        <a href="{{route('supportPage')}}" class="pricing">
+            <span class="desktopOnly">SUPPORT</span>
+        </a>
+    </li>
+
     @if($user->user_type == config('settings.ADMIN-NUM'))
         <li>
             <a href="{{route('manage')}}">
