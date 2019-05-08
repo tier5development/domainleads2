@@ -21,11 +21,12 @@
                         <li><a href="#pricing" class="pricing">pricing</a></li>
                         <li><a href="{{route('supportPage')}}" class="pricing">support</a></li>
                         @if(Auth::check() && isset($user))
-                            {{-- <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a> --}}
-                            @include('new_version.shared.user-settings-dropdown', ['user' => $user])
+                            <a href="{{route('search')}}" class="button gradiant-orange">dashboard</a>
+                            {{-- @include('new_version.shared.user-settings-dropdown', ['user' => $user]) --}}
                         @else
                             <a href="{{route('loginPage')}}" class="button gradiant-orange">login</a>
                         @endif
+                        
                     </ul>
                 </nav>
             @endif
@@ -34,11 +35,22 @@
     </div>
 
     <script type="text/javascript">
+        var locationTLD = "{{config('settings.LOCATION_TLD')}}"
         $(".pricing").click(function() {
-            $('html,body').animate({scrollTop: $(".plans").offset().top+80},'slow');
+            var urltld = window.location.href.split(locationTLD)
+            if(urltld[1] == '') {
+                // do nothing
+            } else {
+                window.location.replace("{{config('settings.LANDING-DOMAIN')}}"+"#pricing")
+            }
         });
         $(".lead-conversion").click(function() {
-            $('html,body').animate({scrollTop: $(".leadConversion").offset().top},'slow');
+            var urltld = window.location.href.split(locationTLD)
+            if(urltld[1] == '') {
+                // do nothing
+            } else {
+                window.location.replace("{{config('settings.LANDING-DOMAIN')}}"+"#leadconversion")
+            }
         });
     </script>
   </header>
