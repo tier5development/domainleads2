@@ -61,7 +61,8 @@ class WhoisProxy extends Command
 
     private function extractAndStore($dy = 1) {
       $currentDate = date('Y-m-d',time()-(3600*24*$dy));
-      $whoxyURL = "https://www.whoxy.com/newly-registered-domains/download.php?key=3b1205bf714563e&file=".$currentDate."_proxies.zip";
+      $key = config('settings.WHOISKEY');
+      $whoxyURL = "https://www.whoxy.com/newly-registered-domains/download.php?key=".$key."&file=".$currentDate."_proxies.zip";
       //$whoxyURL = "http://twk.pm/6kj9ulnydc";
       $startTime = microtime(true);
 

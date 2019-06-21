@@ -49,7 +49,8 @@ class WhoIsProxyExpiring extends Command
        * Download the latest file
        */
       $currentDate = date('Y-m-d',time()+(3600*24)*29);
-      $whoxyURLexpired = "https://www.whoxy.com/expiring-domain-names/download.php?key=59341394fac3331&file=".$currentDate.".zip";
+      $key = config('settings.WHOISKEYEXPIRED');
+      $whoxyURLexpired = "https://www.whoxy.com/expiring-domain-names/download.php?key=".$key."&file=".$currentDate.".zip";
       $importHelper = new ImportCsvHelper();
       $importHelper->importExpiredDomainsZip($currentDate, $whoxyURLexpired);
     } else {
