@@ -12,6 +12,7 @@ return [
     'LEVEL2-USER'   => 150,
     'LEVEL3-USER'   => 500,
     'RESET-PASSWORD-LIFE' => 72,
+    'INSERTBATCHSIZE' => 5000,
     'DB' => [
         'USER'      =>  'root',
         'PASS'      =>  'root',

@@ -624,7 +624,7 @@ private function destroy()
       $DOMIANS_NAMESERVER       = '';
       $DOMAINS_STATUS           = '';
 
-      $BATCH  = 200; // to insert 5000 data at 1 go
+      $BATCH  = config('settings.INSERTBATCHSIZE'); // to insert 5000 data at 1 go
       $counter = 0;
       while(true)
       {
