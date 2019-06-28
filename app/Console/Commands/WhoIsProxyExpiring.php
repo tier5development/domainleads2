@@ -44,12 +44,12 @@ class WhoIsProxyExpiring extends Command
   public function handle()
   {
     $days = (int) $this->argument('days');
+    $key = config('settings.WHOISKEYEXPIRED');
     if($days == 0) {
       /**
        * Download the latest file
        */
       $currentDate = date('Y-m-d',time()+(3600*24)*29);
-      $key = config('settings.WHOISKEYEXPIRED');
       $whoxyURLexpired = "https://www.whoxy.com/expiring-domain-names/download.php?key=".$key."&file=".$currentDate.".zip";
       $importHelper = new ImportCsvHelper();
       $importHelper->importExpiredDomainsZip($currentDate, $whoxyURLexpired);
