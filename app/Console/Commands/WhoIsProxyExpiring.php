@@ -44,7 +44,7 @@ class WhoIsProxyExpiring extends Command
   public function handle()
   {
     $days = (int) $this->argument('days');
-    $key = config('settings.WHOISKEYEXPIRED');
+    $key = config('settings.WHOISEXPIREDKEY');
     if($days == 0) {
       /**
        * Download the latest file
