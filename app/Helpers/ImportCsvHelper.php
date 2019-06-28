@@ -26,6 +26,7 @@ use App\Jobs\ImportCsv;
 use Session;
 use App\SocketMeta;
 use App\Events\UsageInfo;
+use Log;
 class ImportCsvHelper {
 
 public $Area_state = array();
@@ -51,27 +52,51 @@ private function create()
     $this->Area_codes_number_type   = AreaCode::pluck('usage','prefix')->toArray();
     
     try {
+      Log::info('** preparing leads Array **');
       $this->prepareLeadsArray();
+      Log::info('** leads Array - prepared **');
+      Log::info('** preparing domains Array **');
       $this->prepareDomainsArray();
+      Log::info('** domains Array - prepared **');
     } catch(\Exception $e) {
+      Log::info('** starting to remove attrocious data **');
       $this->remove_atrocious_data();
+      Log::info('** attrocious data - cleared **');
+      Log::info('** preparing leads Array **');
       $this->prepareLeadsArray();
+      Log::info('** leads Array - prepared **');
+      Log::info('** preparing domains Array **');
       $this->prepareDomainsArray();
+      Log::info('** domains Array - prepared **');
     }
 }
 
 private function prepareLeadsArray() {
   $this->__leads  = Lead::pluck('registrant_email')->toArray();
   $this->__leads  = array_flip($this->__leads);
-  foreach($this->__leads as $key=>$val)  $this->__leads[$key] = 0;
+  $cnt = 0;
+  foreach($this->__leads as $key=>$val) {
+    $this->__leads[$key] = 0;
+    $cnt++;
+    if($cnt % 1000 == 0) {
+      Log::info('l-key : '.$key);
+    }
+  }
+  unset($cnt);
   return;
 }
 
 private function prepareDomainsArray() {
   $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
+  $cnt = 0;
   foreach($this->__domains as $key=>$val) {
     $this->__leads[$val]++;
+    $cnt++;
+    if($cnt % 1000 == 0) {
+      Log::info('d-key : '.$key);
+    }
   }
+  unset($cnt);
 }
 
 private function destroy()
@@ -342,6 +367,7 @@ private function destroy()
 
     try
     {
+      Log::info('[[[[Batch insert start processing]]]]');
         // DB::statement(DB::raw('RESET QUERY CACHE;'));
         $q_leads    = "REPLACE `leads` ". $leads_head. " VALUES ".$LEADS;
 
@@ -428,7 +454,7 @@ private function destroy()
           unset($domains_status_head);
           unset($DOMAINS_STATUS);
           unset($q_domains_status);
-
+          Log::info('[[[[Batch insert finished]]]]');
           return $time_array;
     } catch(\Exception $e) {
       \Log::info('From import export :: while querry executing :: '.$e->getMessage());
@@ -469,64 +495,79 @@ private function destroy()
     /**
      * Checking bad leads with bad email
      */
+    Log::info('[[Deleting bad leads]]');
     $deleteSQL = "DELETE FROM leads WHERE LOWER(registrant_email) NOT REGEXP '^.+@.+$';";
     DB::statement($deleteSQL);
-
+    Log::info('[[Bad leads - deleted]]');
     /**
      * Checking orphan data in each_domain
      */
+    Log::info('[[Deleting bad domains]]');
     $table = 'each_domain';
     $deleteSQL = "DELETE `each_domain` FROM `each_domain` LEFT JOIN `leads` on `each_domain`.`registrant_email` = `leads`.`registrant_email` WHERE `leads`.`id` is NULL;";
     DB::statement($deleteSQL);
+    Log::info('[[Bad domains - deleted]]');
 
     /**
      * Checking orphan data in domains_info if found any delete
      */
+    Log::info('[[Deleting bad domains_info]]');
     $table = 'domains_info';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
+    Log::info('[[Bad domains_info - deleted]]');
 
     /**
      * Checking orphan data in domains_technical if found any delete
      */
+    Log::info('[[Deleting bad domains_technical]]');
     $table = 'domains_technical';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
-
+    Log::info('[[Bad domains_technical - deleted]]');
     /**
      * Checking orphan data in domains_status if found any delete
      */
+    Log::info('[[Deleting bad domains_status]]');
     $table = 'domains_status';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
+    Log::info('[[Bad domains_status - deleted]]');
 
     /**
      * Checking orphan data in domains_nameserver if found any delete
      */
+    Log::info('[[Deleting bad domains_nameserver]]');
     $table = 'domains_nameserver';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
-
+    Log::info('[[Bad domains_nameserver - deleted]]');
     /**
      * Checking orphan data in domains_feedback if found any delete
      */
+    Log::info('[[Deleting bad domains_feedback]]');
     $table = 'domains_feedback';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
+    Log::info('[[Bad domains_feedback - deleted]]');
 
     /**
      * Checking orphan data in domains_billing if found any delete
      */
+    Log::info('[[Deleting bad domains_billing]]');
     $table = 'domains_billing';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
+    Log::info('[[Bad domains_billing - deleted]]');
 
     /**
      * Checking orphan data in domains_administrative if found any delete
      */
+    Log::info('[[Deleting bad domains_administrative]]');
     $table = 'domains_administrative';
     $deleteSQL = "DELETE `$table` FROM `$table` LEFT JOIN `each_domain` on `$table`.`domain_name` = `each_domain`.`domain_name` WHERE `each_domain`.`id` is NULL;";
     DB::statement($deleteSQL);
+    Log::info('[[Bad domains_administrative - deleted]]');
   }
 
   private function validate_input($row)
@@ -548,6 +589,7 @@ private function destroy()
 
   public function insertion_Execl($file)
   {
+      Log::info('**Begining to insert data finally**');
       $query_time_array = array();
       $loop_time = array();
       $tm1 = microtime(true);
