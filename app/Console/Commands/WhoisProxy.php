@@ -85,8 +85,10 @@ class WhoisProxy extends Command
           $return = $import->insertion_Execl($getCSVFile);
           fclose($getCSVFile);
 
-          $leads_inserted   = Lead::count() - $total_leads_before_insertion;
-          $domains_inserted = EachDomain::count() - $total_domains_before_insertion;
+          $total_leads    = Lead::count();
+          $total_domains  = EachDomain::count();
+          $leads_inserted   = $total_leads - $total_leads_before_insertion;
+          $domains_inserted = $total_domains - $total_domains_before_insertion;
           $endTime = microtime(true) - $startTime;
 
           $csvObj = new CSV();
@@ -98,6 +100,7 @@ class WhoisProxy extends Command
           $csvObj->save();
           $socketMeta = SocketMeta::first();
           $socketMeta->leads_added_last_day = $leads_inserted;
+          $socketMeta->total_domains        = $total_domains;
           $socketMeta->save();
           event(new UsageInfo());
           unlink($csvFilePath);

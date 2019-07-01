@@ -136,8 +136,10 @@ private function destroy()
         $this->insertion_Execl($file);
         fclose($file);
         echo('***** Insertion ended *******');
-        $leads_inserted   = Lead::count()-$total_leads_before_insertion;
-        $domains_inserted = EachDomain::count()-$total_domains_before_insertion;
+        $total_leads      = Lead::count();
+        $total_domains    = EachDomain::count();
+        $leads_inserted   = $total_leads - $total_leads_before_insertion;
+        $domains_inserted = $total_domains - $total_domains_before_insertion;
         $end = microtime(true) - $start;
 
         $obj = new CSV();
@@ -150,6 +152,7 @@ private function destroy()
 
         $socketMeta = SocketMeta::first();
         $socketMeta->leads_added_last_day = $leads_inserted;
+        $socketMeta->total_domains        = $total_domains;
         $socketMeta->save();
         event(new UsageInfo());
 
@@ -961,8 +964,10 @@ private function destroy()
         /**
          * Calculate how many leads and domains got effected by the insertion
          */
-        $leads_inserted   = Lead::count() - $total_leads_before_insertion;
-        $domains_inserted = EachDomain::count() - $total_domains_before_insertion;
+        $total_leads = Lead::count();
+        $total_domains = EachDomain::count();
+        $leads_inserted   = $total_leads - $total_leads_before_insertion;
+        $domains_inserted = $total_domains - $total_domains_before_insertion;
         $endTime = microtime(true) - $startTime;
 
         /**
@@ -975,6 +980,7 @@ private function destroy()
         $csvObj->save();
         $socketMeta = SocketMeta::first();
         $socketMeta->leads_added_last_day = $leads_inserted;
+        $socketMeta->total_domains = $total_domains;
         $socketMeta->save();
         event(new UsageInfo());
 
