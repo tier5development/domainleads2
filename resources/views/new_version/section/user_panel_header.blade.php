@@ -3,7 +3,7 @@
         <div class="headerLeft">
             <a href="{{route('home')}}"><img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/logo.png" alt=""></a>
         </div>
-        <div class="headerRight">
+        <div class="header-right">
             <div class="heaverNav">
                 <div class="reusable-user-panel-header">
                     @include('new_version.shared.reusable-user-panel-header', ['user' => $user])
