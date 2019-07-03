@@ -141,7 +141,7 @@ class UserHelper {
      * Dependency : Called by the api from affiliates as well as admin panel
      * @param : request 
      *  email : user email,
-     *  aid : affiliate who is responsible for this user
+     *  affiliate_id : affiliate who is responsible for this user
      *  name : user name
      *  user_type : optional default 1 (check config/settings and users table for better understanding)
      * @return
@@ -192,14 +192,14 @@ class UserHelper {
             $newUser->password  = Hash::make(123456);
             $newUser->user_type = $usertype;
             if(strlen(trim($affiliateId)) > 0) {
-                $newUser->aid = $affiliateId;
+                $newUser->affiliate_id = $affiliateId;
                 $newUser->user_type = $usertype;
             }
             $newUser->membership_status = 1;
             if(strlen($affiliateId) > 0) {
                 $newUser->base_type = $usertype;
             }
-            $newUser->aid  =   $affiliateId;
+            $newUser->affiliate_id  =   $affiliateId;
             $newUser->is_hooked     =   $isHooked;
 
             if($newUser->save()) {
