@@ -257,7 +257,7 @@ input, select, textarea, button {
     float: left;
     padding-top: 5px;
 }
-.header-right {
+.headerRight {
     float: right;
     width: 650px;
 }
@@ -1549,7 +1549,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 
 @media screen and (max-width: 1200px) {
-.header-right {
+.headerRight {
     width: 480px;
 }
 .heaverNav ul li {
@@ -1638,7 +1638,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 }
 
 @media screen and (max-width: 840px) {
-.header-right {
+.headerRight {
     width: 440px;
 }
 }
@@ -1657,7 +1657,7 @@ button.pg_btn:hover, button.pg_btn.btn-info {
 .mobileOnly {
     display: initial;
 }
-.header-right {
+.headerRight {
     width: 135px;
 }
 .rightPanel {
