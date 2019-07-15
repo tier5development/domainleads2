@@ -73,11 +73,23 @@ class UserManagementController extends Controller
         try {
             $data = $request->all();
             $arr = [];
+            $idMap = [];
             foreach ($data as $key => $value) {
                 $arr[] = $value['email'];
+                if(!isset($idMap[$value['email']])) {
+                    $idMap[$value['email']] = $value["_id"];
+                }
             }
-            $retunData = User::select("email", "user_type", "suspended")->whereIn("email", $arr)->get();
-            return \Response::json(['status' => true, 'data' => $retunData, "err" => null]);
+            $returnData = User::select("email", "user_type", "suspended")->whereIn("email", $arr)->get();
+            $retArr = [];
+            foreach($returnData as $key => $val) {
+                $retArr[] = [
+                    "_id" => isset($idMap[$val->email]) ? $idMap[$val->email] : null,
+                    "email" => $val->email,
+                    "user_type" => $val->user_type
+                ];
+            }
+            return \Response::json(['status' => true, 'data' => $returnData, "err" => null]);
         } catch(\Exception $e) {
             \Log::info("error in usersData [from affiliates] : ", $e->getMessage());
             return \Response::json(['status' => true, 'data' => null, "err" => $e->getMessage()]);
