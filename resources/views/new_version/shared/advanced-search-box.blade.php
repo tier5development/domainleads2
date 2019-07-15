@@ -129,9 +129,6 @@
                     $('#postAdvancedSearchDataForm').submit();
                 }
             })
-
         });
-
-        
     });
 </script>
