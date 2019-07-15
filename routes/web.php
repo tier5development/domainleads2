@@ -80,7 +80,6 @@ Route::get('/verify_domains','Maintainance@verify_domains');
     Route::get('/autoImportExcelFile', 'ImportExport@autoImportExcelFile');
 	Route::post('/signme','AccountController@signme' );
     Route::post('/download_csv_single_page',['uses' => 'SearchController@download_csv_single_page', 'as' => 'download_csv_single_page']);
-    Route::post('assignLeads', ['uses' => 'SearchController@assignLeads', 'as' => 'assignLeads']);
 
     // Route::group(['middleware' => 'pendingSubscription'], function() {
     //     Route::group(['prefix' => 'failed-subscription'], function() {

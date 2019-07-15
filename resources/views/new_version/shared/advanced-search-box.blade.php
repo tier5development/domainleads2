@@ -50,22 +50,6 @@
                 <div class="filterFormRow">
                     <label for="">Phone number type</label>
                     <div class="fieldArea">
-                            {{-- <label>cell number</label>
-                            <input type="checkbox" name="cell_number" value="cell number" @if(Input::get('cell_number')) checked @endif >
-                            <label>landline number</label>
-                            <input type="checkbox" name="landline_number" value="landline number" @if(Input::get('landline_number')) checked @endif> --}}
-                        
-                        {{-- <div class="radio">
-                            <input type="radio" name="PhoneNumberType">
-                            <p><span></span></p>
-                        </div>
-                        <span class="label">Mobile</span>
-                        
-                        <div class="radio">
-                            <input type="radio" name="PhoneNumberType">
-                            <p><span></span></p>
-                        </div>
-                        <span class="label">Landline</span> --}}
 
                         <div class="radio">
                             <input type="checkbox" name="cell_number" value="cell number" @if(Input::get('cell_number')) checked @endif >
@@ -118,16 +102,6 @@
         <input type="hidden" id="domain_ext" name="domain_ext" value="{{Session::has('oldReq') && isset(Session::get('oldReq')['domain_ext']) ? Session::get('oldReq')['domain_ext'] : '' }}" readonly>
     </form>
 
-    {{-- 
-        * hidden fields goes here from mandatory search fields
-        --}}
-        {{-- var reg_date = $('#registered_date').val();
-            var reg_date2 = $('#registered_date2').val();
-            var expiry_date = $('#domains_expired_date').val();
-            var expiry_date2 = $('#domains_expired_date2').val();
-            var mode = $('#postSearchDataForm input[type=radio]:checked').val();
-            var domain_name = $('#domain_name').val();
-            var domain_ext = $('#domain_ext').val(); --}}
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -135,54 +109,29 @@
             $("#loader-icon").hide();
         });
 
-        $('#advanced-search-btn').on('click', function() {
+        $('#advanced-search-btn').on('click', function(e) {
             $("#loader-icon").show();
+            e.preventDefault();
+
+            // Call the ajax function to cache search results in mysql
+            $.ajax({
+                url  : "{{config('settings.DL-API')}}/api/search_api"+"?"+$('#postAdvancedSearchDataForm').serialize(),
+                type : "get",
+                beforeSend : function() {
+                    console.log("going to send advanced form");
+                }, success : function(data) {
+                    console.log("data return : ", data)
+                }, error : function(er) {
+                    console.log("err return : ", er)
+                }, complete : function() {
+                    console.log("completed ... ")
+                    $('#loader-icon').hide();
+                    $('#postAdvancedSearchDataForm').submit();
+                }
+            })
+
         });
 
-        // $('.select').each(function(){
-        //     var thisVar = $(this), numberOfOptions = $(this).children('option').length;
-
-        //     thisVar.addClass('select-hidden'); 
-        //     thisVar.wrap('<div class="select"></div>');
-        //     thisVar.after('<div class="select-styled"></div>');
-
-        //     var styledSelect = thisVar.next('div.select-styled');
-        //     styledSelect.text(thisVar.children('option').eq(0).text());
-
-        //     var $list = $('<ul />', {
-        //         'class': 'select-options'
-        //     }).insertAfter(styledSelect);
-
-        //     for (var i = 0; i < numberOfOptions; i++) {
-        //         $('<li />', {
-        //             text: thisVar.children('option').eq(i).text(),
-        //             rel: thisVar.children('option').eq(i).val()
-        //         }).appendTo($list);
-        //     }
-
-        //     var listItems = $list.children('li');
-
-        //     styledSelect.click(function(e) {
-        //         e.stopPropagation();
-        //         $('div.select-styled.active').not(this).each(function(){
-        //             $(this).removeClass('active').next('ul.select-options').fadeOut(200);
-        //         });
-        //         $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
-        //     });
-
-        //     listItems.click(function(e) {
-        //         e.stopPropagation();
-        //         styledSelect.text($(this).text()).removeClass('active');
-        //         thisVar.val($(this).attr('rel'));
-        //         $list.fadeOut(200);
-        //         //console.log(thisVar.val());
-        //     });
-
-        //     $(document).click(function() {
-        //         styledSelect.removeClass('active');
-        //         $list.fadeOut(200);
-        //     });
-
-        // });
+        
     });
 </script>

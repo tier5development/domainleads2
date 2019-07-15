@@ -190,143 +190,6 @@
         }
     }
 
-    // var validateDate = function(inputText) {
-    //     console.log('input text received : ', inputText);
-    //     // var dateformat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
-                         
-    //     var dateformat = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/
-    //     // Match the date format through regular expression
-    //     if(inputText.match(dateformat))
-    //     {
-    //         //Test which seperator is used '/' or '-'
-    //         var opera = inputText.split('-');
-    //         lopera = opera.length;
-    //         // Extract the string into month, date and year
-    //         if (lopera>1) {
-    //             var pdate = inputText.split('-');
-    //         }
-    //         var yy = parseInt(pdate[0]);
-    //         var mm  = parseInt(pdate[1]);
-    //         var dd = parseInt(pdate[2]);
-            
-    //         // Create list of days of a month [assume there is no leap year by default]
-    //         var ListofDays = [31,28,31,30,31,30,31,31,30,31,30,31];
-    //         if (mm == 1 || mm > 2) {
-    //             if (dd > ListofDays[mm-1]) {
-    //                 // alert('Invalid date format!');
-    //                 return false;
-    //             }
-    //         }
-    //         if (mm == 2) {
-    //             var lyear = false;
-    //             if ((!(yy % 4) && yy % 100) || !(yy % 400)) {
-    //                 lyear = true;
-    //             }
-    //             if ((lyear==false) && (dd>=29)) {
-    //                 // alert('Invalid date format!');
-    //                 return false;
-    //             }
-    //             if ((lyear==true) && (dd>29)) {
-    //                 // alert('Invalid date format!');
-    //                 return false;
-    //             }
-    //         }
-    //     }
-    //     else {
-    //         // alert("Invalid date format!");
-    //         // document.form1.text1.focus();
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    // var checkDates = function(mode) {
-    //     switch(mode) {
-    //         case 'newly_registered':
-    //             var flag = false;
-    //             var d1 = $('#registered-date1-d').val().toString().translateToDate().trim();
-    //             var m1 = $('#registered-date1-m').val().toString().translateToDate().trim();
-    //             var y1 = $('#registered-date1-y').val().toString().translateToDate().trim();
-    //             if(d1.length == 0 && m1.length == 0 && y1.length == 0) {
-    //                 // ok if nothing is inserted
-    //             } else {
-    //                 var newDate = y1+'-'+m1+'-'+d1;
-    //                 if(!validateDate(newDate)) {
-    //                     alert('Date format entered for registered date is incorrect.');
-    //                     $('#registered_date').val(null);
-    //                     return false;
-    //                 } else {
-    //                     $('#registered_date').val(newDate);
-    //                     flag = true;
-    //                 }
-    //             }
-
-    //             var d2 = $('#registered-date2-d').val().toString().translateToDate().trim();
-    //             var m2 = $('#registered-date2-m').val().toString().translateToDate().trim();
-    //             var y2 = $('#registered-date2-y').val().toString().translateToDate().trim();
-    //             if(d2.length == 0 && m2.length == 0 && y2.length == 0) {
-    //                 // ok if nothing is inserted
-    //             } else {
-    //                 var newDate2 = y2+'-'+m2+'-'+d2;
-    //                 if(!validateDate(newDate2)) {
-    //                     alert('Date format entered for registered date is incorrect.');
-    //                     $('#registered_date2').val(null);
-    //                     return false;
-    //                 } else {
-    //                     $('#registered_date2').val(newDate2);
-    //                     flag = true;
-    //                 }
-    //             }
-    //             return flag;
-            
-    //         case 'getting_expired':
-    //             var flag = false;
-    //             var d1 = $('#expired-date1-d').val().toString().translateToDate().trim();
-    //             var m1 = $('#expired-date1-m').val().toString().translateToDate().trim();
-    //             var y1 = $('#expired-date1-y').val().toString().translateToDate().trim();
-    //             if(d1.length == 0 && m1.length == 0 && y1.length == 0) {
-    //                 // ok if nothing is inserted
-    //             } else {
-    //                 var newDate = y1+'-'+m1+'-'+d1;
-    //                 if(!validateDate(newDate)) {
-    //                     alert('Date format entered for expired date is incorrect.');
-    //                     $('#expired_date').val(null);
-    //                     return false;
-    //                 } else {
-    //                     $('#expired_date').val(newDate);
-    //                     flag = true;
-    //                 }
-    //             }
-
-    //             var d2 = $('#expired-date2-d').val().toString().translateToDate().trim();
-    //             var m2 = $('#expired-date2-m').val().toString().translateToDate().trim();
-    //             var y2 = $('#expired-date2-y').val().toString().translateToDate().trim();
-    //             if(d2.length == 0 && m2.length == 0 && y2.length == 0) {
-    //                 // ok if nothing is inserted
-    //             } else {
-    //                 var newDate2 = y2+'-'+m2+'-'+d2;
-    //                 if(!validateDate(newDate2)) {
-    //                     alert('Date format entered for expired date is incorrect.');
-    //                     $('#expired_date2').val(null);
-    //                     return false;
-    //                 } else {
-    //                     $('#expired_date2').val(newDate2);
-    //                     flag = true;
-    //                 }
-    //             }
-    //             return flag;
-
-    //         default : 
-    //             console.log('This should not execute');
-    //             return false;
-    //     }
-    // }
-
-    // var checkSumbitForm = function() {
-    //     var mode = $('#postSearchDataForm input[name=mode]:checked').val();
-    //     return checkDates(mode);
-    // }
-
     $(document).on('keyup', '#registered-date1-m, #registered-date1-d, #registered-date2-m, #registered-date2-d, #expired-date1-m, #expired-date1-d, #expired-date2-m, #expired-date2-d', function() {
         this.value = this.value.slice(-2).translateToDate();
     });
@@ -353,21 +216,16 @@
             thisVar.addClass('select-hidden'); 
             thisVar.wrap('<div class="select"></div>');
             thisVar.after('<div class="select-styled"><div class="tagContainer"><div class="tagArea"><div class="tagAreaInner"></div></div></div><div class="tglBtn"></div></div>');
-    
             var styledSelect = thisVar.next('div.select-styled');
-            //styledSelect.text(thisVar.children('option').eq(0).text());
-    
             var list = $('<ul />', {
                 'class': 'select-options'
             }).insertAfter(styledSelect);
-    
             for (var i = 0; i < numberOfOptions; i++) {
                 $('<li />', {
                     text: thisVar.children('option').eq(i).text(),
                     rel: thisVar.children('option').eq(i).val()
                 }).appendTo(list);
             }
-    
             var listItems = list.children('li');
             styledSelect.click(function(e) {
                 e.stopPropagation();
@@ -376,7 +234,6 @@
                 });
                 $(this).toggleClass('active').next('ul.select-options').fadeToggle(200);
             });
-    
             listItems.click(function(e) {
                 e.stopPropagation();
                 $('div.select-styled .tagArea .tagAreaInner').append("<p><span class='tagTxt'>" + $(this).text() + "</span><span class='cl'>x</span></p>");
@@ -401,19 +258,16 @@
                     });
                 });
             });
-    
             $(document).click(function(e) {
                 styledSelect.removeClass('active');
                 list.fadeOut(200);
             });
-    
             var sc = 0;
             $('body').on('mousewheel', function(e) {
                 if($(e.target).closest(".select-styled").hasClass("select-styled")){
                     return false;
                 }
             });
-    
             $('.tagAreaInner').on('mousewheel', function(event) {
                 optionScrollWidth = $(".tagAreaInner").width() - $('.tagArea').width();
                 if(event.deltaY == -1) {
@@ -444,10 +298,24 @@
                 }
             });
             $('#domain_ext').val(tldOptionsStr);
-            $('#postSearchDataForm').submit();
-            // if(checkSumbitForm()) {
-            //     $('#postSearchDataForm').submit();
-            // }
+
+            // Call the ajax function to cache search results in mysql
+            $.ajax({
+                url  : "{{config('settings.DL-API')}}/api/search_api"+"?"+$('#postSearchDataForm').serialize(),
+                type : "get",
+                beforeSend : function() {
+                    console.log(" going to send form ");
+                },
+                success : function(data) {
+                    console.log("data return : ", data)
+                }, error : function(er) {
+                    console.log("err return : ", er)
+                }, complete : function() {
+                    console.log(" completed ... ")
+                    $('#loader-icon').hide();
+                    $('#postSearchDataForm').submit();
+                }
+            })
         });
 
         $(window).bind("pageshow", function(event) {

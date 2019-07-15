@@ -1952,9 +1952,6 @@ public function download_csv_single_page(Request $request)
           $totalDomains = null;
           $user = Auth::user();
           $allExtensions = ['au','ar','an', 'ca', 'com', 'co', 'ch', 'de', 'es', 'jp', 'edu', 'fr', 'gov', 'io', 'in', 'it', 'info', 'jobs', 'mil', 'mobi', 'net', 'nl', 'no', 'org', 'onion', 'ru', 'us', 'uk', 'se', 'travel', 'pro'];
-          // return view('home.search.search' , ['record' => null , 'leadArr'=>null , 'totalDomains'=>null]);
-          // return view('home.search.search-box' , ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user]);
-          
           return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user, 'allExtensions' => $allExtensions]);
         }
       } else {
@@ -1962,55 +1959,12 @@ public function download_csv_single_page(Request $request)
       }
     }
 
-    // private function showSearchLandingPage() {
-      
-    // }
-
     public function getOldestDate() {
-      //$data = DomainInfo::select('domains_create_date')->get();
       $results = DB::select('SELECT MIN( domains_create_date ) AS min_date FROM domains_info');
       if ($results) {
         return $results;
       } else {
         return null;
       }
-      //return $results;
-    }
-
-    public function assignLeads(Request $request) {
-      $meta_id = $request->meta_id;
-      $thisPage = $request->thisPage;
-      $pagination = $request->per_page;
-      $totalPage = $request->totalPage;
-      $domain_ext = $request->domain_ext;
-      $domain_name = $request->domain_name;
-      $domains_create_date = $request->domains_create_date;
-      $domains_create_date2 = $request->domains_create_date2;
-
-      for($i = 1 ; $i <= $totalPage ; $i++) {
-        $request['thisPage'] = $i;
-        $data = $this->ajax_paginated_search_algo($request);
-        try {
-          $this->assignLeadsToProUser($data);
-        } catch(\Exception $e) {
-          return response()->json([
-            'status' => false,
-            'message' => 'ERROR : '.$e->getMessage().' LINE : '.$e->getLine()
-          ]);
-        }
-      }
-    }
-
-    public function assignLeadsToProUser($data) {
-      // $leadUser = LeadUser::find(\Auth::user()->id);
-
-      // "REPLACE `leadusers` ". $leadusersHead. " VALUES ".$leadusersValues;
-
-      foreach($data as $eachData) {
-        
-      }
-      
-
-      // $updateOrCreateArray = LeadUser::whereNotIn('domain_name', )
     }
 }
