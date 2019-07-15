@@ -312,7 +312,7 @@
                     console.log("err return : ", er)
                 }, complete : function() {
                     console.log(" completed ... ")
-                    $('#loader-icon').hide();
+                    // $('#loader-icon').hide();
                     $('#postSearchDataForm').submit();
                 }
             })
