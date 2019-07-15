@@ -1838,7 +1838,7 @@ public function download_csv_single_page(Request $request)
           //$request['pagination'] = 10;
           $start  = microtime(true);
           $offset = $request->offset;
-          $limit  = $request->limit;
+          $limit  = $request->has("limit") && $request->limit > 0 ? $request->limit : 10;
           if($request->has('domain_ext')) {
             $request['domain_ext'] = $this->tldExtToArray($request->domain_ext);
           }
