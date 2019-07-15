@@ -57,7 +57,7 @@
 
                     @if($user->user_type > config('settings.PLAN.L1'))
                     <div class="dataTableHeader">
-                        <form method="POST" action="{{route('download_csv_single_page')}}">
+                        <form method="POST" action="{{route('download_csv_single_page')}}" id="downloadDataForm">
                             {{csrf_field()}}
                             {{-- {{dd(Input::get('domain_ext'))}} --}}
                             <input type="hidden" name="currentPage" id="currentPage" value="{{$page}}">
@@ -72,8 +72,8 @@
                             <input type="hidden" name="domains_expired_date" value="{{Request::get('domains_expired_date')}}">
                             <input type="hidden" name="domains_expired_date2" value="{{Request::get('domains_expired_date2')}}">
                             
-                            <input style="float: left" class="orangeBtn" id="exportLeads" type="submit" name="exportLeads" value="Export">
-                            <input style="float: right" class="orangeBtn" type="submit" name="exportAllLeads" value="Export All Leads">
+                            <input style="float: left" class="orangeBtn" id="exportLeads" type="submit" name="exportLeads" value="Export" onclick="downloadAllCsvFn(0, event)">
+                            <input style="float: right" class="orangeBtn" type="submit" name="exportAllLeads" value="Export All Leads" onclick="downloadAllCsvFn(1, event)">
                             <input type="hidden" name="meta_id" value="{{$meta_id}}">
                             <input type="hidden" name="totalLeads" value="{{$totalLeads}}">
                             
@@ -146,11 +146,24 @@
         }
         var bodyScroll;
 
-        // $(document).on('ready', '.selectpage', function() {
-        //     var thisVal = $(this);
-        //     var styledSelect = thisVal.next('div.select-styled');
-        //     styledSelect.text(thisVal.children('option:selected').text());
-        // });
+        var downloadAllCsvFn = function(all, e) {
+            // Make an ajax call to generate the csv file
+            e.preventDefault()
+            $.ajax({
+                url : "{{route('download_csv_single_page')}}",
+                type: "post",
+                data: $("#downloadDataForm").serialize()+"&all="+all,
+                beforeSend : function() {
+                    $('#loader-icon').show();
+                }, success : function(data) {
+                    window.location.href = data.path;
+                }, error: function(er) {
+                    console.log("er : ", er)
+                }, complete : function() {
+                    $('#loader-icon').hide();
+                }
+            })
+        }
 
         $(document).ready(function(){
             
@@ -175,11 +188,6 @@
             $(".closeFilterPopup").click(function(){
                 $(".filterPopup").fadeOut();
             });
-
-            // setTimeout(() => {
-            //     $('#loader-icon').hide();
-            //     console.log('I am executing');
-            // }, 300);
 
             $('#slect-pagination-box').change(function(e) {
                 console.log(e);

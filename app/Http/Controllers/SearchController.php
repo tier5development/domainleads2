@@ -139,20 +139,34 @@ public function download_csv_single_page(Request $request)
     if(isset($request->landline) && $request->landline != null)
       array_push($phone_type_array, 'Landline');
     $start = microtime(true);
-    if($request->has('exportAllLeads') && strlen($request->exportAllLeads) > 0 && $request->exportAllLeads == 'Export All Leads') {
+    if($request->has('all') && $request->all == 1) {
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
     } else {
       $limit = $request->totalPagination;
       $offset = $request->currentPage;
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, $limit, $offset);
     }
-    return Excel::create('domainleads', function($excel) use ($reqData) {
+
+    // Storing the xls file in server for user to download
+    $userId = \Auth::user()->id;
+    $date = \Carbon\Carbon::now()->format('Y-m-d');
+    $name = 'domainleads-'.time().rand(1, 100).$userId;
+    Excel::create($name, function($excel) use ($reqData) {
       $excel->sheet('mySheet', function($sheet) use ($reqData){
         $sheet->fromArray($reqData);
       });
-    })->download($type);
+    })->store('xls', public_path('excel/'.$date));
+    return Response::json([
+      'status'  =>  true,
+      'path'    =>  config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls',
+      'err'     =>  null
+    ]);
   } catch(Throwable $e) {
-    return redirect()->back()->with('fail', 'Error : '.$e->getMessage());
+    return Response::json([
+      'status'  =>  false, 
+      'path'    =>  null, 
+      'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine()
+    ]);
   }
 }
 

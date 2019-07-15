@@ -315,7 +315,7 @@
                     // $('#loader-icon').hide();
                     $('#postSearchDataForm').submit();
                 }
-            })
+            });
         });
 
         $(window).bind("pageshow", function(event) {
