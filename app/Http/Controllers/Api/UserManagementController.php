@@ -64,4 +64,23 @@ class UserManagementController extends Controller
     private function responseJsonDecoder($responseJson) {
         return response()->json(["data" => json_decode($responseJson->content(), true)]);
     }
+
+    /**
+     * affiliates gives all the domainleads users listed emails here
+     * we give as a response all the users with their users plan they ar currently in
+     */
+    public function usersData(Request $request) {
+        try {
+            $data = $request->all();
+            $arr = [];
+            foreach ($data as $key => $value) {
+                $arr[] = $value['email'];
+            }
+            $retunData = User::select("email", "user_type", "suspended")->whereIn("email", $arr)->get();
+            return \Response::json(['status' => true, 'data' => $retunData, "err" => null]);
+        } catch(\Exception $e) {
+            \Log::info("error in usersData [from affiliates] : ", $e->getMessage());
+            return \Response::json(['status' => true, 'data' => null, "err" => $e->getMessage()]);
+        }
+    }
 }

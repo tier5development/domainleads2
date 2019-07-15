@@ -28,6 +28,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function() {
     Route::any('suspend-user', ['uses' => 'UserManagementController@suspendUser', 'as' => 'suspendUser']);
     Route::any('unsuspend-user', ['uses' => 'UserManagementController@unsuspendUser', 'as' => 'unsuspendUser']);
     Route::get('all-suspended-users', ['uses' => 'UserManagementController@allSuspendedUser', 'as' => 'allSuspendedUser']);
+
+    // Fetch all users from affiliates and return with user_type
+    // Strictly for affiliates
+    Route::post('users-data', ['uses' => 'UserManagementController@usersData']);
 });
 
 Route::group(['prefix' => 'stripe', 'namespace' => 'Stripe'], function() {
