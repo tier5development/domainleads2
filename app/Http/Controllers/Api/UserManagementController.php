@@ -76,23 +76,24 @@ class UserManagementController extends Controller
             $idMap = [];
             foreach ($data as $key => $value) {
                 $arr[] = $value['email'];
-                if(!isset($idMap[$value['email']])) {
-                    $idMap[$value['email']] = $value["_id"];
+                if(!isset($idMap[strtolower($value['email'])])) {
+                    $idMap[strtolower($value['email'])] = $value["_id"];
                 }
             }
             $returnData = User::select("email", "user_type", "suspended")->whereIn("email", $arr)->get();
             $retArr = [];
             foreach($returnData as $key => $val) {
                 $retArr[] = [
-                    "_id" => isset($idMap[$val->email]) ? $idMap[$val->email] : null,
+                    "_id" => isset($idMap[strtolower($val->email)]) ? $idMap[strtolower($val->email)] : null,
                     "email" => $val->email,
                     "user_type" => $val->user_type
                 ];
             }
-            return \Response::json(['status' => true, 'data' => $returnData, "err" => null]);
+            unset($returnData);
+            return \Response::json(['status' => true, 'data' => $retArr, "err" => null]);
         } catch(\Exception $e) {
-            \Log::info("error in usersData [from affiliates] : ", $e->getMessage());
-            return \Response::json(['status' => true, 'data' => null, "err" => $e->getMessage()]);
+            \Log::info("error in usersData [from affiliates] : ". $e->getMessage()." LINE : ".$e->getLine());
+            return \Response::json(['status' => false, 'data' => null, "err" => $e->getMessage()." LINE : ".$e->getLine()]);
         }
     }
 }
