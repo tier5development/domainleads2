@@ -148,9 +148,8 @@ public function downloadCsv(Request $request)
     }
 
     // Storing the xls file in server for user to download
-    $userId = \Auth::user()->id;
     $date = \Carbon\Carbon::now()->format('Y-m-d');
-    $name = 'domainleads-'.time().rand(1, 100).$userId;
+    $name = 'domainleads-'.md5(rand());
     Excel::create($name, function($excel) use ($reqData) {
       $excel->sheet('mySheet', function($sheet) use ($reqData){
         $sheet->fromArray($reqData);
