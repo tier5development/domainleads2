@@ -150,7 +150,7 @@
             // Make an ajax call to generate the csv file
             e.preventDefault()
             $.ajax({
-                url : "{{config('settings.DL-API')}}/api/csv-download",
+                url : "{{config('settings.DL-API')}}/api/v1/csv-download",
                 type: "post",
                 data: $("#downloadDataForm").serialize()+"&all="+all,
                 beforeSend : function() {
