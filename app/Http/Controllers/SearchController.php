@@ -126,7 +126,7 @@ public function print_csv($leads,$type)
   })->download($type);
 }
 
-public function download_csv_single_page(Request $request)
+public function downloadCsv(Request $request)
 {
   try {
     if(!$request->has('meta_id')) {
