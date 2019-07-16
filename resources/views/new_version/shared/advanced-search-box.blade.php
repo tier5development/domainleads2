@@ -121,12 +121,12 @@
                     console.log("going to send advanced form");
                 }, success : function(data) {
                     console.log("data return : ", data)
+                    $('#postAdvancedSearchDataForm').submit();
                 }, error : function(er) {
                     console.log("err return : ", er)
                 }, complete : function() {
                     console.log("completed ... ")
                     // $('#loader-icon').hide();
-                    $('#postAdvancedSearchDataForm').submit();
                 }
             })
         });

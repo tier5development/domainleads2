@@ -308,12 +308,12 @@
                 },
                 success : function(data) {
                     console.log("data return : ", data)
+                    $('#postSearchDataForm').submit();
                 }, error : function(er) {
                     console.log("err return : ", er)
                 }, complete : function() {
                     console.log(" completed ... ")
                     // $('#loader-icon').hide();
-                    $('#postSearchDataForm').submit();
                 }
             });
         });
