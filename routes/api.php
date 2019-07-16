@@ -22,16 +22,16 @@ Route::post('/oldest_registration_date','SearchController@getOldestDate');
 
 
 Route::group(['prefix' => 'v1'], function() {
-    Route::any('create-user', ['uses' => 'Api/UserManagementController@createUser', 'as' => 'createUser']);
-    Route::any('edit-user', ['uses' => 'Api/UserManagementController@editUser', 'as' => 'editUser']);
-    Route::any('delete-user', ['uses' => 'Api/UserManagementController@deleteUser', 'as' => 'deleteUser']);
-    Route::any('suspend-user', ['uses' => 'Api/UserManagementController@suspendUser', 'as' => 'suspendUser']);
-    Route::any('unsuspend-user', ['uses' => 'Api/UserManagementController@unsuspendUser', 'as' => 'unsuspendUser']);
-    Route::get('all-suspended-users', ['uses' => 'Api/UserManagementController@allSuspendedUser', 'as' => 'allSuspendedUser']);
+    Route::any('create-user', ['uses' => 'Api\UserManagementController@createUser', 'as' => 'createUser']);
+    Route::any('edit-user', ['uses' => 'Api\UserManagementController@editUser', 'as' => 'editUser']);
+    Route::any('delete-user', ['uses' => 'Api\UserManagementController@deleteUser', 'as' => 'deleteUser']);
+    Route::any('suspend-user', ['uses' => 'Api\UserManagementController@suspendUser', 'as' => 'suspendUser']);
+    Route::any('unsuspend-user', ['uses' => 'Api\UserManagementController@unsuspendUser', 'as' => 'unsuspendUser']);
+    Route::get('all-suspended-users', ['uses' => 'Api\UserManagementController@allSuspendedUser', 'as' => 'allSuspendedUser']);
 
     // Fetch all users from affiliates and return with user_type
     // Strictly for affiliates
-    Route::post('users-data', ['uses' => 'Api/UserManagementController@usersData']);
+    Route::post('users-data', ['uses' => 'Api\UserManagementController@usersData']);
     Route::post('csv-download', ['uses' => 'SearchController@downloadCsv']);
 });
 
