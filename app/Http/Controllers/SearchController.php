@@ -990,8 +990,8 @@ public function downloadCsv(Request $request)
             $data[$x]['domains_count']      = $leads[$i]->domains_count;
             $data[$x++]['registrant_state'] = $leads[$i]->registrant_state;
 
-            if($leads_string == '') $leads_string .= "'".$leads[$i]->registrant_email."'";
-            else                     $leads_string .= ",'".$leads[$i]->registrant_email."'";
+            if($leads_string == '') $leads_string .= '"'.$leads[$i]->registrant_email.'"';
+            else                     $leads_string .= ',"'.$leads[$i]->registrant_email.'"';
           }
         }
         $leads_string = "(".$leads_string.")";
