@@ -136,7 +136,7 @@
           </div>
         </div>
         <div class="col-sm-8 pull-right">
-            <a href="https://www.youtube.com/embed/uTq7EylSYcM" data-lity> 
+            <a href="https://www.youtube.com/watch?v=NrXm7on0d6I" data-lity> 
               <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/take_a_look_img.png" alt="how it works video">
             </a>
         </div>
