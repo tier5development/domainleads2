@@ -1836,8 +1836,8 @@ h1, h2, h3, h4, h5, h6, p{
 	padding-bottom: 2%;
 }
 /*responsive*/
-@media screen and (max-width: 1600px) {
-	
+@media (min-width: 1600px) {
+	body { background-size: 100% auto;}
 }
 @media screen and (max-width: 1320px) {
 	.container {
