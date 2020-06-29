@@ -693,7 +693,7 @@ class AccountController extends Controller
 			if($request->has('usertype') && strlen($request->usertype) > 0) {
 				$usertype = $request->usertype;
 				if($request->usertype == $userTypes[2]) {
-					$users->where('email','LIKE','%_suspended');
+					$users->where('email','LIKE','%_suspended')->orWhere('suspended', '1');
 				}
 			}
 			$perpageset = ['per-page',20,50,100];
