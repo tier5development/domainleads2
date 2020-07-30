@@ -35,15 +35,67 @@
                     font-size: 16px;
                     letter-spacing: 0.5px;
                 }
+                .support_container {
+                    max-width: 800px;
+                    position: absolute;
+                    margin: 100px, 400px;
+                    margin: 350px;
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 15px;
+
+                }
+                .support_text {
+                    font-size: 12px;
+                    padding: 13px;
+                }
+
+
+                
+                a.nolt-feedback-button {
+                    background: #3b4c78;
+                }
+
+                a.nolt-feedback-button:before {
+                    background-image: url(https://www.domainleads.io/public/images/favicon-dl.ico);
+                }
+
+                .nolt-holder {
+                    text-align: center;
+                    padding: 100px 15px;
+                }
+
+                .nolt-holder .nolt-feedback-button {
+                    margin-top: 15px;
+                    margin-bottom: 15px;
+                }
+                .nolt-holder_Mail {
+                    text-decoration: none;
+                    color: #000;
+                }
+
+                .nolt-holder_Mail:hover {
+                    color: #3578e5;
+                }
+
+                .nolt-holder .nolt-feedback-button:hover {
+                    background: #72a6f4!important;
+                }
+
             </style> 
                         
             <div id="root">
-                <iframe src="https://domainleads.nolt.io" class="iframe-div"></iframe>
-                <div>
-                    <p>
-                        For any product related support please click on the messenger button showing on the right bottom corner of this page and connect with us.
-                    </p>
-                </div>
+                
+            <div class="nolt-holder">
+                <h3>EMAIL US AT: 
+                    <a class="nolt-holder_Mail" href="mailto:hello@tier5.us">hello@tier5.us</a>
+                </h3>
+                <h3>CALL US AT: +1 812 722 4722</h3>
+                <p> IF YOU WANT TO LOG ANY FEEDBACK OR WANT TO LOG ANY FEATURE REQUEST CLICK ON THIS BUTTON</p>
+                <a data-nolt="button" href="https://domainleads.nolt.io" class="nolt-feedback-button">Request a feature</a>
+                <p>IF YOU WANT TO SPEAK WITH OUR SUPPORT ENGINEER PLEASE CLICK ON THE MESSENGER ICON.</p>
+            </div>
+
             </div>
         
     </section>
