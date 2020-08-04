@@ -63,6 +63,7 @@
                 .nolt-holder {
                     text-align: center;
                     padding: 100px 15px;
+                    background-color: #fff;
                 }
 
                 .nolt-holder .nolt-feedback-button {
