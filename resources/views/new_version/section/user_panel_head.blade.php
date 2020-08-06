@@ -16,5 +16,15 @@
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/touch-punch.min.js"></script>
     {{-- <script src="jquery.ui.mouse.js"></script> --}}
     {{-- <script src="https://raw.githubusercontent.com/furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js"></script> --}}
-    
+    <!-- Global site tag (gtag.js) - Google Ads: 977037556 -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-977037556"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'AW-977037556');
+    </script>
 </head>
