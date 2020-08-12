@@ -7,6 +7,11 @@
     --}}
 @include('new_version.section.user_panel_head', ['title' => 'Domainleads | Search Results'])
 
+<!-- Event snippet for Software User conversion page -->
+<script>
+    gtag('event', 'conversion', {'send_to': 'AW-977037556/WnBCCJjDytoBEPTR8dED'});
+</script>
+
 <body>
 
     {{-- Loader icon in the platform --}}
