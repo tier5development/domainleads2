@@ -89,9 +89,9 @@
                 
             <div class="nolt-holder">
                 <h3>EMAIL US AT: 
-                    <a class="nolt-holder_Mail" href="mailto:hello@tier5.us">hello@tier5.us</a>
+                    <a class="nolt-holder_Mail" href="{{mailto:config('settings.SUPPORT-EMAIL')}}">{{config('settings.SUPPORT-EMAIL')}}</a>
                 </h3>
-                <h3>CALL US AT: +1 812 722 4722</h3>
+                <h3>CALL US AT: {{config('settings.CONTACT-NUMBER')}}</h3>
                 <p> IF YOU WANT TO LOG ANY FEEDBACK OR WANT TO LOG ANY FEATURE REQUEST CLICK ON THIS BUTTON</p>
                 <a data-nolt="button" href="https://domainleads.nolt.io" class="nolt-feedback-button">Request a feature</a>
                 <p>IF YOU WANT TO SPEAK WITH OUR SUPPORT ENGINEER PLEASE CLICK ON THE MESSENGER ICON.</p>

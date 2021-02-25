@@ -1,5 +1,7 @@
 <?php
 return [
+    'SUPPORT-EMAIL' => 'support@tier5.us',
+    'CONTACT-NUMBER' => '+1-3177512232',
     'ADMIN-EMAIL' => 'work@tier5.us',
     'PRODUCT' => 'Domainleads',
     'AFFILIATE-HOOK' => 'http://192.168.1.33:8080',

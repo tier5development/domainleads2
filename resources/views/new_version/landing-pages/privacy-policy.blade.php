@@ -262,7 +262,7 @@
             
             <h2>Contact Us</h2>
             <p>If you have any questions about this Privacy Policy, please contact us:</p>
-            <p>-by email: <a href="mailto:hello@tier5.us">hello@tier5.us</a></p>
+            <p>-by email: <a href="{{mailto:config('settings.SUPPORT-EMAIL')}}">{{config('settings.SUPPORT-EMAIL')}}</a></p>
         </div>
     </section>
 

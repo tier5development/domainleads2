@@ -113,7 +113,7 @@
             
             <p>We respect the intellectual property rights of others. It is our policy to respond to any claim that Content posted on the Service infringes on the copyright or other intellectual property rights ("Infringement") of any person or entity.</p>
             
-            <p>If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted work has been copied in a way that constitutes copyright infringement, please submit your claim via email to hello@tier5.us, with the subject line: "Copyright Infringement" and include in your claim a detailed description of the alleged Infringement as detailed below, under "DMCA Notice and Procedure for Copyright Infringement Claims"</p>
+            <p>If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted work has been copied in a way that constitutes copyright infringement, please submit your claim via email to {{config('settings.SUPPORT-EMAIL')}}, with the subject line: "Copyright Infringement" and include in your claim a detailed description of the alleged Infringement as detailed below, under "DMCA Notice and Procedure for Copyright Infringement Claims"</p>
             
             <p>You may be held accountable for damages (including costs and attorneys' fees) for misrepresentation or bad-faith claims on the infringement of any Content found on and/or through the Service on your copyright.</p>
             
@@ -143,7 +143,7 @@
             </li>
             </ul>
             
-            <p>You can contact our Copyright Agent via email at hello@tier5.us</p>
+            <p>You can contact our Copyright Agent via email at {{config('settings.SUPPORT-EMAIL')}}</p>
             
             
             <h2>Intellectual Property</h2>
