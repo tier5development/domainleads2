@@ -129,6 +129,11 @@ public function print_csv($leads,$type)
 public function downloadCsv(Request $request)
 {
   try {
+	\Log::info(' Download CSV and export :: ');
+  set_time_limit(30000);
+  ini_set('memory_limit', '-1');
+  ini_set('max_execution_time', '0');
+
     if(!$request->has('meta_id')) {
       return redirect()->back()->with('fail', 'No records found to export.');
     }

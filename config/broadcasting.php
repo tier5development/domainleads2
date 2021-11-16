@@ -32,9 +32,9 @@ return [
 
         'pusher' => [
             'driver' => 'pusher',
-            'key' => '1e7402944563afbc3b76',
-            'secret' => 'c3403cf31a4698a75b91',
-            'app_id' => '731300',
+            'key' => '8760b98a11faa60e4a47',
+            'secret' => '6cdd5844ae575bd49ae6',
+            'app_id' => '731302',
             'options' => [
                 'cluster' => 'us3',
                 'encrypted' => true

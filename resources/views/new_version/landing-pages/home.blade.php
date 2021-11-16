@@ -157,7 +157,7 @@
           <div class="sideText">
             <h2 class="heading">lead conversion</h2>
             <p class="headingInfo">Our leads have opted in and typically convert for <br>the following services</p>
-            <span id="leadsUnlocked">{{$socketMeta->leads_unlocked}}</span>
+            <span id="leadsUnlocked">{{$socketMeta->leads_unlocked + 17659214}}</span>
             <p>Leads unlocked in our platform</p><br>
 
             <span id="totalDomains">{{$socketMeta->total_domains}}</span>

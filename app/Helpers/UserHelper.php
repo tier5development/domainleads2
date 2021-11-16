@@ -78,6 +78,8 @@ class UserHelper {
      */
     
     public static function editUser(Request $request) {
+\Log::info("req edit user : ", $request->all());
+\Log::info(" from ip : ".$request->ip());
         try {
             $email = $request->email;
             $validator = Validator::make($request->all(), [
@@ -150,6 +152,8 @@ class UserHelper {
      *  email : email of the user
      */
     public static function createUser(Request $request) {
+\Log::info("req create user : ", $request->all());
+\Log::info(" from ip : ".$request->ip());
         try {
             $email          =   $request->email;
             $affiliateId    =   $request->aid;
@@ -242,6 +246,8 @@ class UserHelper {
      *  message : user friendly message,
      */
     public static function deleteUser(Request $request) {
+\Log::info("req delete user : ", $request->all());
+\Log::info(" from ip : ".$request->ip());
         try {
             
             if($request->has('id')) {
@@ -315,6 +321,8 @@ class UserHelper {
      *  email : user email suspended
      */
     public static function suspendUser(Request $request) {
+\Log::info("req suspend user : ", $request->all());
+\Log::info(" from ip : ".$request->ip());
         try {
             
             $email = $request->email;
@@ -374,6 +382,8 @@ class UserHelper {
      *  email : user email unsuspended
      */
     public static function unsuspendUser(Request $request) {
+\Log::info("req unsuspend user : ", $request->all());
+\Log::info(" from ip : ".$request->ip());
         try {
             
             $email = $request->email;
