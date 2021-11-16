@@ -69,5 +69,15 @@
     </noscript>
 
     <!-- End Facebook Pixel Code -->
+    
+    <script>
+    window.Userback = window.Userback || {};
+    Userback.access_token = '5976|61007|Hpb1VDyWk5WhiMswz09JSD1DRKKY3RnzXXKH61CZ6MYm5FbyVA';
+    (function(d) {
+    var s = d.createElement('script');s.async = true;
+    s.src = 'https://static.userback.io/widget/v1.js';
+    (d.head || d.body).appendChild(s);
+    })(document);
+    </script>
 
 </head>
