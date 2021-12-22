@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
         'UnsuspendedUser' => \App\Http\Middleware\UnsuspendedUser::class,
         'AdminUser' => \App\Http\Middleware\AdminUser::class,
         'SubscribedUser' => \App\Http\Middleware\SubscribedUser::class,
+        'cors' => App\Http\Middleware\CORS::class,
     ];
 }

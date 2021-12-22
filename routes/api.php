@@ -32,7 +32,7 @@ Route::group(['prefix' => 'v1'], function() {
     // Fetch all users from affiliates and return with user_type
     // Strictly for affiliates
     Route::post('users-data', ['uses' => 'Api\UserManagementController@usersData']);
-    Route::post('csv-download', ['uses' => 'SearchController@downloadCsv']);
+    Route::post('csv-download', ['middleware' => 'cors', 'uses' => 'SearchController@downloadCsv']);
 });
 
 Route::group(['prefix' => 'stripe', 'namespace' => 'Stripe'], function() {
