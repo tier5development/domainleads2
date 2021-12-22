@@ -163,6 +163,7 @@
                 }, success : function(data) {
                     console.log("data : ", data)
                     window.location.href = data.path;
+                    alert(data.message);
                 }, error: function(er) {
                     console.log("er : ", er)
                 }, complete : function() {
