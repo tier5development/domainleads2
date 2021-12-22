@@ -161,7 +161,8 @@
                 beforeSend : function() {
                     $('#loader-icon').show();
                 }, success : function(data) {
-                    console.log("data : ", data)
+                    console.log("data : ", data);
+                    console.log("Message : ", data.message);
                     window.location.href = data.path;
                 }, error: function(er) {
                     console.log("er : ", er)

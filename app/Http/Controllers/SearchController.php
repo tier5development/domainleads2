@@ -31,6 +31,7 @@ use \Carbon\Carbon as Carbon;
 use App\Helpers\UserHelper;
 use App\SocketMeta;
 use App\Events\UsageInfo;
+use App\Jobs\DownloadCsv;
 
 class SearchController extends Controller
 {
@@ -146,6 +147,13 @@ public function downloadCsv(Request $request)
     $start = microtime(true);
     if($request->has('all') && $request->all == 1) {
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
+      DownloadCsv::dispatch($reqData, Auth::user()->id);
+      return Response::json([
+        'status'  =>  true,
+        'path'    =>  null,
+        'err'     =>  null,
+        'message' => 'We are downloading your file please the the Downloads section after sometime'
+      ]);
     } else {
       $limit = $request->totalPagination;
       $offset = $request->currentPage;
@@ -163,13 +171,15 @@ public function downloadCsv(Request $request)
     return Response::json([
       'status'  =>  true,
       'path'    =>  config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls',
-      'err'     =>  null
+      'err'     =>  null,
+      'message' => 'Testing a feature'
     ]);
   } catch(Throwable $e) {
     return Response::json([
       'status'  =>  false, 
       'path'    =>  null, 
-      'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine()
+      'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine(),
+      'message' => 'Testing a feature'
     ]);
   }
 }
