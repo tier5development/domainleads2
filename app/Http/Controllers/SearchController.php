@@ -145,9 +145,9 @@ public function downloadCsv(Request $request)
       array_push($phone_type_array, 'Landline');
     $start = microtime(true);
     if($request->has('all') && $request->all == 1) {
-      \Log::info("Download All Data");
+      \Log::info("Download All Data ".$request->uid);
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
-      DownloadCsv::dispatch($reqData, Auth::user()->id);
+      DownloadCsv::dispatch($reqData, $request->uid);
       \Log::info("After a Dispatch ! ");
       return Response::json([
         'status'  =>  true,
@@ -179,7 +179,7 @@ public function downloadCsv(Request $request)
     return Response::json([
       'status'  =>  false, 
       'path'    =>  null, 
-      'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine(),
+      'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine()."Err File : ".$e->getFile(),
       'message' => ':: Error Happend!'
     ]);
   }

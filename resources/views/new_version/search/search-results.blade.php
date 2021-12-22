@@ -86,6 +86,7 @@
                             
                             <input type="hidden" name="cell" value="{{Input::get('cell_number')}}">
                             <input type="hidden" name="landline" value="{{Input::get('landline_number')}}">
+                            <input type="hidden" name="uid" value="{{ Auth::user()->id }}">
                             {{-- <button type="submit" class="orangeBtn pull-left">Export</button>
                             <button type="submit" class="orangeBtn pull-right">Export All</button> --}}
                         </form>
