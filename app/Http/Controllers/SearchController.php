@@ -133,7 +133,6 @@ public function downloadCsv(Request $request)
     if(!$request->has('meta_id')) {
       return redirect()->back()->with('fail', 'No records found to export.');
     }
-    $type = 'csv';
     $phone_type_array = array();
     if(isset($request->cell) && $request->cell != null)
       array_push($phone_type_array, 'Cell Number');
@@ -141,8 +140,10 @@ public function downloadCsv(Request $request)
       array_push($phone_type_array, 'Landline');
     $start = microtime(true);
     if($request->has('all') && $request->all == 1) {
+      \Log::info("Download All Data");
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
       DownloadCsv::dispatch($reqData, Auth::user()->id);
+      \Log::info("After a Dispatch ! ");
       return Response::json([
         'status'  =>  true,
         'path'    =>  null,
@@ -150,31 +151,31 @@ public function downloadCsv(Request $request)
         'message' => 'We are downloading your file please the the Downloads section after sometime'
       ]);
     } else {
+      \Log::info("Download Paginated Data");
       $limit = $request->totalPagination;
       $offset = $request->currentPage;
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, $limit, $offset);
-    }
-
-    // Storing the xls file in server for user to download
-    $date = \Carbon\Carbon::now()->format('Y-m-d');
-    $name = 'domainleads-'.md5(rand());
-    Excel::create($name, function($excel) use ($reqData) {
-      $excel->sheet('mySheet', function($sheet) use ($reqData){
-        $sheet->fromArray($reqData);
-      });
-    })->store('xls', public_path('excel/'.$date));
-    return Response::json([
-      'status'  =>  true,
-      'path'    =>  config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls',
-      'err'     =>  null,
-      'message' => 'Testing a feature'
-    ]);
+      // Storing the xls file in server for user to download
+      $date = \Carbon\Carbon::now()->format('Y-m-d');
+      $name = 'domainleads-'.md5(rand());
+      Excel::create($name, function($excel) use ($reqData) {
+        $excel->sheet('mySheet', function($sheet) use ($reqData){
+          $sheet->fromArray($reqData);
+        });
+      })->store('xls', public_path('excel/'.$date));
+      return Response::json([
+        'status'  =>  true,
+        'path'    =>  config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls',
+        'err'     =>  null,
+        'message' => 'File Downloaded !'
+      ]);
+    } 
   } catch(Throwable $e) {
     return Response::json([
       'status'  =>  false, 
       'path'    =>  null, 
       'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine(),
-      'message' => 'Testing a feature'
+      'message' => ':: Error Happend!'
     ]);
   }
 }
