@@ -34,7 +34,7 @@
         <div class="container" id="bannercaptionWrap">
             <div class="bannerCaption">
                 <h2>Let's face the reality</h2>
-                <h3>without the leads there is no bussiness </h3>
+                <h3>without the leads there is no business </h3>
                 <p>The major hitch every vendor and affiliate faces is getting fresh leads which you can connect with.We have ensured that detailed information about your leads is available to you,like which is the best number to contact your leads. </p>
                 <a href="{{route('loginPage')}}" class="button gradiant-orange">unlock your leads</a>
             </div>
