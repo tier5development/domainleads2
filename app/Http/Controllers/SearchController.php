@@ -115,7 +115,7 @@ public function downloadCsv(Request $request)
         'status'  =>  true,
         'path'    =>  null,
         'err'     =>  null,
-        'message' => 'We are downloading your file please the the Downloads section after sometime'
+        'message' => 'We are creating your file to download the file please visit Downloads section after sometime!'
       ]);
     } else {
       \Log::info("Download Paginated Data");
@@ -134,7 +134,7 @@ public function downloadCsv(Request $request)
         'status'  =>  true,
         'path'    =>  config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls',
         'err'     =>  null,
-        'message' => 'File Downloaded !'
+        'message' => null
       ]);
     } 
   } catch(Throwable $e) {
@@ -142,7 +142,7 @@ public function downloadCsv(Request $request)
       'status'  =>  false, 
       'path'    =>  null, 
       'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine()."Err File : ".$e->getFile(),
-      'message' => ':: Error Happend!'
+      'message' => null
     ]);
   }
 }
