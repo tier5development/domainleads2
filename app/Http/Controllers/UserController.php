@@ -19,6 +19,7 @@ use \App\obj;
 use \App\Wordpress_env;
 use \App\CSV;
 use \App\SearchMetadata;
+use \App\UserCsvDownloads;
 use DB;
 use Hash;
 use Auth, View;
@@ -153,6 +154,13 @@ class UserController extends Controller
             $sheet->fromArray($exportArray);
           });
         })->download('csv');
+    }
+
+    public function showDownloadIndex(){
+        // this is the download page
+        $user = Auth::user();
+        $downloadData = UserCsvDownloads::where('user_id', '=', \Auth::user()->id)->get();
+        return view('new_version.downloads.downloads', ['downloadData' => $downloadData, 'user' => $user]);
     }
 }
 
