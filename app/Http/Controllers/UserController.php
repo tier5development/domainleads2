@@ -158,6 +158,9 @@ class UserController extends Controller
 
     public function showDownloadIndex(){
         // this is the download page
+        if(!\Auth::check()) {
+            return redirect()->route('loginPage');
+        }
         $user = Auth::user();
         $downloadData = UserCsvDownloads::where('user_id', '=', \Auth::user()->id)->get();
         return view('new_version.downloads.downloads', ['downloadData' => $downloadData, 'user' => $user]);

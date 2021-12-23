@@ -42,7 +42,7 @@
                         </div>
                         <ul>
                             <li><a href="{{route('profile')}}">Profile</a></li>
-                            <li><a href="{{route('downloads')}}">Downloads</a></li>
+                            <li><a href="{{route('userDownloads')}}">Downloads</a></li>
                             {{-- <li><a href="{{route('changePassword')}}">Change Password</a></li> --}}
                             <li><a href="{{route('logout')}}">Logout</a></li>
                         </ul>
