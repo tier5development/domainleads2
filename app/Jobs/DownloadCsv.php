@@ -34,8 +34,11 @@ class DownloadCsv implements ShouldQueue
      */
     public function handle()
     {
-      print_r($this->data);
-        $csvData = $this->data;
+      $csvData = array();
+      foreach ($this->data as $key => $val){
+        print_r($val);
+        $csvData = $val;
+      }
         $date = \Carbon\Carbon::now()->format('Y-m-d');
         $name = 'domainleads-'.md5(rand());
         Excel::create($name, function($excel) use ($csvData) {
