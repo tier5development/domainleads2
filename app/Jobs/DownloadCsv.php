@@ -19,9 +19,9 @@ class DownloadCsv implements ShouldQueue
      *
      * @return void
      */
-    public $reqData = array();
-    public $id;
-    public function __construct($reqData, $id)
+    protected $reqData;
+    protected $id;
+    public function __construct(array $reqData, $id)
     {   
         $this->data = $reqData;
         $this->id = $id;
@@ -34,6 +34,7 @@ class DownloadCsv implements ShouldQueue
      */
     public function handle()
     {
+      \Log::info("Job execution handle");
       $csvData = array();
       foreach ($this->data as $key => $val){
         print_r($val);
