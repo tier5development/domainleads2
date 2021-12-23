@@ -147,22 +147,22 @@ public function downloadCsv(Request $request)
     if($request->has('all') && $request->all == 1) {
       \Log::info("Download All Data ".$request->uid);
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
-      // DownloadCsv::dispatch($reqData, $request->uid);
+      DownloadCsv::dispatch($reqData, $request->uid);
       // \Log::info("After a Dispatch ! ");
-      $date = \Carbon\Carbon::now()->format('Y-m-d');
-        $name = 'domainleads-'.md5(rand());
-        Excel::create($name, function($excel) use ($reqData) {
-          $excel->sheet('mySheet', function($sheet) use ($reqData){
-            $sheet->fromArray($reqData);
-          });
-        })->store('xls', public_path('excel/'.$date));
-        $file_path = config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls';
-      // save the download file in database with path.
-      $saveData = new UserCsvDownloads();
-      $saveData->user_id = $this->id;
-      $saveData->file_name = $name;
-      $saveData->file_path = $file_path;
-      $saveData->save();
+      // $date = \Carbon\Carbon::now()->format('Y-m-d');
+      //   $name = 'domainleads-'.md5(rand());
+      //   Excel::create($name, function($excel) use ($reqData) {
+      //     $excel->sheet('mySheet', function($sheet) use ($reqData){
+      //       $sheet->fromArray($reqData);
+      //     });
+      //   })->store('xls', public_path('excel/'.$date));
+      //   $file_path = config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls';
+      // // save the download file in database with path.
+      // $saveData = new UserCsvDownloads();
+      // $saveData->user_id = $this->id;
+      // $saveData->file_name = $name;
+      // $saveData->file_path = $file_path;
+      // $saveData->save();
       \Log::info("Data Saved for download");
       return Response::json([
         'status'  =>  true,
