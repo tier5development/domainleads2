@@ -18,6 +18,7 @@
             <thead>
                 <tr>
                     <td>Filename</td>
+                    <td>Created at</td>
                     <td>Action</td>
                 </tr>
             </thead>
@@ -26,6 +27,7 @@
                     @foreach($downloadData as $download)
                     <tr>
                     <td> {{$download->file_name}} </td>
+                    <td> {{$download->created_at}} </td>
                     <td> <a href="{{$download->file_path}}"> <i class="fa fa-download" aria-hidden="true"></i> </a> </td>
                     </tr>
                     @endforeach

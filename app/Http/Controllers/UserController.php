@@ -162,7 +162,7 @@ class UserController extends Controller
             return redirect()->route('loginPage');
         }
         $user = Auth::user();
-        $downloadData = UserCsvDownloads::where('user_id', '=', \Auth::user()->id)->get();
+        $downloadData = UserCsvDownloads::where('user_id', '=', \Auth::user()->id)->orderBy('id', 'DESC')->get();
         return view('new_version.downloads.downloads', ['downloadData' => $downloadData, 'user' => $user]);
     }
 }
