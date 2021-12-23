@@ -31,8 +31,7 @@ use \Carbon\Carbon as Carbon;
 use App\Helpers\UserHelper;
 use App\SocketMeta;
 use App\Events\UsageInfo;
-use App\Jobs\DownloadCsv;
-use App\UserCsvDownloads;
+use App\CsvDownload;
 class SearchController extends Controller
 {
 
@@ -52,48 +51,6 @@ public function downloadExcel2(Request $request) {
 public function totalLeadsUnlockedToday() {
   return response()->json(UserHelper::getUsageMatrix());
 }
-// public function downloadExcel(Request $request) {
-//   $sql    = "SELECT leads,compression_level from search_metadata
-//                 where id = ".$request->meta_id;
-//   $data   = DB::select(DB::raw($sql));
-//   $leads  = $this->uncompress($data[0]->leads,$data[0]->compression_level);
-//   $leadsArray = explode(',',$leads);
-
-//   $result = DB::table('leads')->whereIn('leads.id', $leadsArray)
-//       ->join('leadusers', 'leads.registrant_email', '=', 'leadusers.registrant_email')
-//       ->join('each_domain', function($join) {
-//         $join->on('each_domain.registrant_email', '=', 'leads.registrant_email');
-//       })->join('domains_info', 'each_domain.domain_name', '=', 'domains_info.domain_name')
-//       ->leftJoin('valid_phone', 'leads.registrant_email', '=', 'valid_phone.registrant_email')
-//       ->select('leads.registrant_email', 'leads.registrant_fname', 'registrant_lname'
-//         ,'leads.registrant_company', 'leads.registrant_phone' 
-//         ,'domains_info.created_at'
-//         ,'each_domain.domain_name'
-//         ,'valid_phone.number_type'
-//         ,'leadusers.id')
-//         ->groupBy('leads.registrant_email')
-//         ->orderBy('leadusers.id','ASC')
-//         ->get();
-//   $exportArray = [];
-//   foreach($result as $each) {
-//     $temp['email_id'] = $each->registrant_email;
-//     $temp['first_name'] = $each->registrant_fname;
-//     $temp['last_name'] = $each->registrant_lname;
-//     $temp['website'] = $each->domain_name;
-//     $temp['phone'] = $each->registrant_phone;
-//     $temp['number_type'] = $each->number_type;
-//     $temp['created_at'] = $each->created_at;
-//     $exportArray[] = $temp;
-//   }
-
-//   return Excel::create('domainleads', function($excel) use ($exportArray) {
-//     $excel->sheet('mySheet', function($sheet) use ($exportArray){
-//       $sheet->fromArray($exportArray);
-//     });
-//   })->download('csv');
-// }
-
-
 
 public function print_csv($leads,$type)
 {
@@ -140,25 +97,15 @@ public function downloadCsv(Request $request)
       array_push($phone_type_array, 'Landline');
     $start = microtime(true);
     if($request->has('all') && $request->all == 1) {
-      \Log::info("Download All Data ".$request->uid);
+      \Log::info(" ::Start Download All Data -->");
       $reqData = $this->all_lead_domains_set($request,$phone_type_array,$request->meta_id, null, null);
-      DownloadCsv::dispatch($reqData, $request->uid);
-      // \Log::info("After a Dispatch ! ");
-      // $date = \Carbon\Carbon::now()->format('Y-m-d');
-      //   $name = 'domainleads-'.md5(rand());
-      //   Excel::create($name, function($excel) use ($reqData) {
-      //     $excel->sheet('mySheet', function($sheet) use ($reqData){
-      //       $sheet->fromArray($reqData);
-      //     });
-      //   })->store('xls', public_path('excel/'.$date));
-      //   $file_path = config('settings.APPLICATION-DOMAIN').'/public/excel/'.$date.'/'.$name.'.xls';
-      // // save the download file in database with path.
-      // $saveData = new UserCsvDownloads();
-      // $saveData->user_id = $this->id;
-      // $saveData->file_name = $name;
-      // $saveData->file_path = $file_path;
-      // $saveData->save();
-      \Log::info("Data Saved for download");
+      // save the data with user id in the database
+      $save_data = new CsvDownload();
+      $save_data->user_id = $request->uid;
+      $save_data->download_data = serialize($reqData);
+      $save_data->status = 1;
+      $save_data->save();
+      \Log::info("Download data saved successfully");
       return Response::json([
         'status'  =>  true,
         'path'    =>  null,
