@@ -6,7 +6,8 @@
     * Brings in css and js files
     --}}
 @include('new_version.section.user_panel_head', ['title' => 'Domainleads | Search Results'])
-
+<!-- sweet alert -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"> </script>
 <!-- Event snippet for Software User conversion page -->
 <script>
     gtag('event', 'conversion', {'send_to': 'AW-977037556/WnBCCJjDytoBEPTR8dED'});
@@ -162,11 +163,11 @@
                 beforeSend : function() {
                     $('#loader-icon').show();
                 }, success : function(data) {
-                    console.log("data : ", data);
-                    console.log("Message : ", data.message);
                     if(data.path != null){
-                        console.log("Path : ", data.path);
                         window.location.href = data.path;
+                    }
+                    if(data.message != null){
+                        swal("File download in progress ", data.message, "success", { button: "OK",});
                     }
                 }, error: function(er) {
                     console.log("er : ", er)
