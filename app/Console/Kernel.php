@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\WhoisProxy::class,
-        \App\Console\Commands\WhoIsProxyExpiring::class
+        \App\Console\Commands\WhoIsProxyExpiring::class,
+        \App\Console\Commands\DownloadCsv::class
     ];
 
     /**
@@ -28,7 +29,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('whois:proxy')->dailyAt('7:37')->withoutOverlapping();
         $schedule->command('whois:expired-domains')->dailyAt('8:14')->withoutOverlapping();
-        \Log::info(date('Y-m-d',time())); 
+        $schedule->command('download:csv')->everyTwoMinutes()->withoutOverlapping();
+        \Log::info(date('Y-m-d',time()));
     }
 
     /**
