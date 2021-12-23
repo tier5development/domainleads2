@@ -19,7 +19,8 @@ class DownloadCsv implements ShouldQueue
      *
      * @return void
      */
-
+    public $reqData = array();
+    public $id;
     public function __construct($reqData, $id)
     {   
         $this->data = $reqData;
@@ -33,8 +34,7 @@ class DownloadCsv implements ShouldQueue
      */
     public function handle()
     {
-        \Log::info("The CSV Data".print_r($this->data));
-        \Log::info("The user id".print_r($this->id));
+      print_r($this->data);
         $csvData = $this->data;
         $date = \Carbon\Carbon::now()->format('Y-m-d');
         $name = 'domainleads-'.md5(rand());
