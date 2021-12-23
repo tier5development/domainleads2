@@ -146,6 +146,7 @@ Route::get('/verify_domains','Maintainance@verify_domains');
         Route::get('/manage',['uses'=>'Maintainance@manage','as'=>'manage']);
         Route::post('search_paginated',['uses'=>'SearchController@search_paginated','as'=>'search_paginated']);
         Route::any('/import-excel', 'ImportExport@importExcelNew')->name('importExcelNew');
+        Route::any('/downloads', ['uses'=>'UserController@showDownloadIndex','as'=>'downloads']);
  });
 
 Route::post('login', ['uses' => 'AccountController@login', 'as' => 'loginPost']);
