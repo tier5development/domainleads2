@@ -78,14 +78,23 @@
         gtag('js', new Date());
         gtag('config', 'AW-977037556');
     </script>
-
+    
+    <!-- chatwoot.com script -->
     <script>
-    window.Userback = window.Userback || {};
-    Userback.access_token = '5976|61007|Hpb1VDyWk5WhiMswz09JSD1DRKKY3RnzXXKH61CZ6MYm5FbyVA';
-    (function(d) {
-    var s = d.createElement('script');s.async = true;
-    s.src = 'https://static.userback.io/widget/v1.js';
-    (d.head || d.body).appendChild(s);
-    })(document);
+        (function(d,t) {
+            var BASE_URL="https://app.chatwoot.com";
+            var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=BASE_URL+"/packs/js/sdk.js";
+            g.defer = true;
+            g.async = true;
+            s.parentNode.insertBefore(g,s);
+            g.onload=function(){
+            window.chatwootSDK.run({
+                websiteToken: 'LCjvBYr3W6v8abfZqieJgfr4',
+                baseUrl: BASE_URL
+            })
+            }
+        })(document,"script");
     </script>
+
 </head>
