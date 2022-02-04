@@ -10,7 +10,7 @@
     <div class="container">
 
         @include('new_version.section.user_panel_header', ['user' => $user])
-        <section class="mainBody" style="height: 500px;">
+        <section class="mainBody" style="height: auto;">
             @include('new_version.shared.right-panel')
             <table class="table">
             <thead>
