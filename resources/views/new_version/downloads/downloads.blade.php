@@ -47,6 +47,7 @@
         {{-- Include footer --}}
         @include('new_version.shared.dashboard-footer')
     </div>
+    <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/jQuery-min-3.3.1.min.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/custom2.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/right-panel.js"></script>
     <script src="{{config('settings.APPLICATION-DOMAIN')}}/public/js/common.js"></script>
