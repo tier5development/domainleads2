@@ -136,7 +136,10 @@
           </div>
         </div>
         <div class="col-sm-8 pull-right">
-            <a href="https://youtu.be/2e78DEDIw0E" data-lity> 
+            <!-- <a href="https://youtu.be/2e78DEDIw0E" data-lity> 
+              <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/take_a_look_img.png" alt="how it works video">
+            </a> -->
+            <a href="https://youtu.be/KmwLBHu4iy4" data-lity> 
               <img src="{{config('settings.APPLICATION-DOMAIN')}}/public/images/take_a_look_img.png" alt="how it works video">
             </a>
         </div>
