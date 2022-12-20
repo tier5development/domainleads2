@@ -75,6 +75,22 @@
                                     <div id="card-expiry-element" class="field"></div>
                                 </label>
                             </div>
+                            <div class="fieldWrap small" style="display: flex; align-items: center; margin-bottom: 5px;">
+                                <input type="checkbox" id="terms_condition" name="terms_condition" value="Bike" data-gtm-form-interact-field-id="0" style="
+                                    /* margin: 0; */
+                                    float: left;
+                                    margin-right: 7px;
+                                    margin-top: -5px;
+                                ">
+                                <label for="terms_condition" style="
+                                    display: flex;
+                                    color: #898686;
+                                    font-size: 14px;
+                                "> I agree to the <a href="" style="
+                                    margin-left: 5px;
+                                ">Terms &amp; Conditions</a></label>
+                                <div id="terms_condition_err" class="errorMsg"></div>
+                            </div>
                         </div>
                         <div class="fieldWrap spaceTop">
                             <button id="register-btn" type="submit" class="orangeBtn">get an account</button>
@@ -353,6 +369,25 @@
             }
         }
 
+        // checkbox validation
+        var validateTermsCondition = function() {
+            console.log("validateTermsCondition is calling");
+            // var termsCondition = $('#registration_form input[name=terms_condition]').val();
+            var termsCondition = document.getElementById('terms_condition');
+            console.log("termsCondition value: ". termsCondition);
+            if (termsCondition.checked) {
+                $('#terms_condition_err').text('');
+                $('#terms_condition_err').parent().removeClass('error').addClass('success');
+                console.log("validateTermsCondition: checked");
+                return true;
+            } else {
+                $('#terms_condition_err').text('*Have to agree with the terms and condition');
+                $('#terms_condition_err').parent().addClass('error').removeClass('success');
+                console.log("validateTermsCondition: not checked");
+                return false;
+            }
+        }
+
         var clearOutCardError = function() {
             setTimeout(function() {
                 $('.cardBackground').removeClass('vibrate');
@@ -370,7 +405,7 @@
         }
 
         var checkRegistrationForm = function() {
-            if(validateNameField() && validateEmailField() && validatePasswordField() && validateConfirmPasswordField()) {
+            if(validateNameField() && validateEmailField() && validatePasswordField() && validateConfirmPasswordField() && validateTermsCondition()) {
                 // Ready to submit form
                 return true;
             } else {
@@ -451,6 +486,7 @@
 
             $('#register-btn').on('click', function(e) {
                 e.preventDefault();
+                validateTermsCondition();
                 $("#loader-icon").show();
                 stripe.createToken(cardNumberElement).then(setOutcome).then(function(resp) {
                     if(!resp.status) {
