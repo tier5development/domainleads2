@@ -15,6 +15,7 @@ class VerifyCsrfToken extends BaseVerifier
         //
     'ajax_search_paginated',
     'search',
-    'upload-old-leads'
+    'upload-old-leads',
+	'api/*'
     ];
 }

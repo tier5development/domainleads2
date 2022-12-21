@@ -19,6 +19,7 @@ use App\User;
 
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use App\Http\Controllers\DataTransferController;
 
 Route::get('tstrt', function() {
     event(new App\Events\UsageInfo());
@@ -154,6 +155,23 @@ Route::get('logout', ['uses' => 'AccountController@logout', 'as' => 'logout']);
 
 Route::get('/404',['uses'=>'Maintainance@notfound_404','as'=>'404']);
 Route::get('/500',['uses'=>'Maintainance@notfound_500','as'=>'500']);
+
+
+// Data transferring routes
+
+Route::get('csv_record/{table_name}', ['uses' => 'DataTransferController@csv_record']);
+Route::get('domains_administrative/{table_name}', ['uses' => 'DataTransferController@domains_administrative']);
+Route::get('domains_billing/{table_name}', ['uses' => 'DataTransferController@domains_billing']);
+Route::get('domains_feedback/{table_name}', ['uses' => 'DataTransferController@domains_feedback']);
+Route::get('domains_info/{table_name}', ['uses' => 'DataTransferController@domains_info']);
+Route::get('domains_nameserver/{table_name}', ['uses' => 'DataTransferController@domains_nameserver']);
+Route::get('domains_status/{table_name}', ['uses' => 'DataTransferController@domains_status']);
+Route::get('domains_technical/{table_name}', ['uses' => 'DataTransferController@domains_technical']);
+Route::get('download_csv/{table_name}', ['uses' => 'DataTransferController@download_csv']);
+Route::get('leads/{table_name}', ['uses' => 'DataTransferController@leads']);
+Route::get('leadusers/{table_name}', ['uses' => 'DataTransferController@leadusers']);
+Route::get('search_metadata/{table_name}', ['uses' => 'DataTransferController@search_metadata']);
+Route::get('each_domain/{table_name}', ['uses' => 'DataTransferController@each_domain']);
 
 //=============================new import===================================
 //importExcelNew

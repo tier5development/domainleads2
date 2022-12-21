@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('whois:proxy')->dailyAt('7:37')->withoutOverlapping();
         $schedule->command('whois:expired-domains')->dailyAt('8:14')->withoutOverlapping();
-        $schedule->command('download:csv')->everyTwoMinutes()->withoutOverlapping();
+        $schedule->command('download:csv')->everyMinute()->withoutOverlapping();
         \Log::info(date('Y-m-d',time()));
     }
 

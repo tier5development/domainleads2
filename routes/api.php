@@ -21,7 +21,7 @@ Route::any('/search_api','SearchController@search_api');
 Route::post('/oldest_registration_date','SearchController@getOldestDate');
 
 
-Route::group(['prefix' => 'v1'], function() {
+Route::group(['middleware' => ['cors'], 'prefix' => 'v1'], function() {
     Route::any('create-user', ['uses' => 'Api\UserManagementController@createUser', 'as' => 'createUser']);
     Route::any('edit-user', ['uses' => 'Api\UserManagementController@editUser', 'as' => 'editUser']);
     Route::any('delete-user', ['uses' => 'Api\UserManagementController@deleteUser', 'as' => 'deleteUser']);

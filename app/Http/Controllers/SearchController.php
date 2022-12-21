@@ -88,7 +88,7 @@ public function downloadCsv(Request $request)
 {
   try {
 	\Log::info(' Download CSV and export :: ');
-  set_time_limit(30000);
+  set_time_limit(60000);
   ini_set('memory_limit', '-1');
   ini_set('max_execution_time', '0');
 
@@ -138,11 +138,12 @@ public function downloadCsv(Request $request)
       ]);
     } 
   } catch(Throwable $e) {
+	\Log::info("ERROR:::-->".$e->getMessage()." LINE : ".$e->getLine()."Err File : ".$e->getFile() );
     return Response::json([
-      'status'  =>  false, 
+      'status'  =>  true, 
       'path'    =>  null, 
       'err'     =>  "ERR : ".$e->getMessage()." LINE : ".$e->getLine()."Err File : ".$e->getFile(),
-      'message' => null
+      'message' => 'We are creating your file to download the file please visit Downloads section after sometime!'
     ]);
   }
 }
@@ -186,7 +187,7 @@ public function downloadCsv(Request $request)
     $reqData = array();
     $key=0;
     $hash = array();
-    
+	\Log::info("output done!");    
     foreach($data as $i=>$val) {
       $name = explode(' ',$val['registrant_name']);
       $reqData[$i]['first_name'] = isset($name[0]) ? $name[0] : '';
@@ -940,6 +941,7 @@ public function downloadCsv(Request $request)
             }
             
             // echo $sql;die();
+	    // Log::info("LEADS QUERY AS NOT CACHED : ".$sql);
             $leads = DB::select(DB::raw($sql));
             
             return $leads;
@@ -1072,6 +1074,7 @@ public function downloadCsv(Request $request)
           }
         }
         //echo $sql; exit();
+	// Log::info("query : ".$sql);
         $domains = DB::select(DB::raw($sql));
         return $domains;
       }

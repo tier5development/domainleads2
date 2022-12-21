@@ -1,0 +1,74 @@
+<?php
+return [
+    'SUPPORT-EMAIL' => 'support@tier5.us',
+    'CONTACT-NUMBER' => '+1-3177512232',
+    'DL-API' => 'https://api.domainleads.io',
+    'ADMIN-EMAIL' => 'work@tier5.us',
+    'PRODUCT' => 'Domainleads',
+    'AFFILIATE-HOOK' => 'http://192.168.1.33:8080',
+    'ISLIVE' => true,
+    'LIMIT-PER-DAY' => 50,
+    'LANDING-DOMAIN' => 'https://www.domainleads.io',
+    'APPLICATION-DOMAIN' => 'https://www.domainleads.io',
+    'ADMIN-NUM'     => 5,
+    'LEVEL1-USER'   => 50,
+    'LEVEL2-USER'   => 150,
+    'LEVEL3-USER'   => 500,
+    'RESET-PASSWORD-LIFE' => 72,
+    'WHOISKEY' => 'f19ee9c1b8cccaf',
+    'WHOISEXPIREDKEY' => '43b1b75ffcd4b53',
+    'INSERTBATCHSIZE' => 5000,
+    'DB' => [
+        'USER'      =>  'root',
+        'PASS'      =>  'root',
+        'DATABASE'  =>  'domaninleads',
+        'CONNECTION'=>  'mysql',
+        'HOST'      =>  '127.0.0.1',
+        'PORT'      =>  3306
+    ],
+    'PLAN' => [
+        '1' => [50, 0, ['name' => 'plan_H8d2F8b3lYit3Y']], // unlock restriction, super admin 
+        '2' => [150,0, ['name' => 'dl-tier-special']],
+        '3' => [500, 0, ['name' => 'plan_H8d3phNeJpbazO']],
+        '4' => [-1, 0, ['name' => 'plan_H8d4N5v4kEU6Zr']],
+        '5' => [-1, 1, ['name' => 'admin']],
+        'L1' => 3,
+        'L2' => 5,
+        'PUBLISHABLE' => [
+            '1' => [50, 47, 'basic_plan.png','basic'],  // unlock restriction, cost, image, alias name
+            '3' => [500, 97, 'agency_plan.png','advanced'],
+            '4' => [-1, 197, 'pro_plan.png','pro']
+        ],
+        'NAMEMAP' => [
+            'plan_H8d2F8b3lYit3Y' => ['1', 'basic_plan.png', 'basic'],
+            'dl-tier-special' => ['2','','special'],
+            'plan_H8d3phNeJpbazO' => ['3', 'agency_plan.png', 'advanced'],
+            'plan_H8d4N5v4kEU6Zr' => ['4', 'pro_plan.png', 'pro']
+        ],
+        'HIGHEST-UPGRADABLE' => 4,
+        'LOWEST-DOWNGRADABLE' => 1,
+        'NON-DISPLAYABLE' => 2,
+        'BASIC-TRIAL-PERIOD' => 14,
+    ],
+    'SUBSCRIPTIONS' => [
+        'trialing'  =>  1,
+        'active'    =>  2,
+        'past_due'  =>  3,
+        'unpaid'    =>  4,
+        'canceled'  =>  5
+    ],
+    'WEBHOOKS' => [
+        'SUBSCRIPTION' => [
+            'customer.subscription.created',
+            'customer.subscription.deleted',
+            'customer.subscription.updated',
+            'customer.subscription.trial_will_end'
+        ], 'INVOICE' => [
+            'invoice.payment_failed',
+            'invoice.payment_succeeded'
+        ], 'CUSTOMER' => [
+            'customer.deleted'
+        ]
+    ]
+];
+?>

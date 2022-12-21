@@ -44,6 +44,10 @@ public $__clipboard = array(); // stores leads which needs to be altered in the 
 
 private function create()
 {
+	set_time_limit(30000);
+      ini_set('max_execution_time', '0');
+      ini_set('max_input_time', '0');
+      set_time_limit(0);
     $this->Area_state               = Area::pluck('state','prefix')->toArray();
     $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
     $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();
@@ -59,7 +63,7 @@ private function create()
       $this->prepareDomainsArray();
       Log::info('** domains Array - prepared **');
     } catch(\Exception $e) {
-      Log::info('** starting to remove attrocious data **');
+      Log::info('** starting to remove attrocious data **'.$e->getMessage());
       $this->remove_atrocious_data();
       Log::info('** attrocious data - cleared **');
       Log::info('** preparing leads Array **');
@@ -89,6 +93,7 @@ private function prepareLeadsArray() {
 private function prepareDomainsArray() {
   $this->__domains= EachDomain::pluck('registrant_email','domain_name')->toArray();
   $cnt = 0;
+	Log::info("Query Executed...");
   foreach($this->__domains as $key=>$val) {
     $this->__leads[$val]++;
     $cnt++;
