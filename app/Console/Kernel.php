@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\WhoisProxy::class,
         \App\Console\Commands\WhoIsProxyExpiring::class,
-        \App\Console\Commands\DownloadCsv::class
+        \App\Console\Commands\DownloadCsv::class,
+        \App\Console\Commands\InsertData::class,
     ];
 
     /**
