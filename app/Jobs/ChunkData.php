@@ -46,6 +46,7 @@ class ChunkData implements ShouldQueue
             foreach ($chunk_array as $key=>$array) {
                 $name = '('. $key .')-'. $this->file;
                 $this->saveArrayInCSV($name, $array);
+                Log::debug('Loop no '. $key);
                 ChunkDataInsert::dispatch($name)->onQueue('insert');
             }
         } catch (Exception $e) {
