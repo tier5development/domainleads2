@@ -37,11 +37,40 @@ class ChunkData implements ShouldQueue
     {
         try {
             $path = public_path('unzipFiles/'. $this->file);
-
             $csv_array = array_map('str_getcsv', file($path));
-            log::debug($csv_array);
+            unset($csv_array[0]);
+
+            // chunking the whole array
+            $chunk_array = array_chunk($csv_array, 2000);
+
+            foreach ($chunk_array as $key=>$array) {
+                $name = '('. $key .')-'. $this->file;
+                $this->saveArrayInCSV($name, $array);
+                ChunkDataInsert::dispatch($name)->onQueue('insert');
+            }
         } catch (Exception $e) {
             log::error('In line ' . $e->getLine() . 'error ' . $e);
+        }
+    }
+
+    /**
+     *  convert an array into csv file
+     *  save this file to storage folder
+     *  @path 'app/temp/'
+     */
+    public function saveArrayInCSV($filename, $array)
+    {
+        try {
+            $path = storage_path('app/temp/'.$filename);
+            $fw = fopen($path, 'w');
+            foreach ($array as $key => $data) {
+                fputcsv($fw, $data);
+            }
+            fclose($fw);
+
+            return true;
+        } catch (\Exception $e) {
+            log::error('In saveArrayInCSV method ' . $e->getLine() . 'error ' . $e);
         }
     }
 }
