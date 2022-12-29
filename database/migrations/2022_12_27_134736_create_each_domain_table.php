@@ -18,7 +18,7 @@ class CreateEachDomainTable extends Migration
             $table->string('domain_name');
             $table->string('domain_ext');
             $table->integer('unlocked_num');
-            $table->string('ragistrant_email');
+            $table->string('registrant_email');
             $table->timestamps();
             $table->tinyInteger('marked')->nullable();
         });

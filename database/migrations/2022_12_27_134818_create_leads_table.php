@@ -15,16 +15,16 @@ class CreateLeadsTable extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('administrative_fname');
-            $table->string('administrative_lname');
-            $table->string('administrative_email');
-            $table->string('administrative_company');
-            $table->string('administrative_address');
-            $table->string('administrative_city');
-            $table->string('administrative_state')->nullable();
-            $table->string('administrative_zip');
-            $table->string('administrative_country')->nullable();
-            $table->string('administrative_phone');
+            $table->string('registrant_fname');
+            $table->string('registrant_lname');
+            $table->string('registrant_email')->unique();
+            $table->string('registrant_company');
+            $table->string('registrant_address');
+            $table->string('registrant_city');
+            $table->string('registrant_state')->nullable();
+            $table->string('registrant_zip');
+            $table->string('registrant_country')->nullable();
+            $table->string('registrant_phone');
             $table->string('phone_validated')->nullable()->default('no');
             $table->integer('unlocked_num')->nullable();
             $table->integer('domains_count')->nullable();
