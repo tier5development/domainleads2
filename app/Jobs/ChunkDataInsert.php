@@ -2,6 +2,13 @@
 
 namespace App\Jobs;
 
+use App\DomainAdministrative;
+use App\DomainBilling;
+use App\DomainFeedback;
+use App\DomainInfo;
+use App\DomainNameServer;
+use App\DomainStatus;
+use App\DomainTechnical;
 use App\EachDomain;
 use App\Helpers\ImportCsvHelper;
 use App\Lead;
@@ -52,10 +59,12 @@ class ChunkDataInsert implements ShouldQueue
         $path = storage_path('app/temp/'. $this->file);
         $array = array_map('str_getcsv', file($path));
 
-        $importCsvHelper = new ImportCsvHelper();
+        // $importCsvHelper = new ImportCsvHelper();
+        $is_duplicate_domain_name = false;
 
         foreach ($array as $key => $data) {
             try {
+                $is_duplicate_domain_name = false;
                 // validated email
                 if(!$this->validateEmail($data[17])) {
                     continue;
@@ -70,6 +79,7 @@ class ChunkDataInsert implements ShouldQueue
                     $domain_ext = $validate_domain['ext'];
                 }
 
+                // Leads
                 // check lead aleardy exist in $this->lead array
                 if (!array_key_exists($data[17], $this->leads_array)) {
                     $lead = new Lead();
@@ -95,6 +105,7 @@ class ChunkDataInsert implements ShouldQueue
                     Log::error('duplicate ragistrant_email in leads'. $data[17]);
                 }
 
+                // EachDomain
                 // check domain_name aleardy exist in $this->each_doamin array
                 if (!array_key_exists($data[1], $this->domains_array)) {
                     $each_domain = new EachDomain();
@@ -106,7 +117,83 @@ class ChunkDataInsert implements ShouldQueue
                     $this->increaseDomainCount($data[17]);
                 } else {
                     Log::error('duplicate domain name in each_domain'. $data[1]);
+                    continue;
                 }
+
+                // domain_administrative
+                $domain_administrative = new DomainAdministrative();
+                $domain_administrative->administrative_name = $data[20];
+                $domain_administrative->administrative_company = $data[21];
+                $domain_administrative->administrative_address = $data[22];
+                $domain_administrative->administrative_city = $data[23];
+                $domain_administrative->administrative_state = $data[24];
+                $domain_administrative->administrative_zip = $data[25];
+                $domain_administrative->administrative_country = $data[26];
+                $domain_administrative->administrative_email = $data[27];
+                $domain_administrative->administrative_phone = $data[28];
+                $domain_administrative->administrative_fax = $data[29];
+                $domain_administrative->domain_name = $domain_name;
+                $domain_administrative->save();
+
+                // domains_billing
+                $domains_billing = new DomainBilling();
+                $domains_billing->billing_name = $data[40];
+                $domains_billing->billing_company = $data[41];
+                $domains_billing->billing_address = $data[42];
+                $domains_billing->billing_city = $data[43];
+                $domains_billing->billing_state = $data[44];
+                $domains_billing->billing_zip = $data[45];
+                $domains_billing->billing_country = $data[46];
+                $domains_billing->billing_email = $data[47];
+                $domains_billing->billing_phone = $data[48];
+                $domains_billing->billing_fax = $data[49];
+                $domains_billing->domain_name = $domain_name;
+                $domains_billing->save();
+
+                // domains_info
+                $domains_info = new DomainInfo();
+                $domains_info->query_time = $data[2];
+                $domains_info->domain_created_date = $data[3];
+                $domains_info->domain_updated_date = $data[4];
+                $domains_info->expiry_date = $data[5];
+                $domains_info->domain_registrar_id = $data[6];
+                $domains_info->domain_registrar_name = $data[7];
+                $domains_info->domain_registrar_whois = $data[8];
+                $domains_info->domain_registrar_url = $data[9];
+                $domains_info->domain_name = $domain_name;
+                $domains_info->save();
+
+                // domains_nameserver
+                $domains_nameserver = new DomainNameServer();
+                $domains_nameserver->name_server_1 = $data[50];
+                $domains_nameserver->name_server_2 = $data[51];
+                $domains_nameserver->name_server_3 = $data[52];
+                $domains_nameserver->name_server_4 = $data[53];
+                $domains_nameserver->domain_name = $domain_name;
+                $domains_nameserver->save();
+
+                // domains_status
+                $domains_status = new DomainStatus();
+                $domains_status->name_server_1 = $data[54];
+                $domains_status->name_server_2 = $data[55];
+                $domains_status->name_server_3 = $data[56];
+                $domains_status->name_server_4 = $data[57];
+                $domains_status->domain_name = $domain_name;
+                $domains_status->save();
+
+                // domains_technical
+                $domains_technical = new DomainTechnical();
+                $domains_technical->technical_name = $data[30];
+                $domains_technical->technical_company = $data[31];
+                $domains_technical->technical_address = $data[32];
+                $domains_technical->technical_city = $data[33];
+                $domains_technical->technical_state = $data[34];
+                $domains_technical->technical_zip = $data[35];
+                $domains_technical->technical_country = $data[36];
+                $domains_technical->technical_email = $data[37];
+                $domains_technical->technical_phone = $data[38];
+                $domains_technical->technical_fax = $data[39];
+                $domains_technical->domain_name = $domain_name;
             } catch (\Exception $e) {
                 Log::error('In line ' . $e->getLine() . 'error ' . $e);
                 die;
