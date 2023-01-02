@@ -174,10 +174,10 @@ class ChunkDataInsert implements ShouldQueue
 
                 // domains_status
                 $domains_status = new DomainStatus();
-                $domains_status->name_server_1 = $data[54];
-                $domains_status->name_server_2 = $data[55];
-                $domains_status->name_server_3 = $data[56];
-                $domains_status->name_server_4 = $data[57];
+                $domains_status->name_status_1 = $data[54];
+                $domains_status->name_status_2 = $data[55];
+                $domains_status->name_status_3 = $data[56];
+                $domains_status->name_status_4 = $data[57];
                 $domains_status->domain_name = $domain_name;
                 $domains_status->save();
 
