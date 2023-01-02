@@ -27,6 +27,7 @@ class ChunkDataInsert implements ShouldQueue
     public $leads_array = [];
     public $domains_array = [];
     public $updated_leads_array = [];
+    public $lead_count_updated = false;
 
     public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
@@ -60,11 +61,11 @@ class ChunkDataInsert implements ShouldQueue
         $array = array_map('str_getcsv', file($path));
 
         // $importCsvHelper = new ImportCsvHelper();
-        $is_duplicate_domain_name = false;
 
         foreach ($array as $key => $data) {
+            Log::info('=======================================================================================================');
             try {
-                $is_duplicate_domain_name = false;
+                $this->lead_count_updated = false;
                 // validated email
                 if(!$this->validateEmail($data[17])) {
                     continue;
@@ -99,6 +100,7 @@ class ChunkDataInsert implements ShouldQueue
                     $lead->domains_count = 1;
                     $lead->save();
 
+                    $this->lead_count_updated = true;
                     $this->leads_array[$lead->registrant_email] = $lead->domains_count;
                     Log::info('lead inserted '. $lead->registrant_email);
                 } else {
@@ -198,10 +200,17 @@ class ChunkDataInsert implements ShouldQueue
                 Log::error('In line ' . $e->getLine() . 'error ' . $e);
                 die;
             }
+            Log::info('=======================================================================================================');
         }
 
+        
         if (count($this->updated_leads_array) > 0) {
             // update increase domains leads
+            foreach ($this->updated_leads_array as $ragistrant_email => $domain_count) {
+                Lead::where('registrant_email', $ragistrant_email)->update([
+                    'domain_count' => $domain_count
+                ]);
+            }
         }
         unlink($path);
     }
@@ -229,13 +238,15 @@ class ChunkDataInsert implements ShouldQueue
     }
 
     private function increaseDomainCount($email) {
-        if (array_key_exists($email, $this->updated_leads_array)) {
-            $this->updated_leads_array[$email]++;
-        } else {
-            $count = $this->leads_array[$email]++;
-            Log::debug('count '. $count);
-            Log::debug('email '. $email);
-            $this->updated_leads_array[$email] = $count;
+        if (!$this->lead_count_updated) {
+            if (array_key_exists($email, $this->updated_leads_array)) {
+                $this->updated_leads_array[$email]++;
+            } else {
+                $count = $this->leads_array[$email]++;
+                Log::debug('count '. $count);
+                Log::debug('email '. $email);
+                $this->updated_leads_array[$email] = $count;
+            }
         }
     }
 }
