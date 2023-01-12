@@ -597,6 +597,7 @@ private function destroy()
 
   public function insertion_Execl($file)
   {
+    try {
       Log::info('**Begining to insert data finally**');
       $query_time_array = array();
       $loop_time = array();
@@ -814,6 +815,9 @@ private function destroy()
     unset($domains_status_head);
     unset($DOMAINS_STATUS);
     return $query_time_array;
+    } catch (\Exception $e) {
+      \Log::error("Error in insertion_Execl ". $e);
+    }
   }
 
   public function rectify_leads()
