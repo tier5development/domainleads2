@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\CSV;
 use App\DomainAdministrative;
 use App\DomainBilling;
 use App\DomainFeedback;
@@ -12,6 +13,7 @@ use App\DomainTechnical;
 use App\EachDomain;
 use App\Helpers\ImportCsvHelper;
 use App\Lead;
+use App\SocketMeta;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -28,6 +30,10 @@ class ChunkDataInsert implements ShouldQueue
     public $domains_array = [];
     public $updated_leads_array = [];
     public $lead_count_updated = false;
+    
+    private $total_chunk_count;
+    private $chunk_number;
+    private $csv_id;
 
     public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
@@ -37,9 +43,12 @@ class ChunkDataInsert implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($file)
+    public function __construct($file, $chunk_number, $total_chunk_count, $csv_id)
     {
         $this->file = $file;
+        $this->chunk_number = $chunk_number;
+        $this->total_chunk_count = $total_chunk_count;
+        $this->csv_id = $csv_id;
     }
 
     /**
@@ -49,6 +58,8 @@ class ChunkDataInsert implements ShouldQueue
      */
     public function handle()
     {
+        $start_info = $this->insertInfo();
+
         $leads_registrat_email = Lead::pluck('registrant_email')->toArray();
         $leads_domains_count = Lead::pluck('domains_count')->toArray();
         $this->leads_array = array_combine($leads_registrat_email, $leads_domains_count);
@@ -212,6 +223,30 @@ class ChunkDataInsert implements ShouldQueue
                 ]);
             }
         }
+
+        $end_info = $this->insertInfo();
+
+        $domain_inserted = $end_info['domain_count'] - $start_info['domain_count'];
+        $leads_inserted = $end_info['domain_count'] - $start_info['domain_count'];
+        $time = $end_info['domain_count'] - $start_info['domain_count']; //time taken to complete this process
+
+        // insert calculated data to csv
+        $csv = CSV::find($this->csv_id);
+        $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
+        $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
+        $csv->query_time = $csv->query_time + $time;
+        $csv->save();
+
+        // insert data in SocketMeta
+        $socket_meta = SocketMeta::first();
+        $socket_meta->total_domains = $socket_meta->total_domains + $domain_inserted;
+        if ($this->chunk_number == 0) {
+            $socket_meta->leads_added_last_day = $domain_inserted;
+        } else {
+            $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
+        }
+        $socket_meta->save();
+
         unlink($path);
     }
 
@@ -248,5 +283,18 @@ class ChunkDataInsert implements ShouldQueue
                 $this->updated_leads_array[$email] = $count;
             }
         }
+    }
+
+    private function insertInfo()
+    {
+        $domain_count = count($this->domains_array);
+        $leads_count = count($this->leads_array);
+        $time = microtime(true);
+
+        return [
+            'domain_count' => $domain_count,
+            'leads_count' => $leads_count,
+            'time' => $time,
+        ];
     }
 }

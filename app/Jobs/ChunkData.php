@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\CSV;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -42,12 +43,18 @@ class ChunkData implements ShouldQueue
 
             // chunking the whole array
             $chunk_array = array_chunk($csv_array, 2000);
+            $total_chunk = count($chunk_array);
+
+            // add file name in csv(model)/csv_record(table)
+            $csv = new CSV();
+            $csv->file_name = $this->file;
+            $csv->save();
 
             foreach ($chunk_array as $key=>$array) {
                 $name = '('. $key .')-'. $this->file;
                 $this->saveArrayInCSV($name, $array);
                 Log::debug('Loop no '. $key);
-                ChunkDataInsert::dispatch($name)->onQueue('insert');
+                ChunkDataInsert::dispatch($name, $key, $total_chunk, $csv->id)->onQueue('insert');
             }
         } catch (Exception $e) {
             log::error('In line ' . $e->getLine() . 'error ' . $e);
