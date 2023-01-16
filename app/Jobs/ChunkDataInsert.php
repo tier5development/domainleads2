@@ -59,6 +59,8 @@ class ChunkDataInsert implements ShouldQueue
     public function handle()
     {
         try {
+            ini_set('max_execution_time', '0'); // make execution time unlimited
+
             $start_info = $this->insertInfo();
 
             $leads_registrat_email = Lead::pluck('registrant_email')->toArray();
