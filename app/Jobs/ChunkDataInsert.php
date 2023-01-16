@@ -63,13 +63,25 @@ class ChunkDataInsert implements ShouldQueue
 
             $start_info = $this->insertInfo();
 
+            Log::info('generating leads_array start');
+            $lst = microtime(true);
             $leads_registrat_email = Lead::pluck('registrant_email')->toArray();
             $leads_domains_count = Lead::pluck('domains_count')->toArray();
             $this->leads_array = array_combine($leads_registrat_email, $leads_domains_count);
+            $let = microtime(true);
+            $ltt = $let - $lst; // total time to make leads_arry
+            Log::info('generating leads_array end');
+            Log::debug('total time to make leads_array : '. $ltt);
 
+            Log::info('generating leads_array start');
+            $dst = microtime(true);
             $domain_name = EachDomain::pluck('domain_name')->toArray();
             $domain_registrant_email = EachDomain::pluck('registrant_email')->toArray();
             $this->domains_array = array_combine($domain_name, $domain_registrant_email);
+            $det = microtime(true);
+            $dtt = $det - $dst; // total time to make leads_arry
+            Log::info('generating leads_array end');
+            Log::debug('total time to make leads_array : '. $dtt);
 
             $path = storage_path('app/temp/'. $this->file);
             $array = array_map('str_getcsv', file($path));
