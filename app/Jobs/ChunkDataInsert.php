@@ -82,12 +82,14 @@ class ChunkDataInsert implements ShouldQueue
                     $this->lead_count_updated = false;
                     // validated email
                     if(!$this->validateEmail($data[17])) {
+                        Log::info("invalide ragistrant_email type : ". $data[17]);
                         continue;
                     }
 
                     // validate domain name
                     $validate_domain = $this->validateDomain($data[1]);
                     if ($validate_domain['status'] == false) {
+                        Log::info("invalide domain_name type : ". $data[1]);
                         continue;
                     } else {
                         $domain_name = $validate_domain['name'];
@@ -116,7 +118,7 @@ class ChunkDataInsert implements ShouldQueue
 
                         $this->lead_count_updated = true;
                         $this->leads_array[$lead->registrant_email] = $lead->domains_count;
-                        Log::info('lead inserted '. $lead->registrant_email);
+                        Log::info('lead inserted '. $lead->id .'('. $lead->registrant_email .')');
                     } else {
                         Log::error('duplicate ragistrant_email in leads'. $data[17]);
                     }
@@ -128,6 +130,7 @@ class ChunkDataInsert implements ShouldQueue
                         $each_domain->domain_name = $domain_name;
                         $each_domain->domain_ext = $domain_ext;
                         $each_domain->save();
+                        Log::info('each_domain inserted '. $lead->registrant_email);
 
                         // check registrant_email exist or not
                         $this->increaseDomainCount($data[17]);
@@ -150,6 +153,7 @@ class ChunkDataInsert implements ShouldQueue
                     $domain_administrative->administrative_fax = $data[29];
                     $domain_administrative->domain_name = $domain_name;
                     $domain_administrative->save();
+                    Log::info('domain_administrative inserted : '. $domain_administrative->id);
 
                     // domains_billing
                     $domains_billing = new DomainBilling();
@@ -165,6 +169,7 @@ class ChunkDataInsert implements ShouldQueue
                     $domains_billing->billing_fax = $data[49];
                     $domains_billing->domain_name = $domain_name;
                     $domains_billing->save();
+                    Log::info('domains_billing inserted : '. $domains_billing->id);
 
                     // domains_info
                     $domains_info = new DomainInfo();
@@ -178,6 +183,7 @@ class ChunkDataInsert implements ShouldQueue
                     $domains_info->domain_registrar_url = $data[9];
                     $domains_info->domain_name = $domain_name;
                     $domains_info->save();
+                    Log::info('domains_info inserted : '. $domains_info->id);
 
                     // domains_nameserver
                     $domains_nameserver = new DomainNameServer();
@@ -187,6 +193,7 @@ class ChunkDataInsert implements ShouldQueue
                     $domains_nameserver->name_server_4 = $data[53];
                     $domains_nameserver->domain_name = $domain_name;
                     $domains_nameserver->save();
+                    Log::info('domains_nameserver inserted : '. $domains_nameserver->id);
 
                     // domains_status
                     $domains_status = new DomainStatus();
@@ -196,6 +203,7 @@ class ChunkDataInsert implements ShouldQueue
                     $domains_status->name_status_4 = $data[57];
                     $domains_status->domain_name = $domain_name;
                     $domains_status->save();
+                    Log::info('domains_status inserted : '. $domains_status->id);
 
                     // domains_technical
                     $domains_technical = new DomainTechnical();
@@ -210,28 +218,37 @@ class ChunkDataInsert implements ShouldQueue
                     $domains_technical->technical_phone = $data[38];
                     $domains_technical->technical_fax = $data[39];
                     $domains_technical->domain_name = $domain_name;
+                    $domains_technical->save();
+                    Log::info('domains_technical inserted : '. $domains_technical->id);
                 } catch (\Exception $e) {
                     Log::error('In line ' . $e->getLine() . 'error ' . $e);
+                    Log::debug('=======================================================================================================');
                     die;
                 }
                 Log::info('=======================================================================================================');
             }
 
             
+            Log::info('updated_leads/updated_leads_array updating start');
             if (count($this->updated_leads_array) > 0) {
                 // update increase domains leads
                 foreach ($this->updated_leads_array as $ragistrant_email => $domain_count) {
+                    Log::debug($ragistrant_email);
                     Lead::where('registrant_email', $ragistrant_email)->update([
                         'domain_count' => $domain_count
                     ]);
                 }
             }
+            Log::info('updated_leads/updated_leads_array updating end');
 
             $end_info = $this->insertInfo();
 
             $domain_inserted = $end_info['domain_count'] - $start_info['domain_count'];
             $leads_inserted = $end_info['domain_count'] - $start_info['domain_count'];
             $time = $end_info['domain_count'] - $start_info['domain_count']; //time taken to complete this process
+            Log::debug('domain_inserted : '. $domain_inserted);
+            Log::debug('leads_inserted : '. $leads_inserted);
+            Log::debug('time : '. $time);
 
             // insert calculated data to csv
             $csv = CSV::find($this->csv_id);
@@ -239,6 +256,7 @@ class ChunkDataInsert implements ShouldQueue
             $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
             $csv->query_time = $csv->query_time + $time;
             $csv->save();
+            Log::info('csv_record inserted : '. $csv->id);
 
             // insert data in SocketMeta
             $socket_meta = SocketMeta::first();
@@ -249,6 +267,7 @@ class ChunkDataInsert implements ShouldQueue
                 $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
             }
             $socket_meta->save();
+            Log::info('socket_meta inserted : '. $socket_meta->id);
 
             unlink($path);
         } catch (\Exception $e) {
@@ -282,12 +301,15 @@ class ChunkDataInsert implements ShouldQueue
         if (!$this->lead_count_updated) {
             if (array_key_exists($email, $this->updated_leads_array)) {
                 $this->updated_leads_array[$email]++;
+                Log::debug('ragistrant_email found in updated_leads_array');
             } else {
                 $count = $this->leads_array[$email]++;
                 Log::debug('count '. $count);
                 Log::debug('email '. $email);
                 $this->updated_leads_array[$email] = $count;
+                Log::debug('ragistrant_email not found in updated_leads_array');
             }
+            Log::info('count in updated_leads_array '. $this->updated_leads_array[$email]);
         }
     }
 
