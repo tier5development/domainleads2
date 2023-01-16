@@ -49,11 +49,12 @@ class ChunkData implements ShouldQueue
             $csv = new CSV();
             $csv->file_name = $this->file;
             $csv->save();
+            Log::info('csv_record inserted : '. $csv->id .''. $csv->file_name .')');
 
             foreach ($chunk_array as $key=>$array) {
                 $name = '('. $key .')-'. $this->file;
                 $this->saveArrayInCSV($name, $array);
-                Log::debug('Loop no '. $key);
+                Log::debug('Loop/chunk no '. $key);
                 ChunkDataInsert::dispatch($name, $key, $total_chunk, $csv->id)->onQueue('insert');
             }
         } catch (Exception $e) {
@@ -70,6 +71,7 @@ class ChunkData implements ShouldQueue
     {
         try {
             $path = storage_path('app/temp/'.$filename);
+            Log::info('temp file path : '. $path);
             $fw = fopen($path, 'w');
             foreach ($array as $key => $data) {
                 fputcsv($fw, $data);
