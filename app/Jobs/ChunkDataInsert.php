@@ -141,6 +141,7 @@ class ChunkDataInsert implements ShouldQueue
                         $each_domain = new EachDomain();
                         $each_domain->domain_name = $domain_name;
                         $each_domain->domain_ext = $domain_ext;
+                        $each_domain->registrant_email = $data[17];
                         $each_domain->save();
                         Log::info('each_domain inserted '. $lead->registrant_email);
 
