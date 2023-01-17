@@ -19,6 +19,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ChunkDataInsert implements ShouldQueue
@@ -63,25 +64,39 @@ class ChunkDataInsert implements ShouldQueue
 
             $start_info = $this->insertInfo();
 
+            Log::info('---------------------------------------------------------');
             Log::info('generating leads_array start');
             $lst = microtime(true);
             $leads_registrat_email = Lead::pluck('registrant_email')->toArray();
             $leads_domains_count = Lead::pluck('domains_count')->toArray();
+            $lft = microtime(true);
+            Log::debug('time taken to fetch data '. ($lft-$lst));
             $this->leads_array = array_combine($leads_registrat_email, $leads_domains_count);
             $let = microtime(true);
             $ltt = $let - $lst; // total time to make leads_arry
             Log::info('generating leads_array end');
             Log::debug('total time to make leads_array : '. $ltt);
+            Log::info('---------------------------------------------------------');
 
-            Log::info('generating leads_array start');
+
+            Log::info('---------------------------------------------------------');
+            Log::info('generating domains_array start');
             $dst = microtime(true);
-            $domain_name = EachDomain::pluck('domain_name')->toArray();
-            $domain_registrant_email = EachDomain::pluck('registrant_email')->toArray();
-            $this->domains_array = array_combine($domain_name, $domain_registrant_email);
+            $domains = DB::select('select domain_name, registrant_email from each_domain');
+            $dft = microtime(true);
+            Log::debug('time taken to fetch data '. ($dft-$dst));
+            Log::info('**********************************************************');
+            foreach ($domains as $value) {
+                $this->domains_array[$value->domain_name] = $value->registrant_email;
+                Log::info($value->domain_name .'=>'. $value->registrant_email);
+            }
+            Log::info('**********************************************************');
             $det = microtime(true);
             $dtt = $det - $dst; // total time to make leads_arry
-            Log::info('generating leads_array end');
-            Log::debug('total time to make leads_array : '. $dtt);
+            Log::info('generating domains_array end');
+            Log::debug('total time to make domains_array : '. $dtt);
+            Log::info('---------------------------------------------------------');
+
 
             $path = storage_path('app/temp/'. $this->file);
             $array = array_map('str_getcsv', file($path));
@@ -248,7 +263,7 @@ class ChunkDataInsert implements ShouldQueue
                 foreach ($this->updated_leads_array as $ragistrant_email => $domain_count) {
                     Log::debug($ragistrant_email);
                     Lead::where('registrant_email', $ragistrant_email)->update([
-                        'domain_count' => $domain_count
+                        'domains_count' => $domain_count
                     ]);
                 }
             }
