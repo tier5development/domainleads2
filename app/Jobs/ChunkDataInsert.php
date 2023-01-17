@@ -67,11 +67,15 @@ class ChunkDataInsert implements ShouldQueue
             Log::info('---------------------------------------------------------');
             Log::info('generating leads_array start');
             $lst = microtime(true);
-            $leads_registrat_email = Lead::pluck('registrant_email')->toArray();
-            $leads_domains_count = Lead::pluck('domains_count')->toArray();
+            $leads = DB::select('select registrant_email, domains_count from leads');
             $lft = microtime(true);
             Log::debug('time taken to fetch data '. ($lft-$lst));
-            $this->leads_array = array_combine($leads_registrat_email, $leads_domains_count);
+            Log::info('**********************************************************');
+            foreach ($leads as $value) {
+                $this->leads_array[$value->registrant_email] = $value->domains_count;
+                Log::info($value->registrant_email .'=>'. $value->domains_count);
+            }
+            Log::info('**********************************************************');
             $let = microtime(true);
             $ltt = $let - $lst; // total time to make leads_arry
             Log::info('generating leads_array end');
