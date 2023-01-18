@@ -90,14 +90,8 @@ class ChunkDataInsert implements ShouldQueue
             $dst = microtime(true);
             // $domains = DB::select('select domain_name, registrant_email from each_domain');
             // $domains = DB::table('each_domain')->select('domain_name', 'registrant_email')->get();
-            $domains = EachDomain::select('domain_name', 'registrant_email')->get();
-            $dft = microtime(true);
-            Log::debug('time taken to fetch data '. ($dft-$dst));
             Log::info('**********************************************************');
-            foreach ($domains as $value) {
-                $this->domains_array[$value->domain_name] = $value->registrant_email;
-                Log::info($value->domain_name .'=>'. $value->registrant_email);
-            }
+            $this->generateDomainArray();
             Log::info('**********************************************************');
             $det = microtime(true);
             $dtt = $det - $dst; // total time to make leads_arry
@@ -360,5 +354,35 @@ class ChunkDataInsert implements ShouldQueue
             'leads_count' => $leads_count,
             'time' => $time,
         ];
+    }
+
+    private function generateDomainArray() {
+        try {
+            $i = 0;
+            $status = true;
+            $limit = 5000000;
+            while ($status == true) {
+                $offset = ($i * $limit) + 1;
+                $start_time = microtime(true);
+                $domains = EachDomain::select('domain_name', 'registrant_email')->skip($offset)->take($limit)->get();
+                $end_time = microtime(true);
+                $count_data = count($domains);
+                Log::info('---------------------------------------------------------');
+                Log::debug('time taken to fetch data '. ($end_time-$start_time) .' for '. $count_data .', loop no '. $i);
+                Log::info('---------------------------------------------------------');
+                if ($count_data>0) {
+                    foreach ($domains as $value) {
+                        $this->domains_array[$value->domain_name] = $value->registrant_email;
+                        Log::info($value->domain_name .'=>'. $value->registrant_email);
+                    }
+                    $status = true;
+                } else {
+                    $status = false;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in generateDomainArray '. $e);
+            return $e;
+        }
     }
 }
