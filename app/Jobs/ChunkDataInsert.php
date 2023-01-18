@@ -68,7 +68,8 @@ class ChunkDataInsert implements ShouldQueue
             Log::info('generating leads_array start');
             $lst = microtime(true);
             // $leads = DB::select('select registrant_email, domains_count from leads');
-            $leads = DB::table('leads')->select('registrant_email', 'domains_count')->get();
+            // $leads = DB::table('leads')->select('registrant_email', 'domains_count')->get();
+            $leads = Lead::select('registrant_email', 'domains_count')->get();
             $lft = microtime(true);
             Log::debug('time taken to fetch data '. ($lft-$lst));
             Log::info('**********************************************************');
@@ -88,7 +89,8 @@ class ChunkDataInsert implements ShouldQueue
             Log::info('generating domains_array start');
             $dst = microtime(true);
             // $domains = DB::select('select domain_name, registrant_email from each_domain');
-            $domains = DB::table('each_domain')->select('domain_name', 'registrant_email')->get();
+            // $domains = DB::table('each_domain')->select('domain_name', 'registrant_email')->get();
+            $domains = EachDomain::select('domain_name', 'registrant_email')->get();
             $dft = microtime(true);
             Log::debug('time taken to fetch data '. ($dft-$dst));
             Log::info('**********************************************************');
