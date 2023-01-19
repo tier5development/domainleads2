@@ -27,10 +27,7 @@ class ChunkDataInsert implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $file;
-    public $leads_array = [];
-    public $domains_array = [];
     public $updated_leads_array = [];
-    public $lead_count_updated = false;
     
     private $total_chunk_count;
     private $chunk_number;
@@ -64,44 +61,6 @@ class ChunkDataInsert implements ShouldQueue
 
             $start_info = $this->insertInfo();
 
-            Log::info('---------------------------------------------------------');
-            Log::info('generating leads_array start');
-            $lst = microtime(true);
-            $leads = DB::select('select registrant_email, domains_count from leads');
-            $lft = microtime(true);
-            Log::debug('time taken to fetch data '. ($lft-$lst));
-            Log::info('**********************************************************');
-            foreach ($leads as $value) {
-                $this->leads_array[$value->registrant_email] = $value->domains_count;
-                Log::info($value->registrant_email .'=>'. $value->domains_count);
-            }
-            Log::info('**********************************************************');
-            $let = microtime(true);
-            $ltt = $let - $lst; // total time to make leads_arry
-            Log::info('generating leads_array end');
-            Log::debug('total time to make leads_array : '. $ltt);
-            Log::info('---------------------------------------------------------');
-
-
-            Log::info('---------------------------------------------------------');
-            Log::info('generating domains_array start');
-            $dst = microtime(true);
-            $domains = DB::select('select domain_name, registrant_email from each_domain');
-            $dft = microtime(true);
-            Log::debug('time taken to fetch data '. ($dft-$dst));
-            Log::info('**********************************************************');
-            foreach ($domains as $value) {
-                $this->domains_array[$value->domain_name] = $value->registrant_email;
-                Log::info($value->domain_name .'=>'. $value->registrant_email);
-            }
-            Log::info('**********************************************************');
-            $det = microtime(true);
-            $dtt = $det - $dst; // total time to make leads_arry
-            Log::info('generating domains_array end');
-            Log::debug('total time to make domains_array : '. $dtt);
-            Log::info('---------------------------------------------------------');
-
-
             $path = storage_path('app/temp/'. $this->file);
             $array = array_map('str_getcsv', file($path));
 
@@ -110,7 +69,6 @@ class ChunkDataInsert implements ShouldQueue
             foreach ($array as $key => $data) {
                 Log::info('=======================================================================================================');
                 try {
-                    $this->lead_count_updated = false;
                     // validated email
                     if(!$this->validateEmail($data[17])) {
                         Log::info("invalide ragistrant_email type : ". $data[17]);
@@ -127,9 +85,28 @@ class ChunkDataInsert implements ShouldQueue
                         $domain_ext = $validate_domain['ext'];
                     }
 
+                    // EachDomain
+                    // check domain_name aleardy exist in each_doamin table
+                    $check_domain = $this->checkDomain($domain_name);
+
+                    if ($check_domain['status'] == false) {
+                        $each_domain = new EachDomain();
+                        $each_domain->domain_name = $domain_name;
+                        $each_domain->domain_ext = $domain_ext;
+                        $each_domain->registrant_email = $data[17];
+                        $each_domain->save();
+                        Log::info('each_domain inserted '. $each_domain->registrant_email);
+                    } else {
+                        Log::error('duplicate domain name in each_domain'. $data[1]);
+                        continue;
+                    }
+
+                    // check registrant_email exist or not in leads
+                    $result = $this->checkLeads($data[17]);
+
                     // Leads
                     // check lead aleardy exist in $this->lead array
-                    if (!array_key_exists($data[17], $this->leads_array)) {
+                    if ($result['status'] == false) {
                         $lead = new Lead();
                         // firstname, lastname
                         $name = explode(' ', $data[10]);
@@ -146,29 +123,11 @@ class ChunkDataInsert implements ShouldQueue
                         $lead->phone_validated = 'yes';
                         $lead->domains_count = 1;
                         $lead->save();
-
-                        $this->lead_count_updated = true;
-                        $this->leads_array[$lead->registrant_email] = $lead->domains_count;
                         Log::info('lead inserted '. $lead->id .'('. $lead->registrant_email .')');
                     } else {
+                        // increase domains_count in leads
+                        $this->increaseDomainCount($result['data']);
                         Log::error('duplicate ragistrant_email in leads'. $data[17]);
-                    }
-
-                    // EachDomain
-                    // check domain_name aleardy exist in $this->each_doamin array
-                    if (!array_key_exists($data[1], $this->domains_array)) {
-                        $each_domain = new EachDomain();
-                        $each_domain->domain_name = $domain_name;
-                        $each_domain->domain_ext = $domain_ext;
-                        $each_domain->registrant_email = $data[17];
-                        $each_domain->save();
-                        Log::info('each_domain inserted '. $each_domain->registrant_email);
-
-                        // check registrant_email exist or not
-                        $this->increaseDomainCount($data[17]);
-                    } else {
-                        Log::error('duplicate domain name in each_domain'. $data[1]);
-                        continue;
                     }
 
                     // domain_administrative
@@ -265,7 +224,7 @@ class ChunkDataInsert implements ShouldQueue
             if (count($this->updated_leads_array) > 0) {
                 // update increase domains leads
                 foreach ($this->updated_leads_array as $ragistrant_email => $domain_count) {
-                    Log::debug($ragistrant_email);
+                    Log::debug($ragistrant_email .'=>'. $domain_count);
                     Lead::where('registrant_email', $ragistrant_email)->update([
                         'domains_count' => $domain_count
                     ]);
@@ -287,6 +246,9 @@ class ChunkDataInsert implements ShouldQueue
             $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
             $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
             $csv->query_time = $csv->query_time + $time;
+            if ($this->chunk_number == $this->total_chunk_count) {
+                $csv->status = 2;
+            }
             $csv->save();
             Log::info('csv_record inserted : '. $csv->id);
 
@@ -329,26 +291,54 @@ class ChunkDataInsert implements ShouldQueue
         return $response;
     }
 
-    private function increaseDomainCount($email) {
-        if (!$this->lead_count_updated) {
-            if (array_key_exists($email, $this->updated_leads_array)) {
-                $this->updated_leads_array[$email]++;
-                Log::debug('ragistrant_email found in updated_leads_array');
-            } else {
-                $count = $this->leads_array[$email]++;
-                Log::debug('count '. $count);
-                Log::debug('email '. $email);
-                $this->updated_leads_array[$email] = $count;
-                Log::debug('ragistrant_email not found in updated_leads_array');
-            }
-            Log::info('count in updated_leads_array '. $this->updated_leads_array[$email]);
+    /**
+     *  check domain_name in EachDomain model
+     */
+    private function checkDomain($domain_name)
+    {
+        $data = EachDomain::where('domain_name', $domain_name)->get();
+
+        if (count($data) > 0) {
+            $response['status'] = true;
+            $response['data'] = $data[0];
+        } else {
+            $response['status'] = false;
+            $response['data'] = null;
+        }
+
+        return $response;
+    }
+
+    /**
+     *  check domain_name in EachDomain model
+     */
+    private function checkLeads($email)
+    {
+        $data = Lead::where('registrant_email', $email)->get();
+
+        if (count($data) > 0) {
+            $response['status'] = true;
+            $response['data'] = $data[0];
+        } else {
+            $response['status'] = false;
+            $response['data'] = null;
+        }
+
+        return $response;
+    }
+
+    private function increaseDomainCount(Lead $lead) {
+        if (array_key_exists($lead->registrant_email, $this->updated_leads_array)) {
+            $this->updated_leads_array[$lead->registrant_email]++;
+        } else {
+            $this->updated_leads_array[$lead->registrant_email] = $lead->domains_count + 1;
         }
     }
 
     private function insertInfo()
     {
-        $domain_count = count($this->domains_array);
-        $leads_count = count($this->leads_array);
+        $domain_count = EachDomain::count();
+        $leads_count = Lead::count();
         $time = microtime(true);
 
         return [
