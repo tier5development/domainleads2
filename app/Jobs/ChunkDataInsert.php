@@ -165,8 +165,8 @@ class ChunkDataInsert implements ShouldQueue
                     // domains_info
                     $domains_info = new DomainInfo();
                     $domains_info->query_time = $data[2];
-                    $domains_info->domains_created_date = $data[3];
-                    $domains_info->domains_updated_date = $data[4];
+                    $domains_info->domains_create_date = $data[3];
+                    $domains_info->domains_update_date = $data[4];
                     $domains_info->expiry_date = $data[5];
                     $domains_info->domain_registrar_id = $data[6];
                     $domains_info->domain_registrar_name = $data[7];
