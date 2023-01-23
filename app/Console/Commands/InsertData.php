@@ -51,7 +51,7 @@ class InsertData extends Command
             $path = public_path().'/unzipFiles/'.$filename;
             if (file_exists($path)) {
                 Log::info('File '. $filename .'dispatch successfully');
-                // ChunkData::dispatch($filename);
+                ChunkData::dispatch($filename);
             } else {
                 Log::error("File not exist : ". $path);
             }
