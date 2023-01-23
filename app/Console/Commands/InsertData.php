@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\CSV;
 use App\Jobs\ChunkData;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -41,8 +42,19 @@ class InsertData extends Command
     {
         Log::info('Insert command work properly');
 
-        $filename = $this->argument('path');
+        $filename = trim($this->argument('path'));
 
-        ChunkData::dispatch($filename);
+        $check_file = CSV::where('file_name', $filename)->count();
+        if ($check_file > 0){
+            Log::warning("File already uploaded");
+        } else {
+            $path = public_path().'/unzipFiles/'.$filename;
+            if (file_exists($path)) {
+                Log::info('File '. $filename .'dispatch successfully');
+                // ChunkData::dispatch($filename);
+            } else {
+                Log::error("File not exist : ". $path);
+            }
+        }
     }
 }
