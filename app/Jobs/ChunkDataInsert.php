@@ -44,7 +44,7 @@ class ChunkDataInsert implements ShouldQueue
     public function __construct($file, $chunk_number, $total_chunk_count, $csv_id)
     {
         $this->file = $file;
-        $this->chunk_number = $chunk_number;
+        $this->chunk_number = $chunk_number + 1; // as indexing start from 0, we add 1
         $this->total_chunk_count = $total_chunk_count;
         $this->csv_id = $csv_id;
     }
