@@ -255,7 +255,7 @@ class ChunkDataInsert implements ShouldQueue
             // insert data in SocketMeta
             $socket_meta = SocketMeta::first();
             $socket_meta->total_domains = $socket_meta->total_domains + $domain_inserted;
-            if ($this->chunk_number == 0) {
+            if ($this->chunk_number == 1) {
                 $socket_meta->leads_added_last_day = $domain_inserted;
             } else {
                 $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
