@@ -100,7 +100,7 @@ class ChunkDataInsert implements ShouldQueue
                     if ($validate_number['status_code'] == 200 && isset($validate_number['data'])) {
                         // insert number in ValidatedPhone
                         $valid_number = new ValidatedPhone();
-                        $valid_number->phone_number = $validate_number['data']['validation_status'];
+                        $valid_number->phone_number = $validate_number['data']['phone_number'];
                         $valid_number->validation_status = $validate_number['data']['validation_status'];
                         $valid_number->state = $validate_number['data']['state'];
                         $valid_number->major_city = $validate_number['data']['major_city'];
