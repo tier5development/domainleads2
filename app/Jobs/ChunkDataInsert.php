@@ -14,6 +14,8 @@ use App\EachDomain;
 use App\Helpers\ImportCsvHelper;
 use App\Lead;
 use App\SocketMeta;
+use App\ValidatedPhone;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -36,6 +38,8 @@ class ChunkDataInsert implements ShouldQueue
     public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
 
+    public $import_csv_helper;
+
     /**
      * Create a new job instance.
      *
@@ -47,6 +51,8 @@ class ChunkDataInsert implements ShouldQueue
         $this->chunk_number = $chunk_number + 1; // as indexing start from 0, we add 1
         $this->total_chunk_count = $total_chunk_count;
         $this->csv_id = $csv_id;
+
+        $this->import_csv_helper = new ImportCsvHelper();
     }
 
     /**
@@ -83,6 +89,32 @@ class ChunkDataInsert implements ShouldQueue
                     } else {
                         $domain_name = $validate_domain['name'];
                         $domain_ext = $validate_domain['ext'];
+                    }
+
+                    /**
+                     *  After validated both registrant_email and domain
+                     *  validated phone number
+                     *  insert it to ValidatedPhone
+                     */
+                    $validate_number = $this->validateNumber($data[18]);
+                    if ($validate_number['status_code'] == 200 && isset($validate_number['data'])) {
+                        // insert number in ValidatedPhone
+                        $valid_number = new ValidatedPhone();
+                        $valid_number->phone_number = $validate_number['data']['validation_status'];
+                        $valid_number->validation_status = $validate_number['data']['validation_status'];
+                        $valid_number->state = $validate_number['data']['state'];
+                        $valid_number->major_city = $validate_number['data']['major_city'];
+                        $valid_number->primary_city = $validate_number['data']['primary_city'];
+                        $valid_number->county = $validate_number['data']['county'];
+                        $valid_number->carrier_name = $validate_number['data']['carrier_name'];
+                        $valid_number->number_type = $validate_number['data']['number_type'];
+                        $valid_number->registrant_email = $data[17];
+                        $valid_number->save();
+
+                        Log::info('valid_number inserted '. $valid_number->id);
+                    } else {
+                        Log::info('invalide valid_number type : '. $data[18]);
+                        continue;
                     }
 
                     // EachDomain
@@ -346,5 +378,41 @@ class ChunkDataInsert implements ShouldQueue
             'leads_count' => $leads_count,
             'time' => $time,
         ];
+    }
+
+    private function validateNumber($num)
+    {
+        try {
+            if($num != '') {
+                $no = explode('.',$num);
+                if(isset($no[1])) {
+                    $arr = ($this->import_csv_helper->validateUSPhoneNumber($no[1]));
+                } else {
+                    $arr = ($this->import_csv_helper->validateUSPhoneNumber($no[0]));
+                }
+            }
+
+            if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number')) {
+                $response['status_code'] = 200;
+                $response['message'] = 'success';
+                $response['data'] = $arr;
+            } else {
+                $response['status_code'] = 500;
+                $response['message'] = 'not success';
+                $response['data'] = null;
+            }
+            Log::debug('number validation : '. $response['message']);
+
+            return $response;
+        } catch (Exception $e) {
+            Log::debug('error in number validation');
+            Log::error($e);
+
+            $response['status_code'] = 500;
+            $response['message'] = 'failed';
+            $response['data'] = null;
+
+            return $response;
+        }
     }
 }
