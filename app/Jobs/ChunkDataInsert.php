@@ -114,6 +114,7 @@ class ChunkDataInsert implements ShouldQueue
                         Log::info('valid_number inserted '. $valid_number->id);
                     } else {
                         Log::info('invalide valid_number type : '. $data[18]);
+                        $this->removeInvalidLeadsDomain($data[17]);
                         continue;
                     }
 
@@ -273,27 +274,27 @@ class ChunkDataInsert implements ShouldQueue
             Log::debug('leads_inserted : '. $leads_inserted);
             Log::debug('time : '. $time);
 
-            // insert calculated data to csv
-            $csv = CSV::find($this->csv_id);
-            $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
-            $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
-            $csv->query_time = $csv->query_time + $time;
-            if ($this->chunk_number == $this->total_chunk_count) {
-                $csv->status = 2;
-            }
-            $csv->save();
-            Log::info('csv_record inserted : '. $csv->id);
+            // // insert calculated data to csv
+            // $csv = CSV::find($this->csv_id);
+            // $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
+            // $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
+            // $csv->query_time = $csv->query_time + $time;
+            // if ($this->chunk_number == $this->total_chunk_count) {
+            //     $csv->status = 2;
+            // }
+            // $csv->save();
+            // Log::info('csv_record inserted : '. $csv->id);
 
-            // insert data in SocketMeta
-            $socket_meta = SocketMeta::first();
-            $socket_meta->total_domains = $socket_meta->total_domains + $domain_inserted;
-            if ($this->chunk_number == 1) {
-                $socket_meta->leads_added_last_day = $domain_inserted;
-            } else {
-                $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
-            }
-            $socket_meta->save();
-            Log::info('socket_meta inserted : '. $socket_meta->id);
+            // // insert data in SocketMeta
+            // $socket_meta = SocketMeta::first();
+            // $socket_meta->total_domains = $socket_meta->total_domains + $domain_inserted;
+            // if ($this->chunk_number == 1) {
+            //     $socket_meta->leads_added_last_day = $domain_inserted;
+            // } else {
+            //     $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
+            // }
+            // $socket_meta->save();
+            // Log::info('socket_meta inserted : '. $socket_meta->id);
 
             unlink($path);
         } catch (\Exception $e) {
@@ -413,6 +414,50 @@ class ChunkDataInsert implements ShouldQueue
             $response['data'] = null;
 
             return $response;
+        }
+    }
+
+    private function removeInvalidLeadsDomain($registrant_email)
+    {
+        try {
+            $invalidLeads = Lead::where('registrant_email', $registrant_email)->count();
+
+            if ($invalidLeads > 0) {
+                Lead::where('registrant_email', $registrant_email)->delete();
+                Log::info('remove invalid Leads');
+
+                $invalidDomain = Lead::where('registrant_email', $registrant_email)->count();
+                if ($invalidDomain > 0) {
+                    $each_domains = EachDomain::select('domain_name')->where('registrant_email', $registrant_email)->pluck('domain_name')->toArray();
+                    // foreach ($each_domains as $each_domain) {
+                        EachDomain::where('registrant_email', $registrant_email)->delete();
+                        Log::info('remove invalid EachDomain');
+
+                        DomainAdministrative::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainAdministrative');
+
+                        DomainBilling::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainBilling');
+
+                        DomainInfo::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainInfo');
+
+                        DomainNameServer::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainNameServer');
+
+                        DomainStatus::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainStatus');
+
+                        DomainTechnical::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainTechnical');
+
+                        DomainStatus::whereIn('domain_name', $each_domains)->delete();
+                        Log::info('remove invalid DomainStatus');
+                    // }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in removeInvalidLeadsDomain : '. $e);
         }
     }
 }

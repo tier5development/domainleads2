@@ -44,10 +44,10 @@ class InsertData extends Command
 
         $filename = trim($this->argument('path'));
 
-        $check_file = CSV::where('file_name', $filename)->count();
-        if ($check_file > 0){
-            Log::warning("File already uploaded");
-        } else {
+        // $check_file = CSV::where('file_name', $filename)->count();
+        // if ($check_file > 0){
+        //     Log::warning("File already uploaded");
+        // } else {
             $path = public_path().'/unzipFiles/'.$filename;
             if (file_exists($path)) {
                 Log::info('File '. $filename .'dispatch successfully');
@@ -55,6 +55,6 @@ class InsertData extends Command
             } else {
                 Log::error("File not exist : ". $path);
             }
-        }
+        // }
     }
 }
