@@ -48,12 +48,12 @@ private function create()
       ini_set('max_execution_time', '0');
       ini_set('max_input_time', '0');
       set_time_limit(0);
-    $this->Area_state               = Area::pluck('state','prefix')->toArray();
-    $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
-    $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();
-    $this->Area_codes_county        = AreaCode::pluck('county','prefix')->toArray();
-    $this->Area_codes_carrier_name  = AreaCode::pluck('company','prefix')->toArray();
-    $this->Area_codes_number_type   = AreaCode::pluck('usage','prefix')->toArray();
+    $this->Area_state               = Area::pluck('prefix', 'state')->toArray();
+    $this->Area_major_city          = Area::pluck('prefix', 'major_city')->toArray();
+    $this->Area_codes_primary_city  = AreaCode::pluck('prefix', 'primary_city')->toArray();
+    $this->Area_codes_county        = AreaCode::pluck('prefix', 'county')->toArray();
+    $this->Area_codes_carrier_name  = AreaCode::pluck('prefix', 'company')->toArray();
+    $this->Area_codes_number_type   = AreaCode::pluck('prefix', 'usage')->toArray();
     
     try {
       Log::info('** preparing leads Array **');
