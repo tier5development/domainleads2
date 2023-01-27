@@ -906,13 +906,13 @@ private function destroy()
   {
       $areaPrefix = substr($phoneNumber, 0, 3);
       $areaIdentifier = substr($phoneNumber, 0, 6);
-      $checkArea = Area::where('prefix', $areaPrefix)->count();
-      if ($checkArea > 0)
+      $area = Area::where('prefix', $areaPrefix)->first();
+      if (isset($area))
       {
         Log::info('area code found : '. $areaPrefix);
 
-        $checkAreaCode = AreaCode::where('prefix', $areaIdentifier)->count();
-          if($checkAreaCode > 0)
+        $areaCode = AreaCode::where('prefix', $areaIdentifier)->first();
+          if(isset($areaCode))
           {
             Log::info('Area_codes_primary_city found : '. $areaIdentifier);
               $actualPhoneNumber = (($isdPrefix === true) ? "+1" : null ). $phoneNumber;
@@ -920,12 +920,12 @@ private function destroy()
                     "http_code" => 200,
                     "validation_status" => "valid",
                     "phone_number" => $actualPhoneNumber,
-                    "state"        => !isset($this->Area_state[$areaPrefix]) ? null : ucwords(trim($this->Area_state[$areaPrefix])),
-                    "major_city"   => !isset($this->Area_major_city[$areaPrefix]) ? null : ucwords(trim($this->Area_major_city[$areaPrefix])),
-                    "primary_city" => ucwords(trim($this->Area_codes_primary_city[$areaIdentifier])),
-                    "county"       => ucwords(trim($this->Area_codes_county[$areaIdentifier])),
-                    "carrier_name" => ucwords(trim($this->Area_codes_carrier_name[$areaIdentifier])),
-                    "number_type"  => ucwords(trim($this->Area_codes_number_type[$areaIdentifier]))
+                    "state"        => !isset($area['state']) ? null : ucwords(trim($area['state'])),
+                    "major_city"   => !isset($area['major_city']) ? null : ucwords(trim($area['major_city'])),
+                    "primary_city" => ucwords(trim($areaCode['primary_city'])),
+                    "county"       => ucwords(trim($areaCode['county'])),
+                    "carrier_name" => ucwords(trim($areaCode['company'])),
+                    "number_type"  => ucwords(trim($areaCode['usage']))
               ];
           }
           else
