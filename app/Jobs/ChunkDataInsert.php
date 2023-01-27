@@ -38,8 +38,6 @@ class ChunkDataInsert implements ShouldQueue
     public $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     public $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
 
-    public $import_csv_helper;
-
     /**
      * Create a new job instance.
      *
@@ -51,8 +49,6 @@ class ChunkDataInsert implements ShouldQueue
         $this->chunk_number = $chunk_number + 1; // as indexing start from 0, we add 1
         $this->total_chunk_count = $total_chunk_count;
         $this->csv_id = $csv_id;
-
-        $this->import_csv_helper = new ImportCsvHelper();
     }
 
     /**
@@ -115,7 +111,7 @@ class ChunkDataInsert implements ShouldQueue
                     } else {
                         Log::info('invalide valid_number type : '. $data[18]);
                         $this->removeInvalidLeadsDomain($data[17]);
-                        continue;
+                        // continue;
                     }
 
                     // EachDomain
@@ -384,25 +380,28 @@ class ChunkDataInsert implements ShouldQueue
     private function validateNumber($num)
     {
         try {
+            $import_csv_helper = new ImportCsvHelper();
+            
             if($num != '') {
                 $no = explode('.',$num);
                 if(isset($no[1])) {
-                    $arr = ($this->import_csv_helper->validateUSPhoneNumber($no[1]));
+                    $arr = ($import_csv_helper->validateUSPhoneNumber($no[1]));
                 } else {
-                    $arr = ($this->import_csv_helper->validateUSPhoneNumber($no[0]));
+                    $arr = ($import_csv_helper->validateUSPhoneNumber($no[0]));
                 }
             }
 
-            if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number')) {
+            if(isset($arr) && $arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number')) {
                 $response['status_code'] = 200;
                 $response['message'] = 'success';
                 $response['data'] = $arr;
             } else {
-                $response['status_code'] = 500;
+                $response['status_code'] = $arr['http_code'];
                 $response['message'] = 'not success';
                 $response['data'] = null;
             }
             Log::debug('number validation : '. $response['message']);
+            Log::info('-------------------------------------------------------------------------');
 
             return $response;
         } catch (Exception $e) {
@@ -429,6 +428,7 @@ class ChunkDataInsert implements ShouldQueue
                 $invalidDomain = Lead::where('registrant_email', $registrant_email)->count();
                 if ($invalidDomain > 0) {
                     $each_domains = EachDomain::select('domain_name')->where('registrant_email', $registrant_email)->pluck('domain_name')->toArray();
+
                     // foreach ($each_domains as $each_domain) {
                         EachDomain::where('registrant_email', $registrant_email)->delete();
                         Log::info('remove invalid EachDomain');
