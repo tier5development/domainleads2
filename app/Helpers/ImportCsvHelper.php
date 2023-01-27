@@ -911,7 +911,7 @@ private function destroy()
       {
         Log::info('area code found : '. $areaPrefix);
 
-        $checkAreaCode = AreaCode::where('prefix', $areaPrefix)->count();
+        $checkAreaCode = AreaCode::where('prefix', $areaIdentifier)->count();
           if($checkAreaCode > 0)
           {
             Log::info('Area_codes_primary_city found : '. $areaIdentifier);
