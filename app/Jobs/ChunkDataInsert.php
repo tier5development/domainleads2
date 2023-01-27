@@ -111,7 +111,7 @@ class ChunkDataInsert implements ShouldQueue
                         Log::info('valid_number inserted '. $valid_number->id);
                     } else {
                         Log::info('invalide valid_number type : '. $data[18]);
-                        $this->removeInvalidLeadsDomain($data[17]);
+                        // $this->removeInvalidLeadsDomain($data[17]);
                         continue;
                     }
 
