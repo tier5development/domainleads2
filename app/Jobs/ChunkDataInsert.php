@@ -92,6 +92,7 @@ class ChunkDataInsert implements ShouldQueue
                      *  validated phone number
                      *  insert it to ValidatedPhone
                      */
+                    Log::info('original number is : '. $data[18]);
                     $validate_number = $this->validateNumber($data[18]);
                     if ($validate_number['status_code'] == 200 && isset($validate_number['data'])) {
                         // insert number in ValidatedPhone
@@ -111,7 +112,7 @@ class ChunkDataInsert implements ShouldQueue
                     } else {
                         Log::info('invalide valid_number type : '. $data[18]);
                         $this->removeInvalidLeadsDomain($data[17]);
-                        // continue;
+                        continue;
                     }
 
                     // EachDomain

@@ -875,12 +875,15 @@ private function destroy()
       Log::debug('unmaskedPhoneNumber in validateUSPhoneNumber : '. $unmaskedPhoneNumber);
       $phoneNumberLength = strlen($unmaskedPhoneNumber);
       if ($phoneNumberLength === 10) {
+        Log::info('step 1');
           return ($this->validateAreaCode($unmaskedPhoneNumber, false));
       } elseif ($phoneNumberLength === 11) {
           if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1) {
+            Log::info('step 2');
             Log::debug('substr($unmaskedPhoneNumber, 0, 1) : '. substr($unmaskedPhoneNumber, 0, 1));
               return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
           } else {
+            Log::info('step 3');
             Log::error('validation_messager => This phone number does not belongs to US.');
               return [
                   "http_code" => 404,
@@ -889,6 +892,7 @@ private function destroy()
               ];
           }
       } else {
+        Log::info('step 4');
         Log::error('validation_messager => This phone number is not in valid format.');
           return [
               "http_code" => 404,
@@ -902,10 +906,13 @@ private function destroy()
   {
       $areaPrefix = substr($phoneNumber, 0, 3);
       $areaIdentifier = substr($phoneNumber, 0, 6);
-      if (isset($this->Area_state[$areaPrefix]))
+      $checkArea = Area::where('prefix', $areaPrefix)->count();
+      if ($checkArea > 0)
       {
         Log::info('area code found : '. $areaPrefix);
-          if(isset($this->Area_codes_primary_city[$areaIdentifier]))
+
+        $checkAreaCode = AreaCode::where('prefix', $areaPrefix)->count();
+          if($checkAreaCode > 0)
           {
             Log::info('Area_codes_primary_city found : '. $areaIdentifier);
               $actualPhoneNumber = (($isdPrefix === true) ? "+1" : null ). $phoneNumber;
