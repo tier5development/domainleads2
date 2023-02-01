@@ -379,17 +379,17 @@ class ChunkDataInsert implements ShouldQueue
         ];
     }
 
-    private function validateNumber($num)
+    private function validateNumber($number)
     {
         $response['status'] = false;
         $response['message'] = '';
         $response['data'] = null;
 
         try {
-            Log::debug('number : '. $num);
+            Log::debug('number : '. $number);
             $import_csv_helper = new ImportCsvHelper();
-            if($num != '') {
-                $no = explode('.',$num);
+            if($number != '') {
+                $no = explode('.',$number);
                 if(isset($no[1])) {
                     $number = $no[0].$no[1];
                 } else {
