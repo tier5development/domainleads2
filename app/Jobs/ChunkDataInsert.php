@@ -401,6 +401,7 @@ class ChunkDataInsert implements ShouldQueue
             // check number is numeric or not
             if (!is_numeric($number)) {
                 $response['message'] = 'Non numeric number';
+                Log::debug('number validation : '. $response['message']);
                 return $response;
             }
 
@@ -408,6 +409,7 @@ class ChunkDataInsert implements ShouldQueue
             $numberCount = ValidatedPhone::where('phone_number', $number)->count();
             if ($numberCount > 0) {
                 $response['message'] = 'Number already exist';
+                Log::debug('number validation : '. $response['message']);
                 return $response;
             }
 
@@ -421,7 +423,7 @@ class ChunkDataInsert implements ShouldQueue
             } else {
                 $response['message'] = 'not success';
             }
-            Log::debug('number validation : '. $arr['message']);
+            Log::debug('number validation from $import_csv_helper->validateNumber() : '. $arr['message']);
 
             return $response;
         } catch (Exception $e) {
