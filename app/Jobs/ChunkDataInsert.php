@@ -95,7 +95,7 @@ class ChunkDataInsert implements ShouldQueue
                      *  insert it to ValidatedPhone
                      */
                     $validate_number = $this->validateNumber($data[18]);
-                    if ($validate_number['status_code'] == 200 && isset($validate_number['data'])) {
+                    if ($validate_number['status'] == true && isset($validate_number['data'])) {
                         // insert number in ValidatedPhone
                         $valid_number = new ValidatedPhone();
                         $valid_number->phone_number = $validate_number['data']['phone_number'];
@@ -109,7 +109,7 @@ class ChunkDataInsert implements ShouldQueue
                         $valid_number->registrant_email = $data[17];
                         $valid_number->save();
 
-                        Log::info('valid_number inserted '. $valid_number->id);
+                        Log::info('valid_number inserted '. $valid_number->phone_number);
                     } else {
                         Log::info('invalide valid_number type : '. $data[18]);
                         $this->removeInvalidLeadsDomain($data[17]);
@@ -381,36 +381,54 @@ class ChunkDataInsert implements ShouldQueue
 
     private function validateNumber($num)
     {
+        $response['status'] = false;
+        $response['message'] = '';
+        $response['data'] = null;
+
         try {
+            Log::debug('number : '. $num);
             $import_csv_helper = new ImportCsvHelper();
             if($num != '') {
                 $no = explode('.',$num);
                 if(isset($no[1])) {
-                    $arr = ($import_csv_helper->validateUSPhoneNumber($no[1]));
+                    $number = $no[0].$no[1];
                 } else {
-                    $arr = ($import_csv_helper->validateUSPhoneNumber($no[0]));
+                    $number = $no[0];
                 }
             }
+            $number = preg_replace('~\D~', '', $number);
 
-            if($arr['http_code'] == 200 && ($arr['number_type'] == 'Landline' || $arr['number_type'] == 'Cell Number')) {
-                $response['status_code'] = 200;
+            // check number is numeric or not
+            if (!is_numeric($number)) {
+                $response['message'] = 'Non numeric number';
+                return $response;
+            }
+
+            // Check number already exist or not
+            $numberCount = ValidatedPhone::where('phone_number', $number)->count();
+            if ($numberCount > 0) {
+                $response['message'] = 'Number already exist';
+                return $response;
+            }
+
+            // validate number
+            $arr = ($import_csv_helper->validateNumber($number));
+
+            if($arr['status'] == true) {
+                $response['status'] = true;
                 $response['message'] = 'success';
                 $response['data'] = $arr;
             } else {
-                $response['status_code'] = 500;
                 $response['message'] = 'not success';
-                $response['data'] = null;
             }
-            Log::debug('number validation : '. $response['message']);
+            Log::debug('number validation : '. $arr['message']);
 
             return $response;
         } catch (Exception $e) {
             Log::debug('error in number validation');
             Log::error($e);
 
-            $response['status_code'] = 500;
             $response['message'] = 'failed';
-            $response['data'] = null;
 
             return $response;
         }
@@ -425,7 +443,7 @@ class ChunkDataInsert implements ShouldQueue
                 Lead::where('registrant_email', $registrant_email)->delete();
                 Log::info('remove invalid Leads');
 
-                $invalidDomain = Lead::where('registrant_email', $registrant_email)->count();
+                $invalidDomain = EachDomain::where('registrant_email', $registrant_email)->count();
                 if ($invalidDomain > 0) {
                     $each_domains = EachDomain::select('domain_name')->where('registrant_email', $registrant_email)->pluck('domain_name')->toArray();
                     // foreach ($each_domains as $each_domain) {

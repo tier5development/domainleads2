@@ -26,6 +26,7 @@ use App\Jobs\ImportCsv;
 use Session;
 use App\SocketMeta;
 use App\Events\UsageInfo;
+use GuzzleHttp\Client;
 use Log;
 class ImportCsvHelper {
 
@@ -1017,5 +1018,44 @@ private function destroy()
       \Log::info('from :: Error ::: '.$e->getMessage());
     }
   }
+
+    /**
+   *  Validate phone number
+   *  using number validation url
+   *  https://04w6eb9h7e.execute-api.us-east-1.amazonaws.com/dev/contact/validate-number
+   */
+
+   public function validateNumber($number)
+   {
+        $client = new Client();
+        $validationUrl = 'https://04w6eb9h7e.execute-api.us-east-1.amazonaws.com/dev/contact/validate-number';
+
+        $number = preg_replace('~\D~', '', $number);
+
+        $res = $client->post($validationUrl, [
+            'json' => [
+                "number" => $number,
+                "prefix" => '', 
+                "isPrefixGiven" => false
+            ]
+        ]);
+        
+        $response = json_decode($res->getBody(), true);
+        $data = $response['data'];
+        \Log::debug("validation number : ". $response['message'] .' Number : '. $data['original_number']);
+        
+        return [
+            'status' => $response['success'],
+            'message' => $response['message'],
+            'phone_number' => $data['original_number'],
+            'validation_status' => $data['is_valid'],
+            'state' => $data['countryCode'],
+            'major_city' => $data['location'],
+            'primary_city' => $data['location'],
+            'county' => $data['country'],
+            'carrier_name' => $data['carrier'],
+            'number_type' => ($data['is_mobile']) ? 'Cell Number' : 'Landline',
+        ];
+   }
 }
 ?>
