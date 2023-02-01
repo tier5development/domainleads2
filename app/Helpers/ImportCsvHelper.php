@@ -48,12 +48,12 @@ private function create()
       ini_set('max_execution_time', '0');
       ini_set('max_input_time', '0');
       set_time_limit(0);
-    $this->Area_state               = Area::pluck('prefix', 'state')->toArray();
-    $this->Area_major_city          = Area::pluck('prefix', 'major_city')->toArray();
-    $this->Area_codes_primary_city  = AreaCode::pluck('prefix', 'primary_city')->toArray();
-    $this->Area_codes_county        = AreaCode::pluck('prefix', 'county')->toArray();
-    $this->Area_codes_carrier_name  = AreaCode::pluck('prefix', 'company')->toArray();
-    $this->Area_codes_number_type   = AreaCode::pluck('prefix', 'usage')->toArray();
+    $this->Area_state               = Area::pluck('state','prefix')->toArray();
+    $this->Area_major_city          = Area::pluck('major_city','prefix')->toArray();
+    $this->Area_codes_primary_city  = AreaCode::pluck('primary_city','prefix')->toArray();
+    $this->Area_codes_county        = AreaCode::pluck('county','prefix')->toArray();
+    $this->Area_codes_carrier_name  = AreaCode::pluck('company','prefix')->toArray();
+    $this->Area_codes_number_type   = AreaCode::pluck('usage','prefix')->toArray();
     
     try {
       Log::info('** preparing leads Array **');
@@ -872,19 +872,13 @@ private function destroy()
   public function validateUSPhoneNumber($ph)
   {
       $unmaskedPhoneNumber = preg_replace('/[\s()+-]+/', null, $ph);
-      Log::debug('unmaskedPhoneNumber in validateUSPhoneNumber : '. $unmaskedPhoneNumber);
       $phoneNumberLength = strlen($unmaskedPhoneNumber);
       if ($phoneNumberLength === 10) {
-        Log::info('step 1');
           return ($this->validateAreaCode($unmaskedPhoneNumber, false));
       } elseif ($phoneNumberLength === 11) {
           if ((int)substr($unmaskedPhoneNumber, 0, 1) === 1) {
-            Log::info('step 2');
-            Log::debug('substr($unmaskedPhoneNumber, 0, 1) : '. substr($unmaskedPhoneNumber, 0, 1));
               return ($this->validateAreaCode(substr($unmaskedPhoneNumber, 1, 10), true));
           } else {
-            Log::info('step 3');
-            Log::error('validation_messager => This phone number does not belongs to US.');
               return [
                   "http_code" => 404,
                   "validation_status" => "invalid",
@@ -892,8 +886,6 @@ private function destroy()
               ];
           }
       } else {
-        Log::info('step 4');
-        Log::error('validation_messager => This phone number is not in valid format.');
           return [
               "http_code" => 404,
               "validation_status" => "invalid",
@@ -906,31 +898,25 @@ private function destroy()
   {
       $areaPrefix = substr($phoneNumber, 0, 3);
       $areaIdentifier = substr($phoneNumber, 0, 6);
-      $area = Area::where('prefix', $areaPrefix)->first();
-      if (isset($area))
+      if (isset($this->Area_state[$areaPrefix]))
       {
-        Log::info('area code found : '. $areaPrefix);
-
-        $areaCode = AreaCode::where('prefix', $areaIdentifier)->first();
-          if(isset($areaCode))
+          if(isset($this->Area_codes_primary_city[$areaIdentifier]))
           {
-            Log::info('Area_codes_primary_city found : '. $areaIdentifier);
               $actualPhoneNumber = (($isdPrefix === true) ? "+1" : null ). $phoneNumber;
               return [
                     "http_code" => 200,
                     "validation_status" => "valid",
                     "phone_number" => $actualPhoneNumber,
-                    "state"        => !isset($area['state']) ? null : ucwords(trim($area['state'])),
-                    "major_city"   => !isset($area['major_city']) ? null : ucwords(trim($area['major_city'])),
-                    "primary_city" => ucwords(trim($areaCode['primary_city'])),
-                    "county"       => ucwords(trim($areaCode['county'])),
-                    "carrier_name" => ucwords(trim($areaCode['company'])),
-                    "number_type"  => ucwords(trim($areaCode['usage']))
+                    "state"        => !isset($this->Area_state[$areaPrefix]) ? null : ucwords(trim($this->Area_state[$areaPrefix])),
+                    "major_city"   => !isset($this->Area_major_city[$areaPrefix]) ? null : ucwords(trim($this->Area_major_city[$areaPrefix])),
+                    "primary_city" => ucwords(trim($this->Area_codes_primary_city[$areaIdentifier])),
+                    "county"       => ucwords(trim($this->Area_codes_county[$areaIdentifier])),
+                    "carrier_name" => ucwords(trim($this->Area_codes_carrier_name[$areaIdentifier])),
+                    "number_type"  => ucwords(trim($this->Area_codes_number_type[$areaIdentifier]))
               ];
           }
           else
           {
-            Log::info('Area_codes_primary_city not found : '. $areaIdentifier);
               return [
                   "http_code" => 404,
                   "validation_status" => "invalid",
@@ -940,7 +926,6 @@ private function destroy()
       }
       else
       {
-        Log::error('area code not found : '. $areaPrefix);
           return [
               "http_code" => 404,
               "validation_status" => "invalid",
