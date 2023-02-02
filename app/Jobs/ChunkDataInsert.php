@@ -112,9 +112,13 @@ class ChunkDataInsert implements ShouldQueue
 
                         Log::info('valid_number inserted '. $valid_number->phone_number);
                     } else {
-                        Log::info('invalide valid_number type : '. $data[18]);
-                        $this->removeInvalidLeadsDomain($data[17]);
-                        continue;
+                        if (isset($validate_number['isExist']) && $validate_number['isExist']) {
+                            continue;
+                        } else {
+                            Log::info('invalide valid_number type : '. $data[18]);
+                            $this->removeInvalidLeadsDomain($data[17]);
+                            continue;
+                        }
                     }
                     Log::info('***************************************************************************');
 
@@ -403,6 +407,7 @@ class ChunkDataInsert implements ShouldQueue
             // check number is numeric or not
             if (!is_numeric($number)) {
                 $response['message'] = 'Non numeric number';
+                $response['isExist'] = true;
                 Log::debug('number validation : '. $response['message']);
                 return $response;
             }
