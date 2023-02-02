@@ -94,6 +94,7 @@ class ChunkDataInsert implements ShouldQueue
                      *  validated phone number
                      *  insert it to ValidatedPhone
                      */
+                    Log::info('***************************************************************************');
                     $validate_number = $this->validateNumber($data[18]);
                     if ($validate_number['status'] == true && isset($validate_number['data'])) {
                         // insert number in ValidatedPhone
@@ -115,6 +116,7 @@ class ChunkDataInsert implements ShouldQueue
                         $this->removeInvalidLeadsDomain($data[17]);
                         continue;
                     }
+                    Log::info('***************************************************************************');
 
                     // EachDomain
                     // check domain_name aleardy exist in each_doamin table
