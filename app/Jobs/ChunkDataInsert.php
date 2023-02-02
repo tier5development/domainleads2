@@ -117,7 +117,16 @@ class ChunkDataInsert implements ShouldQueue
                         } else {
                             Log::info('invalide valid_number type : '. $data[18]);
                             Log::info('|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| email : '. $data[17]);
-                            $this->removeInvalidLeadsDomain($data[17]);
+                            $checkEmailInValidatedPhone = $this->checkEmailInValidatedPhone($data[17]);
+                            if ($checkEmailInValidatedPhone['status']) {
+                                // don't need to delete leads and domains
+                                Log::info($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
+                                continue;
+                            } else {
+                                // need to delete invaid leads and domains
+                                Log::debug($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
+                                $this->removeInvalidLeadsDomain($data[17]);
+                            }
                             continue;
                         }
                     }
@@ -442,6 +451,26 @@ class ChunkDataInsert implements ShouldQueue
 
             return $response;
         }
+    }
+
+    /**
+     *  check registrant_email already exisit or not
+     *  in valid_phone table
+     */
+    private function checkEmailInValidatedPhone($email)
+    {
+        $emailCount = ValidatedPhone::where('registrant_email', $email)->count();
+        if ($emailCount > 0) {
+            $response['status'] = true;
+            $response['count'] = $emailCount;
+            $response['message'] = 'registrant_email exist';
+        } else {
+            $response['status'] = false;
+            $response['count'] = 0;
+            $response['message'] = 'registrant_email not exist';
+        }
+
+        return $response;
     }
 
     private function removeInvalidLeadsDomain($registrant_email)
