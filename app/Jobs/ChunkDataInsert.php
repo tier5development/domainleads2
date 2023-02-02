@@ -407,7 +407,6 @@ class ChunkDataInsert implements ShouldQueue
             // check number is numeric or not
             if (!is_numeric($number)) {
                 $response['message'] = 'Non numeric number';
-                $response['isExist'] = true;
                 Log::debug('number validation : '. $response['message']);
                 return $response;
             }
@@ -416,6 +415,7 @@ class ChunkDataInsert implements ShouldQueue
             $numberCount = ValidatedPhone::where('phone_number', $number)->count();
             if ($numberCount > 0) {
                 $response['message'] = 'Number already exist';
+                $response['isExist'] = true;
                 Log::debug('number validation : '. $response['message']);
                 return $response;
             }
