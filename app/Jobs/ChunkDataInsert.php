@@ -121,13 +121,13 @@ class ChunkDataInsert implements ShouldQueue
                             if ($checkEmailInValidatedPhone['status']) {
                                 // don't need to delete leads and domains
                                 Log::info($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
-                                continue;
+                                // continue;
                             } else {
                                 // need to delete invaid leads and domains
                                 Log::debug($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
                                 $this->removeInvalidLeadsDomain($data[17]);
+                                continue;
                             }
-                            continue;
                         }
                     }
                     Log::info('***************************************************************************');
