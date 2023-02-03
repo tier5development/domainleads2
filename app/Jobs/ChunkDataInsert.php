@@ -125,7 +125,7 @@ class ChunkDataInsert implements ShouldQueue
                             } else {
                                 // need to delete invaid leads and domains
                                 Log::debug($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
-                                $this->removeInvalidLeadsDomain($data[17]);
+                                // $this->removeInvalidLeadsDomain($data[17]);
                                 continue;
                             }
                         }
@@ -283,32 +283,32 @@ class ChunkDataInsert implements ShouldQueue
 
             $domain_inserted = $end_info['domain_count'] - $start_info['domain_count'];
             $leads_inserted = $end_info['domain_count'] - $start_info['domain_count'];
-            $time = $end_info['domain_count'] - $start_info['domain_count']; //time taken to complete this process
+            $time = $end_info['time'] - $start_info['time']; //time taken to complete this process
             Log::debug('domain_inserted : '. $domain_inserted);
             Log::debug('leads_inserted : '. $leads_inserted);
             Log::debug('time : '. $time);
 
-            // // insert calculated data to csv
-            // $csv = CSV::find($this->csv_id);
-            // $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
-            // $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
-            // $csv->query_time = $csv->query_time + $time;
-            // if ($this->chunk_number == $this->total_chunk_count) {
-            //     $csv->status = 2;
-            // }
-            // $csv->save();
-            // Log::info('csv_record inserted : '. $csv->id);
+            // insert calculated data to csv
+            $csv = CSV::find($this->csv_id);
+            $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
+            $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
+            $csv->query_time = $csv->query_time + $time;
+            if ($this->chunk_number == $this->total_chunk_count) {
+                $csv->status = 2;
+            }
+            $csv->save();
+            Log::info('csv_record inserted : '. $csv->id);
 
-            // // insert data in SocketMeta
-            // $socket_meta = SocketMeta::first();
-            // $socket_meta->total_domains = $socket_meta->total_domains + $domain_inserted;
-            // if ($this->chunk_number == 1) {
-            //     $socket_meta->leads_added_last_day = $domain_inserted;
-            // } else {
-            //     $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
-            // }
-            // $socket_meta->save();
-            // Log::info('socket_meta inserted : '. $socket_meta->id);
+            // insert data in SocketMeta
+            $socket_meta = SocketMeta::first();
+            $socket_meta->total_domains = $socket_meta->total_domains + $domain_inserted;
+            if ($this->chunk_number == 1) {
+                $socket_meta->leads_added_last_day = $domain_inserted;
+            } else {
+                $socket_meta->leads_added_last_day = $socket_meta->leads_added_last_day + $domain_inserted;
+            }
+            $socket_meta->save();
+            Log::info('socket_meta inserted : '. $socket_meta->id);
 
             unlink($path);
         } catch (\Exception $e) {

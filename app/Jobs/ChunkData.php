@@ -46,10 +46,10 @@ class ChunkData implements ShouldQueue
             $total_chunk = count($chunk_array);
 
             // add file name in csv(model)/csv_record(table)
-            // $csv = new CSV();
-            // $csv->file_name = $this->file;
-            // $csv->save();
-            // Log::info('csv_record inserted : '. $csv->id .''. $csv->file_name .')');
+            $csv = new CSV();
+            $csv->file_name = $this->file;
+            $csv->save();
+            Log::info('csv_record inserted : '. $csv->id .''. $csv->file_name .')');
 
             foreach ($chunk_array as $key=>$array) {
                 $name = '('. $key .')-'. $this->file;
