@@ -1398,6 +1398,7 @@ public function downloadCsv(Request $request)
     {
       
       $array = explode(",",$raw_leads);
+      Log::debug('Total count: '. count($array));
       $return = "";
       if($offset == 1) $offset--;
 
@@ -1408,6 +1409,7 @@ public function downloadCsv(Request $request)
         if($return == "") $return .= $array[$i];
         else $return .= ",".$array[$i];
       }
+      Log::debug('raw_leads_id from paginated_raw_leads: '. $return);
       return $return;
     }
 
