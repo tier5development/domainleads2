@@ -975,6 +975,7 @@ public function downloadCsv(Request $request)
           }
         }
         $leads_string = "(".$leads_string.")";
+        Log::debug('leads_string from leadsPerPage_Search for debuging');
         return array('data'=>$data,'leads_string'=>$leads_string);
     }
 
