@@ -1713,7 +1713,10 @@ public function downloadCsv(Request $request)
 
       $domain_list = array();
 
-      foreach($data as $k=>$v)  $domain_list[$v['registrant_email']]['checked'] = false;
+      foreach($data as $k=>$v) {
+        $domain_list[$v['registrant_email']]['checked'] = false;
+        Log::debug($v['registrant_email'] .' => false');
+      }
       
       foreach($domains as $k=>$v)
       {
