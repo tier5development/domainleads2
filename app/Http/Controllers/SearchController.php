@@ -1362,6 +1362,7 @@ public function downloadCsv(Request $request)
         $last_csv_insert_time = DB::select(DB::raw('SELECT MAX(created_at) as created FROM `csv_record`'));
         $last_query_update_time = strtotime($meta_data_leads[0]->updated_at);
         $last_csv_insert_time   = strtotime($last_csv_insert_time[0]->created);
+        Log::debug('last_csv_insert_time: '. $last_csv_insert_time .' | $meta_data_id : '. $meta_data_leads[0]->id);
         
         if($last_query_update_time > $last_csv_insert_time)
         {
