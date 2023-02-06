@@ -1857,6 +1857,7 @@ public function downloadCsv(Request $request)
           }
           $result = $this->all_lead_domains_set($request,$phone_type_array,$this->meta_id, $limit, $offset);
         } catch(\Exception $e) {
+          Log::error($e);
           $status = $e->getMessage();
         }
         
