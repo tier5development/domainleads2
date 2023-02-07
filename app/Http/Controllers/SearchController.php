@@ -1953,7 +1953,7 @@ public function downloadCsv(Request $request)
           $leadArr = null;
           $totalDomains = null;
           $user = Auth::user();
-          $allExtensions = ['au','ar','an', 'ca', 'com', 'co', 'ch', 'de', 'es', 'jp', 'edu', 'fr', 'gov', 'io', 'in', 'it', 'info', 'jobs', 'mil', 'mobi', 'net', 'nl', 'no', 'org', 'onion', 'ru', 'us', 'uk', 'se', 'travel', 'pro'];
+          $allExtensions = ['au','ar','an', 'ca', 'com', 'co', 'ch', 'de', 'es', 'jp', 'edu', 'fr', 'gov', 'io', 'in', 'it', 'info', 'jobs', 'mil', 'mobi', 'net', 'nl', 'no', 'org', 'onion', 'ru', 'us', 'uk', 'se', 'travel', 'pro', 'tw', 'com.tw'];
           return view('new_version.dashboard.index', ['record' => null , 'leadArr' => null , 'totalDomains' => null, 'user' => $user, 'allExtensions' => $allExtensions]);
         }
       } else {
