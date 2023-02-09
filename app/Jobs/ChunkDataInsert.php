@@ -74,8 +74,9 @@ class ChunkDataInsert implements ShouldQueue
                 Log::info('=======================================================================================================');
                 try {
                     // validated email
-                    if(!$this->validateEmail($data[17])) {
-                        Log::info("invalide ragistrant_email type : ". $data[17]);
+                    $email = strtolower($data['17']);
+                    if(!$this->validateEmail($email)) {
+                        Log::info("invalide ragistrant_email type : ". $email);
                         continue;
                     }
 
@@ -107,27 +108,19 @@ class ChunkDataInsert implements ShouldQueue
                         $valid_number->county = $validate_number['data']['county'];
                         $valid_number->carrier_name = $validate_number['data']['carrier_name'];
                         $valid_number->number_type = $validate_number['data']['number_type'];
-                        $valid_number->registrant_email = $data[17];
+                        $valid_number->registrant_email = $email;
                         $valid_number->save();
 
                         Log::info('valid_number inserted '. $valid_number->phone_number);
                     } else {
-                        if (isset($validate_number['isExist']) && $validate_number['isExist']) {
-                            continue;
+                        if (isset($validate_number['isExist']) && $validate_number['isExist'] && $validate_number['existEmail'] == $email) {
+                            // allow to insert data
+                            // continue;
                         } else {
                             Log::info('invalide valid_number type : '. $data[18]);
-                            Log::info('|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| email : '. $data[17]);
-                            $checkEmailInValidatedPhone = $this->checkEmailInValidatedPhone($data[17]);
-                            if ($checkEmailInValidatedPhone['status']) {
-                                // don't need to delete leads and domains
-                                Log::info($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
-                                // continue;
-                            } else {
-                                // need to delete invaid leads and domains
-                                Log::debug($checkEmailInValidatedPhone['message'] .' : '. $checkEmailInValidatedPhone['count']);
-                                // $this->removeInvalidLeadsDomain($data[17]);
-                                continue;
-                            }
+                            Log::info('|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| email : '. $email);
+                            Log::debug($validate_number['message'] .' : '. $validate_number['existEmailCount']);
+                            continue;
                         }
                     }
                     Log::info('***************************************************************************');
@@ -140,7 +133,7 @@ class ChunkDataInsert implements ShouldQueue
                         $each_domain = new EachDomain();
                         $each_domain->domain_name = $domain_name;
                         $each_domain->domain_ext = $domain_ext;
-                        $each_domain->registrant_email = $data[17];
+                        $each_domain->registrant_email = $email;
                         $each_domain->save();
                         Log::info('each_domain inserted '. $each_domain->registrant_email);
                     } else {
@@ -149,7 +142,7 @@ class ChunkDataInsert implements ShouldQueue
                     }
 
                     // check registrant_email exist or not in leads
-                    $result = $this->checkLeads($data[17]);
+                    $result = $this->checkLeads($email);
 
                     // Leads
                     // check lead aleardy exist in $this->lead array
@@ -159,7 +152,7 @@ class ChunkDataInsert implements ShouldQueue
                         $name = explode(' ', $data[10]);
                         $lead->registrant_fname = isset($name[0]) ? $name[0] : " ";
                         $lead->registrant_lname = isset($name[1]) ? $name[1] : " ";
-                        $lead->registrant_email = $data[17];
+                        $lead->registrant_email = $email;
                         $lead->registrant_company = $data[11];
                         $lead->registrant_address = $data[12];
                         $lead->registrant_city = $data[13];
@@ -174,7 +167,7 @@ class ChunkDataInsert implements ShouldQueue
                     } else {
                         // increase domains_count in leads
                         $this->increaseDomainCount($result['data']);
-                        Log::error('duplicate ragistrant_email in leads'. $data[17]);
+                        Log::error('duplicate ragistrant_email in leads'. $email);
                     }
 
                     // domain_administrative
@@ -404,14 +397,11 @@ class ChunkDataInsert implements ShouldQueue
         try {
             Log::debug('number : '. $number);
             $import_csv_helper = new ImportCsvHelper();
-            if($number != '') {
-                $no = explode('.',$number);
-                if(isset($no[1])) {
-                    $number = $no[0].$no[1];
-                } else {
-                    $number = $no[0];
-                }
+
+            if($number == '') {
+                return $response;
             }
+            
             $number = preg_replace('~\D~', '', $number);
 
             // check number is numeric or not
@@ -422,10 +412,13 @@ class ChunkDataInsert implements ShouldQueue
             }
 
             // Check number already exist or not
-            $numberCount = ValidatedPhone::where('phone_number', $number)->count();
+            $numberExist = ValidatedPhone::where('phone_number', $number)->count();
+            $numberCount = count($numberExist);
             if ($numberCount > 0) {
                 $response['message'] = 'Number already exist';
                 $response['isExist'] = true;
+                $response['existEmail'] = $numberExist->registrant_email;
+                $response['existEmailCount'] = $numberCount;
                 Log::debug('number validation : '. $response['message']);
                 return $response;
             }
