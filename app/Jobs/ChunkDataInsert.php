@@ -412,7 +412,7 @@ class ChunkDataInsert implements ShouldQueue
             }
 
             // Check number already exist or not
-            $numberExist = ValidatedPhone::where('phone_number', $number)->fisrt();
+            $numberExist = ValidatedPhone::where('phone_number', $number)->first();
             $numberCount = count($numberExist);
             if ($numberCount > 0) {
                 $response['message'] = 'Number already exist';
