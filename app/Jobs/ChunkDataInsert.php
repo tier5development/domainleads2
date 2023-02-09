@@ -119,7 +119,7 @@ class ChunkDataInsert implements ShouldQueue
                         } else {
                             Log::info('invalide valid_number type : '. $data[18]);
                             Log::info('|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| email : '. $email);
-                            Log::debug($validate_number['message'] .' : '. $validate_number['existEmailCount']);
+                            Log::debug($validate_number['message']);
                             continue;
                         }
                     }
