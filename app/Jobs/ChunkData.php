@@ -55,7 +55,7 @@ class ChunkData implements ShouldQueue
                 $name = '('. $key .')-'. $this->file;
                 $this->saveArrayInCSV($name, $array);
                 Log::debug('Loop/chunk no '. $key);
-                ChunkDataInsert::dispatch($name, $key, $total_chunk, null)->onQueue('insert');
+                ChunkDataInsert::dispatch($name, $key, $total_chunk, $csv->id)->onQueue('insert');
             }
         } catch (Exception $e) {
             log::error('In line ' . $e->getLine() . 'error ' . $e);
