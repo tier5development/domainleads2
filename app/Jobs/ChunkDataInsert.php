@@ -282,6 +282,7 @@ class ChunkDataInsert implements ShouldQueue
             Log::debug('time : '. $time);
 
             // insert calculated data to csv
+            Log::debug('csv_id: '. $this->csv_id);
             $csv = CSV::find($this->csv_id);
             $csv->leads_inserted = $csv->leads_inserted + $leads_inserted;
             $csv->domains_inserted = $csv->domains_inserted + $domain_inserted;
