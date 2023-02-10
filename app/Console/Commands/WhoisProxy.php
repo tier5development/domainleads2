@@ -75,43 +75,43 @@ class WhoisProxy extends Command
           file_put_contents($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip',$getDownloadData);
           chmod($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip', 0777);
           Zipper::make($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip')->extractTo($downloadDir.'/unzipFiles/');
-          $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'_whois-proxies-removed.csv';
-          $getCSVFile  = fopen($csvFilePath , 'r');
+          // $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'_whois-proxies-removed.csv';
+          // $getCSVFile  = fopen($csvFilePath , 'r');
 
-          $total_leads_before_insertion = Lead::count();
-          $total_domains_before_insertion = EachDomain::count();
+          // $total_leads_before_insertion = Lead::count();
+          // $total_domains_before_insertion = EachDomain::count();
 
-          $import = new ImportCsvHelper();
-          $return = $import->insertion_Execl($getCSVFile);
-          fclose($getCSVFile);
+          // $import = new ImportCsvHelper();
+          // $return = $import->insertion_Execl($getCSVFile);
+          // fclose($getCSVFile);
 
-          $total_leads    = Lead::count();
-          $total_domains  = EachDomain::count();
-          $leads_inserted   = $total_leads - $total_leads_before_insertion;
-          $domains_inserted = $total_domains - $total_domains_before_insertion;
-          $endTime = microtime(true) - $startTime;
+          // $total_leads    = Lead::count();
+          // $total_domains  = EachDomain::count();
+          // $leads_inserted   = $total_leads - $total_leads_before_insertion;
+          // $domains_inserted = $total_domains - $total_domains_before_insertion;
+          // $endTime = microtime(true) - $startTime;
 
-          $csvObj = new CSV();
-          $csvObj->file_name          = $currentDate."_whois-proxies-removed.csv";
-          $csvObj->leads_inserted     = $leads_inserted;
-          $csvObj->domains_inserted   = $domains_inserted;
-          $csvObj->status             = 2;
-          $csvObj->query_time         = $endTime;
-          $csvObj->save();
-          $socketMeta = SocketMeta::first();
-          $socketMeta->leads_added_last_day = $leads_inserted;
-          $socketMeta->total_domains        = $total_domains;
-          $socketMeta->save();
-          event(new UsageInfo());
-          unlink($csvFilePath);
-          unlink($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip');
-          unset($import);
-          return \Response::json(array('TOTAL TIME TAKEN:'=>$endTime." seconds",
-                                      'leads_inserted'=>$leads_inserted,
-                                      'domains_inserted'=>$domains_inserted,
-                                      'status'=>200,
-                                      'message'=>'success',
-                                      'filename'=>$currentDate."_whois-proxies-removed.csv"));
+          // $csvObj = new CSV();
+          // $csvObj->file_name          = $currentDate."_whois-proxies-removed.csv";
+          // $csvObj->leads_inserted     = $leads_inserted;
+          // $csvObj->domains_inserted   = $domains_inserted;
+          // $csvObj->status             = 2;
+          // $csvObj->query_time         = $endTime;
+          // $csvObj->save();
+          // $socketMeta = SocketMeta::first();
+          // $socketMeta->leads_added_last_day = $leads_inserted;
+          // $socketMeta->total_domains        = $total_domains;
+          // $socketMeta->save();
+          // event(new UsageInfo());
+          // unlink($csvFilePath);
+          // unlink($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip');
+          // unset($import);
+          // return \Response::json(array('TOTAL TIME TAKEN:'=>$endTime." seconds",
+          //                             'leads_inserted'=>$leads_inserted,
+          //                             'domains_inserted'=>$domains_inserted,
+          //                             'status'=>200,
+          //                             'message'=>'success',
+          //                             'filename'=>$currentDate."_whois-proxies-removed.csv"));
         } else {
           return \Response::json(array('insertion_time'=>'null',
                                     'message'=>'This file is inserted already::'.$currentDate."_whois-proxies-removed.csv",

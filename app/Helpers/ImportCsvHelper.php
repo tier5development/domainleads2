@@ -955,57 +955,57 @@ private function destroy()
          * Unzipping and putting to a destination
          */
         Zipper::make($downloadDir.'/zipFiles/'.$currentDate.'.zip')->extractTo($downloadDir.'/unzipFiles/');
-        $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'.csv';
-        $getCSVFile  = fopen($csvFilePath , 'r');
-        $total_leads_before_insertion = Lead::count();
-        $total_domains_before_insertion = EachDomain::count();
+        // $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'.csv';
+        // $getCSVFile  = fopen($csvFilePath , 'r');
+        // $total_leads_before_insertion = Lead::count();
+        // $total_domains_before_insertion = EachDomain::count();
 
-        /**
-         * Calling system wide basic insert function
-         */
-        $csvObj = new CSV();
-        $csvObj->file_name = $currentDate.".csv";
-        $csvObj->status = 1;
-        $csvObj->save();
+        // /**
+        //  * Calling system wide basic insert function
+        //  */
+        // $csvObj = new CSV();
+        // $csvObj->file_name = $currentDate.".csv";
+        // $csvObj->status = 1;
+        // $csvObj->save();
 
-        $this->insertion_Execl($getCSVFile);
-        fclose($getCSVFile);
+        // $this->insertion_Execl($getCSVFile);
+        // fclose($getCSVFile);
         
-        /**
-         * Calculate how many leads and domains got effected by the insertion
-         */
-        $total_leads = Lead::count();
-        $total_domains = EachDomain::count();
-        $leads_inserted   = $total_leads - $total_leads_before_insertion;
-        $domains_inserted = $total_domains - $total_domains_before_insertion;
-        $endTime = microtime(true) - $startTime;
+        // /**
+        //  * Calculate how many leads and domains got effected by the insertion
+        //  */
+        // $total_leads = Lead::count();
+        // $total_domains = EachDomain::count();
+        // $leads_inserted   = $total_leads - $total_leads_before_insertion;
+        // $domains_inserted = $total_domains - $total_domains_before_insertion;
+        // $endTime = microtime(true) - $startTime;
 
-        /**
-         * Insert a new record in csv
-         */
-        $csvObj->leads_inserted   = $leads_inserted;
-        $csvObj->domains_inserted = $domains_inserted;
-        $csvObj->status           = 2;
-        $csvObj->query_time       = $endTime;
-        $csvObj->save();
-        $socketMeta = SocketMeta::first();
-        $socketMeta->leads_added_last_day = $leads_inserted;
-        $socketMeta->total_domains = $total_domains;
-        $socketMeta->save();
-        event(new UsageInfo());
+        // /**
+        //  * Insert a new record in csv
+        //  */
+        // $csvObj->leads_inserted   = $leads_inserted;
+        // $csvObj->domains_inserted = $domains_inserted;
+        // $csvObj->status           = 2;
+        // $csvObj->query_time       = $endTime;
+        // $csvObj->save();
+        // $socketMeta = SocketMeta::first();
+        // $socketMeta->leads_added_last_day = $leads_inserted;
+        // $socketMeta->total_domains = $total_domains;
+        // $socketMeta->save();
+        // event(new UsageInfo());
 
-        /**
-         * Free up memory by deleting the files stored by unzipping
-         */
-        unlink($csvFilePath);
-        unlink($downloadDir.'/zipFiles/'.$currentDate.'.zip');
-        unset($import);
-        return \Response::json(array('TOTAL TIME TAKEN:'=>$endTime." seconds",
-                                    'leads_inserted'=>$leads_inserted,
-                                    'domains_inserted'=>$domains_inserted,
-                                    'status'=>200,
-                                    'message'=>'success',
-                                    'filename'=>$currentDate.".csv"));
+        // /**
+        //  * Free up memory by deleting the files stored by unzipping
+        //  */
+        // unlink($csvFilePath);
+        // unlink($downloadDir.'/zipFiles/'.$currentDate.'.zip');
+        // unset($import);
+        // return \Response::json(array('TOTAL TIME TAKEN:'=>$endTime." seconds",
+        //                             'leads_inserted'=>$leads_inserted,
+        //                             'domains_inserted'=>$domains_inserted,
+        //                             'status'=>200,
+        //                             'message'=>'success',
+        //                             'filename'=>$currentDate.".csv"));
       } else {
         return \Response::json(array('insertion_time'=>'null',
                                   'message'=>'This file is inserted already::'.$currentDate.".csv",
