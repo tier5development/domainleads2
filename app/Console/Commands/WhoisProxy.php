@@ -10,6 +10,7 @@ use \App\CSV;
 use Zipper;
 use App\SocketMeta;
 use App\Events\UsageInfo;
+use App\Jobs\ChunkData;
 
 use App\Helpers\ImportCsvHelper;
 
@@ -75,6 +76,9 @@ class WhoisProxy extends Command
           file_put_contents($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip',$getDownloadData);
           chmod($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip', 0777);
           Zipper::make($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip')->extractTo($downloadDir.'/unzipFiles/');
+
+          $filename = $currentDate.'_whois-proxies-removed.csv';
+          ChunkData::dispatch($filename);
           // $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'_whois-proxies-removed.csv';
           // $getCSVFile  = fopen($csvFilePath , 'r');
 

@@ -26,6 +26,7 @@ use App\Jobs\ImportCsv;
 use Session;
 use App\SocketMeta;
 use App\Events\UsageInfo;
+use App\Jobs\ChunkData;
 use GuzzleHttp\Client;
 use Log;
 class ImportCsvHelper {
@@ -955,6 +956,9 @@ private function destroy()
          * Unzipping and putting to a destination
          */
         Zipper::make($downloadDir.'/zipFiles/'.$currentDate.'.zip')->extractTo($downloadDir.'/unzipFiles/');
+
+        $filename = $currentDate.'.csv';
+        ChunkData::dispatch($filename);
         // $csvFilePath = $downloadDir.'/unzipFiles/'.$currentDate.'.csv';
         // $getCSVFile  = fopen($csvFilePath , 'r');
         // $total_leads_before_insertion = Lead::count();
