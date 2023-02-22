@@ -166,8 +166,8 @@
             <span id="totalDomains">{{$socketMeta->total_domains}}</span>
             <p>Domains in our platform</p><br>
             
-            <span id="totalUsers">{{$socketMeta->total_users}}</span>
-            <p>Users in our platform</p><br>
+            {{-- <span id="totalUsers">{{$socketMeta->total_users}}</span>
+            <p>Users in our platform</p><br> --}}
 
             <span id="leadsAddedLastDay">{{$socketMeta->leads_added_last_day}}</span>
             <p>Leads added yesterday</p>
