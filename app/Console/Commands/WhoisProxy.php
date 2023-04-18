@@ -68,9 +68,9 @@ class WhoisProxy extends Command
       $startTime = microtime(true);
 
       try {
-        $checkFileExist = CSV::where('file_name',$currentDate."_whois-proxies-removed.csv")->first();
+        // $checkFileExist = CSV::where('file_name',$currentDate."_whois-proxies-removed.csv")->first();
 
-        if($checkFileExist == null) {
+        // if($checkFileExist == null) {
           $downloadDir = public_path();
           $getDownloadData = file_get_contents($whoxyURL);
           file_put_contents($downloadDir.'/zipFiles/'.$currentDate.'_proxies.zip',$getDownloadData);
@@ -116,12 +116,12 @@ class WhoisProxy extends Command
           //                             'status'=>200,
           //                             'message'=>'success',
           //                             'filename'=>$currentDate."_whois-proxies-removed.csv"));
-        } else {
-          return \Response::json(array('insertion_time'=>'null',
-                                    'message'=>'This file is inserted already::'.$currentDate."_whois-proxies-removed.csv",
-                                    'status'=>500));
-          \Log::info('from :: Error :: '.$exception->getMessage());
-        }
+        // } else {
+        //   return \Response::json(array('insertion_time'=>'null',
+        //                             'message'=>'This file is inserted already::'.$currentDate."_whois-proxies-removed.csv",
+        //                             'status'=>500));
+        //   \Log::info('from :: Error :: '.$exception->getMessage());
+        // }
       } catch (\Exception $exception) {
         \Log::info('from :: Error :: '.$exception->getMessage());
       }
