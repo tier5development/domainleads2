@@ -275,7 +275,7 @@ class ChunkDataInsert implements ShouldQueue
             $end_info = $this->insertInfo();
 
             $domain_inserted = $end_info['domain_count'] - $start_info['domain_count'];
-            $leads_inserted = $end_info['domain_count'] - $start_info['domain_count'];
+            $leads_inserted = $end_info['leads_count'] - $start_info['leads_count'];
             $time = $end_info['time'] - $start_info['time']; //time taken to complete this process
             Log::debug('domain_inserted : '. $domain_inserted);
             Log::debug('leads_inserted : '. $leads_inserted);
@@ -441,7 +441,9 @@ class ChunkDataInsert implements ShouldQueue
             Log::debug('error in number validation');
             Log::error($e);
 
+            $response['status'] = false;
             $response['message'] = 'failed';
+            $response['data'] = null;
 
             return $response;
         }
