@@ -112,17 +112,18 @@ class ChunkDataInsert implements ShouldQueue
                         $valid_number->save();
 
                         Log::info('valid_number inserted '. $valid_number->phone_number);
-                    } else {
-                        if (isset($validate_number['isExist']) && $validate_number['isExist'] && $validate_number['existEmail'] == $email) {
-                            // allow to insert data
-                            // continue;
-                        } else {
-                            Log::info('invalide valid_number type : '. $data[18]);
-                            Log::info('|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| email : '. $email);
-                            Log::debug($validate_number['message']);
-                            continue;
-                        }
-                    }
+                    } 
+                    // else {
+                    //     if (isset($validate_number['isExist']) && $validate_number['isExist'] && $validate_number['existEmail'] == $email) {
+                    //         // allow to insert data
+                    //         // continue;
+                    //     } else {
+                    //         Log::info('invalide valid_number type : '. $data[18]);
+                    //         Log::info('|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| email : '. $email);
+                    //         Log::debug($validate_number['message']);
+                    //         continue;
+                    //     }
+                    // }
                     Log::info('***************************************************************************');
 
                     // EachDomain
