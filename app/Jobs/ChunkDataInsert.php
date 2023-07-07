@@ -112,7 +112,9 @@ class ChunkDataInsert implements ShouldQueue
                         $valid_number->save();
 
                         Log::info('valid_number inserted '. $valid_number->phone_number);
-                    } 
+                    }
+
+                    $registrant_phone = ($validate_number['status'] && isset($validate_number['data']['phone_number'])) ? $validate_number['data']['phone_number'] : '';
                     // else {
                     //     if (isset($validate_number['isExist']) && $validate_number['isExist'] && $validate_number['existEmail'] == $email) {
                     //         // allow to insert data
@@ -160,7 +162,7 @@ class ChunkDataInsert implements ShouldQueue
                         $lead->registrant_state = $data[14];
                         $lead->registrant_zip = $data[15];
                         $lead->registrant_country = getCountryName($data[16]);
-                        $lead->registrant_phone = $data[18];
+                        $lead->registrant_phone = $registrant_phone;
                         $lead->phone_validated = 'yes';
                         $lead->domains_count = 1;
                         $lead->save();
