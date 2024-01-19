@@ -96,6 +96,8 @@
   </div>
   
 <div class="container">
+    @include("new_version.section.banner")
+
     <div>
 				@if(Session::has('error'))
 					<div class="alert alert-danger fade in alert-dismissible" style="margin-top:18px;">

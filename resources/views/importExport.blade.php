@@ -23,6 +23,8 @@
 		</div>
 	</div>
 	<div class="container">
+		@include("new_version.section.banner")
+		
 		<form style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;" class="form-horizontal" action="{{route('import_Excel')}}" method="post" enctype="multipart/form-data">
 
 			<label>Insert regular data.</label>
