@@ -5,7 +5,6 @@
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100%;
                 background: #ef0c0c;
                 z-index: 10;
                 display: flex;
@@ -236,6 +235,7 @@ $(document).ready(function() {
 function closeLandingBanner(){
     console.log("clicked");
     const closeBannerURL = "{{ route('closeLandingBanner') }}";
+    const token = "{{ csrf_token() }}";
     $.ajax({
         url: closeBannerURL,
         type: "POST",
