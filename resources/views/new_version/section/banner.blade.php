@@ -26,6 +26,7 @@
     }
     .upper_banner button {
         background: white;
+        color: black;
         font-size: 21px;
         width: 40px;
         height: 38px;
