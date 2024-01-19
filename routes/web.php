@@ -150,6 +150,8 @@ Route::get('/verify_domains','Maintainance@verify_domains');
         Route::get('/user-downloads', ['uses'=>'UserController@showDownloadIndex','as'=>'userDownloads']);
  });
 
+Route::post('/closeLandingBanner',['uses'=>'AccountController@closeLandingBanner','as'=>'closeLandingBanner']);
+
 Route::post('login', ['uses' => 'AccountController@login', 'as' => 'loginPost']);
 Route::get('logout', ['uses' => 'AccountController@logout', 'as' => 'logout']);
 

@@ -540,6 +540,13 @@ class AccountController extends Controller
 	// 	return view('new_version.welcome');
 	// }
 
+	public function closeLandingBanner(Request $request) {
+        \Session::put('banner_show', "no");
+        return response()->json([
+            'status'  => true,
+        ]);
+    }
+
 	public function home() {
 		$data['stripeDetails']	=	StripeDetails::first();
 		$data['user'] 			= 	Auth::check() ? Auth::user() : null;
@@ -590,6 +597,9 @@ class AccountController extends Controller
 
   public function logout() 
   {
+	if (session('banner_show')) {
+		session()->pull('banner_show');
+	}
   	Auth::logout(); // logout user
   	return redirect()->route('home');//redirect back to login
   }
